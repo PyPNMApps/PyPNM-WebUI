@@ -86,10 +86,11 @@ For destructive history rewrite workflows only:
 - [Troubleshooting](docs/user/troubleshooting.md)
 - [Release Workflow](docs/user/release-workflow.md)
 
-## Initial scaffold included
+## Current baseline
 
 - App shell with route navigation
 - Health and endpoint explorer pages
 - Generic measurement request form
-- Placeholder pages for results, file list, and analysis viewer
+- Fixture-backed analysis viewer with reusable device, chart, and evidence components
+- Placeholder pages for results and file list
 - Typed API client and environment config

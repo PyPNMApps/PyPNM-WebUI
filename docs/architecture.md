@@ -21,3 +21,13 @@
 - Keep endpoint integrations isolated in service modules.
 - Use typed contracts for all request/response payloads.
 - Prefer reusable components over endpoint-specific one-offs.
+
+## Analysis Viewer Baseline
+- `src/features/analysis/types.ts` holds typed analysis contracts for the current fixture-backed view.
+- `src/features/analysis/analysisViewModel.ts` contains pure display-oriented derivations for summaries and chart series.
+- `src/features/analysis/components/` contains reusable technical UI blocks:
+  - `DeviceInfoTable`
+  - `LineAnalysisChart`
+  - `ChannelAnalysisCard`
+- `src/pages/AnalysisViewerPage.tsx` composes those pieces into the current RxMER echo analysis route.
+- Current state: fixture-backed UI proving the analysis composition model without duplicating backend logic.

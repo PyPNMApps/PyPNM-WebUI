@@ -1,11 +1,18 @@
 :root {
-  color-scheme: light;
-  --bg: #f2f6fb;
-  --panel: #ffffff;
-  --ink: #0e1b30;
-  --muted: #5d6a7d;
-  --line: #d3deea;
-  --accent: #0d6aa8;
+  color-scheme: dark;
+  --bg: #09111c;
+  --bg-soft: #0f1724;
+  --panel: #101b2b;
+  --panel-alt: #18263a;
+  --ink: #e8eef8;
+  --muted: #9eb0c9;
+  --line: rgba(255, 255, 255, 0.09);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --accent: #79a9ff;
+  --accent-2: #58d0a7;
+  --ok: #5bd39f;
+  --warn: #ff7a6b;
+  --maybe: #f1c75b;
 }
 
 * {
@@ -15,7 +22,10 @@
 body {
   margin: 0;
   font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
-  background: linear-gradient(180deg, #eaf2fc 0%, var(--bg) 100%);
+  background:
+    radial-gradient(circle at top left, rgba(121, 169, 255, 0.14), transparent 24%),
+    radial-gradient(circle at top right, rgba(88, 208, 167, 0.1), transparent 22%),
+    linear-gradient(180deg, #07101a 0%, var(--bg) 100%);
   color: var(--ink);
 }
 
@@ -31,8 +41,9 @@ a {
 
 .sidebar {
   border-right: 1px solid var(--line);
-  background: #f8fbff;
+  background: rgba(15, 23, 36, 0.84);
   padding: 24px 16px;
+  backdrop-filter: blur(16px);
 }
 
 .sidebar h1 {
@@ -44,14 +55,16 @@ a {
   display: block;
   padding: 10px 12px;
   margin-bottom: 8px;
-  border-radius: 8px;
+  border-radius: 12px;
   text-decoration: none;
   color: var(--muted);
+  border: 1px solid transparent;
 }
 
 .nav-link.active {
-  background: #dcecfb;
-  color: #0b3959;
+  background: rgba(121, 169, 255, 0.12);
+  color: var(--ink);
+  border-color: rgba(121, 169, 255, 0.28);
   font-weight: 600;
 }
 
@@ -71,9 +84,10 @@ a {
 .panel {
   background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 18px;
+  padding: 18px;
   margin-bottom: 16px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
 }
 
 .panel h2 {
@@ -107,6 +121,8 @@ a {
   border-radius: 8px;
   padding: 10px;
   font: inherit;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ink);
 }
 
 .actions {
@@ -116,16 +132,17 @@ a {
 
 button {
   border: 1px solid var(--line);
-  background: #fff;
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 8px;
   padding: 10px 14px;
   cursor: pointer;
+  color: var(--ink);
 }
 
 button.primary {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fff;
+  color: #07101a;
 }
 
 .kv {
@@ -138,6 +155,316 @@ button.primary {
   font-family: "IBM Plex Mono", "Consolas", monospace;
 }
 
+.panel-copy {
+  margin: 0 0 14px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.analysis-hero {
+  margin-bottom: 18px;
+  padding: 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background:
+    linear-gradient(135deg, rgba(121, 169, 255, 0.14), rgba(88, 208, 167, 0.06)),
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.28);
+}
+
+.analysis-hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.analysis-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.analysis-hero-title {
+  margin: 0;
+  font-size: 2.2rem;
+  line-height: 1.05;
+}
+
+.analysis-hero-subtitle {
+  margin: 10px 0 0;
+  color: var(--muted);
+  max-width: 740px;
+  line-height: 1.6;
+}
+
+.analysis-status-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.status-chip-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.analysis-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 12px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.analysis-chip b {
+  color: var(--accent);
+}
+
+.analysis-chip.ok {
+  background: rgba(91, 211, 159, 0.16);
+}
+
+.analysis-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+.analysis-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.analysis-metric-card {
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.analysis-metric-label {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 11px;
+  margin-bottom: 8px;
+}
+
+.analysis-metric-value {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.analysis-metric-help {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.device-table-wrap,
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 11px 14px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+th {
+  border-top: none;
+  color: #d9e5fa;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.chart-frame {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)),
+    #0a1420;
+  padding: 14px;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.chart-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.chart-meta {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.chart-svg {
+  width: 100%;
+  height: 320px;
+  display: block;
+}
+
+.analysis-channels-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.analysis-channel-card {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)),
+    #0d1622;
+  overflow: hidden;
+}
+
+.analysis-channel-top {
+  padding: 18px 18px 12px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(135deg, rgba(121,169,255,0.16), rgba(88,208,167,0.05));
+}
+
+.analysis-channel-title {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.analysis-channel-range {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.analysis-channel-body {
+  padding: 16px 18px 18px;
+  display: grid;
+  gap: 14px;
+}
+
+.analysis-meta-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.analysis-state-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.analysis-state-badge.ok {
+  background: rgba(91, 211, 159, 0.16);
+  border-color: rgba(91, 211, 159, 0.32);
+}
+
+.analysis-state-badge.warn {
+  background: rgba(255, 122, 107, 0.18);
+  border-color: rgba(255, 122, 107, 0.35);
+}
+
+.analysis-state-badge.maybe {
+  background: rgba(241, 199, 91, 0.18);
+  border-color: rgba(241, 199, 91, 0.35);
+}
+
+.analysis-small-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.analysis-small-metric {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 12px;
+}
+
+.analysis-small-k {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+
+.analysis-small-v {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.analysis-raw-json {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 12px 14px;
+}
+
+.analysis-raw-json summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+pre {
+  margin: 12px 0 0;
+  padding: 14px;
+  border-radius: 14px;
+  overflow: auto;
+  background: #07101a;
+  color: #d8e7ff;
+  border: 1px solid var(--line);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.analysis-footnote {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
 @media (max-width: 900px) {
   .app-shell {
     grid-template-columns: 1fr;
@@ -146,5 +473,11 @@ button.primary {
   .sidebar {
     border-right: none;
     border-bottom: 1px solid var(--line);
+  }
+
+  .analysis-summary-grid,
+  .analysis-channels-grid,
+  .analysis-small-metrics {
+    grid-template-columns: 1fr;
   }
 }
