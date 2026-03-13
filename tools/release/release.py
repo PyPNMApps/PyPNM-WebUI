@@ -152,6 +152,11 @@ def _commit_release(commit_message: str) -> None:
     _run(["git", "commit", "-m", commit_message], label="git-commit", capture_output=False)
 
 
+def _has_pending_changes() -> bool:
+    result = _run(["git", "status", "--porcelain"], label="git-status-post-check")
+    return bool((result.stdout or "").strip())
+
+
 def _create_tag(tag_name: str) -> None:
     _run(["git", "tag", "-a", tag_name, "-m", f"Release {tag_name}"], label="git-tag", capture_output=False)
 
@@ -217,6 +222,13 @@ def main() -> None:
 
     tag_name = f"v{version}"
     commit_message = f"{args.commit_msg} - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+
+    if not _has_pending_changes():
+        _print_status("git-commit", "skip")
+        _print_status("git-tag", "skip")
+        _print_status("git-push-branch", "skip")
+        _print_status("git-push-tag", "skip")
+        return
 
     _commit_release(commit_message)
     _print_status("git-commit", "pass")
