@@ -6,6 +6,7 @@ Frontend-only web client for PyPNM REST APIs.
 
 - Ubuntu 22.04+ (or compatible Linux)
 - `curl`
+- `python3` (for release tooling)
 - internet access for first-time dependency install
 
 ## One-command install
@@ -20,6 +21,7 @@ What `install.sh` does:
 - sets Node 22 as default
 - creates `.env` from `.env.example` if needed
 - runs `npm install`
+- creates `.venv` and installs Python release-tool dependencies
 
 ## Run locally
 
@@ -66,11 +68,23 @@ For destructive history rewrite workflows only:
 ./tools/git/git-reset-branch-history.sh --help
 ```
 
+## Release Helpers
+
+```bash
+.venv/bin/python ./tools/support/bump_version.py --current
+.venv/bin/python ./tools/support/bump_version.py --next patch
+.venv/bin/python ./tools/support/bump_version.py 0.2.0
+.venv/bin/python ./tools/release/check_version.py
+.venv/bin/python ./tools/release/test-runner.py
+.venv/bin/python ./tools/release/release.py --help
+```
+
 ## User docs
 
 - [Getting Started](docs/user/getting-started.md)
 - [Using The UI](docs/user/using-the-ui.md)
 - [Troubleshooting](docs/user/troubleshooting.md)
+- [Release Workflow](docs/user/release-workflow.md)
 
 ## Initial scaffold included
 

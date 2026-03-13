@@ -4,6 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 NVM_VERSION="v0.40.3"
 NODE_MAJOR="22"
+PYTHON_BIN="${PYTHON_BIN:-python3}"
 
 log() {
   printf '[install] %s\n' "$1"
@@ -16,6 +17,10 @@ fail() {
 
 if ! command -v curl >/dev/null 2>&1; then
   fail "curl is required but not found. Install curl and re-run."
+fi
+
+if ! command -v "${PYTHON_BIN}" >/dev/null 2>&1; then
+  fail "${PYTHON_BIN} is required but not found. Install Python 3 and re-run."
 fi
 
 if [ ! -d "$HOME/.nvm" ]; then
@@ -55,5 +60,17 @@ fi
 log "Installing npm dependencies"
 npm install
 
+if [ ! -d .venv ]; then
+  log "Creating Python virtual environment (.venv)"
+  "${PYTHON_BIN}" -m venv .venv
+else
+  log "Keeping existing Python virtual environment (.venv)"
+fi
+
+log "Installing Python release-tool dependencies"
+.venv/bin/python -m pip install --upgrade pip >/dev/null
+.venv/bin/python -m pip install -r tools/release/requirements.txt >/dev/null
+
 log "Install complete"
 log "Start dev server with: npm run dev"
+log "Run release workflow with: .venv/bin/python ./tools/release/release.py --help"

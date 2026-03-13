@@ -33,19 +33,18 @@ run_check() {
 }
 
 run_quality_gates() {
-  if ! command -v npm >/dev/null 2>&1; then
-    echo "ERROR: npm is not installed or not in PATH." >&2
+  if [ ! -s "$HOME/.nvm/nvm.sh" ]; then
+    echo "ERROR: nvm not found at $HOME/.nvm/nvm.sh. Run ./install.sh first." >&2
+    exit 1
+  fi
+  if ! bash -lc 'source ~/.nvm/nvm.sh && nvm use 22 >/dev/null && npm -v >/dev/null'; then
+    echo "ERROR: npm is not available under Node 22. Run ./install.sh first." >&2
     exit 1
   fi
 
-  if ! node -e 'process.exit(Number(process.versions.node.split(".")[0]) >= 20 ? 0 : 1)'; then
-    echo "ERROR: Node 20+ is required. Run 'nvm use 22' first." >&2
-    exit 1
-  fi
-
-  run_check "npm run lint" npm run lint
-  run_check "npm run test" npm run test
-  run_check "npm run build" npm run build
+  run_check "npm run lint" bash -lc 'source ~/.nvm/nvm.sh && nvm use 22 >/dev/null && npm run lint'
+  run_check "npm run test" bash -lc 'source ~/.nvm/nvm.sh && nvm use 22 >/dev/null && npm run test'
+  run_check "npm run build" bash -lc 'source ~/.nvm/nvm.sh && nvm use 22 >/dev/null && npm run build'
 }
 
 commit_msg="Update"

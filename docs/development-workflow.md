@@ -13,6 +13,12 @@
 - `./tools/git/git-push.sh --commit-msg "..."` commit+push helper for quick flows.
 - `./tools/git/git-reset-branch-history.sh` rewrites branch history; use only with care.
 
+## Release Workflow
+- `.venv/bin/python ./tools/support/bump_version.py --next patch` bumps package version files.
+- `.venv/bin/python ./tools/release/check_version.py` validates package version consistency.
+- `.venv/bin/python ./tools/release/test-runner.py` runs lint/test/build gates.
+- `.venv/bin/python ./tools/release/release.py` runs release checks, commit/tag, and optional push.
+
 ## PR Guidance
 - Keep changes scoped to a single feature/module when possible.
 - Include screenshots for UI-impacting changes.
