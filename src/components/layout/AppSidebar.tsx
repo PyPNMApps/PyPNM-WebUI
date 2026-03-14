@@ -1,5 +1,7 @@
 import { NavLink } from "react-router-dom";
 
+import { InstanceSelector } from "@/components/layout/InstanceSelector";
+
 const links = [
   ["/", "Overview"],
   ["/health", "Health"],
@@ -15,6 +17,7 @@ export function AppSidebar() {
   return (
     <aside className="sidebar">
       <h1>PyPNM WebUI</h1>
+      <InstanceSelector />
       <nav>
         {links.map(([to, label]) => (
           <NavLink key={to} to={to} end={to === "/"} className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>

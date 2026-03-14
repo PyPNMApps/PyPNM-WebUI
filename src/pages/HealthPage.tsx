@@ -1,14 +1,21 @@
+import { useInstanceConfig } from "@/app/useInstanceConfig";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Panel } from "@/components/common/Panel";
 import { useHealth } from "@/features/health/useHealth";
 
 export function HealthPage() {
+  const { config, selectedInstance } = useInstanceConfig();
   const health = useHealth();
 
   return (
     <>
       <PageHeader title="Health" subtitle="Verify connectivity and view backend service metadata." />
       <Panel title="PyPNM Health Check">
+        <div className="panel-copy">
+          Target: <span className="mono">{selectedInstance?.baseUrl ?? "No instance selected"}</span>
+          {selectedInstance ? ` · Polling every ${selectedInstance.polling.intervalMs} ms` : ""}
+          {config ? ` · Path ${config.defaults.healthPath}` : ""}
+        </div>
         {health.isLoading && <p>Loading health status...</p>}
         {health.isError && <p>{(health.error as Error).message}</p>}
         {health.data && (

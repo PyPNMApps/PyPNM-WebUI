@@ -44,6 +44,11 @@ VITE_PYPNM_API_BASE_URL=http://127.0.0.1:8080
 VITE_REQUEST_TIMEOUT_MS=30000
 ```
 
+Instance targets for the runtime dropdown:
+- `public/config/pypnm-instances.yaml`
+- The selected instance overrides `VITE_PYPNM_API_BASE_URL`
+- `VITE_PYPNM_API_BASE_URL` remains the fallback when the YAML file is missing
+
 ## Scripts
 
 ```bash
@@ -92,5 +97,6 @@ For destructive history rewrite workflows only:
 - Health and endpoint explorer pages
 - Generic measurement request form
 - Fixture-backed analysis viewer with reusable device, chart, and evidence components
+- Runtime YAML config for multiple PyPNM instances with dropdown selection
 - Placeholder pages for results and file list
 - Typed API client and environment config

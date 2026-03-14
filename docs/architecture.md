@@ -31,3 +31,9 @@
   - `ChannelAnalysisCard`
 - `src/pages/AnalysisViewerPage.tsx` composes those pieces into the current RxMER echo analysis route.
 - Current state: fixture-backed UI proving the analysis composition model without duplicating backend logic.
+
+## Instance Target Selection
+- `public/config/pypnm-instances.yaml` is the runtime source for selectable PyPNM instances.
+- `src/app/InstanceConfigProvider.tsx` loads the YAML, normalizes it, and persists the selected instance in local storage.
+- `src/components/layout/InstanceSelector.tsx` exposes the dropdown in the sidebar.
+- Service calls should take the selected instance base URL from provider state rather than hardcoding one target.

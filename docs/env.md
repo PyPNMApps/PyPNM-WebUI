@@ -6,6 +6,35 @@
 ## Optional Variables
 - `VITE_REQUEST_TIMEOUT_MS`: HTTP timeout override in milliseconds.
 
+## Runtime Instance Config
+- Path: `public/config/pypnm-instances.yaml`
+- Purpose: define multiple PyPNM instances for the UI dropdown
+- Behavior:
+  - selected instance base URL overrides `VITE_PYPNM_API_BASE_URL`
+  - if the YAML file is missing or invalid, the UI falls back to `.env`
+
+## YAML Shape
+```yaml
+version: 1
+
+defaults:
+  selected_instance: lab-local
+  poll_interval_ms: 5000
+  request_timeout_ms: 30000
+  health_path: /health
+
+instances:
+  - id: lab-local
+    label: Lab Local
+    base_url: http://127.0.0.1:8080
+    enabled: true
+    tags: [lab, local]
+    capabilities: [health, analysis]
+    polling:
+      enabled: true
+      interval_ms: 5000
+```
+
 ## Example
 ```env
 VITE_PYPNM_API_BASE_URL=http://127.0.0.1:8000

@@ -1,0 +1,37 @@
+version: 1
+
+defaults:
+  selected_instance: lab-local
+  poll_interval_ms: 5000
+  request_timeout_ms: 30000
+  health_path: /health
+
+instances:
+  - id: lab-local
+    label: Lab Local
+    base_url: http://127.0.0.1:8080
+    enabled: true
+    tags:
+      - lab
+      - local
+    capabilities:
+      - health
+      - analysis
+      - files
+    polling:
+      enabled: true
+      interval_ms: 5000
+
+  - id: denver-rack-1
+    label: Denver Rack 1
+    base_url: http://10.10.20.15:8080
+    enabled: false
+    tags:
+      - denver
+      - rack1
+    capabilities:
+      - health
+      - analysis
+    polling:
+      enabled: true
+      interval_ms: 3000

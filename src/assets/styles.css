@@ -51,6 +51,34 @@ a {
   font-size: 1.1rem;
 }
 
+.instance-selector {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 18px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.instance-selector-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.instance-selector-meta {
+  font-size: 0.78rem;
+  color: var(--muted);
+  word-break: break-all;
+}
+
+.instance-selector-error {
+  font-size: 0.78rem;
+  color: var(--warn);
+}
+
 .nav-link {
   display: block;
   padding: 10px 12px;
