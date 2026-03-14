@@ -5,26 +5,26 @@ import { InstanceSelector } from "@/components/layout/InstanceSelector";
 const links = [
   ["/", "Overview"],
   ["/health", "Health"],
-  ["/endpoints", "Endpoint Explorer"],
-  ["/measurements", "Measurement Request"],
-  ["/results", "Results"],
-  ["/files", "File List"],
-  ["/analysis", "Analysis Viewer"],
+  ["/endpoints", "Operations"],
   ["/settings", "Settings"],
 ] as const;
 
-export function AppSidebar() {
+export function AppTopNav() {
   return (
-    <aside className="sidebar">
-      <h1>PyPNM WebUI</h1>
-      <InstanceSelector />
-      <nav>
+    <header className="top-nav">
+      <div className="top-nav-brand">
+        <h1>PyPNM WebUI</h1>
+      </div>
+      <nav className="top-nav-links">
         {links.map(([to, label]) => (
           <NavLink key={to} to={to} end={to === "/"} className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
             {label}
           </NavLink>
         ))}
       </nav>
-    </aside>
+      <div className="top-nav-instance">
+        <InstanceSelector />
+      </div>
+    </header>
   );
 }

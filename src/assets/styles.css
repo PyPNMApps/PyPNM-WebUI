@@ -36,25 +36,32 @@ a {
 .app-shell {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 260px 1fr;
+  grid-template-rows: auto 1fr;
 }
 
-.sidebar {
-  border-right: 1px solid var(--line);
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(260px, 320px);
+  gap: 16px;
+  align-items: start;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--line);
   background: rgba(15, 23, 36, 0.84);
-  padding: 24px 16px;
   backdrop-filter: blur(16px);
 }
 
-.sidebar h1 {
-  margin: 0 0 16px;
+.top-nav-brand h1 {
+  margin: 10px 0 0;
   font-size: 1.1rem;
+  white-space: nowrap;
 }
 
 .instance-selector {
   display: grid;
   gap: 8px;
-  margin-bottom: 18px;
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: 14px;
@@ -80,13 +87,25 @@ a {
 }
 
 .nav-link {
-  display: block;
+  display: inline-flex;
   padding: 10px 12px;
-  margin-bottom: 8px;
   border-radius: 12px;
   text-decoration: none;
   color: var(--muted);
   border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.top-nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+}
+
+.top-nav-instance {
+  min-width: 0;
 }
 
 .nav-link.active {
@@ -367,6 +386,10 @@ th {
   display: block;
 }
 
+.chart-svg-short {
+  height: 260px;
+}
+
 .analysis-channels-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -395,6 +418,16 @@ th {
 
 .analysis-channel-range {
   margin-top: 5px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.analysis-channel-meta-line {
+  margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
   color: var(--muted);
   font-size: 13px;
 }
@@ -493,14 +526,31 @@ pre {
   font-size: 12px;
 }
 
+.operations-workbench-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.operations-selected-title {
+  margin: 0 0 8px;
+  font-size: 1.4rem;
+}
+
+.operations-visual-stack {
+  display: grid;
+  gap: 18px;
+}
+
 @media (max-width: 900px) {
-  .app-shell {
+  .top-nav {
     grid-template-columns: 1fr;
   }
 
-  .sidebar {
-    border-right: none;
-    border-bottom: 1px solid var(--line);
+  .top-nav-brand h1 {
+    margin-top: 0;
   }
 
   .analysis-summary-grid,

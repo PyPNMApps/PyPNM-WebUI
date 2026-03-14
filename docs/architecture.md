@@ -37,3 +37,12 @@
 - `src/app/InstanceConfigProvider.tsx` loads the YAML, normalizes it, and persists the selected instance in local storage.
 - `src/components/layout/InstanceSelector.tsx` exposes the dropdown in the sidebar.
 - Service calls should take the selected instance base URL from provider state rather than hardcoding one target.
+
+## Operations Catalog Direction
+- The WebUI should use the Postman collection structure as its workflow catalog, not a flat endpoint browser.
+- `src/features/operations/registry.ts` is the current static registry for the first workflow slice.
+- `src/pages/EndpointExplorerPage.tsx` is now functioning as the first operations workbench:
+  - left catalog
+  - selected workflow metadata
+  - request/run/visual/raw/history tabs
+  - OpenAPI inventory retained as secondary reference data

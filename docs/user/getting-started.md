@@ -30,4 +30,4 @@ Open:
 
 - Use the left sidebar `PyPNM Target` dropdown to confirm the active instance from `public/config/pypnm-instances.yaml`.
 - Open `Health` page and verify backend connectivity.
-- Open `Endpoint Explorer` and confirm endpoint metadata is returned.
+- Open `Operations` and confirm the `PNM / MultiCapture / Downstream / RxMER` workflow appears.

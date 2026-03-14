@@ -5,7 +5,7 @@
 The left navigation includes:
 - `Overview`
 - `Health`
-- `Endpoint Explorer`
+- `Operations`
 - `Measurement Request`
 - `Results`
 - `File List`
@@ -19,8 +19,8 @@ Use it to switch the active backend instance without rebuilding the UI.
 
 1. `Health`
    - confirm API status and metadata.
-2. `Endpoint Explorer`
-   - verify available REST operations.
+2. `Operations`
+   - use the Postman-style workflow tree to select `Start`, `Status`, `Results`, or `Analysis`.
 3. `Measurement Request`
    - enter identifiers and preview request payload.
 4. `Results`
@@ -36,3 +36,17 @@ Use it to switch the active backend instance without rebuilding the UI.
 - selected instance label and base URL
 - configured instance count
 - runtime health path from YAML config
+
+## Operations Workbench
+
+The current operations page is organized around the Postman collection pattern:
+
+- folder-style catalog on the left
+- workflow workbench in the center
+- tabs for `Request`, `Run`, `Visual`, `Raw JSON`, and `History`
+
+The first implemented workflow is:
+
+- `PNM / MultiCapture / Downstream / RxMER`
+
+Its `Echo Detection 1` analysis route is already bound to the reusable WebUI visual.

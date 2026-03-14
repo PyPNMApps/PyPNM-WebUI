@@ -40,6 +40,7 @@
 - Provide both interpreted and raw JSON views for technical results.
 - Include explicit loading, error, and empty states for every data panel.
 - Support copy-to-clipboard for identifiers and payloads where useful.
+- Default graph lines to thin strokes unless a thicker treatment is required for legibility or a specific visual convention.
 
 ## Environment And Configuration (Required)
 

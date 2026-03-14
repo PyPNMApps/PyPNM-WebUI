@@ -110,10 +110,11 @@ For destructive history rewrite workflows only:
 ## Current baseline
 
 - App shell with route navigation
-- Health and endpoint explorer pages
+- Health and operations pages backed by selected-instance runtime config
 - Generic measurement request form
 - Fixture-backed analysis viewer with reusable device, chart, and evidence components
 - Runtime YAML config for multiple PyPNM instances with dropdown selection
+- Postman-style operations workbench for `PNM / MultiCapture / Downstream / RxMER`
 - `pypnm-webui serve` CLI startup aligned with `pypnm` / `pypnm-cmts` command style
 - Placeholder pages for results and file list
 - Typed API client and environment config

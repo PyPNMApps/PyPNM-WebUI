@@ -101,7 +101,7 @@ export function LineAnalysisChart({ title, subtitle, yLabel, series }: LineAnaly
             d={buildPath(item.points, width, height, xMin, xMax, yMin, yMax)}
             fill="none"
             stroke={item.color}
-            strokeWidth="2.2"
+            strokeWidth="1.2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
