@@ -1,120 +1,69 @@
+import { Navigate, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 
 import { useInstanceConfig } from "@/app/useInstanceConfig";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Panel } from "@/components/common/Panel";
+import { SingleCaptureRequestForm } from "@/features/operations/SingleCaptureRequestForm";
+import { SingleChannelEstCoeffCaptureView } from "@/features/operations/SingleChannelEstCoeffCaptureView";
+import { getOperationByRoutePath, operationNavigationItems } from "@/features/operations/operationsNavigation";
 import { SingleRxMerCaptureView } from "@/features/operations/SingleRxMerCaptureView";
+import { singleChannelEstCoeffFixture } from "@/features/operations/singleChannelEstCoeffFixture";
 import { singleRxMerFixture } from "@/features/operations/singleRxMerFixture";
-import { runSingleRxMerCapture } from "@/services/singleRxMerService";
-import type { SingleRxMerCaptureRequest } from "@/types/api";
-
-interface SingleRxMerFormValues {
-  macAddress: string;
-  ipAddress: string;
-  tftpIpv4: string;
-  tftpIpv6: string;
-  channelIds: string;
-  community: string;
-}
+import { runSingleCaptureEndpoint } from "@/services/singleCaptureService";
+import type { SingleChannelEstCoeffCaptureResponse, SingleRxMerCaptureRequest, SingleRxMerCaptureResponse } from "@/types/api";
 
 export function EndpointExplorerPage() {
+  const location = useLocation();
   const { selectedInstance } = useInstanceConfig();
-  const [response, setResponse] = useState(singleRxMerFixture);
-  const { register, handleSubmit } = useForm<SingleRxMerFormValues>({
-    defaultValues: {
-      macAddress: "",
-      ipAddress: "",
-      tftpIpv4: "",
-      tftpIpv6: "",
-      channelIds: "194",
-      community: "private",
-    },
-  });
+  const [rxMerResponse, setRxMerResponse] = useState<SingleRxMerCaptureResponse>(singleRxMerFixture);
+  const [channelEstResponse, setChannelEstResponse] = useState<SingleChannelEstCoeffCaptureResponse>(singleChannelEstCoeffFixture);
+  const selectedOperation = getOperationByRoutePath(location.pathname);
   const mutation = useMutation({
-    mutationFn: (payload: SingleRxMerCaptureRequest) => runSingleRxMerCapture(selectedInstance?.baseUrl ?? "", payload),
+    mutationFn: ({ endpointPath, payload }: { endpointPath: string; payload: SingleRxMerCaptureRequest }) =>
+      runSingleCaptureEndpoint<SingleRxMerCaptureResponse | SingleChannelEstCoeffCaptureResponse>(
+        selectedInstance?.baseUrl ?? "",
+        endpointPath,
+        payload,
+      ),
     onSuccess: (data) => {
-      setResponse(data);
+      if (selectedOperation?.id === "docs-pnm-ds-ofdm-rxmer-getcapture") {
+        setRxMerResponse(data as SingleRxMerCaptureResponse);
+        return;
+      }
+
+      if (selectedOperation?.id === "docs-pnm-ds-ofdm-channelestcoeff-getcapture") {
+        setChannelEstResponse(data as SingleChannelEstCoeffCaptureResponse);
+      }
     },
   });
+
+  if (!selectedOperation) {
+    return <Navigate to={operationNavigationItems[0]?.routePath ?? "/"} replace />;
+  }
 
   return (
     <>
-      <PageHeader title="RxMER" subtitle="" />
+      <PageHeader title={selectedOperation.label} subtitle="" />
       <Panel title="Capture Inputs">
-        <form
-          className="grid"
-          onSubmit={handleSubmit((values) => {
-            const payload: SingleRxMerCaptureRequest = {
-              cable_modem: {
-                mac_address: values.macAddress,
-                ip_address: values.ipAddress,
-                pnm_parameters: {
-                  tftp: {
-                    ipv4: values.tftpIpv4,
-                    ipv6: values.tftpIpv6,
-                  },
-                  capture: {
-                    channel_ids: values.channelIds
-                      .split(",")
-                      .map((value) => Number.parseInt(value.trim(), 10))
-                      .filter((value) => Number.isInteger(value)),
-                  },
-                },
-                snmp: {
-                  snmpV2C: {
-                    community: values.community,
-                  },
-                },
-              },
-              analysis: {
-                type: "basic",
-                output: { type: "json" },
-                plot: { ui: { theme: "dark" } },
-              },
-            };
-
-            mutation.mutate(payload);
-          })}
-        >
-          <div className="grid two">
-            <div className="field">
-              <label htmlFor="macAddress">MAC Address</label>
-              <input id="macAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
-            </div>
-            <div className="field">
-              <label htmlFor="ipAddress">IP Address</label>
-              <input id="ipAddress" {...register("ipAddress")} placeholder="192.168.100.10" />
-            </div>
-            <div className="field">
-              <label htmlFor="tftpIpv4">TFTP IPv4</label>
-              <input id="tftpIpv4" {...register("tftpIpv4")} placeholder="192.168.100.2" />
-            </div>
-            <div className="field">
-              <label htmlFor="tftpIpv6">TFTP IPv6</label>
-              <input id="tftpIpv6" {...register("tftpIpv6")} placeholder="::1" />
-            </div>
-            <div className="field">
-              <label htmlFor="channelIds">Channel IDs</label>
-              <input id="channelIds" {...register("channelIds")} placeholder="194" />
-            </div>
-            <div className="field">
-              <label htmlFor="community">SNMP RW Community</label>
-              <input id="community" {...register("community")} placeholder="private" />
-            </div>
-          </div>
-          <div className="actions">
-            <button type="submit" className="primary" disabled={mutation.isPending || !selectedInstance}>
-              {mutation.isPending ? "Running..." : "Run getCapture"}
-            </button>
-          </div>
-          {mutation.isError ? <p>{(mutation.error as Error).message}</p> : null}
-        </form>
+        <SingleCaptureRequestForm
+          isPending={mutation.isPending}
+          canRun={Boolean(selectedInstance)}
+          submitLabel={`Run ${selectedOperation.label}`}
+          errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+          onSubmit={(payload) => {
+            mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
+          }}
+        />
       </Panel>
 
-      <Panel title="">
-        <SingleRxMerCaptureView response={response} />
+      <Panel>
+        {selectedOperation.id === "docs-pnm-ds-ofdm-rxmer-getcapture" ? (
+          <SingleRxMerCaptureView response={rxMerResponse} />
+        ) : (
+          <SingleChannelEstCoeffCaptureView response={channelEstResponse} />
+        )}
       </Panel>
     </>
   );

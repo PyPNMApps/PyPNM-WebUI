@@ -16,7 +16,9 @@ export function AppRoutes() {
       <Route element={<AppLayout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/health" element={<HealthPage />} />
-        <Route path="/endpoints" element={<EndpointExplorerPage />} />
+        <Route path="/endpoints" element={<Navigate to="/operations" replace />} />
+        <Route path="/operations" element={<EndpointExplorerPage />} />
+        <Route path="/operations/:operationId" element={<EndpointExplorerPage />} />
         <Route path="/measurements" element={<MeasurementRequestPage />} />
         <Route path="/results" element={<ResultsPage />} />
         <Route path="/files" element={<FileListPage />} />

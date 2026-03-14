@@ -110,3 +110,85 @@ export interface SingleRxMerCaptureResponse {
     analysis?: SingleRxMerAnalysisEntry[];
   };
 }
+
+export interface ChannelEstEchoEntry {
+  time_s: number;
+  amplitude: number;
+  distance_m: number;
+  distance_ft: number;
+}
+
+export interface SingleChannelEstCoeffAnalysisEntry {
+  mac_address?: string;
+  channel_id?: number;
+  pnm_header?: {
+    capture_time?: number;
+  };
+  device_details?: {
+    system_description?: SingleRxMerSystemDescription;
+  };
+  echo?: {
+    report?: {
+      cable_type?: string;
+      velocity_factor?: number | string;
+      prop_speed_mps?: number;
+      echoes?: ChannelEstEchoEntry[];
+    };
+  };
+  signal_statistics?: {
+    mean?: number;
+    median?: number;
+    std?: number;
+    variance?: number;
+    power?: number;
+    peak_to_peak?: number;
+    mean_abs_deviation?: number;
+    skewness?: number;
+    kurtosis?: number;
+    crest_factor?: number;
+  };
+  carrier_values: {
+    carrier_count?: number;
+    frequency: number[];
+    magnitudes: number[];
+    group_delay?: {
+      magnitude: number[];
+    };
+  };
+}
+
+export interface SingleChannelEstCoeffPrimitiveEntry {
+  channel_id?: number;
+  subcarrier_spacing?: number;
+  occupied_channel_bandwidth?: number;
+  values: Array<[number, number]>;
+}
+
+export interface SingleChannelEstCoeffMeasurementStatsEntry {
+  index?: number;
+  channel_id?: number;
+  entry?: {
+    docsPnmCmOfdmChEstCoefFileName?: string;
+    docsPnmCmOfdmChEstCoefMeasStatus?: string;
+    docsPnmCmOfdmChEstCoefAmpRipplePkToPk?: number;
+    docsPnmCmOfdmChEstCoefAmpRippleRms?: number;
+    docsPnmCmOfdmChEstCoefAmpSlope?: number;
+    docsPnmCmOfdmChEstCoefAmpMean?: number;
+    docsPnmCmOfdmChEstCoefGrpDelayRipplePkToPk?: number;
+    docsPnmCmOfdmChEstCoefGrpDelayRippleRms?: number;
+    docsPnmCmOfdmChEstCoefGrpDelaySlope?: number;
+    docsPnmCmOfdmChEstCoefGrpDelayMean?: number;
+  };
+}
+
+export interface SingleChannelEstCoeffCaptureResponse {
+  system_description?: SingleRxMerSystemDescription;
+  mac_address?: string;
+  status?: number;
+  message?: string | null;
+  data?: {
+    analysis?: SingleChannelEstCoeffAnalysisEntry[];
+    primative?: SingleChannelEstCoeffPrimitiveEntry[];
+    measurement_stats?: SingleChannelEstCoeffMeasurementStatsEntry[];
+  };
+}

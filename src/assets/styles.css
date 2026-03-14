@@ -104,6 +104,88 @@ a {
   min-width: 0;
 }
 
+.operations-menu {
+  position: relative;
+}
+
+.operations-menu-trigger {
+  cursor: pointer;
+  font: inherit;
+}
+
+.operations-menu-popover {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  display: none;
+  min-width: 420px;
+  padding: 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  background: rgba(12, 20, 32, 0.98);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.36);
+}
+
+.operations-menu.open .operations-menu-popover,
+.operations-menu:focus-within .operations-menu-popover {
+  display: block;
+}
+
+.operations-menu-columns {
+  display: flex;
+  gap: 18px;
+}
+
+.operations-menu-column {
+  min-width: 220px;
+}
+
+.operations-menu-heading {
+  margin-bottom: 10px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.operations-menu-group + .operations-menu-group {
+  margin-top: 12px;
+}
+
+.operations-menu-subheading {
+  margin-bottom: 8px;
+  font-size: 0.92rem;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.operations-menu-links {
+  display: grid;
+  gap: 8px;
+}
+
+.operations-menu-link {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.operations-menu-link.active {
+  border-color: rgba(121, 169, 255, 0.28);
+  background: rgba(121, 169, 255, 0.12);
+}
+
+.operations-menu-endpoint {
+  font-size: 0.74rem;
+  color: var(--muted);
+  font-family: "IBM Plex Mono", "Consolas", monospace;
+}
+
 .top-nav-instance {
   min-width: 0;
 }
@@ -432,6 +514,11 @@ th {
   font-size: 13px;
 }
 
+.analysis-channel-meta-line-header {
+  margin-top: 0;
+  align-items: center;
+}
+
 .analysis-channel-body {
   padding: 16px 18px 18px;
   display: grid;
@@ -544,6 +631,71 @@ pre {
   gap: 18px;
 }
 
+.channel-est-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.channel-est-graphs {
+  display: grid;
+  gap: 14px;
+}
+
+.channel-est-chip-row {
+  justify-content: center;
+}
+
+.channel-est-measurement-grid,
+.channel-est-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.channel-est-echo-block {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 14px;
+}
+
+.analysis-echo-table {
+  width: 100%;
+  min-width: 0;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+.analysis-echo-table th,
+.analysis-echo-table td {
+  text-align: left;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.analysis-echo-table th {
+  color: #d9e5fa;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.chart-frame-compact {
+  padding: 14px;
+}
+
+.chart-svg-square {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  display: block;
+}
+
 @media (max-width: 900px) {
   .top-nav {
     grid-template-columns: 1fr;
@@ -555,7 +707,10 @@ pre {
 
   .analysis-summary-grid,
   .analysis-channels-grid,
-  .analysis-small-metrics {
+  .analysis-small-metrics,
+  .channel-est-grid,
+  .channel-est-measurement-grid,
+  .channel-est-stats-grid {
     grid-template-columns: 1fr;
   }
 }
