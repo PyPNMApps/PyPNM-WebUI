@@ -102,6 +102,45 @@ export interface SingleFecSummaryCaptureRequest {
   };
 }
 
+export interface SingleConstellationDisplayCaptureRequest {
+  cable_modem: {
+    mac_address: string;
+    ip_address: string;
+    pnm_parameters: {
+      tftp: {
+        ipv4: string;
+        ipv6: string;
+      };
+      capture: {
+        channel_ids: number[];
+      };
+    };
+    snmp: {
+      snmpV2C: {
+        community: string;
+      };
+    };
+  };
+  analysis: {
+    type: "basic";
+    output: {
+      type: "json";
+    };
+    plot: {
+      ui: {
+        theme: "dark";
+      };
+      options: {
+        display_cross_hair: boolean;
+      };
+    };
+  };
+  capture_settings: {
+    modulation_order_offset: number;
+    number_sample_symbol: number;
+  };
+}
+
 export interface SingleHistogramCaptureRequest {
   cable_modem: {
     mac_address: string;
@@ -308,5 +347,30 @@ export interface SingleFecSummaryCaptureResponse {
   message?: string | null;
   data?: {
     analysis?: SingleFecSummaryAnalysisEntry[];
+  };
+}
+
+export interface SingleConstellationDisplayAnalysisEntry {
+  channel_id?: number;
+  mac_address?: string;
+  modulation_order?: number;
+  num_sample_symbols?: number;
+  pnm_header?: {
+    capture_time?: number | string;
+  };
+  device_details?: {
+    system_description?: SingleRxMerSystemDescription;
+  };
+  soft?: Array<[number, number]> | { complex?: Array<[number, number]> };
+  hard?: Array<[number, number]> | { complex?: Array<[number, number]> };
+}
+
+export interface SingleConstellationDisplayCaptureResponse {
+  system_description?: SingleRxMerSystemDescription;
+  mac_address?: string;
+  status?: number;
+  message?: string | null;
+  data?: {
+    analysis?: SingleConstellationDisplayAnalysisEntry[];
   };
 }

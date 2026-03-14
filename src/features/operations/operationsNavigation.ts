@@ -41,6 +41,14 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     description: "Single downstream OFDM FEC summary capture visual.",
     menuPath: ["PNM", "Single Capture"],
   },
+  {
+    id: "docs-pnm-ds-ofdm-constellationdisplay-getcapture",
+    label: "Constellation Display",
+    routePath: "/operations/constellation-display",
+    endpointPath: "/docs/pnm/ds/ofdm/constellationDisplay/getCapture",
+    description: "Single downstream OFDM constellation display visual.",
+    menuPath: ["PNM", "Single Capture"],
+  },
 ];
 
 export function getOperationByRoutePath(routePath: string | undefined): OperationNavigationItem | undefined {
