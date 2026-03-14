@@ -9,6 +9,7 @@
 ## Reuse-First Rules (Required)
 
 - Reuse existing UI components/hooks/services before creating new ones.
+- When multiple visuals need the same metadata rendering or formatting behavior, extract it into `src/components/common` or `src/lib` instead of duplicating it inside a feature view.
 - Keep endpoint integrations isolated in feature/service modules.
 - Centralize API transport concerns (base URL, headers, timeout, interceptors) in one API client.
 - Reuse shared request/response types in `src/types`.
@@ -32,6 +33,7 @@
   - `lib/` (pure utilities)
 - Keep presentational components free of API side effects when practical.
 - Put endpoint-specific logic inside feature modules, not global app shell.
+- Keep shared visual primitives generic: device context tables, epoch-to-UTC formatting, frequency-range formatting, and numeric summary helpers belong in common modules, not in endpoint-specific components.
 
 ## UX/Engineering Dashboard Rules (Required)
 

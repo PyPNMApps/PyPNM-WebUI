@@ -1,7 +1,7 @@
 import { Panel } from "@/components/common/Panel";
+import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { buildCombinedSeries, formatFixed, summarizeAnalysis } from "@/features/analysis/analysisViewModel";
 import { ChannelAnalysisCard } from "@/features/analysis/components/ChannelAnalysisCard";
-import { DeviceInfoTable } from "@/features/analysis/components/DeviceInfoTable";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import type { RxMerEchoAnalysisFixture } from "@/features/analysis/types";
 

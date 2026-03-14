@@ -1,35 +1,12 @@
-import { DeviceInfoTable } from "@/features/analysis/components/DeviceInfoTable";
+import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import { ModulationCountsChart } from "@/features/operations/ModulationCountsChart";
-import type { ChartSeries, DeviceInfo } from "@/features/analysis/types";
-import type {
-  SingleRxMerAnalysisEntry,
-  SingleRxMerCaptureResponse,
-  SingleRxMerSystemDescription,
-} from "@/types/api";
-
-function toDeviceInfo(system: SingleRxMerSystemDescription | undefined, macAddress: string | undefined): DeviceInfo {
-  return {
-    macAddress: macAddress ?? "n/a",
-    MODEL: system?.MODEL ?? "n/a",
-    VENDOR: system?.VENDOR ?? "n/a",
-    SW_REV: system?.SW_REV ?? "n/a",
-    HW_REV: system?.HW_REV ?? "n/a",
-    BOOTR: system?.BOOTR ?? "n/a",
-  };
-}
-
-function average(values: number[]): number {
-  return values.reduce((sum, value) => sum + value, 0) / (values.length || 1);
-}
-
-function summarize(values: number[]) {
-  return {
-    avg: average(values),
-    min: Math.min(...values),
-    max: Math.max(...values),
-  };
-}
+import type { ChartSeries } from "@/features/analysis/types";
+import { formatEpochSecondsUtc } from "@/lib/formatters/dateTime";
+import { formatFrequencyRangeMhz } from "@/lib/formatters/frequency";
+import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
+import { average, summarize } from "@/lib/stats";
+import type { SingleRxMerAnalysisEntry, SingleRxMerCaptureResponse } from "@/types/api";
 
 function toSeries(channel: SingleRxMerAnalysisEntry, color: string, label?: string): ChartSeries {
   const magnitude = channel.carrier_values?.magnitude ?? [];
@@ -43,14 +20,6 @@ function toSeries(channel: SingleRxMerAnalysisEntry, color: string, label?: stri
       y: value,
     })),
   };
-}
-
-function formatCaptureTime(epochSeconds: number | undefined): string {
-  if (!epochSeconds) {
-    return "n/a";
-  }
-
-  return new Date(epochSeconds * 1000).toISOString().replace("T", " ").replace(".000Z", " UTC");
 }
 
 function findFallbackCaptureTime(analysis: SingleRxMerAnalysisEntry[]): number | undefined {
@@ -96,12 +65,8 @@ export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCapt
               <div className="analysis-channel-top">
                 <h3 className="analysis-channel-title">Channel {channel.channel_id ?? "n/a"}</h3>
                 <div className="analysis-channel-meta-line">
-                  <span>
-                    {channel.carrier_values?.frequency?.length
-                      ? `${Math.round((channel.carrier_values.frequency[0] ?? 0) / 1_000_000)} - ${Math.round((channel.carrier_values.frequency[channel.carrier_values.frequency.length - 1] ?? 0) / 1_000_000)} MHz`
-                      : "Frequency range unavailable"}
-                  </span>
-                  <span>{formatCaptureTime(channel.pnm_header?.capture_time ?? fallbackCaptureTime)}</span>
+                  <span>{formatFrequencyRangeMhz(channel.carrier_values?.frequency)}</span>
+                  <span>{formatEpochSecondsUtc(channel.pnm_header?.capture_time ?? fallbackCaptureTime)}</span>
                 </div>
               </div>
 

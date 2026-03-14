@@ -1,14 +1,14 @@
 import type { ReactNode } from "react";
 
 interface PanelProps {
-  title: string;
+  title?: string;
   children: ReactNode;
 }
 
 export function Panel({ title, children }: PanelProps) {
   return (
     <section className="panel">
-      <h2>{title}</h2>
+      {title ? <h2>{title}</h2> : null}
       {children}
     </section>
   );
