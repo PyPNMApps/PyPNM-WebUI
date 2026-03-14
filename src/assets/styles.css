@@ -696,6 +696,19 @@ pre {
   display: block;
 }
 
+.fec-toggle-row {
+  margin-bottom: 10px;
+}
+
+.fec-toggle-chip {
+  font: inherit;
+}
+
+.fec-toggle-chip.active {
+  border-color: rgba(121, 169, 255, 0.32);
+  background: rgba(121, 169, 255, 0.14);
+}
+
 @media (max-width: 900px) {
   .top-nav {
     grid-template-columns: 1fr;

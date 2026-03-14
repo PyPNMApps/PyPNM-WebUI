@@ -67,6 +67,41 @@ export interface SingleRxMerCaptureRequest {
   };
 }
 
+export interface SingleFecSummaryCaptureRequest {
+  cable_modem: {
+    mac_address: string;
+    ip_address: string;
+    pnm_parameters: {
+      tftp: {
+        ipv4: string;
+        ipv6: string;
+      };
+      capture: {
+        channel_ids: number[];
+      };
+    };
+    snmp: {
+      snmpV2C: {
+        community: string;
+      };
+    };
+  };
+  analysis: {
+    type: "basic";
+    output: {
+      type: "json";
+    };
+    plot: {
+      ui: {
+        theme: "dark";
+      };
+    };
+  };
+  capture_settings: {
+    fec_summary_type: number;
+  };
+}
+
 export interface SingleHistogramCaptureRequest {
   cable_modem: {
     mac_address: string;
@@ -243,5 +278,35 @@ export interface SingleHistogramCaptureResponse {
   message?: string | null;
   data?: {
     analysis?: SingleHistogramAnalysisEntry[];
+  };
+}
+
+export interface SingleFecSummaryCodewords {
+  timestamps: number[];
+  total_codewords: number[];
+  corrected: number[];
+  uncorrected: number[];
+}
+
+export interface SingleFecSummaryProfileEntry {
+  profile: number | string;
+  codewords: SingleFecSummaryCodewords;
+}
+
+export interface SingleFecSummaryAnalysisEntry {
+  channel_id?: number;
+  profiles: SingleFecSummaryProfileEntry[];
+  device_details?: {
+    system_description?: SingleRxMerSystemDescription;
+  };
+}
+
+export interface SingleFecSummaryCaptureResponse {
+  system_description?: SingleRxMerSystemDescription;
+  mac_address?: string;
+  status?: number;
+  message?: string | null;
+  data?: {
+    analysis?: SingleFecSummaryAnalysisEntry[];
   };
 }

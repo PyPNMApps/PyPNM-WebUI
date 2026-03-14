@@ -33,6 +33,14 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     description: "Single downstream histogram capture visual.",
     menuPath: ["PNM", "Single Capture"],
   },
+  {
+    id: "docs-pnm-ds-ofdm-fecsummary-getcapture",
+    label: "FEC Summary",
+    routePath: "/operations/fec-summary",
+    endpointPath: "/docs/pnm/ds/ofdm/fecSummary/getCapture",
+    description: "Single downstream OFDM FEC summary capture visual.",
+    menuPath: ["PNM", "Single Capture"],
+  },
 ];
 
 export function getOperationByRoutePath(routePath: string | undefined): OperationNavigationItem | undefined {
