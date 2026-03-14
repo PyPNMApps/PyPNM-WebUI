@@ -26,11 +26,26 @@ What `install.sh` does:
 ## Run locally
 
 ```bash
-npm run dev
+pypnm-webui serve
 ```
 
 Default local URL:
-- `http://localhost:5173`
+- `http://127.0.0.1:4173`
+
+CLI help:
+
+```bash
+pypnm-webui --help
+pypnm-webui serve --help
+```
+
+Common serve examples:
+
+```bash
+pypnm-webui serve
+pypnm-webui serve --host 0.0.0.0 --port 4173
+pypnm-webui serve --open
+```
 
 ## Environment
 
@@ -48,11 +63,12 @@ Instance targets for the runtime dropdown:
 - `public/config/pypnm-instances.yaml`
 - The selected instance overrides `VITE_PYPNM_API_BASE_URL`
 - `VITE_PYPNM_API_BASE_URL` remains the fallback when the YAML file is missing
+- Use the left sidebar dropdown to switch between configured PyPNM instances at runtime
 
 ## Scripts
 
 ```bash
-npm run dev
+npm run serve
 npm run build
 npm run preview
 npm run lint
@@ -98,5 +114,6 @@ For destructive history rewrite workflows only:
 - Generic measurement request form
 - Fixture-backed analysis viewer with reusable device, chart, and evidence components
 - Runtime YAML config for multiple PyPNM instances with dropdown selection
+- `pypnm-webui serve` CLI startup aligned with `pypnm` / `pypnm-cmts` command style
 - Placeholder pages for results and file list
 - Typed API client and environment config

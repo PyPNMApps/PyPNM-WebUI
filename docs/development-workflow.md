@@ -2,7 +2,7 @@
 
 ## Local Setup
 1. Run `./install.sh` for first-time setup.
-2. Start dev server with `npm run dev`.
+2. Start dev server with `pypnm-webui serve`.
 3. Run tests with `npm run test`.
 4. Run lint checks with `npm run lint`.
 5. Run production build validation with `npm run build`.

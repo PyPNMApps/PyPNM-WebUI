@@ -60,6 +60,9 @@ fi
 log "Installing npm dependencies"
 npm install
 
+log "Registering pypnm-webui CLI"
+npm link >/dev/null
+
 if [ ! -d .venv ]; then
   log "Creating Python virtual environment (.venv)"
   "${PYTHON_BIN}" -m venv .venv
@@ -72,5 +75,5 @@ log "Installing Python release-tool dependencies"
 .venv/bin/python -m pip install -r tools/release/requirements.txt >/dev/null
 
 log "Install complete"
-log "Start dev server with: npm run dev"
+log "Start dev server with: pypnm-webui serve"
 log "Run release workflow with: .venv/bin/python ./tools/release/release.py --help"

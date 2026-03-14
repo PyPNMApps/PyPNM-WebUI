@@ -20,13 +20,14 @@ VITE_REQUEST_TIMEOUT_MS=30000
 ## 3. Start the UI
 
 ```bash
-npm run dev
+pypnm-webui serve
 ```
 
 Open:
-- `http://localhost:5173`
+- `http://127.0.0.1:4173`
 
 ## 4. First checks
 
+- Use the left sidebar `PyPNM Target` dropdown to confirm the active instance from `public/config/pypnm-instances.yaml`.
 - Open `Health` page and verify backend connectivity.
 - Open `Endpoint Explorer` and confirm endpoint metadata is returned.

@@ -3,11 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "bin": {
+    "pypnm-webui": "./tools/cli/pypnm-webui.js"
+  },
   "engines": {
     "node": ">=20.19.0"
   },
   "scripts": {
     "dev": "vite",
+    "serve": "node ./tools/cli/pypnm-webui.js serve",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest run",
