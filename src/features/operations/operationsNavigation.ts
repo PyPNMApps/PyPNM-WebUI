@@ -25,6 +25,14 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     description: "Single downstream OFDM channel estimation coefficient capture visual.",
     menuPath: ["PNM", "Single Capture"],
   },
+  {
+    id: "docs-pnm-ds-histogram-getcapture",
+    label: "Histogram",
+    routePath: "/operations/histogram",
+    endpointPath: "/docs/pnm/ds/histogram/getCapture",
+    description: "Single downstream histogram capture visual.",
+    menuPath: ["PNM", "Single Capture"],
+  },
 ];
 
 export function getOperationByRoutePath(routePath: string | undefined): OperationNavigationItem | undefined {

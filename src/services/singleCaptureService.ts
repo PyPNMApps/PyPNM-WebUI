@@ -1,10 +1,10 @@
 import { requestWithBaseUrl } from "@/services/http";
-import type { SingleRxMerCaptureRequest } from "@/types/api";
+import type { SingleHistogramCaptureRequest, SingleRxMerCaptureRequest } from "@/types/api";
 
 export async function runSingleCaptureEndpoint<TResponse>(
   baseUrl: string,
   endpointPath: string,
-  payload: SingleRxMerCaptureRequest,
+  payload: SingleRxMerCaptureRequest | SingleHistogramCaptureRequest,
 ): Promise<TResponse> {
   const response = await requestWithBaseUrl<TResponse>(baseUrl, {
     method: "POST",

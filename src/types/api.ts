@@ -67,6 +67,38 @@ export interface SingleRxMerCaptureRequest {
   };
 }
 
+export interface SingleHistogramCaptureRequest {
+  cable_modem: {
+    mac_address: string;
+    ip_address: string;
+    pnm_parameters: {
+      tftp: {
+        ipv4: string;
+        ipv6: string;
+      };
+    };
+    snmp: {
+      snmpV2C: {
+        community: string;
+      };
+    };
+  };
+  analysis: {
+    type: "basic";
+    output: {
+      type: "json";
+    };
+    plot: {
+      ui: {
+        theme: "dark";
+      };
+    };
+  };
+  capture_settings: {
+    sample_duration: number;
+  };
+}
+
 export interface SingleRxMerSystemDescription {
   HW_REV?: string;
   VENDOR?: string;
@@ -190,5 +222,26 @@ export interface SingleChannelEstCoeffCaptureResponse {
     analysis?: SingleChannelEstCoeffAnalysisEntry[];
     primative?: SingleChannelEstCoeffPrimitiveEntry[];
     measurement_stats?: SingleChannelEstCoeffMeasurementStatsEntry[];
+  };
+}
+
+export interface SingleHistogramAnalysisEntry {
+  mac_address?: string;
+  hit_counts?: number[];
+  pnm_header?: {
+    capture_time?: number | string;
+  };
+  device_details?: {
+    system_description?: SingleRxMerSystemDescription;
+  };
+}
+
+export interface SingleHistogramCaptureResponse {
+  system_description?: SingleRxMerSystemDescription;
+  mac_address?: string;
+  status?: number;
+  message?: string | null;
+  data?: {
+    analysis?: SingleHistogramAnalysisEntry[];
   };
 }
