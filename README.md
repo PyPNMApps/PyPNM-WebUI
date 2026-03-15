@@ -68,7 +68,7 @@ Instance targets for the runtime dropdown:
 ## Scripts
 
 ```bash
-npm run serve
+pypnm-webui serve
 npm run build
 npm run preview
 npm run lint
@@ -77,32 +77,16 @@ npm run test
 
 ## Git Helpers
 
-```bash
-./tools/git/git-save.sh --commit-msg "message"
-./tools/git/git-save.sh --commit-msg "message" --push
-./tools/git/git-push.sh --commit-msg "message"
-```
-
-For destructive history rewrite workflows only:
-
-```bash
-./tools/git/git-reset-branch-history.sh --help
-```
+- [Git Helpers](docs/development/git-helpers.md)
 
 ## Release Helpers
 
-```bash
-.venv/bin/python ./tools/support/bump_version.py --current
-.venv/bin/python ./tools/support/bump_version.py --next patch
-.venv/bin/python ./tools/support/bump_version.py 0.2.0
-.venv/bin/python ./tools/release/check_version.py
-.venv/bin/python ./tools/release/test-runner.py
-.venv/bin/python ./tools/release/release.py --help
-```
+- [Release Helpers](docs/user/release-helpers.md)
 
 ## User docs
 
 - [Getting Started](docs/user/getting-started.md)
+- [Release Helpers](docs/user/release-helpers.md)
 - [Using The UI](docs/user/using-the-ui.md)
 - [Troubleshooting](docs/user/troubleshooting.md)
 - [Release Workflow](docs/user/release-workflow.md)
@@ -110,15 +94,5 @@ For destructive history rewrite workflows only:
 ## Development docs
 
 - [Development Field Hints](docs/development/field-hints.md)
-
-## Current baseline
-
-- App shell with route navigation
-- Health and operations pages backed by selected-instance runtime config
-- Generic measurement request form
-- Fixture-backed analysis viewer with reusable device, chart, and evidence components
-- Runtime YAML config for multiple PyPNM instances with dropdown selection
-- Postman-style operations workbench for `PNM / MultiCapture / Downstream / RxMER`
-- `pypnm-webui serve` CLI startup aligned with `pypnm` / `pypnm-cmts` command style
-- Placeholder pages for results and file list
-- Typed API client and environment config
+- [Git Helpers](docs/development/git-helpers.md)
+- [Development Workflow](docs/development/workflow.md)
