@@ -35,6 +35,8 @@
 - Keep presentational components free of API side effects when practical.
 - Put endpoint-specific logic inside feature modules, not global app shell.
 - Keep shared visual primitives generic: device context tables, epoch-to-UTC formatting, frequency-range formatting, and numeric summary helpers belong in common modules, not in endpoint-specific components.
+- Keep the project root lean. Do not accumulate support files at the repo root when they belong to a feature, toolchain, docs area, or script path.
+- Place support files near the code or workflow they serve. Do not create a generic central folder unless the files are truly shared across multiple areas.
 - For request forms that accept `channel_ids`, document the default black value as indicating all channels.
 - Render shared request-form hover hints through a reusable field-label component so the displayed help text and the editable source stay aligned.
 
@@ -76,7 +78,7 @@
   - `docs/architecture.md`
   - `docs/api-integration.md`
   - `docs/env.md`
-  - `docs/development-workflow.md`
+  - `docs/development/workflow.md`
   - `docs/roadmap.md`
 
 ## Commit Message Guidance

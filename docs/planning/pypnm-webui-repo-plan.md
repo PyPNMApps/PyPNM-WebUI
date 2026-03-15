@@ -180,7 +180,7 @@ Initial docs:
 - `docs/architecture.md`: module boundaries and data flow.
 - `docs/api-integration.md`: client patterns and envelope assumptions.
 - `docs/env.md`: env variables and configuration.
-- `docs/development-workflow.md`: lint/test/PR conventions.
+- `docs/development/workflow.md`: lint/test/PR conventions.
 - `docs/roadmap.md`: post-MVP features.
 
 ## 12. Implementation Phases

@@ -6,6 +6,8 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "allowSyntheticDefaultImports": true,
+    "noEmit": true,
+    "tsBuildInfoFile": "./node_modules/.cache/typescript/tsconfig.node.tsbuildinfo",
     "types": ["node"],
     "skipLibCheck": true
   },

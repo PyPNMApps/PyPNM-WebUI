@@ -109,7 +109,7 @@ For destructive history rewrite workflows only:
 
 ## Development docs
 
-- [Development Field Hints](docs/development-field-hints.md)
+- [Development Field Hints](docs/development/field-hints.md)
 
 ## Current baseline
 

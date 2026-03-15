@@ -23,7 +23,7 @@
 - Keep changes scoped to a single feature/module when possible.
 - Include screenshots for UI-impacting changes.
 - Document API assumptions in `docs/api-integration.md`.
-- For shared request-form hover text, use `docs/development-field-hints.md`.
+- For shared request-form hover text, use `docs/development/field-hints.md`.
 
 ## Quality Gates (target)
 - Lint: pass
