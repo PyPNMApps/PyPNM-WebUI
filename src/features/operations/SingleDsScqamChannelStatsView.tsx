@@ -153,13 +153,13 @@ export function SingleDsScqamChannelStatsView({ response }: { response: DsScqamC
               <div className="settings-definition-row"><div className="settings-definition-key">Interleave</div><div className="mono">{channel.interleave}</div></div>
               <div className="settings-definition-row"><div className="settings-definition-key">Microreflections</div><div className="mono">{channel.microreflections}</div></div>
             </div>
-            <div className="analysis-summary-grid atdma-counter-grid">
-              <div className="analysis-metric-card"><div className="analysis-metric-label">Unerroreds</div><div className="analysis-metric-value mono">{channel.unerroreds}</div></div>
-              <div className="analysis-metric-card"><div className="analysis-metric-label">Correcteds</div><div className="analysis-metric-value mono">{channel.correcteds}</div></div>
-              <div className="analysis-metric-card"><div className="analysis-metric-label">Uncorrectables</div><div className="analysis-metric-value mono">{channel.uncorrectables}</div></div>
-              <div className="analysis-metric-card"><div className="analysis-metric-label">Ext Unerroreds</div><div className="analysis-metric-value mono">{channel.extUnerroreds}</div></div>
-              <div className="analysis-metric-card"><div className="analysis-metric-label">Ext Correcteds</div><div className="analysis-metric-value mono">{channel.extCorrecteds}</div></div>
-              <div className="analysis-metric-card"><div className="analysis-metric-label">Ext Uncorrectables</div><div className="analysis-metric-value mono">{channel.extUncorrectables}</div></div>
+            <div className="scqam-codeword-grid-two">
+              <div className="scqam-codeword-card"><div className="scqam-codeword-label">Unerroreds</div><div className="scqam-codeword-value mono">{channel.unerroreds}</div></div>
+              <div className="scqam-codeword-card"><div className="scqam-codeword-label">Correcteds</div><div className="scqam-codeword-value mono">{channel.correcteds}</div></div>
+              <div className="scqam-codeword-card"><div className="scqam-codeword-label">Uncorrectables</div><div className="scqam-codeword-value mono">{channel.uncorrectables}</div></div>
+              <div className="scqam-codeword-card"><div className="scqam-codeword-label">Ext Unerroreds</div><div className="scqam-codeword-value mono">{channel.extUnerroreds}</div></div>
+              <div className="scqam-codeword-card"><div className="scqam-codeword-label">Ext Correcteds</div><div className="scqam-codeword-value mono">{channel.extCorrecteds}</div></div>
+              <div className="scqam-codeword-card"><div className="scqam-codeword-label">Ext Uncorrectables</div><div className="scqam-codeword-value mono">{channel.extUncorrectables}</div></div>
             </div>
           </Panel>
         ))}
