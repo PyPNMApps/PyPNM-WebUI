@@ -58,6 +58,10 @@ function repoRootFromModule(metaUrl) {
 }
 
 function configPathFromRepoRoot(repoRoot) {
+  return path.join(repoRoot, "public", "config", "pypnm-instances.local.yaml");
+}
+
+function templateConfigPathFromRepoRoot(repoRoot) {
   return path.join(repoRoot, "public", "config", "pypnm-instances.yaml");
 }
 
@@ -161,8 +165,12 @@ export function normalizeConfig(raw) {
   };
 }
 
-function loadConfig(configPath) {
+function loadConfig(configPath, fallbackPath) {
   if (!fs.existsSync(configPath)) {
+    if (fallbackPath && fs.existsSync(fallbackPath)) {
+      const fallbackRaw = parse(fs.readFileSync(fallbackPath, "utf8")) ?? {};
+      return normalizeConfig(fallbackRaw);
+    }
     return cloneValue(DEFAULT_CONFIG);
   }
   const raw = parse(fs.readFileSync(configPath, "utf8")) ?? {};
@@ -472,7 +480,7 @@ async function manageAgents(rl, config, configPath) {
       continue;
     }
     if (choice === "p") {
-      printConfig("public/config/pypnm-instances.yaml", config);
+      printConfig("public/config/pypnm-instances.local.yaml", config);
       continue;
     }
     process.stdout.write("Invalid selection.\n");
@@ -487,7 +495,8 @@ export async function runConfigMenu(metaUrl) {
 
   const repoRoot = repoRootFromModule(metaUrl);
   const configPath = configPathFromRepoRoot(repoRoot);
-  const config = loadConfig(configPath);
+  const templatePath = templateConfigPathFromRepoRoot(repoRoot);
+  const config = loadConfig(configPath, templatePath);
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -501,7 +510,7 @@ export async function runConfigMenu(metaUrl) {
           "=======================",
           "1) Edit runtime defaults",
           "2) Manage PyPNM agents",
-          "p) Print current pypnm-instances.yaml",
+          "p) Print current pypnm-instances.local.yaml",
           "q) Quit",
         ].join("\n") + "\n",
       );

@@ -219,6 +219,8 @@ dist/
 *.tsbuildinfo
 vite.config.js
 release-reports/
+public/config/pypnm-instances.local.yaml
+public/config/pypnm-instances.local.yaml.*.bak
 vite.config.d.ts
 
 # Local release workflow output

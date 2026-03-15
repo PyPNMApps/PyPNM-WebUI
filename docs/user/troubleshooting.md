@@ -44,8 +44,9 @@ Then re-run `./install.sh`.
 ## UI loads but API requests fail
 
 - verify PyPNM backend is running
-- verify the selected instance in the sidebar dropdown
-- verify `public/config/pypnm-instances.yaml` base URLs
+- verify the selected instance in the top-bar dropdown
+- verify `public/config/pypnm-instances.local.yaml` base URLs when using a local override
+- otherwise verify `public/config/pypnm-instances.yaml` base URLs
 - verify `.env` `VITE_PYPNM_API_BASE_URL` if YAML fallback is being used
 - check browser devtools network tab for failing request paths/statuses
 

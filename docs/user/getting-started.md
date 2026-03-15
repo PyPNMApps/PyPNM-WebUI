@@ -29,6 +29,10 @@ To edit agent entries and per-agent request defaults interactively:
 pypnm-webui config-menu
 ```
 
+That writes the active local override file:
+
+- `public/config/pypnm-instances.local.yaml`
+
 ## 3. Start the UI
 
 ```bash
@@ -40,7 +44,7 @@ Open:
 
 ## 4. First checks
 
-- Use the top-bar `PyPNM Target` dropdown to confirm the active instance from `public/config/pypnm-instances.yaml`.
+- Use the top-bar `PyPNM Target` dropdown to confirm the active instance from the runtime YAML config.
 - Open `Health` page and verify backend connectivity.
 - Open `Operations` and confirm the capture pages are using the selected
   instance defaults.

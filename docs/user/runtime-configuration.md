@@ -18,6 +18,15 @@ VITE_REQUEST_TIMEOUT_MS=30000
 Runtime instance targets for the dropdown live in:
 
 - `public/config/pypnm-instances.yaml`
+- `public/config/pypnm-instances.local.yaml`
+
+Load order:
+
+1. `public/config/pypnm-instances.local.yaml`
+2. `public/config/pypnm-instances.yaml`
+
+The `.local` file is the active machine-local override.
+The non-local file is the version-controlled template.
 
 ## Config Menu
 
@@ -35,10 +44,10 @@ What it edits:
 
 Behavior:
 
-- the menu saves `public/config/pypnm-instances.yaml` after each edit
+- the menu saves `public/config/pypnm-instances.local.yaml` after each edit
 - if the file already exists and the content changes, the menu creates a
   timestamped `.bak` backup beside it before overwrite
-- changes to `public/config/pypnm-instances.yaml` are not part of Vite hot reload
+- changes to `public/config/pypnm-instances.local.yaml` are not part of Vite hot reload
 - after editing runtime config, reload the WebUI page so the updated YAML is read
 
 Behavior:

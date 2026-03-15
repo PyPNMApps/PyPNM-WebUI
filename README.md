@@ -39,6 +39,7 @@ pypnm-webui serve
 pypnm-webui serve --host 0.0.0.0 --port 4173
 pypnm-webui serve --open
 pypnm-webui config-menu
+./install.sh --update-webui
 ```
 
 ## User docs

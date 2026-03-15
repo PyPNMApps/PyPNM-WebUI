@@ -33,7 +33,8 @@
 - Current state: fixture-backed UI proving the analysis composition model without duplicating backend logic.
 
 ## Instance Target Selection
-- `public/config/pypnm-instances.yaml` is the runtime source for selectable PyPNM instances.
+- `public/config/pypnm-instances.yaml` is the version-controlled runtime template.
+- `public/config/pypnm-instances.local.yaml` is the machine-local runtime override when present.
 - Each instance can also carry `request_defaults` used to prefill capture and
   device request forms for that specific PyPNM agent.
 - `src/app/InstanceConfigProvider.tsx` loads the YAML, normalizes it, and persists the selected instance in local storage.

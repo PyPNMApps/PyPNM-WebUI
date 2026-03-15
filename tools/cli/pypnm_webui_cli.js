@@ -97,7 +97,7 @@ function printConfigMenuHelp() {
       "  pypnm-webui config-menu",
       "",
       "Behavior:",
-      "  - edits public/config/pypnm-instances.yaml",
+      "  - edits public/config/pypnm-instances.local.yaml",
       "  - manages PyPNM agent entries",
       "  - edits per-agent request defaults like MAC, IP, TFTP, and SNMP RW community",
       "  - saves after each edit",

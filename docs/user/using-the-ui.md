@@ -11,12 +11,13 @@ The top navigation includes:
 The top bar also includes the `PyPNM Target` dropdown sourced from:
 
 - `public/config/pypnm-instances.yaml`
+- `public/config/pypnm-instances.local.yaml`
 
 Use it to switch the active backend instance without rebuilding the UI.
 
 Important:
 
-- edits to `public/config/pypnm-instances.yaml` are not part of Vite hot reload
+- edits to the runtime YAML config files are not part of Vite hot reload
 - after changing that file, reload the browser page so the updated runtime config
   is loaded
 
@@ -59,4 +60,4 @@ pypnm-webui config-menu
 ```
 
 then reload the page after saving changes. The UI reads
-`public/config/pypnm-instances.yaml` at startup and does not hot-reload that file.
+the runtime YAML config at startup and does not hot-reload that file.
