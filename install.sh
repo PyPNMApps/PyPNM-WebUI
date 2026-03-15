@@ -19,6 +19,177 @@ fail() {
   exit 1
 }
 
+detect_package_manager() {
+  if command -v apt-get >/dev/null 2>&1; then
+    printf 'apt-get'
+    return
+  fi
+  if command -v dnf >/dev/null 2>&1; then
+    printf 'dnf'
+    return
+  fi
+  if command -v yum >/dev/null 2>&1; then
+    printf 'yum'
+    return
+  fi
+  if command -v zypper >/dev/null 2>&1; then
+    printf 'zypper'
+    return
+  fi
+  if command -v apk >/dev/null 2>&1; then
+    printf 'apk'
+    return
+  fi
+  if command -v brew >/dev/null 2>&1; then
+    printf 'brew'
+    return
+  fi
+  printf 'none'
+}
+
+PACKAGE_MANAGER="$(detect_package_manager)"
+
+update_package_index() {
+  case "$PACKAGE_MANAGER" in
+    apt-get)
+      sudo apt-get update
+      ;;
+    dnf)
+      sudo dnf makecache
+      ;;
+    yum)
+      sudo yum makecache
+      ;;
+    zypper)
+      sudo zypper refresh
+      ;;
+    apk)
+      sudo apk update
+      ;;
+    brew)
+      brew update
+      ;;
+    none)
+      ;;
+  esac
+}
+
+install_packages() {
+  if [ "$#" -eq 0 ]; then
+    return
+  fi
+
+  case "$PACKAGE_MANAGER" in
+    apt-get)
+      sudo apt-get install -y "$@"
+      ;;
+    dnf)
+      sudo dnf install -y "$@"
+      ;;
+    yum)
+      sudo yum install -y "$@"
+      ;;
+    zypper)
+      sudo zypper install -y "$@"
+      ;;
+    apk)
+      sudo apk add --no-cache "$@"
+      ;;
+    brew)
+      brew install "$@"
+      ;;
+    none)
+      fail "Missing required packages and no supported package manager was found."
+      ;;
+  esac
+}
+
+ensure_base_prerequisites() {
+  local need_update=0
+  local packages=()
+
+  if ! command -v git >/dev/null 2>&1; then
+    case "$PACKAGE_MANAGER" in
+      apt-get|dnf|yum|zypper|apk|brew)
+        packages+=("git")
+        need_update=1
+        ;;
+      none)
+        fail "git is required but not found. Install git and re-run."
+        ;;
+    esac
+  fi
+
+  if ! command -v curl >/dev/null 2>&1; then
+    case "$PACKAGE_MANAGER" in
+      apt-get|dnf|yum|zypper|apk|brew)
+        packages+=("curl")
+        need_update=1
+        ;;
+      none)
+        fail "curl is required but not found. Install curl and re-run."
+        ;;
+    esac
+  fi
+
+  if ! command -v "${PYTHON_BIN}" >/dev/null 2>&1; then
+    case "$PACKAGE_MANAGER" in
+      apt-get|apk)
+        packages+=("python3")
+        need_update=1
+        ;;
+      dnf|yum|zypper|brew)
+        packages+=("python3")
+        need_update=1
+        ;;
+      none)
+        fail "${PYTHON_BIN} is required but not found. Install Python 3 and re-run."
+        ;;
+    esac
+  fi
+
+  if [ "$need_update" -eq 1 ]; then
+    log "Installing base prerequisites via ${PACKAGE_MANAGER}"
+    update_package_index
+    install_packages "${packages[@]}"
+  fi
+}
+
+ensure_python_venv_support() {
+  local packages=()
+
+  if "${PYTHON_BIN}" -m venv --help >/dev/null 2>&1; then
+    return
+  fi
+
+  case "$PACKAGE_MANAGER" in
+    apt-get)
+      packages=("python3-venv")
+      ;;
+    dnf|yum)
+      packages=("python3")
+      ;;
+    zypper)
+      packages=("python3-virtualenv")
+      ;;
+    apk)
+      packages=("python3")
+      ;;
+    brew)
+      return
+      ;;
+    none)
+      fail "Python venv support is required but could not be auto-installed."
+      ;;
+  esac
+
+  if [ "${#packages[@]}" -gt 0 ]; then
+    log "Installing Python venv support via ${PACKAGE_MANAGER}"
+    update_package_index
+    install_packages "${packages[@]}"
+  fi
+}
+
 print_help() {
   cat <<'EOF'
 Usage:
@@ -110,6 +281,8 @@ ensure_python_venv() {
   log "Installing Python release-tool dependencies"
   .venv/bin/python -m pip install --upgrade pip >/dev/null
   .venv/bin/python -m pip install -r tools/release/requirements.txt >/dev/null
+  log "Installing Python documentation dependencies"
+  .venv/bin/python -m pip install -r requirements-docs.txt >/dev/null
 }
 
 merge_runtime_config_override() {
@@ -170,9 +343,11 @@ run_update_checkout() {
 
 main() {
   parse_args "$@"
-
+  ensure_base_prerequisites
+  ensure_command git "git is required but not found. Install git and re-run."
   ensure_command curl "curl is required but not found. Install curl and re-run."
   ensure_command "${PYTHON_BIN}" "${PYTHON_BIN} is required but not found. Install Python 3 and re-run."
+  ensure_python_venv_support
 
   cd "$ROOT_DIR"
 

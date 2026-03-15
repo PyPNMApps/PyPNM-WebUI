@@ -4,10 +4,27 @@ Frontend-only web client for PyPNM REST APIs.
 
 ## Requirements
 
-- Ubuntu 22.04+ (or compatible Linux)
-- `curl`
-- `python3` (for release tooling)
-- internet access for first-time dependency install
+- Linux, validated on:
+  - Ubuntu 22.04 LTS
+  - Ubuntu 24.04 LTS
+
+Other modern Linux distributions may work but are not yet part of the test matrix.
+
+## Minimum shell dependencies
+
+From a fresh system, install Git:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y git
+```
+
+## Get PyPNM-WebUI
+
+```bash
+git clone https://github.com/your-repo/PyPNM-WebUI.git
+cd PyPNM-WebUI
+```
 
 ## Install
 
@@ -40,6 +57,8 @@ pypnm-webui serve --host 0.0.0.0 --port 4173
 pypnm-webui serve --open
 pypnm-webui config-menu
 ./install.sh --update-webui
+npm run docs:build
+npm run docs:serve
 ```
 
 ## User docs

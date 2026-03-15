@@ -20,8 +20,42 @@ Update to a specific tag:
 ./install.sh --update-webui v0.1.6.0
 ```
 
+## Platform support
+
+Validated on:
+
+- Ubuntu 22.04 LTS
+- Ubuntu 24.04 LTS
+
+Other modern Linux distributions may work but are not yet part of the formal
+test matrix.
+
+The installer currently knows how to bootstrap prerequisites when one of these
+package managers is available:
+
+- `apt-get`
+- `dnf`
+- `yum`
+- `zypper`
+- `apk`
+- `brew`
+
+## Minimum shell dependency
+
+From a fresh system, install Git first:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y git
+```
+
 ## What `install.sh` does
 
+- installs missing shell prerequisites when possible:
+  - `git`
+  - `curl`
+  - Python 3
+  - Python venv support
 - installs `nvm` if missing
 - installs and uses Node 22
 - sets Node 22 as the default

@@ -6,6 +6,8 @@
 3. Run tests with `npm run test`.
 4. Run lint checks with `npm run lint`.
 5. Run production build validation with `npm run build`.
+6. Build docs with `npm run docs:build`.
+7. Serve docs locally with `npm run docs:serve`.
 
 ## Git Workflow Helpers
 - `./tools/git/git-save.sh --commit-msg "..."` stages, runs checks, and commits.
