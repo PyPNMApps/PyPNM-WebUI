@@ -691,6 +691,23 @@ export interface If31SystemDiplexerResponse {
   };
 }
 
+export interface If31DocsisBaseCapability {
+  docsis_version?: string;
+  clabs_docsis_version?: number;
+}
+
+export interface If31DocsisBaseCapabilityResponse {
+  mac_address?: string;
+  status?: number | string;
+  message?: string | null;
+  device?: {
+    mac_address?: string;
+    system_description?: SingleRxMerSystemDescription;
+  };
+  system_description?: SingleRxMerSystemDescription;
+  results?: If31DocsisBaseCapability;
+}
+
 export interface SingleRxMerAnalysisEntry {
   mac_address?: string;
   channel_id?: number;

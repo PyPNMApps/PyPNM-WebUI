@@ -11,6 +11,15 @@ export interface OperationNavigationItem {
 // Edit this file to add top-row operation navigation entries.
 export const operationNavigationItems: OperationNavigationItem[] = [
   {
+    id: "docs-if31-docsis-basecapability",
+    label: "Base Capability",
+    routePath: "/operations/if31-docsis-base-capability",
+    endpointPath: "/docs/if31/docsis/baseCapability",
+    description: "DOCSIS 3.1 base capability visual.",
+    menuPath: ["DOCSIS 3.1", "DOCSIS"],
+    requestTimeoutMs: 90000,
+  },
+  {
     id: "docs-if31-ds-ofdm-chan-stats",
     label: "OFDM Channel Stats",
     routePath: "/operations/ds-ofdm-channel-stats",

@@ -15,6 +15,7 @@ import { SingleCaptureRequestForm } from "@/features/operations/SingleCaptureReq
 import { SingleAtdmaChannelStatsView } from "@/features/operations/SingleAtdmaChannelStatsView";
 import { SingleFddDiplexerBandEdgeCapabilityView } from "@/features/operations/SingleFddDiplexerBandEdgeCapabilityView";
 import { SingleFddSystemDiplexerConfigurationView } from "@/features/operations/SingleFddSystemDiplexerConfigurationView";
+import { SingleIf31DocsisBaseCapabilityView } from "@/features/operations/SingleIf31DocsisBaseCapabilityView";
 import { SingleIf31DsOfdmChannelStatsView } from "@/features/operations/SingleIf31DsOfdmChannelStatsView";
 import { SingleIf31UsOfdmaChannelStatsView } from "@/features/operations/SingleIf31UsOfdmaChannelStatsView";
 import { SingleIf31DsOfdmProfileStatsView } from "@/features/operations/SingleIf31DsOfdmProfileStatsView";
@@ -42,6 +43,7 @@ import { singleDeviceEventLogFixture } from "@/features/operations/singleDeviceE
 import { singleFecSummaryFixture } from "@/features/operations/singleFecSummaryFixture";
 import { singleFddDiplexerBandEdgeCapabilityFixture } from "@/features/operations/singleFddDiplexerBandEdgeCapabilityFixture";
 import { singleFddSystemDiplexerConfigurationFixture } from "@/features/operations/singleFddSystemDiplexerConfigurationFixture";
+import { singleIf31DocsisBaseCapabilityFixture } from "@/features/operations/singleIf31DocsisBaseCapabilityFixture";
 import { singleIf31DsOfdmChannelStatsFixture } from "@/features/operations/singleIf31DsOfdmChannelStatsFixture";
 import { singleHistogramFixture } from "@/features/operations/singleHistogramFixture";
 import { singleIf31UsOfdmaChannelStatsFixture } from "@/features/operations/singleIf31UsOfdmaChannelStatsFixture";
@@ -56,6 +58,7 @@ import type {
   AtdmaChannelStatsResponse,
   FddDiplexerBandEdgeCapabilityResponse,
   FddSystemDiplexerConfigurationResponse,
+  If31DocsisBaseCapabilityResponse,
   If31DsOfdmChannelStatsResponse,
   If31DsOfdmProfileStatsResponse,
   If31UsOfdmaChannelStatsResponse,
@@ -104,6 +107,7 @@ export function EndpointExplorerPage() {
   const [atdmaChannelStatsResponse, setAtdmaChannelStatsResponse] = useState<AtdmaChannelStatsResponse>(singleAtdmaChannelStatsFixture);
   const [fddDiplexerBandEdgeCapabilityResponse, setFddDiplexerBandEdgeCapabilityResponse] = useState<FddDiplexerBandEdgeCapabilityResponse>(singleFddDiplexerBandEdgeCapabilityFixture);
   const [fddSystemDiplexerConfigurationResponse, setFddSystemDiplexerConfigurationResponse] = useState<FddSystemDiplexerConfigurationResponse>(singleFddSystemDiplexerConfigurationFixture);
+  const [if31DocsisBaseCapabilityResponse, setIf31DocsisBaseCapabilityResponse] = useState<If31DocsisBaseCapabilityResponse>(singleIf31DocsisBaseCapabilityFixture);
   const [if31DsOfdmChannelStatsResponse, setIf31DsOfdmChannelStatsResponse] = useState<If31DsOfdmChannelStatsResponse>(singleIf31DsOfdmChannelStatsFixture);
   const [if31DsOfdmProfileStatsResponse, setIf31DsOfdmProfileStatsResponse] = useState<If31DsOfdmProfileStatsResponse>(singleIf31DsOfdmProfileStatsFixture);
   const [if31UsOfdmaChannelStatsResponse, setIf31UsOfdmaChannelStatsResponse] = useState<If31UsOfdmaChannelStatsResponse>(singleIf31UsOfdmaChannelStatsFixture);
@@ -141,6 +145,7 @@ export function EndpointExplorerPage() {
         | AtdmaChannelStatsResponse
         | FddDiplexerBandEdgeCapabilityResponse
         | FddSystemDiplexerConfigurationResponse
+        | If31DocsisBaseCapabilityResponse
         | If31DsOfdmChannelStatsResponse
         | If31DsOfdmProfileStatsResponse
         | If31UsOfdmaChannelStatsResponse
@@ -164,6 +169,11 @@ export function EndpointExplorerPage() {
         selectedOperation?.requestTimeoutMs,
       ),
     onSuccess: (data) => {
+      if (selectedOperation?.id === "docs-if31-docsis-basecapability") {
+        setIf31DocsisBaseCapabilityResponse(data as If31DocsisBaseCapabilityResponse);
+        return;
+      }
+
       if (selectedOperation?.id === "docs-if31-ds-ofdm-chan-stats") {
         setIf31DsOfdmChannelStatsResponse(data as If31DsOfdmChannelStatsResponse);
         return;
@@ -266,6 +276,8 @@ export function EndpointExplorerPage() {
 
   const selectedResponse = selectedOperation.id === "docs-if30-ds-scqam-chan-codeworderrorrate"
     ? dsScqamCodewordErrorRateResponse
+    : selectedOperation.id === "docs-if31-docsis-basecapability"
+      ? if31DocsisBaseCapabilityResponse
     : selectedOperation.id === "docs-if31-ds-ofdm-chan-stats"
       ? if31DsOfdmChannelStatsResponse
     : selectedOperation.id === "docs-if31-ds-ofdm-profile-stats"
@@ -316,7 +328,7 @@ export function EndpointExplorerPage() {
               mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
             }}
           />
-        ) : selectedOperation.id === "docs-dev-eventlog" || selectedOperation.id === "system-uptime" || selectedOperation.id === "docs-pnm-interface-stats" || selectedOperation.id === "docs-if30-us-atdma-chan-stats" || selectedOperation.id === "docs-if30-us-atdma-chan-preequalization" || selectedOperation.id === "docs-if30-ds-scqam-chan-stats" || selectedOperation.id === "docs-fdd-diplexer-bandedgecapability" || selectedOperation.id === "docs-fdd-system-diplexer-configuration" || selectedOperation.id === "docs-if31-us-ofdma-channel-stats" || selectedOperation.id === "docs-if31-system-diplexer" || selectedOperation.id === "docs-if31-ds-ofdm-profile-stats" || selectedOperation.id === "docs-if31-ds-ofdm-chan-stats" ? (
+        ) : selectedOperation.id === "docs-dev-eventlog" || selectedOperation.id === "system-uptime" || selectedOperation.id === "docs-pnm-interface-stats" || selectedOperation.id === "docs-if30-us-atdma-chan-stats" || selectedOperation.id === "docs-if30-us-atdma-chan-preequalization" || selectedOperation.id === "docs-if30-ds-scqam-chan-stats" || selectedOperation.id === "docs-fdd-diplexer-bandedgecapability" || selectedOperation.id === "docs-fdd-system-diplexer-configuration" || selectedOperation.id === "docs-if31-us-ofdma-channel-stats" || selectedOperation.id === "docs-if31-system-diplexer" || selectedOperation.id === "docs-if31-ds-ofdm-profile-stats" || selectedOperation.id === "docs-if31-ds-ofdm-chan-stats" || selectedOperation.id === "docs-if31-docsis-basecapability" ? (
           <DeviceConnectRequestForm
             isPending={mutation.isPending}
             canRun={Boolean(selectedInstance)}
@@ -388,7 +400,9 @@ export function EndpointExplorerPage() {
       </div>
 
       <Panel>
-        {selectedOperation.id === "docs-if31-ds-ofdm-chan-stats" ? (
+        {selectedOperation.id === "docs-if31-docsis-basecapability" ? (
+          <SingleIf31DocsisBaseCapabilityView response={if31DocsisBaseCapabilityResponse} />
+        ) : selectedOperation.id === "docs-if31-ds-ofdm-chan-stats" ? (
           <SingleIf31DsOfdmChannelStatsView response={if31DsOfdmChannelStatsResponse} />
         ) : selectedOperation.id === "docs-if31-ds-ofdm-profile-stats" ? (
           <SingleIf31DsOfdmProfileStatsView response={if31DsOfdmProfileStatsResponse} />
