@@ -11,6 +11,15 @@ export interface OperationNavigationItem {
 // Edit this file to add top-row operation navigation entries.
 export const operationNavigationItems: OperationNavigationItem[] = [
   {
+    id: "docs-if30-ds-scqam-chan-codeworderrorrate",
+    label: "SCQAM Codeword Error Rate",
+    routePath: "/operations/ds-scqam-codeword-error-rate",
+    endpointPath: "/docs/if30/ds/scqam/chan/codewordErrorRate",
+    description: "DOCSIS 3.0 downstream SC-QAM codeword error rate visual.",
+    menuPath: ["DOCSIS 3.0", "Downstream"],
+    requestTimeoutMs: 90000,
+  },
+  {
     id: "docs-if30-ds-scqam-chan-stats",
     label: "SCQAM Channel Stats",
     routePath: "/operations/ds-scqam-channel-stats",

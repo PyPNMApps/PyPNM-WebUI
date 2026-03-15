@@ -10,8 +10,10 @@ import { ConstellationDisplayCaptureRequestForm } from "@/features/operations/Co
 import { DeviceConnectRequestForm } from "@/features/operations/DeviceConnectRequestForm";
 import { HistogramCaptureRequestForm } from "@/features/operations/HistogramCaptureRequestForm";
 import { FecSummaryCaptureRequestForm } from "@/features/operations/FecSummaryCaptureRequestForm";
+import { ScqamCodewordErrorRateRequestForm } from "@/features/operations/ScqamCodewordErrorRateRequestForm";
 import { SingleCaptureRequestForm } from "@/features/operations/SingleCaptureRequestForm";
 import { SingleAtdmaChannelStatsView } from "@/features/operations/SingleAtdmaChannelStatsView";
+import { SingleDsScqamCodewordErrorRateView } from "@/features/operations/SingleDsScqamCodewordErrorRateView";
 import { SingleDsScqamChannelStatsView } from "@/features/operations/SingleDsScqamChannelStatsView";
 import { SingleAtdmaPreEqualizationView } from "@/features/operations/SingleAtdmaPreEqualizationView";
 import { SingleChannelEstCoeffCaptureView } from "@/features/operations/SingleChannelEstCoeffCaptureView";
@@ -25,6 +27,7 @@ import { SingleModulationProfileCaptureView } from "@/features/operations/Single
 import { SingleRxMerCaptureView } from "@/features/operations/SingleRxMerCaptureView";
 import { SingleSystemUpTimeView } from "@/features/operations/SingleSystemUpTimeView";
 import { singleAtdmaChannelStatsFixture } from "@/features/operations/singleAtdmaChannelStatsFixture";
+import { singleDsScqamCodewordErrorRateFixture } from "@/features/operations/singleDsScqamCodewordErrorRateFixture";
 import { singleDsScqamChannelStatsFixture } from "@/features/operations/singleDsScqamChannelStatsFixture";
 import { singleAtdmaPreEqualizationFixture } from "@/features/operations/singleAtdmaPreEqualizationFixture";
 import { singleChannelEstCoeffFixture } from "@/features/operations/singleChannelEstCoeffFixture";
@@ -39,6 +42,8 @@ import { singleSystemUpTimeFixture } from "@/features/operations/singleSystemUpT
 import { runSingleCaptureEndpoint } from "@/services/singleCaptureService";
 import type {
   AtdmaChannelStatsResponse,
+  DsScqamCodewordErrorRateRequest,
+  DsScqamCodewordErrorRateResponse,
   DsScqamChannelStatsResponse,
   AtdmaPreEqualizationResponse,
   DeviceConnectRequest,
@@ -79,6 +84,7 @@ export function EndpointExplorerPage() {
   const location = useLocation();
   const { selectedInstance } = useInstanceConfig();
   const [atdmaChannelStatsResponse, setAtdmaChannelStatsResponse] = useState<AtdmaChannelStatsResponse>(singleAtdmaChannelStatsFixture);
+  const [dsScqamCodewordErrorRateResponse, setDsScqamCodewordErrorRateResponse] = useState<DsScqamCodewordErrorRateResponse>(singleDsScqamCodewordErrorRateFixture);
   const [dsScqamChannelStatsResponse, setDsScqamChannelStatsResponse] = useState<DsScqamChannelStatsResponse>(singleDsScqamChannelStatsFixture);
   const [atdmaPreEqualizationResponse, setAtdmaPreEqualizationResponse] = useState<AtdmaPreEqualizationResponse>(singleAtdmaPreEqualizationFixture);
   const [rxMerResponse, setRxMerResponse] = useState<SingleRxMerCaptureResponse>(singleRxMerFixture);
@@ -99,6 +105,7 @@ export function EndpointExplorerPage() {
       endpointPath: string;
       payload:
         | DeviceConnectRequest
+        | DsScqamCodewordErrorRateRequest
         | DeviceEventLogRequest
         | SingleRxMerCaptureRequest
         | SingleHistogramCaptureRequest
@@ -108,6 +115,7 @@ export function EndpointExplorerPage() {
     }) =>
       runSingleCaptureEndpoint<
         | AtdmaChannelStatsResponse
+        | DsScqamCodewordErrorRateResponse
         | DsScqamChannelStatsResponse
         | AtdmaPreEqualizationResponse
         | DeviceEventLogResponse
@@ -126,6 +134,11 @@ export function EndpointExplorerPage() {
         selectedOperation?.requestTimeoutMs,
       ),
     onSuccess: (data) => {
+      if (selectedOperation?.id === "docs-if30-ds-scqam-chan-codeworderrorrate") {
+        setDsScqamCodewordErrorRateResponse(data as DsScqamCodewordErrorRateResponse);
+        return;
+      }
+
       if (selectedOperation?.id === "docs-if30-ds-scqam-chan-stats") {
         setDsScqamChannelStatsResponse(data as DsScqamChannelStatsResponse);
         return;
@@ -191,9 +204,11 @@ export function EndpointExplorerPage() {
     return <Navigate to={operationNavigationItems[0]?.routePath ?? "/"} replace />;
   }
 
-  const selectedResponse = selectedOperation.id === "docs-if30-ds-scqam-chan-stats"
-    ? dsScqamChannelStatsResponse
-    : selectedOperation.id === "docs-if30-us-atdma-chan-preequalization"
+  const selectedResponse = selectedOperation.id === "docs-if30-ds-scqam-chan-codeworderrorrate"
+    ? dsScqamCodewordErrorRateResponse
+    : selectedOperation.id === "docs-if30-ds-scqam-chan-stats"
+      ? dsScqamChannelStatsResponse
+      : selectedOperation.id === "docs-if30-us-atdma-chan-preequalization"
       ? atdmaPreEqualizationResponse
       : selectedOperation.id === "docs-if30-us-atdma-chan-stats"
         ? atdmaChannelStatsResponse
@@ -219,7 +234,17 @@ export function EndpointExplorerPage() {
     <>
       <PageHeader title={selectedOperation.label} subtitle="" />
       <Panel title="Capture Inputs">
-        {selectedOperation.id === "docs-dev-eventlog" || selectedOperation.id === "system-uptime" || selectedOperation.id === "docs-pnm-interface-stats" || selectedOperation.id === "docs-if30-us-atdma-chan-stats" || selectedOperation.id === "docs-if30-us-atdma-chan-preequalization" || selectedOperation.id === "docs-if30-ds-scqam-chan-stats" ? (
+        {selectedOperation.id === "docs-if30-ds-scqam-chan-codeworderrorrate" ? (
+          <ScqamCodewordErrorRateRequestForm
+            isPending={mutation.isPending}
+            canRun={Boolean(selectedInstance)}
+            submitLabel={`Run ${selectedOperation.label}`}
+            errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            onSubmit={(payload) => {
+              mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
+            }}
+          />
+        ) : selectedOperation.id === "docs-dev-eventlog" || selectedOperation.id === "system-uptime" || selectedOperation.id === "docs-pnm-interface-stats" || selectedOperation.id === "docs-if30-us-atdma-chan-stats" || selectedOperation.id === "docs-if30-us-atdma-chan-preequalization" || selectedOperation.id === "docs-if30-ds-scqam-chan-stats" ? (
           <DeviceConnectRequestForm
             isPending={mutation.isPending}
             canRun={Boolean(selectedInstance)}
@@ -291,7 +316,9 @@ export function EndpointExplorerPage() {
       </div>
 
       <Panel>
-        {selectedOperation.id === "docs-if30-ds-scqam-chan-stats" ? (
+        {selectedOperation.id === "docs-if30-ds-scqam-chan-codeworderrorrate" ? (
+          <SingleDsScqamCodewordErrorRateView response={dsScqamCodewordErrorRateResponse} />
+        ) : selectedOperation.id === "docs-if30-ds-scqam-chan-stats" ? (
           <SingleDsScqamChannelStatsView response={dsScqamChannelStatsResponse} />
         ) : selectedOperation.id === "docs-if30-us-atdma-chan-preequalization" ? (
           <SingleAtdmaPreEqualizationView response={atdmaPreEqualizationResponse} />

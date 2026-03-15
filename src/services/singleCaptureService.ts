@@ -1,6 +1,7 @@
 import { requestWithBaseUrl } from "@/services/http";
 import type {
   DeviceConnectRequest,
+  DsScqamCodewordErrorRateRequest,
   DeviceEventLogRequest,
   SingleConstellationDisplayCaptureRequest,
   SingleFecSummaryCaptureRequest,
@@ -14,6 +15,7 @@ export async function runSingleCaptureEndpoint<TResponse>(
   endpointPath: string,
   payload:
     | DeviceConnectRequest
+    | DsScqamCodewordErrorRateRequest
     | DeviceEventLogRequest
     | SingleRxMerCaptureRequest
     | SingleHistogramCaptureRequest

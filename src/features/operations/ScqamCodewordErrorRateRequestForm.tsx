@@ -1,0 +1,98 @@
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+
+import { FieldLabel } from "@/components/common/FieldLabel";
+import { requestFieldHints } from "@/features/operations/requestFieldHints";
+import { useDeviceConnectFormDefaults } from "@/features/operations/useRequestFormDefaults";
+import type { DsScqamCodewordErrorRateRequest } from "@/types/api";
+
+interface ScqamCodewordErrorRateFormValues {
+  macAddress: string;
+  ipAddress: string;
+  community: string;
+  sampleTimeElapsed: number;
+}
+
+interface ScqamCodewordErrorRateRequestFormProps {
+  isPending: boolean;
+  canRun: boolean;
+  submitLabel: string;
+  onSubmit: (payload: DsScqamCodewordErrorRateRequest) => void;
+  errorMessage?: string;
+}
+
+export function ScqamCodewordErrorRateRequestForm({
+  isPending,
+  canRun,
+  submitLabel,
+  onSubmit,
+  errorMessage,
+}: ScqamCodewordErrorRateRequestFormProps) {
+  const requestDefaults = useDeviceConnectFormDefaults();
+  const { register, handleSubmit, reset } = useForm<ScqamCodewordErrorRateFormValues>({
+    defaultValues: {
+      ...requestDefaults,
+      sampleTimeElapsed: 5,
+    },
+  });
+
+  useEffect(() => {
+    reset({
+      ...requestDefaults,
+      sampleTimeElapsed: 5,
+    });
+  }, [requestDefaults, reset]);
+
+  return (
+    <form
+      className="grid"
+      onSubmit={handleSubmit((values) => {
+        onSubmit({
+          cable_modem: {
+            mac_address: values.macAddress,
+            ip_address: values.ipAddress,
+            snmp: {
+              snmpV2C: {
+                community: values.community,
+              },
+            },
+          },
+          capture_parameters: {
+            sample_time_elapsed: Number(values.sampleTimeElapsed),
+          },
+        });
+      })}
+    >
+      <div className="grid two">
+        <div className="field">
+          <FieldLabel htmlFor="scqamCodewordMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
+          <input id="scqamCodewordMacAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
+        </div>
+        <div className="field">
+          <FieldLabel htmlFor="scqamCodewordIpAddress" hint={requestFieldHints.ip_address}>IP Address</FieldLabel>
+          <input id="scqamCodewordIpAddress" {...register("ipAddress")} placeholder="192.168.100.10" />
+        </div>
+        <div className="field">
+          <FieldLabel htmlFor="scqamCodewordCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
+          <input id="scqamCodewordCommunity" {...register("community")} placeholder="private" />
+        </div>
+        <div className="field">
+          <FieldLabel htmlFor="scqamCodewordSampleTimeElapsed" hint={requestFieldHints.sample_time_elapsed}>Sample Time Elapsed</FieldLabel>
+          <input
+            id="scqamCodewordSampleTimeElapsed"
+            type="number"
+            min={1}
+            step={1}
+            {...register("sampleTimeElapsed", { valueAsNumber: true })}
+          />
+        </div>
+      </div>
+      <div className="actions">
+        <button type="submit" className="primary" disabled={isPending || !canRun}>
+          {isPending ? "Running..." : submitLabel}
+        </button>
+      </div>
+      {errorMessage ? <p>{errorMessage}</p> : null}
+    </form>
+  );
+}

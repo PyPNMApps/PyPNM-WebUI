@@ -229,6 +229,12 @@ export interface DeviceConnectRequest {
 
 export type DeviceEventLogRequest = DeviceConnectRequest;
 
+export interface DsScqamCodewordErrorRateRequest extends DeviceConnectRequest {
+  capture_parameters: {
+    sample_time_elapsed: number;
+  };
+}
+
 export interface SingleRxMerSystemDescription {
   HW_REV?: string;
   VENDOR?: string;
@@ -478,6 +484,33 @@ export interface DsScqamChannelStatsResponse {
   };
   system_description?: SingleRxMerSystemDescription;
   results?: DsScqamChannelEntry[];
+}
+
+export interface DsScqamCodewordTotals {
+  total_codewords?: number;
+  total_errors?: number;
+  time_elapsed?: number;
+  error_rate?: number;
+  codewords_per_second?: number;
+  errors_per_second?: number;
+}
+
+export interface DsScqamCodewordErrorRateEntry {
+  index?: number;
+  channel_id?: number;
+  codeword_totals?: DsScqamCodewordTotals;
+}
+
+export interface DsScqamCodewordErrorRateResponse {
+  mac_address?: string;
+  status?: number | string;
+  message?: string | null;
+  device?: {
+    mac_address?: string;
+    system_description?: SingleRxMerSystemDescription;
+  };
+  system_description?: SingleRxMerSystemDescription;
+  results?: DsScqamCodewordErrorRateEntry[];
 }
 
 export interface SingleRxMerAnalysisEntry {

@@ -10,6 +10,7 @@ export const requestFieldHints = {
   display_cross_hair: "Show or hide the constellation cross-hair overlay.",
   modulation_order_offset: "Offset the reported modulation order when the backend supports it.",
   number_sample_symbol: "Number of constellation samples to request from the backend.",
+  sample_time_elapsed: "Sampling interval in seconds used to calculate codeword error rate.",
   upload_pnm_file: "Upload accepts raw PNM capture files and registers a new transaction in PyPNM.",
   file_mac_search: "Search stored PyPNM files by cable modem MAC address.",
   direct_downloads: "Use the selected MAC archive in browse, or download directly by stored filename and operation ID here.",
