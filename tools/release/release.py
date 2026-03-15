@@ -111,8 +111,7 @@ def _get_repo_version() -> str:
 def _bump_version(*, explicit_version: str | None, next_mode: str | None) -> tuple[str, bool]:
     if explicit_version is not None and next_mode is not None:
         raise RuntimeError("--version and --next cannot be used together.")
-    if explicit_version is None and next_mode is None:
-        return _get_repo_version(), False
+    effective_next_mode = next_mode if next_mode is not None else "maintenance"
 
     if not BUMP_SCRIPT.is_file():
         raise RuntimeError(f"Missing bump script: {BUMP_SCRIPT}")
@@ -120,7 +119,7 @@ def _bump_version(*, explicit_version: str | None, next_mode: str | None) -> tup
     if explicit_version is not None:
         _run([sys.executable, str(BUMP_SCRIPT), explicit_version], label="bump-version", capture_output=False)
     else:
-        _run([sys.executable, str(BUMP_SCRIPT), "--next", str(next_mode)], label="bump-version", capture_output=False)
+        _run([sys.executable, str(BUMP_SCRIPT), "--next", effective_next_mode], label="bump-version", capture_output=False)
     return _get_repo_version(), True
 
 

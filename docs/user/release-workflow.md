@@ -60,6 +60,8 @@ Default release flow (checks + commit + tag + push):
 .venv/bin/python ./tools/release/release.py --commit-msg "Release"
 ```
 
+When `--next` is omitted, `release.py` performs an implicit `maintenance` bump before validation, commit, tag, and push.
+
 Release with automatic version bump:
 
 ```bash

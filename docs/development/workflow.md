@@ -18,7 +18,7 @@
 - `.venv/bin/python ./tools/support/bump_version.py --next build` increments the build component only.
 - `.venv/bin/python ./tools/release/check_version.py` validates package version consistency.
 - `.venv/bin/python ./tools/release/test-runner.py` runs lint/test/build gates.
-- `.venv/bin/python ./tools/release/release.py` runs release checks, commit/tag, and optional push.
+- `.venv/bin/python ./tools/release/release.py` runs release checks, performs a default maintenance bump, then commits/tags/pushes unless overridden.
 
 ## PR Guidance
 - Keep changes scoped to a single feature/module when possible.

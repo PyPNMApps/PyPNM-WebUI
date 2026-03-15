@@ -69,4 +69,7 @@ Show release runner help:
 .venv/bin/python ./tools/release/release.py --help
 ```
 
+Default behavior:
+- running `release.py` with no `--next` performs a maintenance bump automatically
+
 For the full release sequence and branch rules, use [Release Workflow](release-workflow.md).
