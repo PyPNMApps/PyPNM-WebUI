@@ -2,30 +2,30 @@ import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
-import type { DeviceEventLogRequest } from "@/types/api";
+import type { DeviceConnectRequest } from "@/types/api";
 
-interface EventLogFormValues {
+interface DeviceConnectFormValues {
   macAddress: string;
   ipAddress: string;
   community: string;
 }
 
-interface EventLogRequestFormProps {
+interface DeviceConnectRequestFormProps {
   isPending: boolean;
   canRun: boolean;
   submitLabel: string;
-  onSubmit: (payload: DeviceEventLogRequest) => void;
+  onSubmit: (payload: DeviceConnectRequest) => void;
   errorMessage?: string;
 }
 
-export function EventLogRequestForm({
+export function DeviceConnectRequestForm({
   isPending,
   canRun,
   submitLabel,
   onSubmit,
   errorMessage,
-}: EventLogRequestFormProps) {
-  const { register, handleSubmit } = useForm<EventLogFormValues>({
+}: DeviceConnectRequestFormProps) {
+  const { register, handleSubmit } = useForm<DeviceConnectFormValues>({
     defaultValues: {
       macAddress: "",
       ipAddress: "",
@@ -52,16 +52,16 @@ export function EventLogRequestForm({
     >
       <div className="grid two">
         <div className="field">
-          <FieldLabel htmlFor="eventLogMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
-          <input id="eventLogMacAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
+          <FieldLabel htmlFor="deviceConnectMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
+          <input id="deviceConnectMacAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
         </div>
         <div className="field">
-          <FieldLabel htmlFor="eventLogIpAddress" hint={requestFieldHints.ip_address}>IP Address</FieldLabel>
-          <input id="eventLogIpAddress" {...register("ipAddress")} placeholder="192.168.100.10" />
+          <FieldLabel htmlFor="deviceConnectIpAddress" hint={requestFieldHints.ip_address}>IP Address</FieldLabel>
+          <input id="deviceConnectIpAddress" {...register("ipAddress")} placeholder="192.168.100.10" />
         </div>
         <div className="field">
-          <FieldLabel htmlFor="eventLogCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
-          <input id="eventLogCommunity" {...register("community")} placeholder="private" />
+          <FieldLabel htmlFor="deviceConnectCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
+          <input id="deviceConnectCommunity" {...register("community")} placeholder="private" />
         </div>
       </div>
       <div className="actions">

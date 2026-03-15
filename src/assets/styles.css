@@ -705,6 +705,12 @@ pre {
   word-break: break-word;
 }
 
+.system-uptime-value {
+  font-size: 28px;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
 .channel-est-grid {
   display: grid;
   grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);

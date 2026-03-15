@@ -18,6 +18,14 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     menuPath: ["Device", "Logs"],
   },
   {
+    id: "system-uptime",
+    label: "UpTime",
+    routePath: "/operations/up-time",
+    endpointPath: "/system/upTime",
+    description: "Device system uptime visual.",
+    menuPath: ["Device", "System"],
+  },
+  {
     id: "docs-pnm-ds-ofdm-rxmer-getcapture",
     label: "RxMER",
     routePath: "/operations/rxmer",

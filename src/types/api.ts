@@ -175,7 +175,7 @@ export interface SingleHistogramCaptureRequest {
   };
 }
 
-export interface DeviceEventLogRequest {
+export interface DeviceConnectRequest {
   cable_modem: {
     mac_address: string;
     ip_address: string;
@@ -186,6 +186,8 @@ export interface DeviceEventLogRequest {
     };
   };
 }
+
+export type DeviceEventLogRequest = DeviceConnectRequest;
 
 export interface SingleRxMerSystemDescription {
   HW_REV?: string;
@@ -214,6 +216,20 @@ export interface DeviceEventLogResponse {
     system_description?: SingleRxMerSystemDescription;
   };
   logs?: DeviceEventLogEntry[];
+}
+
+export interface SystemUpTimeResponse {
+  mac_address?: string;
+  status?: number | string;
+  message?: string | null;
+  device?: {
+    mac_address?: string;
+    system_description?: SingleRxMerSystemDescription;
+  };
+  system_description?: SingleRxMerSystemDescription;
+  results?: {
+    uptime?: string;
+  };
 }
 
 export interface SingleRxMerAnalysisEntry {
