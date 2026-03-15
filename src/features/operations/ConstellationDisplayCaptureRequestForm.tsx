@@ -121,18 +121,18 @@ export function ConstellationDisplayCaptureRequestForm({
           <input id="constCommunity" {...register("community")} placeholder="private" />
         </div>
         <div className="field">
-          <FieldLabel htmlFor="displayCrossHair">Display Cross Hair</FieldLabel>
+          <FieldLabel htmlFor="displayCrossHair" hint={requestFieldHints.display_cross_hair}>Display Cross Hair</FieldLabel>
           <select id="displayCrossHair" {...register("displayCrossHair", { setValueAs: (value) => value === "true" })}>
             <option value="true">Enabled</option>
             <option value="false">Disabled</option>
           </select>
         </div>
         <div className="field">
-          <FieldLabel htmlFor="modulationOrderOffset">Modulation Order Offset</FieldLabel>
+          <FieldLabel htmlFor="modulationOrderOffset" hint={requestFieldHints.modulation_order_offset}>Modulation Order Offset</FieldLabel>
           <input id="modulationOrderOffset" type="number" step="1" {...register("modulationOrderOffset", { valueAsNumber: true })} />
         </div>
         <div className="field">
-          <FieldLabel htmlFor="numberSampleSymbol">Number Sample Symbol</FieldLabel>
+          <FieldLabel htmlFor="numberSampleSymbol" hint={requestFieldHints.number_sample_symbol}>Number Sample Symbol</FieldLabel>
           <input id="numberSampleSymbol" type="number" min="1" step="1" {...register("numberSampleSymbol", { valueAsNumber: true })} />
         </div>
       </div>

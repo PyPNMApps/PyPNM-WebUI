@@ -106,7 +106,7 @@ export function HistogramCaptureRequestForm({
           <input id="histCommunity" {...register("community")} placeholder="private" />
         </div>
         <div className="field">
-          <FieldLabel htmlFor="sampleDuration">Sample Duration</FieldLabel>
+          <FieldLabel htmlFor="sampleDuration" hint={requestFieldHints.sample_duration}>Sample Duration</FieldLabel>
           <input id="sampleDuration" type="number" min="1" step="1" {...register("sampleDuration", { valueAsNumber: true })} />
         </div>
       </div>

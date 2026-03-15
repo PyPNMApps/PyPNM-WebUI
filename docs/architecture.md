@@ -50,3 +50,28 @@
   for top-level operations menu entries.
 - `src/pages/EndpointExplorerPage.tsx` is the current operations page for
   endpoint-bound request forms and visuals.
+
+## File Manager Direction
+- PyPNM file-management workflows should live under a separate top-navigation
+  tab rather than being folded into the endpoint operations menu.
+- The File Manager area should represent `/docs/pnm/files` as a dedicated
+  workflow surface for:
+  - listing registered MAC addresses with stored PNM files
+  - searching files by MAC address
+  - downloading by transaction ID, filename, MAC address, or operation ID
+  - uploading external PNM files
+  - requesting analysis by transaction ID
+  - requesting hexdump inspection by transaction ID
+- The file-manager area should not continue growing as a single verbose page.
+  Split it into focused routes under the `Files` tab:
+  - `Browse`: registered MACs, search results, and download actions
+  - `Upload`: raw file ingest and upload result metadata
+  - `Inspect`: transaction-driven hexdump and file-triggered analysis
+- The File Manager implementation should follow the same split used elsewhere:
+  - feature-specific request and response contracts in `src/types`
+  - API calls in `src/services`
+  - reusable tables and inspectors in `src/components/common`
+  - workflow composition in a dedicated page module
+- The file-management visuals will be WebUI-native and should not depend on the
+  Postman visualizer set because these endpoints were not part of that Postman
+  collection baseline.

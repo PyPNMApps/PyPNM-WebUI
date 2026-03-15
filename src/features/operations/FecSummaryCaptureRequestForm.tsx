@@ -109,7 +109,7 @@ export function FecSummaryCaptureRequestForm({
           <input id="fecCommunity" {...register("community")} placeholder="private" />
         </div>
         <div className="field">
-          <FieldLabel htmlFor="fecSummaryType">FEC Summary Type</FieldLabel>
+          <FieldLabel htmlFor="fecSummaryType" hint={requestFieldHints.fec_summary_type}>FEC Summary Type</FieldLabel>
           <select id="fecSummaryType" {...register("fecSummaryType", { valueAsNumber: true })}>
             <option value={1}>24Hours</option>
             <option value={2}>10Min</option>

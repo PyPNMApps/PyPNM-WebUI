@@ -5,6 +5,7 @@
 The top navigation includes:
 - `Settings`
 - `Operations`
+- `Files`
 - `Health`
 - `About`
 
@@ -29,6 +30,22 @@ Current implemented groups include:
 - `Device`
 - `Operations`
 - `PNM`
+
+## Files
+
+The `Files` tab is the dedicated PyPNM file-manager surface.
+
+Current first slice:
+
+- browse registered MAC addresses with stored PNM files
+- search file entries by MAC address
+- download a stored file by transaction ID
+- download by selected MAC archive, stored filename, or operation ID
+- upload a raw PNM file into the PyPNM file ledger
+- inspect a transaction with hexdump or backend-triggered analysis
+
+Later slices will add:
+- analysis-specific visuals for supported uploaded PNM file types
 
 ## Recommended workflow
 

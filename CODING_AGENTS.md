@@ -21,6 +21,9 @@
 - Use strict TypeScript typing.
 - Avoid `any` unless unavoidable and justified inline.
 - Define typed request/response models for each endpoint integration.
+- When PyPNM already has a canonical enum or shared data type for a concept
+  such as PNM file types, mirror that type once in the WebUI and reuse it
+  instead of scattering raw string literals or duplicate local variants.
 - Validate external API payloads at boundaries (for example with Zod).
 - Prefer shared type aliases/interfaces over ad-hoc inline types.
 
@@ -39,6 +42,7 @@
 - Place support files near the code or workflow they serve. Do not create a generic central folder unless the files are truly shared across multiple areas.
 - For request forms that accept `channel_ids`, document the default black value as indicating all channels.
 - Render shared request-form hover hints through a reusable field-label component so the displayed help text and the editable source stay aligned.
+- Any non-error instructional/help text for a user should be delivered as a shared hover tip, not as inline helper copy on the form or panel.
 
 ## UX/Engineering Dashboard Rules (Required)
 
@@ -46,6 +50,7 @@
 - Always show request context and backend response metadata (`status`, `message`, `timestamp` when available).
 - Provide both interpreted and raw JSON views for technical results.
 - Include explicit loading, error, and empty states for every data panel.
+- For any user-visible fetch or mutation that collects backend data, render a shared thinking/loading indicator with an icon rather than plain loading text.
 - Support copy-to-clipboard for identifiers and payloads where useful.
 - Default graph lines to thin strokes unless a thicker treatment is required for legibility or a specific visual convention.
 - When x-axis labels are large numeric values and horizontal rendering hurts readability, angle the labels so they remain visible and readable.
