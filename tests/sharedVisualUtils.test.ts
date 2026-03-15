@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { formatEpochSecondsUtc } from "../src/lib/formatters/dateTime";
-import { formatFrequencyRangeMhz } from "../src/lib/formatters/frequency";
-import { toDeviceInfo } from "../src/lib/pypnm/deviceInfo";
-import { average, summarize } from "../src/lib/stats";
+import { formatEpochSecondsUtc } from "../src/lib/formatters/dateTime.ts";
+import { formatFrequencyRangeMhz } from "../src/lib/formatters/frequency.ts";
+import { toDeviceInfo } from "../src/lib/pypnm/deviceInfo.ts";
+import { average, summarize } from "../src/lib/stats.ts";
 
 describe("shared visual utils", () => {
   it("formats capture time from epoch seconds", () => {
