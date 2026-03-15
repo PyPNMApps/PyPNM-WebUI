@@ -46,6 +46,7 @@
 - Always show request context and backend response metadata (`status`, `message`, `timestamp` when available).
 - Provide both interpreted and raw JSON views for technical results.
 - Include explicit loading, error, and empty states for every data panel.
+- For any user-visible fetch or mutation that collects backend data, render a shared thinking/loading indicator with an icon rather than plain loading text.
 - Support copy-to-clipboard for identifiers and payloads where useful.
 - Default graph lines to thin strokes unless a thicker treatment is required for legibility or a specific visual convention.
 - When x-axis labels are large numeric values and horizontal rendering hurts readability, angle the labels so they remain visible and readable.

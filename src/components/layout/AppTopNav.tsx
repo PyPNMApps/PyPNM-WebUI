@@ -5,6 +5,7 @@ import { OperationsMenu } from "@/features/operations/components/OperationsMenu"
 
 const links = [
   ["/settings", "Settings"],
+  ["/files", "Files"],
   ["/health", "Health"],
   ["/about", "About"],
 ] as const;

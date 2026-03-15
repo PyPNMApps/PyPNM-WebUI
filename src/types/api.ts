@@ -21,6 +21,46 @@ export interface EndpointDescriptor {
   tags?: string[];
 }
 
+export interface PnmFileMacAddressEntry {
+  mac_address: string;
+  system_description?: Record<string, string | number | boolean | null> | null;
+}
+
+export interface PnmFileMacAddressResponse {
+  mac_addresses: PnmFileMacAddressEntry[];
+}
+
+export interface PnmFileEntry {
+  transaction_id: string;
+  filename: string;
+  pnm_test_type: string;
+  timestamp: number;
+  system_description?: Record<string, string | number | boolean | null> | null;
+}
+
+export interface PnmFileQueryResponse {
+  files: Record<string, PnmFileEntry[]>;
+}
+
+export interface PnmFileUploadResponse {
+  mac_address: string;
+  filename: string;
+  transaction_id: string;
+}
+
+export interface PnmFileHexdumpResponse {
+  transaction_id: string;
+  bytes_per_line: number;
+  lines: string[];
+}
+
+export interface PnmFileAnalysisResponse {
+  mac_address?: string;
+  pnm_file_type: string;
+  status: string;
+  analysis: Record<string, unknown>;
+}
+
 export interface GenericMeasurementRequest {
   mac_address?: string;
   ip_address?: string;
