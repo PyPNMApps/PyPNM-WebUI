@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 
 import { operationNavigationItems } from "@/features/operations/operationsNavigation";
@@ -11,10 +11,32 @@ export function OperationsMenu() {
   const location = useLocation();
   const isActive = location.pathname.startsWith("/operations");
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
   const levelOneItems = uniqueValues(operationNavigationItems.map((item) => item.menuPath[0]));
 
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    function handlePointerDown(event: MouseEvent) {
+      if (!menuRef.current) {
+        return;
+      }
+
+      if (event.target instanceof Node && !menuRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handlePointerDown);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+    };
+  }, []);
+
   return (
-    <div className={isOpen ? "operations-menu open" : "operations-menu"}>
+    <div ref={menuRef} className={isOpen ? "operations-menu open" : "operations-menu"}>
       <button
         type="button"
         className={isActive ? "nav-link active operations-menu-trigger" : "nav-link operations-menu-trigger"}

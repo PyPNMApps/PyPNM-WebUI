@@ -53,10 +53,30 @@ a {
   backdrop-filter: blur(16px);
 }
 
+.top-nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  min-width: 0;
+}
+
 .top-nav-brand h1 {
   margin: 10px 0 0;
   font-size: 1.1rem;
   white-space: nowrap;
+}
+
+.top-nav-brand-icon {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  display: block;
+}
+
+.top-nav-brand:hover .top-nav-brand-icon rect,
+.top-nav-brand:focus-visible .top-nav-brand-icon rect {
+  stroke: rgba(121, 169, 255, 0.35);
 }
 
 .instance-selector {
