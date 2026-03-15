@@ -272,6 +272,61 @@ export interface SystemUpTimeResponse {
   };
 }
 
+export interface InterfaceStatsIfEntry {
+  ifIndex?: number | string;
+  ifDescr?: string;
+  ifType?: number | string;
+  ifSpeed?: number | string;
+  ifAdminStatus?: number | string;
+  ifOperStatus?: number | string;
+  ifInOctets?: number | string;
+  ifOutOctets?: number | string;
+}
+
+export interface InterfaceStatsIfXEntry {
+  ifName?: string;
+  ifHighSpeed?: number | string;
+  ifHCInOctets?: number | string;
+  ifHCOutOctets?: number | string;
+}
+
+export interface InterfaceStatsBridgeIfIndexEntry {
+  ifName?: string;
+  ifDescription?: string;
+}
+
+export interface InterfaceStatsGroupEntry {
+  ifEntry?: InterfaceStatsIfEntry;
+  ifXEntry?: InterfaceStatsIfXEntry;
+}
+
+export interface InterfaceStatsBridgeEntry {
+  ifIndexes?: Record<string, InterfaceStatsBridgeIfIndexEntry>;
+}
+
+export interface InterfaceStatsResults {
+  bridge?: InterfaceStatsBridgeEntry;
+  ethernetCsmacd?: InterfaceStatsGroupEntry[];
+  docsCableMaclayer?: InterfaceStatsGroupEntry[];
+  docsCableDownstream?: InterfaceStatsGroupEntry[];
+  docsOfdmDownstream?: InterfaceStatsGroupEntry[];
+  docsCableUpstream?: InterfaceStatsGroupEntry[];
+  docsOfdmaUpstream?: InterfaceStatsGroupEntry[];
+  [key: string]: InterfaceStatsBridgeEntry | InterfaceStatsGroupEntry[] | undefined;
+}
+
+export interface InterfaceStatsResponse {
+  mac_address?: string;
+  status?: number | string;
+  message?: string | null;
+  device?: {
+    mac_address?: string;
+    system_description?: SingleRxMerSystemDescription;
+  };
+  system_description?: SingleRxMerSystemDescription;
+  results?: InterfaceStatsResults;
+}
+
 export interface SingleRxMerAnalysisEntry {
   mac_address?: string;
   channel_id?: number;

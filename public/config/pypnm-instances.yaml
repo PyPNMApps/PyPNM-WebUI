@@ -30,28 +30,3 @@ instances:
         channel_ids: []
       snmp:
         rw_community: private
-  - id: denver-rack-1
-    label: Denver Rack 1
-    base_url: http://10.10.20.15:8080
-    enabled: false
-    tags:
-      - denver
-      - rack1
-    capabilities:
-      - health
-      - analysis
-    polling:
-      enabled: true
-      interval_ms: 3000
-    request_defaults:
-      cable_modem:
-        mac_address: B0:F5:30:83:69:C0
-        ip_address: 172.19.32.150
-      tftp:
-        ipv4: 172.19.8.28
-        ipv6: ::1
-      capture:
-        channel_ids:
-          - []
-      snmp:
-        rw_community: private

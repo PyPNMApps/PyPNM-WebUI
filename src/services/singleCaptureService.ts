@@ -20,9 +20,11 @@ export async function runSingleCaptureEndpoint<TResponse>(
     | SingleFecSummaryCaptureRequest
     | SingleConstellationDisplayCaptureRequest
     | SingleModulationProfileCaptureRequest,
+  timeoutMs?: number,
 ): Promise<TResponse> {
   const response = await requestWithBaseUrl<TResponse>(baseUrl, {
     method: "POST",
+    timeout: timeoutMs,
     url: endpointPath,
     data: payload,
   });

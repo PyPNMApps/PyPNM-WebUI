@@ -75,3 +75,8 @@
 - The file-management visuals will be WebUI-native and should not depend on the
   Postman visualizer set because these endpoints were not part of that Postman
   collection baseline.
+
+
+## Device Interface Stats
+
+The WebUI includes a dedicated `Operations -> Device -> Interface -> Stats` flow for `/docs/pnm/interface/stats`. It reuses the shared device-connect request form and renders grouped interface inventory tables from the DOCSIS interface statistics response.

@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useInstanceConfig } from "@/app/useInstanceConfig";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Panel } from "@/components/common/Panel";
+import { ThinkingIndicator } from "@/components/common/ThinkingIndicator";
 import { ConstellationDisplayCaptureRequestForm } from "@/features/operations/ConstellationDisplayCaptureRequestForm";
 import { DeviceConnectRequestForm } from "@/features/operations/DeviceConnectRequestForm";
 import { HistogramCaptureRequestForm } from "@/features/operations/HistogramCaptureRequestForm";
@@ -16,6 +17,7 @@ import { SingleDeviceEventLogView } from "@/features/operations/SingleDeviceEven
 import { SingleFecSummaryCaptureView } from "@/features/operations/SingleFecSummaryCaptureView";
 import { getOperationByRoutePath, operationNavigationItems } from "@/features/operations/operationsNavigation";
 import { SingleHistogramCaptureView } from "@/features/operations/SingleHistogramCaptureView";
+import { SingleInterfaceStatsView } from "@/features/operations/SingleInterfaceStatsView";
 import { SingleModulationProfileCaptureView } from "@/features/operations/SingleModulationProfileCaptureView";
 import { SingleRxMerCaptureView } from "@/features/operations/SingleRxMerCaptureView";
 import { SingleSystemUpTimeView } from "@/features/operations/SingleSystemUpTimeView";
@@ -24,6 +26,7 @@ import { singleConstellationDisplayFixture } from "@/features/operations/singleC
 import { singleDeviceEventLogFixture } from "@/features/operations/singleDeviceEventLogFixture";
 import { singleFecSummaryFixture } from "@/features/operations/singleFecSummaryFixture";
 import { singleHistogramFixture } from "@/features/operations/singleHistogramFixture";
+import { singleInterfaceStatsFixture } from "@/features/operations/singleInterfaceStatsFixture";
 import { singleModulationProfileFixture } from "@/features/operations/singleModulationProfileFixture";
 import { singleRxMerFixture } from "@/features/operations/singleRxMerFixture";
 import { singleSystemUpTimeFixture } from "@/features/operations/singleSystemUpTimeFixture";
@@ -32,6 +35,7 @@ import type {
   DeviceConnectRequest,
   DeviceEventLogRequest,
   DeviceEventLogResponse,
+  InterfaceStatsResponse,
   SingleChannelEstCoeffCaptureResponse,
   SingleConstellationDisplayCaptureRequest,
   SingleConstellationDisplayCaptureResponse,
@@ -55,6 +59,7 @@ export function EndpointExplorerPage() {
   const [eventLogResponse, setEventLogResponse] = useState<DeviceEventLogResponse>(singleDeviceEventLogFixture);
   const [fecSummaryResponse, setFecSummaryResponse] = useState<SingleFecSummaryCaptureResponse>(singleFecSummaryFixture);
   const [histogramResponse, setHistogramResponse] = useState<SingleHistogramCaptureResponse>(singleHistogramFixture);
+  const [interfaceStatsResponse, setInterfaceStatsResponse] = useState<InterfaceStatsResponse>(singleInterfaceStatsFixture);
   const [modulationProfileResponse, setModulationProfileResponse] = useState<SingleModulationProfileCaptureResponse>(singleModulationProfileFixture);
   const [systemUpTimeResponse, setSystemUpTimeResponse] = useState<SystemUpTimeResponse>(singleSystemUpTimeFixture);
   const selectedOperation = getOperationByRoutePath(location.pathname);
@@ -76,6 +81,7 @@ export function EndpointExplorerPage() {
       runSingleCaptureEndpoint<
         | DeviceEventLogResponse
         | SystemUpTimeResponse
+        | InterfaceStatsResponse
         | SingleRxMerCaptureResponse
         | SingleChannelEstCoeffCaptureResponse
         | SingleHistogramCaptureResponse
@@ -86,10 +92,16 @@ export function EndpointExplorerPage() {
         selectedInstance?.baseUrl ?? "",
         endpointPath,
         payload,
+        selectedOperation?.requestTimeoutMs,
       ),
     onSuccess: (data) => {
       if (selectedOperation?.id === "system-uptime") {
         setSystemUpTimeResponse(data as SystemUpTimeResponse);
+        return;
+      }
+
+      if (selectedOperation?.id === "docs-pnm-interface-stats") {
+        setInterfaceStatsResponse(data as InterfaceStatsResponse);
         return;
       }
 
@@ -137,7 +149,7 @@ export function EndpointExplorerPage() {
     <>
       <PageHeader title={selectedOperation.label} subtitle="" />
       <Panel title="Capture Inputs">
-        {selectedOperation.id === "docs-dev-eventlog" || selectedOperation.id === "system-uptime" ? (
+        {selectedOperation.id === "docs-dev-eventlog" || selectedOperation.id === "system-uptime" || selectedOperation.id === "docs-pnm-interface-stats" ? (
           <DeviceConnectRequestForm
             isPending={mutation.isPending}
             canRun={Boolean(selectedInstance)}
@@ -190,9 +202,17 @@ export function EndpointExplorerPage() {
         )}
       </Panel>
 
+      {mutation.isPending ? (
+        <Panel>
+          <ThinkingIndicator label={`Collecting ${selectedOperation.label} data...`} />
+        </Panel>
+      ) : null}
+
       <Panel>
         {selectedOperation.id === "system-uptime" ? (
           <SingleSystemUpTimeView response={systemUpTimeResponse} />
+        ) : selectedOperation.id === "docs-pnm-interface-stats" ? (
+          <SingleInterfaceStatsView response={interfaceStatsResponse} />
         ) : selectedOperation.id === "docs-dev-eventlog" ? (
           <SingleDeviceEventLogView response={eventLogResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-rxmer-getcapture" ? (

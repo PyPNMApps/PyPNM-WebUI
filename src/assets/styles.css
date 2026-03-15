@@ -1103,3 +1103,36 @@ pre {
     grid-template-columns: 1fr;
   }
 }
+
+
+.interface-stats-summary-row {
+  margin-bottom: 14px;
+}
+
+.interface-oper-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.interface-oper-pill.ok {
+  color: #7de2b3;
+  background: rgba(54, 179, 126, 0.12);
+}
+
+.interface-oper-pill.down {
+  color: #ff9a9a;
+  background: rgba(223, 91, 91, 0.12);
+}
+
+.interface-oper-pill.unknown {
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.04);
+}

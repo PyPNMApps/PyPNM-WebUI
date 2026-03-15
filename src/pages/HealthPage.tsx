@@ -1,30 +1,36 @@
+import { useQueries } from "@tanstack/react-query";
+
 import { useInstanceConfig } from "@/app/useInstanceConfig";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Panel } from "@/components/common/Panel";
-import { useQueries } from "@tanstack/react-query";
+import { classifyHealthError, getHealth } from "@/services/healthService";
 
-import { getHealth } from "@/services/healthService";
+const MAX_HEALTH_TIMEOUT_MS = 4000;
 
 export function HealthPage() {
   const { config, instances, selectedInstance } = useInstanceConfig();
+  const healthTimeoutMs = Math.min(config?.defaults.requestTimeoutMs ?? MAX_HEALTH_TIMEOUT_MS, MAX_HEALTH_TIMEOUT_MS);
+
   const healthQueries = useQueries({
     queries: instances.map((instance) => ({
       queryKey: ["health", instance.id],
-      queryFn: () => getHealth(instance.baseUrl, config?.defaults.healthPath ?? "/health"),
+      queryFn: () => getHealth(instance.baseUrl, config?.defaults.healthPath ?? "/health", healthTimeoutMs),
       enabled: Boolean(config),
       refetchInterval: instance.polling.enabled ? instance.polling.intervalMs : false,
+      retry: false,
     })),
   });
 
   const rows = instances.map((instance, index) => {
     const query = healthQueries[index];
     const data = query.data;
+    const errorState = query.isError ? classifyHealthError(query.error as Error) : null;
 
     return {
       instance,
-      isSelected: instance.id === selectedInstance?.id,
-      status: query.isLoading ? "loading" : String(data?.status ?? "unknown"),
-      message: query.isError ? (query.error as Error).message : data?.message ?? "n/a",
+      isSelected: instance.id == selectedInstance?.id,
+      status: query.isPending ? "loading" : errorState?.status ?? String(data?.status ?? "unknown"),
+      message: errorState?.message ?? data?.message ?? "n/a",
       service: data?.output?.service ?? "n/a",
       version: data?.output?.version ?? "n/a",
       timestamp: data?.timestamp ?? "n/a",
@@ -39,6 +45,7 @@ export function HealthPage() {
           Agents: {instances.length || 0}
           {selectedInstance ? ` · Selected ${selectedInstance.label}` : ""}
           {config ? ` · Path ${config.defaults.healthPath}` : ""}
+          {` · Reachability timeout ${healthTimeoutMs} ms`}
         </div>
         <div className="table-wrap">
           <table>

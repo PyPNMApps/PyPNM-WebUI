@@ -5,6 +5,7 @@ export interface OperationNavigationItem {
   endpointPath: string;
   description: string;
   menuPath: [string, string];
+  requestTimeoutMs?: number;
 }
 
 // Edit this file to add top-row operation navigation entries.
@@ -16,6 +17,15 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     endpointPath: "/docs/dev/eventLog",
     description: "Device event log visual.",
     menuPath: ["Device", "Logs"],
+  },
+  {
+    id: "docs-pnm-interface-stats",
+    label: "Interface Stats",
+    routePath: "/operations/interface-stats",
+    endpointPath: "/docs/pnm/interface/stats",
+    description: "DOCSIS interface statistics visual.",
+    menuPath: ["Device", "Interface"],
+    requestTimeoutMs: 90000,
   },
   {
     id: "system-uptime",
