@@ -1,5 +1,8 @@
 import { useForm } from "react-hook-form";
 
+import { FieldLabel } from "@/components/common/FieldLabel";
+import { requestFieldHints } from "@/features/operations/requestFieldHints";
+import { parseChannelIds } from "@/lib/channelIds";
 import type { SingleConstellationDisplayCaptureRequest } from "@/types/api";
 
 interface ConstellationDisplayFormValues {
@@ -57,10 +60,7 @@ export function ConstellationDisplayCaptureRequestForm({
                 ipv6: values.tftpIpv6,
               },
               capture: {
-                channel_ids: values.channelIds
-                  .split(",")
-                  .map((value) => Number.parseInt(value.trim(), 10))
-                  .filter((value) => Number.isInteger(value)),
+                channel_ids: parseChannelIds(values.channelIds),
               },
             },
             snmp: {
@@ -88,42 +88,44 @@ export function ConstellationDisplayCaptureRequestForm({
     >
       <div className="grid two">
         <div className="field">
-          <label htmlFor="constMacAddress">MAC Address</label>
+          <FieldLabel htmlFor="constMacAddress">MAC Address</FieldLabel>
           <input id="constMacAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
         </div>
         <div className="field">
-          <label htmlFor="constIpAddress">IP Address</label>
+          <FieldLabel htmlFor="constIpAddress">IP Address</FieldLabel>
           <input id="constIpAddress" {...register("ipAddress")} placeholder="192.168.100.10" />
         </div>
         <div className="field">
-          <label htmlFor="constTftpIpv4">TFTP IPv4</label>
+          <FieldLabel htmlFor="constTftpIpv4">TFTP IPv4</FieldLabel>
           <input id="constTftpIpv4" {...register("tftpIpv4")} placeholder="192.168.100.2" />
         </div>
         <div className="field">
-          <label htmlFor="constTftpIpv6">TFTP IPv6</label>
+          <FieldLabel htmlFor="constTftpIpv6">TFTP IPv6</FieldLabel>
           <input id="constTftpIpv6" {...register("tftpIpv6")} placeholder="::1" />
         </div>
         <div className="field">
-          <label htmlFor="constChannelIds">Channel IDs</label>
+          <FieldLabel htmlFor="constChannelIds" hint={requestFieldHints.channel_ids}>
+            Channel IDs
+          </FieldLabel>
           <input id="constChannelIds" {...register("channelIds")} placeholder="0" />
         </div>
         <div className="field">
-          <label htmlFor="constCommunity">SNMP RW Community</label>
+          <FieldLabel htmlFor="constCommunity">SNMP RW Community</FieldLabel>
           <input id="constCommunity" {...register("community")} placeholder="private" />
         </div>
         <div className="field">
-          <label htmlFor="displayCrossHair">Display Cross Hair</label>
+          <FieldLabel htmlFor="displayCrossHair">Display Cross Hair</FieldLabel>
           <select id="displayCrossHair" {...register("displayCrossHair", { setValueAs: (value) => value === "true" })}>
             <option value="true">Enabled</option>
             <option value="false">Disabled</option>
           </select>
         </div>
         <div className="field">
-          <label htmlFor="modulationOrderOffset">Modulation Order Offset</label>
+          <FieldLabel htmlFor="modulationOrderOffset">Modulation Order Offset</FieldLabel>
           <input id="modulationOrderOffset" type="number" step="1" {...register("modulationOrderOffset", { valueAsNumber: true })} />
         </div>
         <div className="field">
-          <label htmlFor="numberSampleSymbol">Number Sample Symbol</label>
+          <FieldLabel htmlFor="numberSampleSymbol">Number Sample Symbol</FieldLabel>
           <input id="numberSampleSymbol" type="number" min="1" step="1" {...register("numberSampleSymbol", { valueAsNumber: true })} />
         </div>
       </div>

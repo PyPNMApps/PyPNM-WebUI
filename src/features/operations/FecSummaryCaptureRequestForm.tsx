@@ -1,5 +1,8 @@
 import { useForm } from "react-hook-form";
 
+import { FieldLabel } from "@/components/common/FieldLabel";
+import { requestFieldHints } from "@/features/operations/requestFieldHints";
+import { parseChannelIds } from "@/lib/channelIds";
 import type { SingleFecSummaryCaptureRequest } from "@/types/api";
 
 interface FecSummaryCaptureFormValues {
@@ -53,10 +56,7 @@ export function FecSummaryCaptureRequestForm({
                 ipv6: values.tftpIpv6,
               },
               capture: {
-                channel_ids: values.channelIds
-                  .split(",")
-                  .map((value) => Number.parseInt(value.trim(), 10))
-                  .filter((value) => Number.isInteger(value)),
+                channel_ids: parseChannelIds(values.channelIds),
               },
             },
             snmp: {
@@ -78,31 +78,33 @@ export function FecSummaryCaptureRequestForm({
     >
       <div className="grid two">
         <div className="field">
-          <label htmlFor="fecMacAddress">MAC Address</label>
+          <FieldLabel htmlFor="fecMacAddress">MAC Address</FieldLabel>
           <input id="fecMacAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
         </div>
         <div className="field">
-          <label htmlFor="fecIpAddress">IP Address</label>
+          <FieldLabel htmlFor="fecIpAddress">IP Address</FieldLabel>
           <input id="fecIpAddress" {...register("ipAddress")} placeholder="192.168.100.10" />
         </div>
         <div className="field">
-          <label htmlFor="fecTftpIpv4">TFTP IPv4</label>
+          <FieldLabel htmlFor="fecTftpIpv4">TFTP IPv4</FieldLabel>
           <input id="fecTftpIpv4" {...register("tftpIpv4")} placeholder="192.168.100.2" />
         </div>
         <div className="field">
-          <label htmlFor="fecTftpIpv6">TFTP IPv6</label>
+          <FieldLabel htmlFor="fecTftpIpv6">TFTP IPv6</FieldLabel>
           <input id="fecTftpIpv6" {...register("tftpIpv6")} placeholder="::1" />
         </div>
         <div className="field">
-          <label htmlFor="fecChannelIds">Channel IDs</label>
+          <FieldLabel htmlFor="fecChannelIds" hint={requestFieldHints.channel_ids}>
+            Channel IDs
+          </FieldLabel>
           <input id="fecChannelIds" {...register("channelIds")} placeholder="0" />
         </div>
         <div className="field">
-          <label htmlFor="fecCommunity">SNMP RW Community</label>
+          <FieldLabel htmlFor="fecCommunity">SNMP RW Community</FieldLabel>
           <input id="fecCommunity" {...register("community")} placeholder="private" />
         </div>
         <div className="field">
-          <label htmlFor="fecSummaryType">FEC Summary Type</label>
+          <FieldLabel htmlFor="fecSummaryType">FEC Summary Type</FieldLabel>
           <select id="fecSummaryType" {...register("fecSummaryType", { valueAsNumber: true })}>
             <option value={1}>24Hours</option>
             <option value={2}>10Min</option>

@@ -13,6 +13,7 @@
 - Keep endpoint integrations isolated in feature/service modules.
 - Centralize API transport concerns (base URL, headers, timeout, interceptors) in one API client.
 - Reuse shared request/response types in `src/types`.
+- Centralize reusable request-form hover text in a shared hint registry instead of hardcoding inline helper copy in individual forms.
 - Keep diffs minimal and focused; avoid formatting churn.
 
 ## Typing And API Contracts (Required)
@@ -34,6 +35,8 @@
 - Keep presentational components free of API side effects when practical.
 - Put endpoint-specific logic inside feature modules, not global app shell.
 - Keep shared visual primitives generic: device context tables, epoch-to-UTC formatting, frequency-range formatting, and numeric summary helpers belong in common modules, not in endpoint-specific components.
+- For request forms that accept `channel_ids`, document the default black value as indicating all channels.
+- Render shared request-form hover hints through a reusable field-label component so the displayed help text and the editable source stay aligned.
 
 ## UX/Engineering Dashboard Rules (Required)
 

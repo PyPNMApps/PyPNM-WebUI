@@ -1,5 +1,8 @@
 import { useForm } from "react-hook-form";
 
+import { FieldLabel } from "@/components/common/FieldLabel";
+import { requestFieldHints } from "@/features/operations/requestFieldHints";
+import { parseChannelIds } from "@/lib/channelIds";
 import type { SingleRxMerCaptureRequest } from "@/types/api";
 
 export interface SingleCaptureFormValues {
@@ -32,7 +35,7 @@ export function SingleCaptureRequestForm({
       ipAddress: "",
       tftpIpv4: "",
       tftpIpv6: "",
-      channelIds: "194",
+      channelIds: "0",
       community: "private",
     },
   });
@@ -51,10 +54,7 @@ export function SingleCaptureRequestForm({
                 ipv6: values.tftpIpv6,
               },
               capture: {
-                channel_ids: values.channelIds
-                  .split(",")
-                  .map((value) => Number.parseInt(value.trim(), 10))
-                  .filter((value) => Number.isInteger(value)),
+                channel_ids: parseChannelIds(values.channelIds),
               },
             },
             snmp: {
@@ -73,27 +73,29 @@ export function SingleCaptureRequestForm({
     >
       <div className="grid two">
         <div className="field">
-          <label htmlFor="macAddress">MAC Address</label>
+          <FieldLabel htmlFor="macAddress">MAC Address</FieldLabel>
           <input id="macAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
         </div>
         <div className="field">
-          <label htmlFor="ipAddress">IP Address</label>
+          <FieldLabel htmlFor="ipAddress">IP Address</FieldLabel>
           <input id="ipAddress" {...register("ipAddress")} placeholder="192.168.100.10" />
         </div>
         <div className="field">
-          <label htmlFor="tftpIpv4">TFTP IPv4</label>
+          <FieldLabel htmlFor="tftpIpv4">TFTP IPv4</FieldLabel>
           <input id="tftpIpv4" {...register("tftpIpv4")} placeholder="192.168.100.2" />
         </div>
         <div className="field">
-          <label htmlFor="tftpIpv6">TFTP IPv6</label>
+          <FieldLabel htmlFor="tftpIpv6">TFTP IPv6</FieldLabel>
           <input id="tftpIpv6" {...register("tftpIpv6")} placeholder="::1" />
         </div>
         <div className="field">
-          <label htmlFor="channelIds">Channel IDs</label>
-          <input id="channelIds" {...register("channelIds")} placeholder="194" />
+          <FieldLabel htmlFor="channelIds" hint={requestFieldHints.channel_ids}>
+            Channel IDs
+          </FieldLabel>
+          <input id="channelIds" {...register("channelIds")} placeholder="0" />
         </div>
         <div className="field">
-          <label htmlFor="community">SNMP RW Community</label>
+          <FieldLabel htmlFor="community">SNMP RW Community</FieldLabel>
           <input id="community" {...register("community")} placeholder="private" />
         </div>
       </div>

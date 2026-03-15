@@ -107,6 +107,10 @@ For destructive history rewrite workflows only:
 - [Troubleshooting](docs/user/troubleshooting.md)
 - [Release Workflow](docs/user/release-workflow.md)
 
+## Development docs
+
+- [Development Field Hints](docs/development-field-hints.md)
+
 ## Current baseline
 
 - App shell with route navigation

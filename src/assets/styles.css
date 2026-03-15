@@ -238,9 +238,29 @@ a {
   gap: 6px;
 }
 
-.field label {
+.field label,
+.field-label {
   font-size: 0.9rem;
   color: var(--muted);
+}
+
+.field-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.field-hint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  color: var(--muted);
+  font-size: 11px;
+  cursor: help;
 }
 
 .field input,
