@@ -1,5 +1,7 @@
 import { useForm } from "react-hook-form";
 
+import { FieldLabel } from "@/components/common/FieldLabel";
+import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import type { SingleHistogramCaptureRequest } from "@/types/api";
 
 interface HistogramCaptureFormValues {
@@ -70,27 +72,27 @@ export function HistogramCaptureRequestForm({
     >
       <div className="grid two">
         <div className="field">
-          <label htmlFor="histMacAddress">MAC Address</label>
+          <FieldLabel htmlFor="histMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
           <input id="histMacAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
         </div>
         <div className="field">
-          <label htmlFor="histIpAddress">IP Address</label>
+          <FieldLabel htmlFor="histIpAddress" hint={requestFieldHints.ip_address}>IP Address</FieldLabel>
           <input id="histIpAddress" {...register("ipAddress")} placeholder="192.168.100.10" />
         </div>
         <div className="field">
-          <label htmlFor="histTftpIpv4">TFTP IPv4</label>
+          <FieldLabel htmlFor="histTftpIpv4" hint={requestFieldHints.tftp_ipv4}>TFTP IPv4</FieldLabel>
           <input id="histTftpIpv4" {...register("tftpIpv4")} placeholder="192.168.100.2" />
         </div>
         <div className="field">
-          <label htmlFor="histTftpIpv6">TFTP IPv6</label>
+          <FieldLabel htmlFor="histTftpIpv6" hint={requestFieldHints.tftp_ipv6}>TFTP IPv6</FieldLabel>
           <input id="histTftpIpv6" {...register("tftpIpv6")} placeholder="::1" />
         </div>
         <div className="field">
-          <label htmlFor="histCommunity">SNMP RW Community</label>
+          <FieldLabel htmlFor="histCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
           <input id="histCommunity" {...register("community")} placeholder="private" />
         </div>
         <div className="field">
-          <label htmlFor="sampleDuration">Sample Duration</label>
+          <FieldLabel htmlFor="sampleDuration">Sample Duration</FieldLabel>
           <input id="sampleDuration" type="number" min="1" step="1" {...register("sampleDuration", { valueAsNumber: true })} />
         </div>
       </div>

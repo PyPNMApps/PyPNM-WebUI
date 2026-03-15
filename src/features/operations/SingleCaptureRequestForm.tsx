@@ -73,19 +73,19 @@ export function SingleCaptureRequestForm({
     >
       <div className="grid two">
         <div className="field">
-          <FieldLabel htmlFor="macAddress">MAC Address</FieldLabel>
+          <FieldLabel htmlFor="macAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
           <input id="macAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
         </div>
         <div className="field">
-          <FieldLabel htmlFor="ipAddress">IP Address</FieldLabel>
+          <FieldLabel htmlFor="ipAddress" hint={requestFieldHints.ip_address}>IP Address</FieldLabel>
           <input id="ipAddress" {...register("ipAddress")} placeholder="192.168.100.10" />
         </div>
         <div className="field">
-          <FieldLabel htmlFor="tftpIpv4">TFTP IPv4</FieldLabel>
+          <FieldLabel htmlFor="tftpIpv4" hint={requestFieldHints.tftp_ipv4}>TFTP IPv4</FieldLabel>
           <input id="tftpIpv4" {...register("tftpIpv4")} placeholder="192.168.100.2" />
         </div>
         <div className="field">
-          <FieldLabel htmlFor="tftpIpv6">TFTP IPv6</FieldLabel>
+          <FieldLabel htmlFor="tftpIpv6" hint={requestFieldHints.tftp_ipv6}>TFTP IPv6</FieldLabel>
           <input id="tftpIpv6" {...register("tftpIpv6")} placeholder="::1" />
         </div>
         <div className="field">
@@ -95,7 +95,7 @@ export function SingleCaptureRequestForm({
           <input id="channelIds" {...register("channelIds")} placeholder="0" />
         </div>
         <div className="field">
-          <FieldLabel htmlFor="community">SNMP RW Community</FieldLabel>
+          <FieldLabel htmlFor="community" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
           <input id="community" {...register("community")} placeholder="private" />
         </div>
       </div>

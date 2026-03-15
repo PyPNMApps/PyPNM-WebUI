@@ -78,19 +78,19 @@ export function FecSummaryCaptureRequestForm({
     >
       <div className="grid two">
         <div className="field">
-          <FieldLabel htmlFor="fecMacAddress">MAC Address</FieldLabel>
+          <FieldLabel htmlFor="fecMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
           <input id="fecMacAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
         </div>
         <div className="field">
-          <FieldLabel htmlFor="fecIpAddress">IP Address</FieldLabel>
+          <FieldLabel htmlFor="fecIpAddress" hint={requestFieldHints.ip_address}>IP Address</FieldLabel>
           <input id="fecIpAddress" {...register("ipAddress")} placeholder="192.168.100.10" />
         </div>
         <div className="field">
-          <FieldLabel htmlFor="fecTftpIpv4">TFTP IPv4</FieldLabel>
+          <FieldLabel htmlFor="fecTftpIpv4" hint={requestFieldHints.tftp_ipv4}>TFTP IPv4</FieldLabel>
           <input id="fecTftpIpv4" {...register("tftpIpv4")} placeholder="192.168.100.2" />
         </div>
         <div className="field">
-          <FieldLabel htmlFor="fecTftpIpv6">TFTP IPv6</FieldLabel>
+          <FieldLabel htmlFor="fecTftpIpv6" hint={requestFieldHints.tftp_ipv6}>TFTP IPv6</FieldLabel>
           <input id="fecTftpIpv6" {...register("tftpIpv6")} placeholder="::1" />
         </div>
         <div className="field">
@@ -100,7 +100,7 @@ export function FecSummaryCaptureRequestForm({
           <input id="fecChannelIds" {...register("channelIds")} placeholder="0" />
         </div>
         <div className="field">
-          <FieldLabel htmlFor="fecCommunity">SNMP RW Community</FieldLabel>
+          <FieldLabel htmlFor="fecCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
           <input id="fecCommunity" {...register("community")} placeholder="private" />
         </div>
         <div className="field">

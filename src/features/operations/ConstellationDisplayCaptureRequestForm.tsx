@@ -88,19 +88,19 @@ export function ConstellationDisplayCaptureRequestForm({
     >
       <div className="grid two">
         <div className="field">
-          <FieldLabel htmlFor="constMacAddress">MAC Address</FieldLabel>
+          <FieldLabel htmlFor="constMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
           <input id="constMacAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
         </div>
         <div className="field">
-          <FieldLabel htmlFor="constIpAddress">IP Address</FieldLabel>
+          <FieldLabel htmlFor="constIpAddress" hint={requestFieldHints.ip_address}>IP Address</FieldLabel>
           <input id="constIpAddress" {...register("ipAddress")} placeholder="192.168.100.10" />
         </div>
         <div className="field">
-          <FieldLabel htmlFor="constTftpIpv4">TFTP IPv4</FieldLabel>
+          <FieldLabel htmlFor="constTftpIpv4" hint={requestFieldHints.tftp_ipv4}>TFTP IPv4</FieldLabel>
           <input id="constTftpIpv4" {...register("tftpIpv4")} placeholder="192.168.100.2" />
         </div>
         <div className="field">
-          <FieldLabel htmlFor="constTftpIpv6">TFTP IPv6</FieldLabel>
+          <FieldLabel htmlFor="constTftpIpv6" hint={requestFieldHints.tftp_ipv6}>TFTP IPv6</FieldLabel>
           <input id="constTftpIpv6" {...register("tftpIpv6")} placeholder="::1" />
         </div>
         <div className="field">
@@ -110,7 +110,7 @@ export function ConstellationDisplayCaptureRequestForm({
           <input id="constChannelIds" {...register("channelIds")} placeholder="0" />
         </div>
         <div className="field">
-          <FieldLabel htmlFor="constCommunity">SNMP RW Community</FieldLabel>
+          <FieldLabel htmlFor="constCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
           <input id="constCommunity" {...register("community")} placeholder="private" />
         </div>
         <div className="field">
