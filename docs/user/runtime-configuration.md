@@ -19,15 +19,27 @@ Runtime instance targets for the dropdown live in:
 
 - `public/config/pypnm-instances.yaml`
 
+## Config Menu
+
 Use the interactive editor when you want to manage that file from the CLI:
 
 ```bash
 pypnm-webui config-menu
 ```
 
-The menu saves `public/config/pypnm-instances.yaml` after each edit.
-If the file already exists and the content changes, the menu creates a
-timestamped `.bak` backup beside it before overwrite.
+What it edits:
+
+- runtime instance entries
+- `defaults.selected_instance`
+- per-instance `request_defaults`
+
+Behavior:
+
+- the menu saves `public/config/pypnm-instances.yaml` after each edit
+- if the file already exists and the content changes, the menu creates a
+  timestamped `.bak` backup beside it before overwrite
+- changes to `public/config/pypnm-instances.yaml` are not part of Vite hot reload
+- after editing runtime config, reload the WebUI page so the updated YAML is read
 
 Behavior:
 

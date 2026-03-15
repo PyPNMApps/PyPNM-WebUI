@@ -59,6 +59,7 @@
 - Document all env vars in `docs/env.md` and `.env.example`.
 - Keep shared request defaults in `public/config/pypnm-instances.yaml` at the instance level when they vary by PyPNM agent.
 - When config fields are edited interactively, route that behavior through `pypnm-webui config-menu` instead of inventing parallel config entry points.
+- Treat `public/config/pypnm-instances.yaml` as startup runtime config, not hot-reload state. If behavior changes there, document that a page reload is required.
 
 ## Security And Data Hygiene (Required)
 

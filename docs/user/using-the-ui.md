@@ -2,31 +2,43 @@
 
 ## Navigation
 
-The left navigation includes:
-- `Overview`
-- `Health`
-- `Operations`
-- `Measurement Request`
-- `Results`
-- `File List`
-- `Analysis Viewer`
+The top navigation includes:
 - `Settings`
+- `Operations`
+- `Health`
+- `About`
 
-The sidebar also includes a `PyPNM Target` dropdown sourced from `public/config/pypnm-instances.yaml`.
+The top bar also includes the `PyPNM Target` dropdown sourced from:
+
+- `public/config/pypnm-instances.yaml`
+
 Use it to switch the active backend instance without rebuilding the UI.
+
+Important:
+
+- edits to `public/config/pypnm-instances.yaml` are not part of Vite hot reload
+- after changing that file, reload the browser page so the updated runtime config
+  is loaded
+
+## Operations Menu
+
+The `Operations` entry opens the endpoint navigation menu.
+Current implemented groups include:
+
+- `Device`
+- `Operations`
+- `PNM`
 
 ## Recommended workflow
 
 1. `Health`
    - confirm API status and metadata.
 2. `Operations`
-   - use the Postman-style workflow tree to select `Start`, `Status`, `Results`, or `Analysis`.
-3. `Measurement Request`
-   - enter identifiers and preview request payload.
-4. `Results`
-   - inspect structured output and raw JSON (as endpoint wiring is added).
-5. `Analysis Viewer`
-   - review the reusable engineering layout while live analysis wiring expands.
+   - choose the endpoint visual you want to run from the operations menu.
+3. `PyPNM Target`
+   - switch to the correct configured backend instance for that operation.
+4. request form
+   - confirm the prefilled per-instance MAC, IP, TFTP, and SNMP defaults before running.
 
 ## Settings
 
@@ -36,17 +48,15 @@ Use it to switch the active backend instance without rebuilding the UI.
 - selected instance label and base URL
 - configured instance count
 - runtime health path from YAML config
+- selected instance request defaults for MAC, IP, and SNMP RW community
 
-## Operations Workbench
+## Runtime Config Changes
 
-The current operations page is organized around the Postman collection pattern:
+If you use:
 
-- folder-style catalog on the left
-- workflow workbench in the center
-- tabs for `Request`, `Run`, `Visual`, `Raw JSON`, and `History`
+```bash
+pypnm-webui config-menu
+```
 
-The first implemented workflow is:
-
-- `PNM / MultiCapture / Downstream / RxMER`
-
-Its `Echo Detection 1` analysis route is already bound to the reusable WebUI visual.
+then reload the page after saving changes. The UI reads
+`public/config/pypnm-instances.yaml` at startup and does not hot-reload that file.
