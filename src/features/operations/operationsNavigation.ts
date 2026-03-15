@@ -11,6 +11,33 @@ export interface OperationNavigationItem {
 // Edit this file to add top-row operation navigation entries.
 export const operationNavigationItems: OperationNavigationItem[] = [
   {
+    id: "docs-if31-us-ofdma-channel-stats",
+    label: "OFDMA Channel Stats",
+    routePath: "/operations/us-ofdma-channel-stats",
+    endpointPath: "/docs/if31/us/ofdma/channel/stats",
+    description: "DOCSIS 3.1 upstream OFDMA channel statistics visual.",
+    menuPath: ["DOCSIS 3.1", "Upstream"],
+    requestTimeoutMs: 90000,
+  },
+  {
+    id: "docs-fdd-diplexer-bandedgecapability",
+    label: "Diplexer Band Edge Capability",
+    routePath: "/operations/fdd-diplexer-band-edge-capability",
+    endpointPath: "/docs/fdd/diplexer/bandEdgeCapability",
+    description: "DOCSIS 4.0 FDD diplexer band edge capability visual.",
+    menuPath: ["DOCSIS 4.0", "FDD"],
+    requestTimeoutMs: 90000,
+  },
+  {
+    id: "docs-fdd-system-diplexer-configuration",
+    label: "System Diplexer Configuration",
+    routePath: "/operations/fdd-system-diplexer-configuration",
+    endpointPath: "/docs/fdd/system/diplexer/configuration",
+    description: "DOCSIS 4.0 FDD active system diplexer configuration visual.",
+    menuPath: ["DOCSIS 4.0", "FDD"],
+    requestTimeoutMs: 90000,
+  },
+  {
     id: "docs-if30-ds-scqam-chan-codeworderrorrate",
     label: "SCQAM Codeword Error Rate",
     routePath: "/operations/ds-scqam-codeword-error-rate",

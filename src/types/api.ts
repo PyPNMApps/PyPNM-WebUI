@@ -513,6 +513,91 @@ export interface DsScqamCodewordErrorRateResponse {
   results?: DsScqamCodewordErrorRateEntry[];
 }
 
+export interface FddDiplexerBandEdgeCapabilityEntryData {
+  docsFddDiplexerUsUpperBandEdgeCapability?: number;
+  docsFddDiplexerDsLowerBandEdgeCapability?: number;
+  docsFddDiplexerDsUpperBandEdgeCapability?: number;
+}
+
+export interface FddDiplexerBandEdgeCapabilityEntry {
+  index?: number;
+  entry?: FddDiplexerBandEdgeCapabilityEntryData;
+}
+
+export interface FddDiplexerBandEdgeCapabilityResponse {
+  mac_address?: string;
+  status?: number | string;
+  message?: string | null;
+  device?: {
+    mac_address?: string;
+    system_description?: SingleRxMerSystemDescription;
+  };
+  system_description?: SingleRxMerSystemDescription;
+  results?: FddDiplexerBandEdgeCapabilityEntry[];
+}
+
+export interface FddSystemDiplexerConfigurationEntryData {
+  docsFddCmFddSystemCfgStateDiplexerDsLowerBandEdgeCfg?: number;
+  docsFddCmFddSystemCfgStateDiplexerDsUpperBandEdgeCfg?: number;
+  docsFddCmFddSystemCfgStateDiplexerUsUpperBandEdgeCfg?: number;
+}
+
+export interface FddSystemDiplexerConfigurationEntry {
+  index?: number;
+  entry?: FddSystemDiplexerConfigurationEntryData;
+}
+
+export interface FddSystemDiplexerConfigurationResponse {
+  mac_address?: string;
+  status?: number | string;
+  message?: string | null;
+  device?: {
+    mac_address?: string;
+    system_description?: SingleRxMerSystemDescription;
+  };
+  system_description?: SingleRxMerSystemDescription;
+  results?: FddSystemDiplexerConfigurationEntry;
+}
+
+export interface If31UsOfdmaChannelEntryData {
+  docsIf31CmUsOfdmaChanChannelId?: number;
+  docsIf31CmUsOfdmaChanConfigChangeCt?: number;
+  docsIf31CmUsOfdmaChanSubcarrierZeroFreq?: number;
+  docsIf31CmUsOfdmaChanFirstActiveSubcarrierNum?: number;
+  docsIf31CmUsOfdmaChanLastActiveSubcarrierNum?: number;
+  docsIf31CmUsOfdmaChanNumActiveSubcarriers?: number;
+  docsIf31CmUsOfdmaChanSubcarrierSpacing?: number;
+  docsIf31CmUsOfdmaChanCyclicPrefix?: number;
+  docsIf31CmUsOfdmaChanRollOffPeriod?: number;
+  docsIf31CmUsOfdmaChanNumSymbolsPerFrame?: number;
+  docsIf31CmUsOfdmaChanTxPower?: number;
+  docsIf31CmUsOfdmaChanPreEqEnabled?: boolean;
+  docsIf31CmStatusOfdmaUsT3Timeouts?: number;
+  docsIf31CmStatusOfdmaUsT4Timeouts?: number;
+  docsIf31CmStatusOfdmaUsRangingAborteds?: number;
+  docsIf31CmStatusOfdmaUsT3Exceededs?: number;
+  docsIf31CmStatusOfdmaUsIsMuted?: boolean;
+  docsIf31CmStatusOfdmaUsRangingStatus?: number | string;
+}
+
+export interface If31UsOfdmaChannelEntry {
+  index?: number;
+  channel_id?: number;
+  entry?: If31UsOfdmaChannelEntryData;
+}
+
+export interface If31UsOfdmaChannelStatsResponse {
+  mac_address?: string;
+  status?: number | string;
+  message?: string | null;
+  device?: {
+    mac_address?: string;
+    system_description?: SingleRxMerSystemDescription;
+  };
+  system_description?: SingleRxMerSystemDescription;
+  results?: If31UsOfdmaChannelEntry[];
+}
+
 export interface SingleRxMerAnalysisEntry {
   mac_address?: string;
   channel_id?: number;
