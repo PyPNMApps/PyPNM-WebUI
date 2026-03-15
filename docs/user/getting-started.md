@@ -8,6 +8,9 @@ From the repo root:
 ./install.sh
 ```
 
+Details:
+- [Install And Bootstrap](install-and-bootstrap.md)
+
 ## 2. Configure API endpoint
 
 Edit `.env` if your PyPNM API is not local default:

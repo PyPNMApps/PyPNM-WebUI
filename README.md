@@ -15,13 +15,7 @@ Frontend-only web client for PyPNM REST APIs.
 ./install.sh
 ```
 
-What `install.sh` does:
-- installs `nvm` if missing
-- installs/uses Node 22
-- sets Node 22 as default
-- creates `.env` from `.env.example` if needed
-- runs `npm install`
-- creates `.venv` and installs Python release-tool dependencies
+- [Install And Bootstrap](docs/user/install-and-bootstrap.md)
 
 ## Run locally
 
@@ -86,6 +80,7 @@ npm run test
 ## User docs
 
 - [Getting Started](docs/user/getting-started.md)
+- [Install And Bootstrap](docs/user/install-and-bootstrap.md)
 - [Release Helpers](docs/user/release-helpers.md)
 - [Using The UI](docs/user/using-the-ui.md)
 - [Troubleshooting](docs/user/troubleshooting.md)
