@@ -1,5 +1,6 @@
 import { requestWithBaseUrl } from "@/services/http";
 import type {
+  DeviceEventLogRequest,
   SingleConstellationDisplayCaptureRequest,
   SingleFecSummaryCaptureRequest,
   SingleHistogramCaptureRequest,
@@ -11,6 +12,7 @@ export async function runSingleCaptureEndpoint<TResponse>(
   baseUrl: string,
   endpointPath: string,
   payload:
+    | DeviceEventLogRequest
     | SingleRxMerCaptureRequest
     | SingleHistogramCaptureRequest
     | SingleFecSummaryCaptureRequest

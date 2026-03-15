@@ -651,6 +651,60 @@ pre {
   gap: 18px;
 }
 
+.event-level-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 3px 8px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.04);
+  font-weight: 700;
+}
+
+.event-level-pill.lvl6 {
+  color: #ff6b6b;
+  border-color: rgba(255, 107, 107, 0.35);
+  background: rgba(255, 107, 107, 0.12);
+}
+
+.event-level-pill.lvl5 {
+  color: #ffcc66;
+  border-color: rgba(255, 204, 102, 0.35);
+  background: rgba(255, 204, 102, 0.12);
+}
+
+.event-level-pill.lvl4 {
+  color: #8fd3ff;
+  border-color: rgba(143, 211, 255, 0.35);
+  background: rgba(143, 211, 255, 0.12);
+}
+
+.event-level-pill.lvl3 {
+  color: #b8ffb0;
+  border-color: rgba(184, 255, 176, 0.35);
+  background: rgba(184, 255, 176, 0.1);
+}
+
+.event-log-text-cell {
+  max-width: 720px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.event-log-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.event-log-metric-value {
+  font-size: 16px;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
 .channel-est-grid {
   display: grid;
   grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);

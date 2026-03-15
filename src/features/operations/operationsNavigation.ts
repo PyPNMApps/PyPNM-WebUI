@@ -10,6 +10,14 @@ export interface OperationNavigationItem {
 // Edit this file to add top-row operation navigation entries.
 export const operationNavigationItems: OperationNavigationItem[] = [
   {
+    id: "docs-dev-eventlog",
+    label: "Event Log",
+    routePath: "/operations/event-log",
+    endpointPath: "/docs/dev/eventLog",
+    description: "Device event log visual.",
+    menuPath: ["Device", "Logs"],
+  },
+  {
     id: "docs-pnm-ds-ofdm-rxmer-getcapture",
     label: "RxMER",
     routePath: "/operations/rxmer",

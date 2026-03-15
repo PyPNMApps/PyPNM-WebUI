@@ -6,11 +6,13 @@ import { useInstanceConfig } from "@/app/useInstanceConfig";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Panel } from "@/components/common/Panel";
 import { ConstellationDisplayCaptureRequestForm } from "@/features/operations/ConstellationDisplayCaptureRequestForm";
+import { EventLogRequestForm } from "@/features/operations/EventLogRequestForm";
 import { HistogramCaptureRequestForm } from "@/features/operations/HistogramCaptureRequestForm";
 import { FecSummaryCaptureRequestForm } from "@/features/operations/FecSummaryCaptureRequestForm";
 import { SingleCaptureRequestForm } from "@/features/operations/SingleCaptureRequestForm";
 import { SingleChannelEstCoeffCaptureView } from "@/features/operations/SingleChannelEstCoeffCaptureView";
 import { SingleConstellationDisplayCaptureView } from "@/features/operations/SingleConstellationDisplayCaptureView";
+import { SingleDeviceEventLogView } from "@/features/operations/SingleDeviceEventLogView";
 import { SingleFecSummaryCaptureView } from "@/features/operations/SingleFecSummaryCaptureView";
 import { getOperationByRoutePath, operationNavigationItems } from "@/features/operations/operationsNavigation";
 import { SingleHistogramCaptureView } from "@/features/operations/SingleHistogramCaptureView";
@@ -18,12 +20,15 @@ import { SingleModulationProfileCaptureView } from "@/features/operations/Single
 import { SingleRxMerCaptureView } from "@/features/operations/SingleRxMerCaptureView";
 import { singleChannelEstCoeffFixture } from "@/features/operations/singleChannelEstCoeffFixture";
 import { singleConstellationDisplayFixture } from "@/features/operations/singleConstellationDisplayFixture";
+import { singleDeviceEventLogFixture } from "@/features/operations/singleDeviceEventLogFixture";
 import { singleFecSummaryFixture } from "@/features/operations/singleFecSummaryFixture";
 import { singleHistogramFixture } from "@/features/operations/singleHistogramFixture";
 import { singleModulationProfileFixture } from "@/features/operations/singleModulationProfileFixture";
 import { singleRxMerFixture } from "@/features/operations/singleRxMerFixture";
 import { runSingleCaptureEndpoint } from "@/services/singleCaptureService";
 import type {
+  DeviceEventLogRequest,
+  DeviceEventLogResponse,
   SingleChannelEstCoeffCaptureResponse,
   SingleConstellationDisplayCaptureRequest,
   SingleConstellationDisplayCaptureResponse,
@@ -43,6 +48,7 @@ export function EndpointExplorerPage() {
   const [rxMerResponse, setRxMerResponse] = useState<SingleRxMerCaptureResponse>(singleRxMerFixture);
   const [channelEstResponse, setChannelEstResponse] = useState<SingleChannelEstCoeffCaptureResponse>(singleChannelEstCoeffFixture);
   const [constellationResponse, setConstellationResponse] = useState<SingleConstellationDisplayCaptureResponse>(singleConstellationDisplayFixture);
+  const [eventLogResponse, setEventLogResponse] = useState<DeviceEventLogResponse>(singleDeviceEventLogFixture);
   const [fecSummaryResponse, setFecSummaryResponse] = useState<SingleFecSummaryCaptureResponse>(singleFecSummaryFixture);
   const [histogramResponse, setHistogramResponse] = useState<SingleHistogramCaptureResponse>(singleHistogramFixture);
   const [modulationProfileResponse, setModulationProfileResponse] = useState<SingleModulationProfileCaptureResponse>(singleModulationProfileFixture);
@@ -54,6 +60,7 @@ export function EndpointExplorerPage() {
     }: {
       endpointPath: string;
       payload:
+        | DeviceEventLogRequest
         | SingleRxMerCaptureRequest
         | SingleHistogramCaptureRequest
         | SingleFecSummaryCaptureRequest
@@ -61,6 +68,7 @@ export function EndpointExplorerPage() {
         | SingleModulationProfileCaptureRequest;
     }) =>
       runSingleCaptureEndpoint<
+        | DeviceEventLogResponse
         | SingleRxMerCaptureResponse
         | SingleChannelEstCoeffCaptureResponse
         | SingleHistogramCaptureResponse
@@ -73,6 +81,11 @@ export function EndpointExplorerPage() {
         payload,
       ),
     onSuccess: (data) => {
+      if (selectedOperation?.id === "docs-dev-eventlog") {
+        setEventLogResponse(data as DeviceEventLogResponse);
+        return;
+      }
+
       if (selectedOperation?.id === "docs-pnm-ds-ofdm-rxmer-getcapture") {
         setRxMerResponse(data as SingleRxMerCaptureResponse);
         return;
@@ -112,7 +125,17 @@ export function EndpointExplorerPage() {
     <>
       <PageHeader title={selectedOperation.label} subtitle="" />
       <Panel title="Capture Inputs">
-        {selectedOperation.id === "docs-pnm-ds-histogram-getcapture" ? (
+        {selectedOperation.id === "docs-dev-eventlog" ? (
+          <EventLogRequestForm
+            isPending={mutation.isPending}
+            canRun={Boolean(selectedInstance)}
+            submitLabel={`Run ${selectedOperation.label}`}
+            errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            onSubmit={(payload) => {
+              mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
+            }}
+          />
+        ) : selectedOperation.id === "docs-pnm-ds-histogram-getcapture" ? (
           <HistogramCaptureRequestForm
             isPending={mutation.isPending}
             canRun={Boolean(selectedInstance)}
@@ -156,7 +179,9 @@ export function EndpointExplorerPage() {
       </Panel>
 
       <Panel>
-        {selectedOperation.id === "docs-pnm-ds-ofdm-rxmer-getcapture" ? (
+        {selectedOperation.id === "docs-dev-eventlog" ? (
+          <SingleDeviceEventLogView response={eventLogResponse} />
+        ) : selectedOperation.id === "docs-pnm-ds-ofdm-rxmer-getcapture" ? (
           <SingleRxMerCaptureView response={rxMerResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-modulationprofile-getcapture" ? (
           <SingleModulationProfileCaptureView response={modulationProfileResponse} />

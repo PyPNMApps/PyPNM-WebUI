@@ -175,12 +175,45 @@ export interface SingleHistogramCaptureRequest {
   };
 }
 
+export interface DeviceEventLogRequest {
+  cable_modem: {
+    mac_address: string;
+    ip_address: string;
+    snmp: {
+      snmpV2C: {
+        community: string;
+      };
+    };
+  };
+}
+
 export interface SingleRxMerSystemDescription {
   HW_REV?: string;
   VENDOR?: string;
   BOOTR?: string;
   SW_REV?: string;
   MODEL?: string;
+}
+
+export interface DeviceEventLogEntry {
+  docsDevEvFirstTime?: string;
+  docsDevEvLastTime?: string;
+  docsDevEvCounts?: number | string;
+  docsDevEvLevel?: number | string;
+  docsDevEvId?: number | string;
+  docsDevEvText?: string;
+}
+
+export interface DeviceEventLogResponse {
+  mac_address?: string;
+  status?: number | string;
+  message?: string | null;
+  system_description?: SingleRxMerSystemDescription;
+  device?: {
+    mac_address?: string;
+    system_description?: SingleRxMerSystemDescription;
+  };
+  logs?: DeviceEventLogEntry[];
 }
 
 export interface SingleRxMerAnalysisEntry {
