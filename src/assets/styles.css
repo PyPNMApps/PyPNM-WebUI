@@ -1216,12 +1216,15 @@ pre {
 
 .atdma-preeq-bars {
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(42px, 1fr);
   gap: 6px;
   min-height: 220px;
   align-items: end;
+  overflow-x: hidden;
+}
+
+.atdma-preeq-bars.scroll {
   overflow-x: auto;
+  padding-bottom: 8px;
 }
 
 .atdma-preeq-bar-column {
@@ -1238,21 +1241,27 @@ pre {
   padding: 4px;
   display: flex;
   align-items: end;
+  overflow: hidden;
 }
 
 .atdma-preeq-bar {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   min-height: 8px;
   border-radius: 8px 8px 4px 4px;
   background: linear-gradient(180deg, rgba(121, 169, 255, 0.95), rgba(88, 208, 167, 0.55));
+  box-sizing: border-box;
 }
 
 .atdma-preeq-bar.main {
   background: linear-gradient(180deg, rgba(241, 196, 15, 0.98), rgba(251, 191, 36, 0.70));
+  width: 100%;
 }
 
 .atdma-preeq-bar.postpeak {
   background: linear-gradient(180deg, rgba(251, 113, 133, 0.98), rgba(96, 165, 250, 0.55));
+  width: 100%;
 }
 
 .atdma-preeq-bar-label {

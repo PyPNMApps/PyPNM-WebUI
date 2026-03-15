@@ -79,8 +79,14 @@ function TapBars({ taps, mainIdx, postPeakIdx }: { taps: AtdmaPreEqTap[]; mainId
   const maxDb = values.length ? Math.max(...values) : 0;
   const span = Math.max(1, maxDb - minDb);
 
+  const shouldScroll = taps.length > 16;
+  const minColumnWidth = shouldScroll ? 32 : 28;
+
   return (
-    <div className="atdma-preeq-bars">
+    <div
+      className={shouldScroll ? "atdma-preeq-bars scroll" : "atdma-preeq-bars"}
+      style={{ gridTemplateColumns: `repeat(${taps.length}, minmax(${minColumnWidth}px, 1fr))` }}
+    >
       {taps.map((tap, index) => {
         const db = asNumber(tap.magnitude_power_dB);
         const pct = db === null ? 6 : Math.max(6, Math.min(100, ((db - minDb) / span) * 100));
@@ -139,7 +145,6 @@ export function SingleAtdmaPreEqualizationView({ response }: { response: AtdmaPr
             <div className="grid two">
               <Panel title="Tap Magnitude Power">
                 <TapBars taps={taps} mainIdx={mainIdx} postPeakIdx={postPeakIdx} />
-                <p className="panel-copy">MAIN is highlighted. Strongest post-main tap is highlighted separately.</p>
               </Panel>
               <Panel title="Channel Metrics">
                 <div className="settings-definition-list">
