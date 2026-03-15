@@ -16,6 +16,8 @@ import { SingleAtdmaChannelStatsView } from "@/features/operations/SingleAtdmaCh
 import { SingleFddDiplexerBandEdgeCapabilityView } from "@/features/operations/SingleFddDiplexerBandEdgeCapabilityView";
 import { SingleFddSystemDiplexerConfigurationView } from "@/features/operations/SingleFddSystemDiplexerConfigurationView";
 import { SingleIf31UsOfdmaChannelStatsView } from "@/features/operations/SingleIf31UsOfdmaChannelStatsView";
+import { SingleIf31DsOfdmProfileStatsView } from "@/features/operations/SingleIf31DsOfdmProfileStatsView";
+import { SingleIf31SystemDiplexerView } from "@/features/operations/SingleIf31SystemDiplexerView";
 import { SingleDsScqamCodewordErrorRateView } from "@/features/operations/SingleDsScqamCodewordErrorRateView";
 import { SingleDsScqamChannelStatsView } from "@/features/operations/SingleDsScqamChannelStatsView";
 import { SingleAtdmaPreEqualizationView } from "@/features/operations/SingleAtdmaPreEqualizationView";
@@ -41,6 +43,8 @@ import { singleFddDiplexerBandEdgeCapabilityFixture } from "@/features/operation
 import { singleFddSystemDiplexerConfigurationFixture } from "@/features/operations/singleFddSystemDiplexerConfigurationFixture";
 import { singleHistogramFixture } from "@/features/operations/singleHistogramFixture";
 import { singleIf31UsOfdmaChannelStatsFixture } from "@/features/operations/singleIf31UsOfdmaChannelStatsFixture";
+import { singleIf31DsOfdmProfileStatsFixture } from "@/features/operations/singleIf31DsOfdmProfileStatsFixture";
+import { singleIf31SystemDiplexerFixture } from "@/features/operations/singleIf31SystemDiplexerFixture";
 import { singleInterfaceStatsFixture } from "@/features/operations/singleInterfaceStatsFixture";
 import { singleModulationProfileFixture } from "@/features/operations/singleModulationProfileFixture";
 import { singleRxMerFixture } from "@/features/operations/singleRxMerFixture";
@@ -50,7 +54,9 @@ import type {
   AtdmaChannelStatsResponse,
   FddDiplexerBandEdgeCapabilityResponse,
   FddSystemDiplexerConfigurationResponse,
+  If31DsOfdmProfileStatsResponse,
   If31UsOfdmaChannelStatsResponse,
+  If31SystemDiplexerResponse,
   DsScqamCodewordErrorRateRequest,
   DsScqamCodewordErrorRateResponse,
   DsScqamChannelStatsResponse,
@@ -95,7 +101,9 @@ export function EndpointExplorerPage() {
   const [atdmaChannelStatsResponse, setAtdmaChannelStatsResponse] = useState<AtdmaChannelStatsResponse>(singleAtdmaChannelStatsFixture);
   const [fddDiplexerBandEdgeCapabilityResponse, setFddDiplexerBandEdgeCapabilityResponse] = useState<FddDiplexerBandEdgeCapabilityResponse>(singleFddDiplexerBandEdgeCapabilityFixture);
   const [fddSystemDiplexerConfigurationResponse, setFddSystemDiplexerConfigurationResponse] = useState<FddSystemDiplexerConfigurationResponse>(singleFddSystemDiplexerConfigurationFixture);
+  const [if31DsOfdmProfileStatsResponse, setIf31DsOfdmProfileStatsResponse] = useState<If31DsOfdmProfileStatsResponse>(singleIf31DsOfdmProfileStatsFixture);
   const [if31UsOfdmaChannelStatsResponse, setIf31UsOfdmaChannelStatsResponse] = useState<If31UsOfdmaChannelStatsResponse>(singleIf31UsOfdmaChannelStatsFixture);
+  const [if31SystemDiplexerResponse, setIf31SystemDiplexerResponse] = useState<If31SystemDiplexerResponse>(singleIf31SystemDiplexerFixture);
   const [dsScqamCodewordErrorRateResponse, setDsScqamCodewordErrorRateResponse] = useState<DsScqamCodewordErrorRateResponse>(singleDsScqamCodewordErrorRateFixture);
   const [dsScqamChannelStatsResponse, setDsScqamChannelStatsResponse] = useState<DsScqamChannelStatsResponse>(singleDsScqamChannelStatsFixture);
   const [atdmaPreEqualizationResponse, setAtdmaPreEqualizationResponse] = useState<AtdmaPreEqualizationResponse>(singleAtdmaPreEqualizationFixture);
@@ -129,7 +137,9 @@ export function EndpointExplorerPage() {
         | AtdmaChannelStatsResponse
         | FddDiplexerBandEdgeCapabilityResponse
         | FddSystemDiplexerConfigurationResponse
+        | If31DsOfdmProfileStatsResponse
         | If31UsOfdmaChannelStatsResponse
+        | If31SystemDiplexerResponse
         | DsScqamCodewordErrorRateResponse
         | DsScqamChannelStatsResponse
         | AtdmaPreEqualizationResponse
@@ -149,6 +159,16 @@ export function EndpointExplorerPage() {
         selectedOperation?.requestTimeoutMs,
       ),
     onSuccess: (data) => {
+      if (selectedOperation?.id === "docs-if31-ds-ofdm-profile-stats") {
+        setIf31DsOfdmProfileStatsResponse(data as If31DsOfdmProfileStatsResponse);
+        return;
+      }
+
+      if (selectedOperation?.id === "docs-if31-system-diplexer") {
+        setIf31SystemDiplexerResponse(data as If31SystemDiplexerResponse);
+        return;
+      }
+
       if (selectedOperation?.id === "docs-if31-us-ofdma-channel-stats") {
         setIf31UsOfdmaChannelStatsResponse(data as If31UsOfdmaChannelStatsResponse);
         return;
@@ -236,6 +256,10 @@ export function EndpointExplorerPage() {
 
   const selectedResponse = selectedOperation.id === "docs-if30-ds-scqam-chan-codeworderrorrate"
     ? dsScqamCodewordErrorRateResponse
+    : selectedOperation.id === "docs-if31-ds-ofdm-profile-stats"
+      ? if31DsOfdmProfileStatsResponse
+    : selectedOperation.id === "docs-if31-system-diplexer"
+      ? if31SystemDiplexerResponse
     : selectedOperation.id === "docs-if31-us-ofdma-channel-stats"
       ? if31UsOfdmaChannelStatsResponse
     : selectedOperation.id === "docs-fdd-system-diplexer-configuration"
@@ -280,7 +304,7 @@ export function EndpointExplorerPage() {
               mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
             }}
           />
-        ) : selectedOperation.id === "docs-dev-eventlog" || selectedOperation.id === "system-uptime" || selectedOperation.id === "docs-pnm-interface-stats" || selectedOperation.id === "docs-if30-us-atdma-chan-stats" || selectedOperation.id === "docs-if30-us-atdma-chan-preequalization" || selectedOperation.id === "docs-if30-ds-scqam-chan-stats" || selectedOperation.id === "docs-fdd-diplexer-bandedgecapability" || selectedOperation.id === "docs-fdd-system-diplexer-configuration" || selectedOperation.id === "docs-if31-us-ofdma-channel-stats" ? (
+        ) : selectedOperation.id === "docs-dev-eventlog" || selectedOperation.id === "system-uptime" || selectedOperation.id === "docs-pnm-interface-stats" || selectedOperation.id === "docs-if30-us-atdma-chan-stats" || selectedOperation.id === "docs-if30-us-atdma-chan-preequalization" || selectedOperation.id === "docs-if30-ds-scqam-chan-stats" || selectedOperation.id === "docs-fdd-diplexer-bandedgecapability" || selectedOperation.id === "docs-fdd-system-diplexer-configuration" || selectedOperation.id === "docs-if31-us-ofdma-channel-stats" || selectedOperation.id === "docs-if31-system-diplexer" || selectedOperation.id === "docs-if31-ds-ofdm-profile-stats" ? (
           <DeviceConnectRequestForm
             isPending={mutation.isPending}
             canRun={Boolean(selectedInstance)}
@@ -352,7 +376,11 @@ export function EndpointExplorerPage() {
       </div>
 
       <Panel>
-        {selectedOperation.id === "docs-if31-us-ofdma-channel-stats" ? (
+        {selectedOperation.id === "docs-if31-ds-ofdm-profile-stats" ? (
+          <SingleIf31DsOfdmProfileStatsView response={if31DsOfdmProfileStatsResponse} />
+        ) : selectedOperation.id === "docs-if31-system-diplexer" ? (
+          <SingleIf31SystemDiplexerView response={if31SystemDiplexerResponse} />
+        ) : selectedOperation.id === "docs-if31-us-ofdma-channel-stats" ? (
           <SingleIf31UsOfdmaChannelStatsView response={if31UsOfdmaChannelStatsResponse} />
         ) : selectedOperation.id === "docs-fdd-system-diplexer-configuration" ? (
           <SingleFddSystemDiplexerConfigurationView response={fddSystemDiplexerConfigurationResponse} />

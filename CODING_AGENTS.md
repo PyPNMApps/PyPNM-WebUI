@@ -24,6 +24,10 @@
 - When PyPNM already has a canonical enum or shared data type for a concept
   such as PNM file types, mirror that type once in the WebUI and reuse it
   instead of scattering raw string literals or duplicate local variants.
+- Mirror common sanitized PyPNM placeholder data once in shared modules and
+  reuse it across fixtures and sample payloads. For system descriptions, use
+  the shared generic JSON `{\"HW_REV\":\"1.0\",\"VENDOR\":\"LANCity\",\"BOOTR\":\"NONE\",\"SW_REV\":\"1.0.0\",\"MODEL\":\"LCPET-3\"}`
+  via a common constant instead of repeating inline objects.
 - Validate external API payloads at boundaries (for example with Zod).
 - Prefer shared type aliases/interfaces over ad-hoc inline types.
 
@@ -72,6 +76,9 @@
 
 - Do not commit secrets, tokens, or private credentials.
 - Use generic/sanitized example values in docs and fixtures.
+- Treat generic placeholder metadata such as the shared system description as
+  part of sanitization. Do not introduce endpoint-local variants unless the
+  change is intentional and documented.
 - Avoid embedding real customer/device identifiers in static assets or sample payloads.
 
 ## Testing Expectations (Required)

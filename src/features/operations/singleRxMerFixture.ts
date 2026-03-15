@@ -1,13 +1,8 @@
+import { cloneGenericSystemDescription } from "@/lib/pypnm/genericSystemDescription";
 import type { SingleRxMerCaptureResponse } from "@/types/api";
 
 export const singleRxMerFixture: SingleRxMerCaptureResponse = {
-  system_description: {
-    HW_REV: "1.0",
-    VENDOR: "LANCity",
-    BOOTR: "NONE",
-    SW_REV: "1.0.0",
-    MODEL: "LCPET-3",
-  },
+  system_description: cloneGenericSystemDescription(),
   mac_address: "aa:bb:cc:dd:ee:ff",
   status: 0,
   message: null,
@@ -44,13 +39,7 @@ export const singleRxMerFixture: SingleRxMerCaptureResponse = {
           slope: [45.8, 45.6, 45.4, 45.2, 45.0, 44.8, 44.6, 44.4, 44.2, 44.0, 43.8, 43.6, 43.4, 43.2, 43.0, 42.8],
         },
         device_details: {
-          system_description: {
-            HW_REV: "1.0",
-            VENDOR: "LANCity",
-            BOOTR: "NONE",
-            SW_REV: "1.0.0",
-            MODEL: "LCPET-3",
-          },
+          system_description: cloneGenericSystemDescription(),
         },
       },
       {
@@ -81,13 +70,7 @@ export const singleRxMerFixture: SingleRxMerCaptureResponse = {
           slope: [46.2, 46.15, 46.1, 46.05, 46.0, 45.95, 45.9, 45.85, 45.8, 45.75, 45.7, 45.65, 45.6, 45.55, 45.5, 45.45],
         },
         device_details: {
-          system_description: {
-            HW_REV: "1.0",
-            VENDOR: "LANCity",
-            BOOTR: "NONE",
-            SW_REV: "1.0.0",
-            MODEL: "LCPET-3",
-          },
+          system_description: cloneGenericSystemDescription(),
         },
       },
     ],

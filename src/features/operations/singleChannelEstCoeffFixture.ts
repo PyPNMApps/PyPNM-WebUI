@@ -1,13 +1,8 @@
+import { cloneGenericSystemDescription } from "@/lib/pypnm/genericSystemDescription";
 import type { SingleChannelEstCoeffCaptureResponse } from "@/types/api";
 
 export const singleChannelEstCoeffFixture: SingleChannelEstCoeffCaptureResponse = {
-  system_description: {
-    HW_REV: "1.0",
-    VENDOR: "LANCity",
-    BOOTR: "NONE",
-    SW_REV: "1.0.0",
-    MODEL: "LCPET-3",
-  },
+  system_description: cloneGenericSystemDescription(),
   mac_address: "aa:bb:cc:dd:ee:ff",
   status: 0,
   message: null,
@@ -18,13 +13,7 @@ export const singleChannelEstCoeffFixture: SingleChannelEstCoeffCaptureResponse 
         channel_id: 194,
         pnm_header: { capture_time: 1772952501 },
         device_details: {
-          system_description: {
-            HW_REV: "1.0",
-            VENDOR: "LANCity",
-            BOOTR: "NONE",
-            SW_REV: "1.0.0",
-            MODEL: "LCPET-3",
-          },
+          system_description: cloneGenericSystemDescription(),
         },
         carrier_values: {
           carrier_count: 8,
@@ -63,13 +52,7 @@ export const singleChannelEstCoeffFixture: SingleChannelEstCoeffCaptureResponse 
         channel_id: 196,
         pnm_header: { capture_time: 1772952501 },
         device_details: {
-          system_description: {
-            HW_REV: "1.0",
-            VENDOR: "LANCity",
-            BOOTR: "NONE",
-            SW_REV: "1.0.0",
-            MODEL: "LCPET-3",
-          },
+          system_description: cloneGenericSystemDescription(),
         },
         carrier_values: {
           carrier_count: 8,

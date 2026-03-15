@@ -11,6 +11,24 @@ export interface OperationNavigationItem {
 // Edit this file to add top-row operation navigation entries.
 export const operationNavigationItems: OperationNavigationItem[] = [
   {
+    id: "docs-if31-ds-ofdm-profile-stats",
+    label: "OFDM Profile Stats",
+    routePath: "/operations/ds-ofdm-profile-stats",
+    endpointPath: "/docs/if31/ds/ofdm/profile/stats",
+    description: "DOCSIS 3.1 downstream OFDM profile statistics visual.",
+    menuPath: ["DOCSIS 3.1", "Downstream"],
+    requestTimeoutMs: 90000,
+  },
+  {
+    id: "docs-if31-system-diplexer",
+    label: "System Diplexer",
+    routePath: "/operations/if31-system-diplexer",
+    endpointPath: "/docs/if31/system/diplexer",
+    description: "DOCSIS 3.1 system diplexer configuration visual.",
+    menuPath: ["DOCSIS 3.1", "System"],
+    requestTimeoutMs: 90000,
+  },
+  {
     id: "docs-if31-us-ofdma-channel-stats",
     label: "OFDMA Channel Stats",
     routePath: "/operations/us-ofdma-channel-stats",

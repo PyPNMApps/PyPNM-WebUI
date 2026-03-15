@@ -598,6 +598,62 @@ export interface If31UsOfdmaChannelStatsResponse {
   results?: If31UsOfdmaChannelEntry[];
 }
 
+export interface If31DsOfdmProfileStat {
+  docsIf31CmDsOfdmProfileStatsConfigChangeCt?: number;
+  docsIf31CmDsOfdmProfileStatsTotalCodewords?: number;
+  docsIf31CmDsOfdmProfileStatsCorrectedCodewords?: number;
+  docsIf31CmDsOfdmProfileStatsUncorrectableCodewords?: number;
+  docsIf31CmDsOfdmProfileStatsInOctets?: number;
+  docsIf31CmDsOfdmProfileStatsInUnicastOctets?: number;
+  docsIf31CmDsOfdmProfileStatsInMulticastOctets?: number;
+  docsIf31CmDsOfdmProfileStatsInFrames?: number;
+  docsIf31CmDsOfdmProfileStatsInUnicastFrames?: number;
+  docsIf31CmDsOfdmProfileStatsInMulticastFrames?: number;
+  docsIf31CmDsOfdmProfileStatsInFrameCrcFailures?: number;
+  docsIf31CmDsOfdmProfileStatsCtrDiscontinuityTime?: number;
+}
+
+export interface If31DsOfdmProfileStatsChannel {
+  index?: number;
+  channel_id?: number;
+  profiles?: Record<string, If31DsOfdmProfileStat>;
+}
+
+export interface If31DsOfdmProfileStatsResponse {
+  mac_address?: string;
+  status?: number | string;
+  message?: string | null;
+  device?: {
+    mac_address?: string;
+    system_description?: SingleRxMerSystemDescription;
+  };
+  system_description?: SingleRxMerSystemDescription;
+  results?: If31DsOfdmProfileStatsChannel[];
+}
+
+export interface If31SystemDiplexer {
+  diplexer_capability?: number;
+  cfg_band_edge?: number;
+  ds_lower_capability?: number;
+  cfg_ds_lower_band_edge?: number;
+  ds_upper_capability?: number;
+  cfg_ds_upper_band_edge?: number;
+}
+
+export interface If31SystemDiplexerResponse {
+  mac_address?: string;
+  status?: number | string;
+  message?: string | null;
+  device?: {
+    mac_address?: string;
+    system_description?: SingleRxMerSystemDescription;
+  };
+  system_description?: SingleRxMerSystemDescription;
+  results?: {
+    diplexer?: If31SystemDiplexer;
+  };
+}
+
 export interface SingleRxMerAnalysisEntry {
   mac_address?: string;
   channel_id?: number;

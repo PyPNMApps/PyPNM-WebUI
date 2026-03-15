@@ -1,13 +1,8 @@
+import { cloneGenericSystemDescription } from "@/lib/pypnm/genericSystemDescription";
 import type { SingleFecSummaryCaptureResponse } from "@/types/api";
 
 export const singleFecSummaryFixture: SingleFecSummaryCaptureResponse = {
-  system_description: {
-    HW_REV: "1.0",
-    VENDOR: "LANCity",
-    BOOTR: "NONE",
-    SW_REV: "1.0.0",
-    MODEL: "LCPET-3",
-  },
+  system_description: cloneGenericSystemDescription(),
   mac_address: "aa:bb:cc:dd:ee:ff",
   status: 0,
   message: null,
@@ -16,13 +11,7 @@ export const singleFecSummaryFixture: SingleFecSummaryCaptureResponse = {
       {
         channel_id: 193,
         device_details: {
-          system_description: {
-            HW_REV: "1.0",
-            VENDOR: "LANCity",
-            BOOTR: "NONE",
-            SW_REV: "1.0.0",
-            MODEL: "LCPET-3",
-          },
+          system_description: cloneGenericSystemDescription(),
         },
         profiles: [
           {

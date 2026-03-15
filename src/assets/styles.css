@@ -1095,6 +1095,7 @@ pre {
 
   .analysis-summary-grid,
   .analysis-channels-grid,
+  .profile-stats-channel-grid,
   .analysis-small-metrics,
   .channel-est-grid,
   .channel-est-measurement-grid,
@@ -1321,6 +1322,18 @@ pre {
   font-size: 10px;
   line-height: 1.4;
   margin-bottom: 8px;
+}
+
+.profile-stats-channel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.profile-stats-stack {
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
 }
 
 .scqam-codeword-value {
