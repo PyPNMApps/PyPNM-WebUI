@@ -3,8 +3,10 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { useInstanceConfig } from "@/app/useInstanceConfig";
 import { PageHeader } from "@/components/common/PageHeader";
+import { FieldLabel } from "@/components/common/FieldLabel";
 import { Panel } from "@/components/common/Panel";
 import { ThinkingIndicator } from "@/components/common/ThinkingIndicator";
+import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import { formatEpochSecondsUtc } from "@/lib/formatters/dateTime";
 import {
   getPnmFileAnalysis,
@@ -126,7 +128,7 @@ export function FileListPage() {
         <Panel title="Browse">
           <div className="files-toolbar">
             <div className="files-toolbar-field">
-              <label htmlFor="files-mac-search">MAC Address</label>
+              <FieldLabel htmlFor="files-mac-search" hint={requestFieldHints.file_mac_search}>MAC Address</FieldLabel>
               <input
                 id="files-mac-search"
                 value={macSearchInput}
@@ -167,7 +169,7 @@ export function FileListPage() {
         <Panel title="Upload">
           <div className="files-upload-grid">
             <div className="files-toolbar-field">
-              <label htmlFor="files-upload-input">PNM File</label>
+              <FieldLabel htmlFor="files-upload-input" hint={requestFieldHints.upload_pnm_file}>PNM File</FieldLabel>
               <input
                 id="files-upload-input"
                 type="file"
@@ -197,9 +199,7 @@ export function FileListPage() {
               <span className="analysis-chip"><b>Filename</b> {uploadedFile.filename}</span>
               <span className="analysis-chip"><b>Transaction</b> {uploadedFile.transaction_id}</span>
             </div>
-          ) : (
-            <p className="panel-copy">Upload accepts raw PNM capture files and registers a new transaction in PyPNM.</p>
-          )}
+          ) : null}
         </Panel>
       </div>
 
@@ -248,7 +248,7 @@ export function FileListPage() {
         <Panel title="Archive And Direct Download">
           <div className="files-direct-grid">
             <div className="files-toolbar-field">
-              <label htmlFor="files-filename-download">Filename</label>
+              <FieldLabel htmlFor="files-filename-download" hint={requestFieldHints.direct_downloads}>Filename</FieldLabel>
               <input
                 id="files-filename-download"
                 value={filenameDownloadInput}
@@ -257,7 +257,7 @@ export function FileListPage() {
               />
             </div>
             <div className="files-toolbar-field">
-              <label htmlFor="files-operation-download">Operation ID</label>
+              <FieldLabel htmlFor="files-operation-download" hint={requestFieldHints.direct_downloads}>Operation ID</FieldLabel>
               <input
                 id="files-operation-download"
                 value={operationDownloadInput}
@@ -284,9 +284,6 @@ export function FileListPage() {
               ) : null}
             </div>
           </div>
-          <p className="panel-copy">
-            Use the selected MAC archive in the browse panel, or download directly by stored filename and operation ID here.
-          </p>
         </Panel>
       </div>
 
@@ -365,12 +362,14 @@ export function FileListPage() {
       </Panel>
 
       <Panel title="Inspect Selected Transaction">
-        <div className="files-toolbar">
-          <div className="files-toolbar-field files-bytes-field">
-            <label htmlFor="files-bytes-per-line">Hexdump Bytes / Line</label>
-            <input
-              id="files-bytes-per-line"
-              value={hexdumpBytesPerLine}
+          <div className="files-toolbar">
+            <div className="files-toolbar-field files-bytes-field">
+              <FieldLabel htmlFor="files-bytes-per-line" hint={requestFieldHints.hexdump_bytes_per_line}>
+                Hexdump Bytes / Line
+              </FieldLabel>
+              <input
+                id="files-bytes-per-line"
+                value={hexdumpBytesPerLine}
               onChange={(event) => setHexdumpBytesPerLine(event.target.value)}
               inputMode="numeric"
             />

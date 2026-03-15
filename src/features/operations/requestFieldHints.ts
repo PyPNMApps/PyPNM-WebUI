@@ -5,4 +5,13 @@ export const requestFieldHints = {
   tftp_ipv6: "IPv6 address of the TFTP server used for capture retrieval.",
   channel_ids: "0 means all channels.",
   snmp_rw_community: "SNMP read-write community string used for the request.",
+  sample_duration: "Histogram sample duration in seconds.",
+  fec_summary_type: "Choose the backend FEC window to request.",
+  display_cross_hair: "Show or hide the constellation cross-hair overlay.",
+  modulation_order_offset: "Offset the reported modulation order when the backend supports it.",
+  number_sample_symbol: "Number of constellation samples to request from the backend.",
+  upload_pnm_file: "Upload accepts raw PNM capture files and registers a new transaction in PyPNM.",
+  file_mac_search: "Search stored PyPNM files by cable modem MAC address.",
+  direct_downloads: "Use the selected MAC archive in browse, or download directly by stored filename and operation ID here.",
+  hexdump_bytes_per_line: "Number of bytes shown on each rendered hexdump line.",
 } as const;

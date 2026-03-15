@@ -39,6 +39,7 @@
 - Place support files near the code or workflow they serve. Do not create a generic central folder unless the files are truly shared across multiple areas.
 - For request forms that accept `channel_ids`, document the default black value as indicating all channels.
 - Render shared request-form hover hints through a reusable field-label component so the displayed help text and the editable source stay aligned.
+- Any non-error instructional/help text for a user should be delivered as a shared hover tip, not as inline helper copy on the form or panel.
 
 ## UX/Engineering Dashboard Rules (Required)
 
