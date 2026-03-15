@@ -9,7 +9,7 @@ Frontend-only web client for PyPNM REST APIs.
 - `python3` (for release tooling)
 - internet access for first-time dependency install
 
-## One-command install
+## Install
 
 ```bash
 ./install.sh
@@ -39,47 +39,12 @@ pypnm-webui serve --host 0.0.0.0 --port 4173
 pypnm-webui serve --open
 ```
 
-## Environment
-
-Local env file:
-- `.env`
-
-Example values:
-
-```env
-VITE_PYPNM_API_BASE_URL=http://127.0.0.1:8080
-VITE_REQUEST_TIMEOUT_MS=30000
-```
-
-Instance targets for the runtime dropdown:
-- `public/config/pypnm-instances.yaml`
-- The selected instance overrides `VITE_PYPNM_API_BASE_URL`
-- `VITE_PYPNM_API_BASE_URL` remains the fallback when the YAML file is missing
-- Use the left sidebar dropdown to switch between configured PyPNM instances at runtime
-
-## Scripts
-
-```bash
-pypnm-webui serve
-npm run build
-npm run preview
-npm run lint
-npm run test
-```
-
-## Git Helpers
-
-- [Git Helpers](docs/development/git-helpers.md)
-
-## Release Helpers
-
-- [Release Helpers](docs/user/release-helpers.md)
-
 ## User docs
 
 - [Documentation Index](docs/index.md)
 - [Getting Started](docs/user/getting-started.md)
 - [Release Helpers](docs/user/release-helpers.md)
+- [Runtime Configuration](docs/user/runtime-configuration.md)
 - [Using The UI](docs/user/using-the-ui.md)
 - [Troubleshooting](docs/user/troubleshooting.md)
 - [Release Workflow](docs/user/release-workflow.md)

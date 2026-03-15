@@ -4,6 +4,7 @@
 
 - [Getting Started](user/getting-started.md)
 - [Install And Bootstrap](user/install-and-bootstrap.md)
+- [Runtime Configuration](user/runtime-configuration.md)
 - [Using The UI](user/using-the-ui.md)
 - [Troubleshooting](user/troubleshooting.md)
 - [Release Helpers](user/release-helpers.md)

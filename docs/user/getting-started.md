@@ -20,6 +20,9 @@ VITE_PYPNM_API_BASE_URL=http://127.0.0.1:8080
 VITE_REQUEST_TIMEOUT_MS=30000
 ```
 
+Runtime instance selection details:
+- [Runtime Configuration](runtime-configuration.md)
+
 ## 3. Start the UI
 
 ```bash
