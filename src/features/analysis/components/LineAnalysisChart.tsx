@@ -5,6 +5,7 @@ interface LineAnalysisChartProps {
   subtitle: string;
   yLabel: string;
   series: ChartSeries[];
+  showLegend?: boolean;
 }
 
 function axisLabels(minValue: number, maxValue: number, count: number): number[] {
@@ -41,7 +42,7 @@ function buildPath(
     .join(" ");
 }
 
-export function LineAnalysisChart({ title, subtitle, yLabel, series }: LineAnalysisChartProps) {
+export function LineAnalysisChart({ title, subtitle, yLabel, series, showLegend = true }: LineAnalysisChartProps) {
   const width = 1100;
   const height = 320;
   const allPoints = series.flatMap((item) => item.points);
@@ -61,14 +62,16 @@ export function LineAnalysisChart({ title, subtitle, yLabel, series }: LineAnaly
           <div className="chart-title">{title}</div>
           <div className="chart-meta">{subtitle}</div>
         </div>
-        <div className="status-chip-row">
-          {series.map((item) => (
-            <span key={item.label} className="analysis-chip">
-              <span className="analysis-swatch" style={{ backgroundColor: item.color }} />
-              {item.label}
-            </span>
-          ))}
-        </div>
+        {showLegend ? (
+          <div className="status-chip-row">
+            {series.map((item) => (
+              <span key={item.label} className="analysis-chip">
+                <span className="analysis-swatch" style={{ backgroundColor: item.color }} />
+                {item.label}
+              </span>
+            ))}
+          </div>
+        ) : null}
       </div>
       <svg className="chart-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
         {yTicks.map((value) => {

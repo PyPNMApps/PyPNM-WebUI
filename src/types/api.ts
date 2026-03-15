@@ -141,6 +141,8 @@ export interface SingleConstellationDisplayCaptureRequest {
   };
 }
 
+export type SingleModulationProfileCaptureRequest = SingleRxMerCaptureRequest;
+
 export interface SingleHistogramCaptureRequest {
   cable_modem: {
     mac_address: string;
@@ -372,5 +374,38 @@ export interface SingleConstellationDisplayCaptureResponse {
   message?: string | null;
   data?: {
     analysis?: SingleConstellationDisplayAnalysisEntry[];
+  };
+}
+
+export interface SingleModulationProfileCarrierValues {
+  frequency: number[];
+  modulation?: string[];
+  shannon_min_mer: number[];
+}
+
+export interface SingleModulationProfileProfileEntry {
+  profile_id: number;
+  carrier_values: SingleModulationProfileCarrierValues;
+}
+
+export interface SingleModulationProfileAnalysisEntry {
+  channel_id?: number;
+  mac_address?: string;
+  pnm_header?: {
+    capture_time?: number | string;
+  };
+  device_details?: {
+    system_description?: SingleRxMerSystemDescription;
+  };
+  profiles: SingleModulationProfileProfileEntry[];
+}
+
+export interface SingleModulationProfileCaptureResponse {
+  system_description?: SingleRxMerSystemDescription;
+  mac_address?: string;
+  status?: number;
+  message?: string | null;
+  data?: {
+    analysis?: SingleModulationProfileAnalysisEntry[];
   };
 }

@@ -49,6 +49,14 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     description: "Single downstream OFDM constellation display visual.",
     menuPath: ["PNM", "Single Capture"],
   },
+  {
+    id: "docs-pnm-ds-ofdm-modulationprofile-getcapture",
+    label: "Modulation Profile",
+    routePath: "/operations/modulation-profile",
+    endpointPath: "/docs/pnm/ds/ofdm/modulationProfile/getCapture",
+    description: "Single downstream OFDM modulation profile visual.",
+    menuPath: ["PNM", "Single Capture"],
+  },
 ];
 
 export function getOperationByRoutePath(routePath: string | undefined): OperationNavigationItem | undefined {

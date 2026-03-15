@@ -3,6 +3,7 @@ import type {
   SingleConstellationDisplayCaptureRequest,
   SingleFecSummaryCaptureRequest,
   SingleHistogramCaptureRequest,
+  SingleModulationProfileCaptureRequest,
   SingleRxMerCaptureRequest,
 } from "@/types/api";
 
@@ -13,7 +14,8 @@ export async function runSingleCaptureEndpoint<TResponse>(
     | SingleRxMerCaptureRequest
     | SingleHistogramCaptureRequest
     | SingleFecSummaryCaptureRequest
-    | SingleConstellationDisplayCaptureRequest,
+    | SingleConstellationDisplayCaptureRequest
+    | SingleModulationProfileCaptureRequest,
 ): Promise<TResponse> {
   const response = await requestWithBaseUrl<TResponse>(baseUrl, {
     method: "POST",

@@ -14,11 +14,13 @@ import { SingleConstellationDisplayCaptureView } from "@/features/operations/Sin
 import { SingleFecSummaryCaptureView } from "@/features/operations/SingleFecSummaryCaptureView";
 import { getOperationByRoutePath, operationNavigationItems } from "@/features/operations/operationsNavigation";
 import { SingleHistogramCaptureView } from "@/features/operations/SingleHistogramCaptureView";
+import { SingleModulationProfileCaptureView } from "@/features/operations/SingleModulationProfileCaptureView";
 import { SingleRxMerCaptureView } from "@/features/operations/SingleRxMerCaptureView";
 import { singleChannelEstCoeffFixture } from "@/features/operations/singleChannelEstCoeffFixture";
 import { singleConstellationDisplayFixture } from "@/features/operations/singleConstellationDisplayFixture";
 import { singleFecSummaryFixture } from "@/features/operations/singleFecSummaryFixture";
 import { singleHistogramFixture } from "@/features/operations/singleHistogramFixture";
+import { singleModulationProfileFixture } from "@/features/operations/singleModulationProfileFixture";
 import { singleRxMerFixture } from "@/features/operations/singleRxMerFixture";
 import { runSingleCaptureEndpoint } from "@/services/singleCaptureService";
 import type {
@@ -29,6 +31,8 @@ import type {
   SingleFecSummaryCaptureRequest,
   SingleHistogramCaptureResponse,
   SingleHistogramCaptureRequest,
+  SingleModulationProfileCaptureRequest,
+  SingleModulationProfileCaptureResponse,
   SingleRxMerCaptureRequest,
   SingleRxMerCaptureResponse,
 } from "@/types/api";
@@ -41,6 +45,7 @@ export function EndpointExplorerPage() {
   const [constellationResponse, setConstellationResponse] = useState<SingleConstellationDisplayCaptureResponse>(singleConstellationDisplayFixture);
   const [fecSummaryResponse, setFecSummaryResponse] = useState<SingleFecSummaryCaptureResponse>(singleFecSummaryFixture);
   const [histogramResponse, setHistogramResponse] = useState<SingleHistogramCaptureResponse>(singleHistogramFixture);
+  const [modulationProfileResponse, setModulationProfileResponse] = useState<SingleModulationProfileCaptureResponse>(singleModulationProfileFixture);
   const selectedOperation = getOperationByRoutePath(location.pathname);
   const mutation = useMutation({
     mutationFn: ({
@@ -52,7 +57,8 @@ export function EndpointExplorerPage() {
         | SingleRxMerCaptureRequest
         | SingleHistogramCaptureRequest
         | SingleFecSummaryCaptureRequest
-        | SingleConstellationDisplayCaptureRequest;
+        | SingleConstellationDisplayCaptureRequest
+        | SingleModulationProfileCaptureRequest;
     }) =>
       runSingleCaptureEndpoint<
         | SingleRxMerCaptureResponse
@@ -60,6 +66,7 @@ export function EndpointExplorerPage() {
         | SingleHistogramCaptureResponse
         | SingleFecSummaryCaptureResponse
         | SingleConstellationDisplayCaptureResponse
+        | SingleModulationProfileCaptureResponse
       >(
         selectedInstance?.baseUrl ?? "",
         endpointPath,
@@ -83,6 +90,11 @@ export function EndpointExplorerPage() {
 
       if (selectedOperation?.id === "docs-pnm-ds-ofdm-constellationdisplay-getcapture") {
         setConstellationResponse(data as SingleConstellationDisplayCaptureResponse);
+        return;
+      }
+
+      if (selectedOperation?.id === "docs-pnm-ds-ofdm-modulationprofile-getcapture") {
+        setModulationProfileResponse(data as SingleModulationProfileCaptureResponse);
         return;
       }
 
@@ -146,6 +158,8 @@ export function EndpointExplorerPage() {
       <Panel>
         {selectedOperation.id === "docs-pnm-ds-ofdm-rxmer-getcapture" ? (
           <SingleRxMerCaptureView response={rxMerResponse} />
+        ) : selectedOperation.id === "docs-pnm-ds-ofdm-modulationprofile-getcapture" ? (
+          <SingleModulationProfileCaptureView response={modulationProfileResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-constellationdisplay-getcapture" ? (
           <SingleConstellationDisplayCaptureView response={constellationResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-fecsummary-getcapture" ? (

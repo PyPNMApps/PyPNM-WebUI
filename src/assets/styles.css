@@ -724,6 +724,24 @@ pre {
   gap: 10px;
 }
 
+.mod-profile-controls {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.mod-profile-control-group {
+  display: grid;
+  gap: 8px;
+}
+
+.mod-profile-control-label {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
 @media (max-width: 900px) {
   .top-nav {
     grid-template-columns: 1fr;
