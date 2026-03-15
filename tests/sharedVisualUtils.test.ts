@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { average, formatEpochSecondsUtc, formatFrequencyRangeMhz, summarize, toDeviceInfo } from "./helpers/sharedVisualUtils";
+import { average, formatEpochSecondsUtc, formatFrequencyRangeMhz, summarize, toDeviceInfo } from "@/lib/sharedVisualUtils";
 
 describe("shared visual utils", () => {
   it("formats capture time from epoch seconds", () => {
