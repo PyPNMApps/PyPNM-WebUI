@@ -3,6 +3,9 @@ import { Navigate, Route, Routes } from "react-router-dom";
 
 import { AppLayout } from "@/layouts/AppLayout";
 
+const AboutPage = lazy(() =>
+  import("@/pages/AboutPage").then((module) => ({ default: module.AboutPage })),
+);
 const AnalysisViewerPage = lazy(() =>
   import("@/pages/AnalysisViewerPage").then((module) => ({ default: module.AnalysisViewerPage })),
 );
@@ -20,9 +23,6 @@ const FileHexdumpPage = lazy(() =>
 );
 const HealthPage = lazy(() =>
   import("@/pages/HealthPage").then((module) => ({ default: module.HealthPage })),
-);
-const HomePage = lazy(() =>
-  import("@/pages/HomePage").then((module) => ({ default: module.HomePage })),
 );
 const MeasurementRequestPage = lazy(() =>
   import("@/pages/MeasurementRequestPage").then((module) => ({ default: module.MeasurementRequestPage })),
@@ -43,8 +43,9 @@ export function AppRoutes() {
     <Suspense fallback={<RouteLoadingFallback />}>
       <Routes>
         <Route element={<AppLayout />}>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<Navigate to="/about" replace />} />
           <Route path="/health" element={<HealthPage />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/endpoints" element={<Navigate to="/operations" replace />} />
           <Route path="/operations" element={<EndpointExplorerPage />} />
           <Route path="/operations/:operationId" element={<EndpointExplorerPage />} />

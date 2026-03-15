@@ -1,0 +1,29 @@
+const GITHUB_TAGS_URL = "https://api.github.com/repos/PyPNMApps/PyPNM-WebUI/tags?per_page=1";
+export const REPO_URL = "https://github.com/PyPNMApps/PyPNM-WebUI";
+
+interface GitHubTag {
+  name?: string;
+}
+
+export function parseLatestGitHubTag(payload: unknown): string | null {
+  if (!Array.isArray(payload) || payload.length === 0) {
+    return null;
+  }
+
+  const first = payload[0] as GitHubTag | undefined;
+  return typeof first?.name === "string" && first.name.length > 0 ? first.name : null;
+}
+
+export async function fetchLatestGitHubTag(): Promise<string | null> {
+  const response = await fetch(GITHUB_TAGS_URL, {
+    headers: {
+      Accept: "application/vnd.github+json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`GitHub tag lookup failed with status ${response.status}`);
+  }
+
+  return parseLatestGitHubTag((await response.json()) as unknown);
+}

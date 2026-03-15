@@ -370,6 +370,30 @@ button.secondary,
   letter-spacing: 0.08em;
 }
 
+.about-grid {
+  align-items: start;
+}
+
+.button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.button-link:hover,
+.button-link:focus-visible {
+  border-color: rgba(121, 169, 255, 0.42);
+  background: rgba(121, 169, 255, 0.08);
+}
+
 .mono {
   font-family: "IBM Plex Mono", "Consolas", monospace;
 }
