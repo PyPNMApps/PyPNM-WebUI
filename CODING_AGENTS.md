@@ -49,6 +49,8 @@
 - Support copy-to-clipboard for identifiers and payloads where useful.
 - Default graph lines to thin strokes unless a thicker treatment is required for legibility or a specific visual convention.
 - When x-axis labels are large numeric values and horizontal rendering hurts readability, angle the labels so they remain visible and readable.
+- Prefer lazy-loading at route or page boundaries when it reduces initial bundle cost.
+- Do not micro-chunk small shared UI pieces; keep lazy-loading focused on meaningful page-level splits.
 
 ## Environment And Configuration (Required)
 
