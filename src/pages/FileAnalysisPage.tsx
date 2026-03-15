@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Navigate, useParams } from "react-router-dom";
 
 import { PageHeader } from "@/components/common/PageHeader";
@@ -8,7 +9,7 @@ import { SingleFecSummaryCaptureView } from "@/features/operations/SingleFecSumm
 import { SingleHistogramCaptureView } from "@/features/operations/SingleHistogramCaptureView";
 import { SingleModulationProfileCaptureView } from "@/features/operations/SingleModulationProfileCaptureView";
 import { SingleRxMerCaptureView } from "@/features/operations/SingleRxMerCaptureView";
-import { isSupportedPnmFileType, loadFileAnalysisRecord, toVisualResponse } from "@/lib/fileAnalysis";
+import { isSupportedPnmFileType, loadFileAnalysisRecord, removeFileAnalysisRecord, toVisualResponse } from "@/lib/fileAnalysis";
 import type {
   SingleChannelEstCoeffCaptureResponse,
   SingleConstellationDisplayCaptureResponse,
@@ -22,6 +23,12 @@ import { PnmFileType } from "@/types/pnmFileType";
 export function FileAnalysisPage() {
   const { analysisKey = "" } = useParams();
   const record = loadFileAnalysisRecord(analysisKey);
+
+  useEffect(() => {
+    if (analysisKey && record) {
+      removeFileAnalysisRecord(analysisKey);
+    }
+  }, [analysisKey, record]);
 
   if (!analysisKey) {
     return <Navigate to="/files" replace />;
@@ -68,27 +75,27 @@ export function FileAnalysisPage() {
       <Panel>
         {record.pnmFileType === PnmFileType.RECEIVE_MODULATION_ERROR_RATIO ? (
           <SingleRxMerCaptureView
-            response={toVisualResponse(record.pnmFileType, record.analysis) as SingleRxMerCaptureResponse}
+            response={toVisualResponse(record.pnmFileType, record) as SingleRxMerCaptureResponse}
           />
         ) : record.pnmFileType === PnmFileType.OFDM_CHANNEL_ESTIMATE_COEFFICIENT ? (
           <SingleChannelEstCoeffCaptureView
-            response={toVisualResponse(record.pnmFileType, record.analysis) as SingleChannelEstCoeffCaptureResponse}
+            response={toVisualResponse(record.pnmFileType, record) as SingleChannelEstCoeffCaptureResponse}
           />
         ) : record.pnmFileType === PnmFileType.OFDM_MODULATION_PROFILE ? (
           <SingleModulationProfileCaptureView
-            response={toVisualResponse(record.pnmFileType, record.analysis) as SingleModulationProfileCaptureResponse}
+            response={toVisualResponse(record.pnmFileType, record) as SingleModulationProfileCaptureResponse}
           />
         ) : record.pnmFileType === PnmFileType.DOWNSTREAM_CONSTELLATION_DISPLAY ? (
           <SingleConstellationDisplayCaptureView
-            response={toVisualResponse(record.pnmFileType, record.analysis) as SingleConstellationDisplayCaptureResponse}
+            response={toVisualResponse(record.pnmFileType, record) as SingleConstellationDisplayCaptureResponse}
           />
         ) : record.pnmFileType === PnmFileType.DOWNSTREAM_HISTOGRAM ? (
           <SingleHistogramCaptureView
-            response={toVisualResponse(record.pnmFileType, record.analysis) as SingleHistogramCaptureResponse}
+            response={toVisualResponse(record.pnmFileType, record) as SingleHistogramCaptureResponse}
           />
         ) : (
           <SingleFecSummaryCaptureView
-            response={toVisualResponse(record.pnmFileType, record.analysis) as SingleFecSummaryCaptureResponse}
+            response={toVisualResponse(record.pnmFileType, record) as SingleFecSummaryCaptureResponse}
           />
         )}
       </Panel>

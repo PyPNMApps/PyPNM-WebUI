@@ -9,6 +9,7 @@ import { ThinkingIndicator } from "@/components/common/ThinkingIndicator";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import { formatEpochSecondsUtc } from "@/lib/formatters/dateTime";
 import { storeFileAnalysisRecord, toFileAnalysisStorageKey } from "@/lib/fileAnalysis";
+import { storeFileHexdumpRecord, toFileHexdumpStorageKey } from "@/lib/fileHexdump";
 import {
   getPnmFileAnalysis,
   getPnmFileFilenameDownloadUrl,
@@ -20,17 +21,12 @@ import {
   searchPnmFilesByMacAddress,
   uploadPnmFile,
 } from "@/services/pnmFilesService";
-import type { PnmFileAnalysisResponse, PnmFileEntry, PnmFileHexdumpResponse } from "@/types/api";
+import type { PnmFileAnalysisResponse, PnmFileEntry } from "@/types/api";
 
 type InspectorState =
   | {
       mode: "idle";
       transactionId: string;
-    }
-  | {
-      mode: "hexdump";
-      transactionId: string;
-      data: PnmFileHexdumpResponse;
     }
   | {
       mode: "analysis";
@@ -56,6 +52,8 @@ function getFileCount(files: Record<string, PnmFileEntry[]> | undefined): number
 export function FileListPage() {
   const { selectedInstance } = useInstanceConfig();
   const inspectorPanelRef = useRef<HTMLDivElement | null>(null);
+  const pendingAnalyzeWindowRef = useRef<Window | null>(null);
+  const pendingHexdumpWindowRef = useRef<Window | null>(null);
   const [selectedMacAddress, setSelectedMacAddress] = useState("");
   const [macSearchInput, setMacSearchInput] = useState("");
   const [filenameDownloadInput, setFilenameDownloadInput] = useState("");
@@ -103,11 +101,22 @@ export function FileListPage() {
     mutationFn: async (transactionId: string) =>
       getPnmFileHexdump(selectedInstance?.baseUrl ?? "", transactionId, Number.parseInt(hexdumpBytesPerLine, 10) || 16),
     onSuccess: (data, transactionId) => {
-      setInspectorState({ mode: "hexdump", transactionId, data });
+      const hexdumpKey = toFileHexdumpStorageKey(transactionId);
+      storeFileHexdumpRecord(hexdumpKey, data, transactionId);
+      const url = `/files/hexdump/${encodeURIComponent(hexdumpKey)}`;
+      if (pendingHexdumpWindowRef.current && !pendingHexdumpWindowRef.current.closed) {
+        pendingHexdumpWindowRef.current.location.href = url;
+      } else {
+        window.open(url, "_blank");
+      }
+      pendingHexdumpWindowRef.current = null;
       setSelectedTransactionId(transactionId);
-      focusInspector();
     },
     onError: () => {
+      if (pendingHexdumpWindowRef.current && !pendingHexdumpWindowRef.current.closed) {
+        pendingHexdumpWindowRef.current.close();
+      }
+      pendingHexdumpWindowRef.current = null;
       focusInspector();
     },
   });
@@ -130,23 +139,21 @@ export function FileListPage() {
       const analysisKey = toFileAnalysisStorageKey(transactionId);
       storeFileAnalysisRecord(analysisKey, data, transactionId);
       const url = `/files/analyze/${encodeURIComponent(analysisKey)}`;
-      if (pendingAnalyzeWindow && !pendingAnalyzeWindow.closed) {
-        pendingAnalyzeWindow.location.href = url;
+      if (pendingAnalyzeWindowRef.current && !pendingAnalyzeWindowRef.current.closed) {
+        pendingAnalyzeWindowRef.current.location.href = url;
       } else {
-        window.open(url, "_blank", "noopener");
+        window.open(url, "_blank");
       }
-      setPendingAnalyzeWindow(null);
+      pendingAnalyzeWindowRef.current = null;
     },
     onError: () => {
-      if (pendingAnalyzeWindow && !pendingAnalyzeWindow.closed) {
-        pendingAnalyzeWindow.close();
+      if (pendingAnalyzeWindowRef.current && !pendingAnalyzeWindowRef.current.closed) {
+        pendingAnalyzeWindowRef.current.close();
       }
-      setPendingAnalyzeWindow(null);
+      pendingAnalyzeWindowRef.current = null;
       focusInspector();
     },
   });
-
-  const [pendingAnalyzeWindow, setPendingAnalyzeWindow] = useState<Window | null>(null);
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => uploadPnmFile(selectedInstance?.baseUrl ?? "", file),
@@ -380,7 +387,8 @@ export function FileListPage() {
                               className="secondary"
                               disabled={!selectedInstance || hexdumpMutation.isPending}
                               onClick={() => {
-                                startInspectorAction(entry.transaction_id);
+                                pendingHexdumpWindowRef.current = window.open("about:blank", "_blank");
+                                setSelectedTransactionId(entry.transaction_id);
                                 hexdumpMutation.mutate(entry.transaction_id);
                               }}
                             >
@@ -402,8 +410,7 @@ export function FileListPage() {
                               className="secondary"
                               disabled={!selectedInstance || analyzeVisualMutation.isPending}
                               onClick={() => {
-                                const nextWindow = window.open("", "_blank", "noopener");
-                                setPendingAnalyzeWindow(nextWindow);
+                                pendingAnalyzeWindowRef.current = window.open("about:blank", "_blank");
                                 startInspectorAction(entry.transaction_id);
                                 analyzeVisualMutation.mutate(entry.transaction_id);
                               }}
@@ -453,16 +460,6 @@ export function FileListPage() {
           ) : (
             <p className="panel-copy">Select a transaction from the file table, then open a hexdump or run analysis.</p>
           )
-        ) : null}
-        {inspectorState.mode === "hexdump" ? (
-          <>
-            <div className="files-inspector-meta">
-              <span className="analysis-chip"><b>Mode</b> Hexdump</span>
-              <span className="analysis-chip"><b>Transaction</b> {inspectorState.transactionId}</span>
-              <span className="analysis-chip"><b>Bytes / Line</b> {inspectorState.data.bytes_per_line}</span>
-            </div>
-            <pre className="files-hexdump-viewer">{inspectorState.data.lines.join("\n")}</pre>
-          </>
         ) : null}
         {inspectorState.mode === "analysis" ? (
           <>

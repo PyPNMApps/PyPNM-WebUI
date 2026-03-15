@@ -74,7 +74,6 @@ export function OperationsMenu() {
                             }
                           >
                             <span>{item.label}</span>
-                            <span className="operations-menu-endpoint">{item.endpointPath}</span>
                           </NavLink>
                         ))}
                       </div>

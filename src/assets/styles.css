@@ -334,6 +334,42 @@ button.secondary,
   gap: 8px;
 }
 
+.settings-grid {
+  align-items: start;
+}
+
+.settings-chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.settings-definition-list {
+  display: grid;
+  gap: 12px;
+}
+
+.settings-definition-row {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.settings-definition-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.settings-definition-key {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
 .mono {
   font-family: "IBM Plex Mono", "Consolas", monospace;
 }
@@ -921,6 +957,11 @@ pre {
 
   .files-direct-grid {
     grid-template-columns: 1fr;
+  }
+
+  .settings-definition-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
   }
 }
 
