@@ -381,6 +381,70 @@ export interface AtdmaChannelStatsResponse {
   results?: AtdmaChannelStatsResults;
 }
 
+export interface AtdmaPreEqTap {
+  real?: number;
+  imag?: number;
+  magnitude?: number;
+  magnitude_power_dB?: number | null;
+  real_hex?: string;
+  imag_hex?: string;
+  delay_us?: number;
+  tap_offset?: number;
+  is_main_tap?: boolean;
+  delay_samples?: number;
+  cable_length_m?: number;
+  cable_length_ft?: number;
+}
+
+export interface AtdmaPreEqFrequencyResponse {
+  fft_size?: number;
+  frequency_bins?: number[];
+  magnitude_power_db_normalized?: number[];
+}
+
+export interface AtdmaPreEqMetrics {
+  main_tap_ratio?: number;
+  non_main_tap_energy_ratio?: number;
+  pre_post_energy_symmetry_ratio?: number;
+  pre_main_tap_total_energy_ratio?: number;
+  post_main_tap_total_energy_ratio?: number;
+  frequency_response?: AtdmaPreEqFrequencyResponse;
+}
+
+export interface AtdmaPreEqGroupDelay {
+  fft_size?: number;
+  delay_us?: number[];
+}
+
+export interface AtdmaPreEqTapDelaySummary {
+  main_echo_post_tap_index?: number | null;
+  taps?: AtdmaPreEqTap[];
+}
+
+export interface AtdmaPreEqRecord {
+  main_tap_location?: number;
+  taps_per_symbol?: number;
+  num_taps?: number;
+  header_hex?: string;
+  taps?: AtdmaPreEqTap[];
+  metrics?: AtdmaPreEqMetrics | null;
+  group_delay?: AtdmaPreEqGroupDelay | null;
+  tap_delay_summary?: AtdmaPreEqTapDelaySummary | null;
+  velocity_factor?: number;
+}
+
+export interface AtdmaPreEqualizationResponse {
+  mac_address?: string;
+  status?: number | string;
+  message?: string | null;
+  device?: {
+    mac_address?: string;
+    system_description?: SingleRxMerSystemDescription;
+  };
+  system_description?: SingleRxMerSystemDescription;
+  results?: Record<string, AtdmaPreEqRecord>;
+}
+
 export interface SingleRxMerAnalysisEntry {
   mac_address?: string;
   channel_id?: number;

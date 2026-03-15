@@ -11,6 +11,15 @@ export interface OperationNavigationItem {
 // Edit this file to add top-row operation navigation entries.
 export const operationNavigationItems: OperationNavigationItem[] = [
   {
+    id: "docs-if30-us-atdma-chan-preequalization",
+    label: "ATDMA PreEqualization",
+    routePath: "/operations/atdma-pre-equalization",
+    endpointPath: "/docs/if30/us/atdma/chan/preEqualization",
+    description: "DOCSIS 3.0 upstream ATDMA pre-equalization visual.",
+    menuPath: ["DOCSIS 3.0", "Upstream"],
+    requestTimeoutMs: 90000,
+  },
+  {
     id: "docs-if30-us-atdma-chan-stats",
     label: "ATDMA Channel Stats",
     routePath: "/operations/atdma-channel-stats",

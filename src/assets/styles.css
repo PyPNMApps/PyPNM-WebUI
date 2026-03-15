@@ -1212,3 +1212,50 @@ pre {
 .atdma-counter-grid {
   margin-top: 16px;
 }
+
+
+.atdma-preeq-bars {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(42px, 1fr);
+  gap: 6px;
+  min-height: 220px;
+  align-items: end;
+  overflow-x: auto;
+}
+
+.atdma-preeq-bar-column {
+  display: grid;
+  gap: 6px;
+  align-items: end;
+}
+
+.atdma-preeq-bar-slot {
+  height: 150px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 4px;
+  display: flex;
+  align-items: end;
+}
+
+.atdma-preeq-bar {
+  width: 100%;
+  min-height: 8px;
+  border-radius: 8px 8px 4px 4px;
+  background: linear-gradient(180deg, rgba(121, 169, 255, 0.95), rgba(88, 208, 167, 0.55));
+}
+
+.atdma-preeq-bar.main {
+  background: linear-gradient(180deg, rgba(241, 196, 15, 0.98), rgba(251, 191, 36, 0.70));
+}
+
+.atdma-preeq-bar.postpeak {
+  background: linear-gradient(180deg, rgba(251, 113, 133, 0.98), rgba(96, 165, 250, 0.55));
+}
+
+.atdma-preeq-bar-label {
+  text-align: center;
+  font-size: 10px;
+}
