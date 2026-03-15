@@ -731,6 +731,16 @@ pre {
   word-break: break-word;
 }
 
+.health-row-selected td {
+  background: rgba(121, 169, 255, 0.08);
+}
+
+.health-agent-meta {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
 .channel-est-grid {
   display: grid;
   grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
