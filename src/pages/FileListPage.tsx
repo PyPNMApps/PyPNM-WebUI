@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { useInstanceConfig } from "@/app/useInstanceConfig";
@@ -8,6 +8,7 @@ import { Panel } from "@/components/common/Panel";
 import { ThinkingIndicator } from "@/components/common/ThinkingIndicator";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import { formatEpochSecondsUtc } from "@/lib/formatters/dateTime";
+import { storeFileAnalysisRecord, toFileAnalysisStorageKey } from "@/lib/fileAnalysis";
 import {
   getPnmFileAnalysis,
   getPnmFileFilenameDownloadUrl,
@@ -54,6 +55,7 @@ function getFileCount(files: Record<string, PnmFileEntry[]> | undefined): number
 
 export function FileListPage() {
   const { selectedInstance } = useInstanceConfig();
+  const inspectorPanelRef = useRef<HTMLDivElement | null>(null);
   const [selectedMacAddress, setSelectedMacAddress] = useState("");
   const [macSearchInput, setMacSearchInput] = useState("");
   const [filenameDownloadInput, setFilenameDownloadInput] = useState("");
@@ -93,12 +95,20 @@ export function FileListPage() {
     [effectiveMacAddress, fileSearchQuery.data],
   );
 
+  function focusInspector() {
+    inspectorPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   const hexdumpMutation = useMutation({
     mutationFn: async (transactionId: string) =>
       getPnmFileHexdump(selectedInstance?.baseUrl ?? "", transactionId, Number.parseInt(hexdumpBytesPerLine, 10) || 16),
     onSuccess: (data, transactionId) => {
       setInspectorState({ mode: "hexdump", transactionId, data });
       setSelectedTransactionId(transactionId);
+      focusInspector();
+    },
+    onError: () => {
+      focusInspector();
     },
   });
 
@@ -107,12 +117,46 @@ export function FileListPage() {
     onSuccess: (data, transactionId) => {
       setInspectorState({ mode: "analysis", transactionId, data });
       setSelectedTransactionId(transactionId);
+      focusInspector();
+    },
+    onError: () => {
+      focusInspector();
     },
   });
+
+  const analyzeVisualMutation = useMutation({
+    mutationFn: async (transactionId: string) => getPnmFileAnalysis(selectedInstance?.baseUrl ?? "", transactionId),
+    onSuccess: (data, transactionId) => {
+      const analysisKey = toFileAnalysisStorageKey(transactionId);
+      storeFileAnalysisRecord(analysisKey, data, transactionId);
+      const url = `/files/analyze/${encodeURIComponent(analysisKey)}`;
+      if (pendingAnalyzeWindow && !pendingAnalyzeWindow.closed) {
+        pendingAnalyzeWindow.location.href = url;
+      } else {
+        window.open(url, "_blank", "noopener");
+      }
+      setPendingAnalyzeWindow(null);
+    },
+    onError: () => {
+      if (pendingAnalyzeWindow && !pendingAnalyzeWindow.closed) {
+        pendingAnalyzeWindow.close();
+      }
+      setPendingAnalyzeWindow(null);
+      focusInspector();
+    },
+  });
+
+  const [pendingAnalyzeWindow, setPendingAnalyzeWindow] = useState<Window | null>(null);
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => uploadPnmFile(selectedInstance?.baseUrl ?? "", file),
   });
+
+  function startInspectorAction(transactionId: string) {
+    setSelectedTransactionId(transactionId);
+    setInspectorState({ mode: "idle", transactionId });
+    focusInspector();
+  }
 
   const uploadedFile = uploadMutation.data;
   const fileCount = getFileCount(fileSearchQuery.data?.files);
@@ -335,7 +379,10 @@ export function FileListPage() {
                               type="button"
                               className="secondary"
                               disabled={!selectedInstance || hexdumpMutation.isPending}
-                              onClick={() => hexdumpMutation.mutate(entry.transaction_id)}
+                              onClick={() => {
+                                startInspectorAction(entry.transaction_id);
+                                hexdumpMutation.mutate(entry.transaction_id);
+                              }}
                             >
                               Hexdump
                             </button>
@@ -343,7 +390,23 @@ export function FileListPage() {
                               type="button"
                               className="secondary"
                               disabled={!selectedInstance || analysisMutation.isPending}
-                              onClick={() => analysisMutation.mutate(entry.transaction_id)}
+                              onClick={() => {
+                                startInspectorAction(entry.transaction_id);
+                                analysisMutation.mutate(entry.transaction_id);
+                              }}
+                            >
+                              JSON
+                            </button>
+                            <button
+                              type="button"
+                              className="secondary"
+                              disabled={!selectedInstance || analyzeVisualMutation.isPending}
+                              onClick={() => {
+                                const nextWindow = window.open("", "_blank", "noopener");
+                                setPendingAnalyzeWindow(nextWindow);
+                                startInspectorAction(entry.transaction_id);
+                                analyzeVisualMutation.mutate(entry.transaction_id);
+                              }}
                             >
                               Analyze
                             </button>
@@ -361,7 +424,8 @@ export function FileListPage() {
         ) : null}
       </Panel>
 
-      <Panel title="Inspect Selected Transaction">
+      <div ref={inspectorPanelRef}>
+        <Panel title="Inspect Selected Transaction">
           <div className="files-toolbar">
             <div className="files-toolbar-field files-bytes-field">
               <FieldLabel htmlFor="files-bytes-per-line" hint={requestFieldHints.hexdump_bytes_per_line}>
@@ -377,10 +441,18 @@ export function FileListPage() {
         </div>
         {hexdumpMutation.isPending ? <ThinkingIndicator label="Collecting hexdump..." /> : null}
         {analysisMutation.isPending ? <ThinkingIndicator label="Collecting file analysis..." /> : null}
+        {analyzeVisualMutation.isPending ? <ThinkingIndicator label="Collecting visual analysis..." /> : null}
         {hexdumpMutation.isError ? <p className="panel-copy files-error">{(hexdumpMutation.error as Error).message}</p> : null}
         {analysisMutation.isError ? <p className="panel-copy files-error">{(analysisMutation.error as Error).message}</p> : null}
+        {analyzeVisualMutation.isError ? <p className="panel-copy files-error">{(analyzeVisualMutation.error as Error).message}</p> : null}
         {inspectorState.mode === "idle" ? (
-          <p className="panel-copy">Select a transaction from the file table, then open a hexdump or run analysis.</p>
+          selectedTransactionId !== "" ? (
+            <div className="files-inspector-meta">
+              <span className="analysis-chip"><b>Transaction</b> {selectedTransactionId}</span>
+            </div>
+          ) : (
+            <p className="panel-copy">Select a transaction from the file table, then open a hexdump or run analysis.</p>
+          )
         ) : null}
         {inspectorState.mode === "hexdump" ? (
           <>
@@ -405,7 +477,8 @@ export function FileListPage() {
             </pre>
           </>
         ) : null}
-      </Panel>
+        </Panel>
+      </div>
     </>
   );
 }

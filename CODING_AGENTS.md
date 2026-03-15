@@ -21,6 +21,9 @@
 - Use strict TypeScript typing.
 - Avoid `any` unless unavoidable and justified inline.
 - Define typed request/response models for each endpoint integration.
+- When PyPNM already has a canonical enum or shared data type for a concept
+  such as PNM file types, mirror that type once in the WebUI and reuse it
+  instead of scattering raw string literals or duplicate local variants.
 - Validate external API payloads at boundaries (for example with Zod).
 - Prefer shared type aliases/interfaces over ad-hoc inline types.
 

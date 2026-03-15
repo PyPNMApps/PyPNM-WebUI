@@ -12,6 +12,9 @@ const EndpointExplorerPage = lazy(() =>
 const FileListPage = lazy(() =>
   import("@/pages/FileListPage").then((module) => ({ default: module.FileListPage })),
 );
+const FileAnalysisPage = lazy(() =>
+  import("@/pages/FileAnalysisPage").then((module) => ({ default: module.FileAnalysisPage })),
+);
 const HealthPage = lazy(() =>
   import("@/pages/HealthPage").then((module) => ({ default: module.HealthPage })),
 );
@@ -45,6 +48,7 @@ export function AppRoutes() {
           <Route path="/measurements" element={<MeasurementRequestPage />} />
           <Route path="/results" element={<ResultsPage />} />
           <Route path="/files" element={<FileListPage />} />
+          <Route path="/files/analyze/:analysisKey" element={<FileAnalysisPage />} />
           <Route path="/analysis" element={<AnalysisViewerPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>

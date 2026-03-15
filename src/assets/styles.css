@@ -841,13 +841,22 @@ pre {
 
 .files-actions-cell {
   width: 1%;
+  white-space: nowrap;
+  vertical-align: middle;
 }
 
 .files-row-actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-wrap: nowrap;
+  gap: 6px;
   justify-content: flex-end;
+  align-items: center;
+}
+
+.files-row-actions .secondary,
+.files-row-actions .button-link {
+  padding: 6px 10px;
+  font-size: 11px;
 }
 
 .files-summary-row,
