@@ -1268,3 +1268,29 @@ pre {
   text-align: center;
   font-size: 10px;
 }
+
+
+.operations-visual-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.operations-json-download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--ink);
+  font-size: 12px;
+}
+
+.operations-json-download:hover,
+.operations-json-download:focus-visible {
+  border-color: rgba(121, 169, 255, 0.42);
+  background: rgba(121, 169, 255, 0.08);
+}

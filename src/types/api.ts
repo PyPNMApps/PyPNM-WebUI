@@ -445,6 +445,41 @@ export interface AtdmaPreEqualizationResponse {
   results?: Record<string, AtdmaPreEqRecord>;
 }
 
+export interface DsScqamChannelEntryData {
+  docsIfDownChannelId?: number;
+  docsIfDownChannelFrequency?: number;
+  docsIfDownChannelWidth?: number;
+  docsIfDownChannelModulation?: string;
+  docsIfDownChannelInterleave?: string;
+  docsIfDownChannelPower?: number;
+  docsIfSigQUnerroreds?: number;
+  docsIfSigQCorrecteds?: number;
+  docsIfSigQUncorrectables?: number;
+  docsIfSigQMicroreflections?: number;
+  docsIfSigQExtUnerroreds?: number;
+  docsIfSigQExtCorrecteds?: number;
+  docsIfSigQExtUncorrectables?: number;
+  docsIf3SignalQualityExtRxMER?: number;
+}
+
+export interface DsScqamChannelEntry {
+  index?: number;
+  channel_id?: number;
+  entry?: DsScqamChannelEntryData;
+}
+
+export interface DsScqamChannelStatsResponse {
+  mac_address?: string;
+  status?: number | string;
+  message?: string | null;
+  device?: {
+    mac_address?: string;
+    system_description?: SingleRxMerSystemDescription;
+  };
+  system_description?: SingleRxMerSystemDescription;
+  results?: DsScqamChannelEntry[];
+}
+
 export interface SingleRxMerAnalysisEntry {
   mac_address?: string;
   channel_id?: number;

@@ -11,6 +11,15 @@ export interface OperationNavigationItem {
 // Edit this file to add top-row operation navigation entries.
 export const operationNavigationItems: OperationNavigationItem[] = [
   {
+    id: "docs-if30-ds-scqam-chan-stats",
+    label: "SCQAM Channel Stats",
+    routePath: "/operations/ds-scqam-channel-stats",
+    endpointPath: "/docs/if30/ds/scqam/chan/stats",
+    description: "DOCSIS 3.0 downstream SC-QAM channel statistics visual.",
+    menuPath: ["DOCSIS 3.0", "Downstream"],
+    requestTimeoutMs: 90000,
+  },
+  {
     id: "docs-if30-us-atdma-chan-preequalization",
     label: "ATDMA PreEqualization",
     routePath: "/operations/atdma-pre-equalization",

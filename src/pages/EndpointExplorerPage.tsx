@@ -12,6 +12,7 @@ import { HistogramCaptureRequestForm } from "@/features/operations/HistogramCapt
 import { FecSummaryCaptureRequestForm } from "@/features/operations/FecSummaryCaptureRequestForm";
 import { SingleCaptureRequestForm } from "@/features/operations/SingleCaptureRequestForm";
 import { SingleAtdmaChannelStatsView } from "@/features/operations/SingleAtdmaChannelStatsView";
+import { SingleDsScqamChannelStatsView } from "@/features/operations/SingleDsScqamChannelStatsView";
 import { SingleAtdmaPreEqualizationView } from "@/features/operations/SingleAtdmaPreEqualizationView";
 import { SingleChannelEstCoeffCaptureView } from "@/features/operations/SingleChannelEstCoeffCaptureView";
 import { SingleConstellationDisplayCaptureView } from "@/features/operations/SingleConstellationDisplayCaptureView";
@@ -24,6 +25,7 @@ import { SingleModulationProfileCaptureView } from "@/features/operations/Single
 import { SingleRxMerCaptureView } from "@/features/operations/SingleRxMerCaptureView";
 import { SingleSystemUpTimeView } from "@/features/operations/SingleSystemUpTimeView";
 import { singleAtdmaChannelStatsFixture } from "@/features/operations/singleAtdmaChannelStatsFixture";
+import { singleDsScqamChannelStatsFixture } from "@/features/operations/singleDsScqamChannelStatsFixture";
 import { singleAtdmaPreEqualizationFixture } from "@/features/operations/singleAtdmaPreEqualizationFixture";
 import { singleChannelEstCoeffFixture } from "@/features/operations/singleChannelEstCoeffFixture";
 import { singleConstellationDisplayFixture } from "@/features/operations/singleConstellationDisplayFixture";
@@ -37,6 +39,7 @@ import { singleSystemUpTimeFixture } from "@/features/operations/singleSystemUpT
 import { runSingleCaptureEndpoint } from "@/services/singleCaptureService";
 import type {
   AtdmaChannelStatsResponse,
+  DsScqamChannelStatsResponse,
   AtdmaPreEqualizationResponse,
   DeviceConnectRequest,
   DeviceEventLogRequest,
@@ -56,10 +59,27 @@ import type {
   SystemUpTimeResponse,
 } from "@/types/api";
 
+function downloadJson(filename: string, payload: unknown) {
+  const blob = new Blob([`${JSON.stringify(payload, null, 2)}\n`], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.append(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+}
+
+function buildJsonFilename(label: string): string {
+  return `${label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "operation"}.json`;
+}
+
 export function EndpointExplorerPage() {
   const location = useLocation();
   const { selectedInstance } = useInstanceConfig();
   const [atdmaChannelStatsResponse, setAtdmaChannelStatsResponse] = useState<AtdmaChannelStatsResponse>(singleAtdmaChannelStatsFixture);
+  const [dsScqamChannelStatsResponse, setDsScqamChannelStatsResponse] = useState<DsScqamChannelStatsResponse>(singleDsScqamChannelStatsFixture);
   const [atdmaPreEqualizationResponse, setAtdmaPreEqualizationResponse] = useState<AtdmaPreEqualizationResponse>(singleAtdmaPreEqualizationFixture);
   const [rxMerResponse, setRxMerResponse] = useState<SingleRxMerCaptureResponse>(singleRxMerFixture);
   const [channelEstResponse, setChannelEstResponse] = useState<SingleChannelEstCoeffCaptureResponse>(singleChannelEstCoeffFixture);
@@ -88,6 +108,7 @@ export function EndpointExplorerPage() {
     }) =>
       runSingleCaptureEndpoint<
         | AtdmaChannelStatsResponse
+        | DsScqamChannelStatsResponse
         | AtdmaPreEqualizationResponse
         | DeviceEventLogResponse
         | SystemUpTimeResponse
@@ -105,6 +126,11 @@ export function EndpointExplorerPage() {
         selectedOperation?.requestTimeoutMs,
       ),
     onSuccess: (data) => {
+      if (selectedOperation?.id === "docs-if30-ds-scqam-chan-stats") {
+        setDsScqamChannelStatsResponse(data as DsScqamChannelStatsResponse);
+        return;
+      }
+
       if (selectedOperation?.id === "docs-if30-us-atdma-chan-preequalization") {
         setAtdmaPreEqualizationResponse(data as AtdmaPreEqualizationResponse);
         return;
@@ -165,11 +191,35 @@ export function EndpointExplorerPage() {
     return <Navigate to={operationNavigationItems[0]?.routePath ?? "/"} replace />;
   }
 
+  const selectedResponse = selectedOperation.id === "docs-if30-ds-scqam-chan-stats"
+    ? dsScqamChannelStatsResponse
+    : selectedOperation.id === "docs-if30-us-atdma-chan-preequalization"
+      ? atdmaPreEqualizationResponse
+      : selectedOperation.id === "docs-if30-us-atdma-chan-stats"
+        ? atdmaChannelStatsResponse
+        : selectedOperation.id === "system-uptime"
+          ? systemUpTimeResponse
+          : selectedOperation.id === "docs-pnm-interface-stats"
+            ? interfaceStatsResponse
+            : selectedOperation.id === "docs-dev-eventlog"
+              ? eventLogResponse
+              : selectedOperation.id === "docs-pnm-ds-ofdm-rxmer-getcapture"
+                ? rxMerResponse
+                : selectedOperation.id === "docs-pnm-ds-ofdm-modulationprofile-getcapture"
+                  ? modulationProfileResponse
+                  : selectedOperation.id === "docs-pnm-ds-ofdm-constellationdisplay-getcapture"
+                    ? constellationResponse
+                    : selectedOperation.id === "docs-pnm-ds-ofdm-fecsummary-getcapture"
+                      ? fecSummaryResponse
+                      : selectedOperation.id === "docs-pnm-ds-histogram-getcapture"
+                        ? histogramResponse
+                        : channelEstResponse;
+
   return (
     <>
       <PageHeader title={selectedOperation.label} subtitle="" />
       <Panel title="Capture Inputs">
-        {selectedOperation.id === "docs-dev-eventlog" || selectedOperation.id === "system-uptime" || selectedOperation.id === "docs-pnm-interface-stats" || selectedOperation.id === "docs-if30-us-atdma-chan-stats" || selectedOperation.id === "docs-if30-us-atdma-chan-preequalization" ? (
+        {selectedOperation.id === "docs-dev-eventlog" || selectedOperation.id === "system-uptime" || selectedOperation.id === "docs-pnm-interface-stats" || selectedOperation.id === "docs-if30-us-atdma-chan-stats" || selectedOperation.id === "docs-if30-us-atdma-chan-preequalization" || selectedOperation.id === "docs-if30-ds-scqam-chan-stats" ? (
           <DeviceConnectRequestForm
             isPending={mutation.isPending}
             canRun={Boolean(selectedInstance)}
@@ -228,8 +278,22 @@ export function EndpointExplorerPage() {
         </Panel>
       ) : null}
 
+      <div className="operations-visual-actions">
+        <button
+          type="button"
+          className="operations-json-download"
+          onClick={() => {
+            downloadJson(buildJsonFilename(selectedOperation.label), selectedResponse);
+          }}
+        >
+          Download JSON
+        </button>
+      </div>
+
       <Panel>
-        {selectedOperation.id === "docs-if30-us-atdma-chan-preequalization" ? (
+        {selectedOperation.id === "docs-if30-ds-scqam-chan-stats" ? (
+          <SingleDsScqamChannelStatsView response={dsScqamChannelStatsResponse} />
+        ) : selectedOperation.id === "docs-if30-us-atdma-chan-preequalization" ? (
           <SingleAtdmaPreEqualizationView response={atdmaPreEqualizationResponse} />
         ) : selectedOperation.id === "docs-if30-us-atdma-chan-stats" ? (
           <SingleAtdmaChannelStatsView response={atdmaChannelStatsResponse} />
