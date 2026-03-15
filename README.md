@@ -15,8 +15,6 @@ Frontend-only web client for PyPNM REST APIs.
 ./install.sh
 ```
 
-- [Install And Bootstrap](docs/user/install-and-bootstrap.md)
-
 ## Run locally
 
 ```bash
@@ -79,8 +77,8 @@ npm run test
 
 ## User docs
 
+- [Documentation Index](docs/index.md)
 - [Getting Started](docs/user/getting-started.md)
-- [Install And Bootstrap](docs/user/install-and-bootstrap.md)
 - [Release Helpers](docs/user/release-helpers.md)
 - [Using The UI](docs/user/using-the-ui.md)
 - [Troubleshooting](docs/user/troubleshooting.md)

@@ -1,0 +1,36 @@
+site_name: PyPNM-WebUI
+site_description: Documentation for the PyPNM WebUI frontend
+repo_name: PyPNM-WebUI
+docs_dir: docs
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.sections
+    - content.code.copy
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+nav:
+  - Home: index.md
+  - User:
+      - Getting Started: user/getting-started.md
+      - Install And Bootstrap: user/install-and-bootstrap.md
+      - Using The UI: user/using-the-ui.md
+      - Troubleshooting: user/troubleshooting.md
+      - Release Helpers: user/release-helpers.md
+      - Release Workflow: user/release-workflow.md
+  - Development:
+      - Workflow: development/workflow.md
+      - Git Helpers: development/git-helpers.md
+      - Field Hints: development/field-hints.md
+  - Reference:
+      - Architecture: architecture.md
+      - API Integration: api-integration.md
+      - Environment: env.md
+      - Roadmap: roadmap.md
+  - Planning:
+      - Repository Plan: planning/pypnm-webui-repo-plan.md
