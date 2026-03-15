@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
+import { useDeviceConnectFormDefaults } from "@/features/operations/useRequestFormDefaults";
 import type { DeviceConnectRequest } from "@/types/api";
 
 interface DeviceConnectFormValues {
@@ -25,13 +27,14 @@ export function DeviceConnectRequestForm({
   onSubmit,
   errorMessage,
 }: DeviceConnectRequestFormProps) {
-  const { register, handleSubmit } = useForm<DeviceConnectFormValues>({
-    defaultValues: {
-      macAddress: "",
-      ipAddress: "",
-      community: "private",
-    },
+  const requestDefaults = useDeviceConnectFormDefaults();
+  const { register, handleSubmit, reset } = useForm<DeviceConnectFormValues>({
+    defaultValues: requestDefaults,
   });
+
+  useEffect(() => {
+    reset(requestDefaults);
+  }, [requestDefaults, reset]);
 
   return (
     <form

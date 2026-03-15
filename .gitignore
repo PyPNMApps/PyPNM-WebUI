@@ -218,6 +218,7 @@ pnpm-debug.log*
 dist/
 *.tsbuildinfo
 vite.config.js
+release-reports/
 vite.config.d.ts
 
 # Local release workflow output

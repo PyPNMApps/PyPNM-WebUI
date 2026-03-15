@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 
 import { InstanceConfigContext } from "@/app/InstanceConfigContext";
-import { loadInstanceConfig, readStoredInstanceId, storeSelectedInstanceId } from "@/lib/instanceConfig";
+import { loadInstanceConfig } from "@/lib/instanceConfig";
 import type { PypnmInstance, PypnmInstanceConfig } from "@/types/config";
 
 export interface InstanceConfigContextValue {
@@ -32,9 +32,8 @@ export function InstanceConfigProvider({ children }: InstanceConfigProviderProps
           return;
         }
 
-        const enabledInstances = loadedConfig.instances.filter((instance) => instance.enabled);
-        const preferredId = readStoredInstanceId() ?? loadedConfig.defaults.selectedInstance;
-        const preferredInstance = enabledInstances.find((instance) => instance.id === preferredId) ?? enabledInstances[0] ?? loadedConfig.instances[0] ?? null;
+        const preferredId = loadedConfig.defaults.selectedInstance;
+        const preferredInstance = loadedConfig.instances.find((instance) => instance.id === preferredId) ?? loadedConfig.instances[0] ?? null;
 
         setConfig(loadedConfig);
         setSelectedInstanceIdState(preferredInstance?.id ?? null);
@@ -59,7 +58,7 @@ export function InstanceConfigProvider({ children }: InstanceConfigProviderProps
   }, []);
 
   const value = useMemo<InstanceConfigContextValue>(() => {
-    const instances = config?.instances.filter((instance) => instance.enabled) ?? [];
+    const instances = config?.instances ?? [];
     const selectedInstance = instances.find((instance) => instance.id === selectedInstanceId) ?? instances[0] ?? null;
 
     return {
@@ -70,7 +69,6 @@ export function InstanceConfigProvider({ children }: InstanceConfigProviderProps
       error,
       setSelectedInstanceId: (instanceId: string) => {
         setSelectedInstanceIdState(instanceId);
-        storeSelectedInstanceId(instanceId);
       },
     };
   }, [config, error, isLoading, selectedInstanceId]);

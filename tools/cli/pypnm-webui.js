@@ -4,7 +4,7 @@ import process from "node:process";
 
 import { runCli } from "./pypnm_webui_cli.js";
 
-const exitCode = runCli(process.argv.slice(2), import.meta.url);
+const exitCode = await runCli(process.argv.slice(2), import.meta.url);
 
 if (typeof exitCode === "number") {
   process.exit(exitCode);

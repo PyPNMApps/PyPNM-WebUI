@@ -23,6 +23,12 @@ VITE_REQUEST_TIMEOUT_MS=30000
 Runtime instance selection details:
 - [Runtime Configuration](runtime-configuration.md)
 
+To edit agent entries and per-agent request defaults interactively:
+
+```bash
+pypnm-webui config-menu
+```
+
 ## 3. Start the UI
 
 ```bash
@@ -34,6 +40,7 @@ Open:
 
 ## 4. First checks
 
-- Use the left sidebar `PyPNM Target` dropdown to confirm the active instance from `public/config/pypnm-instances.yaml`.
+- Use the top-bar `PyPNM Target` dropdown to confirm the active instance from `public/config/pypnm-instances.yaml`.
 - Open `Health` page and verify backend connectivity.
-- Open `Operations` and confirm the `PNM / MultiCapture / Downstream / RxMER` workflow appears.
+- Open `Operations` and confirm the capture pages are using the selected
+  instance defaults.

@@ -34,15 +34,18 @@
 
 ## Instance Target Selection
 - `public/config/pypnm-instances.yaml` is the runtime source for selectable PyPNM instances.
+- Each instance can also carry `request_defaults` used to prefill capture and
+  device request forms for that specific PyPNM agent.
 - `src/app/InstanceConfigProvider.tsx` loads the YAML, normalizes it, and persists the selected instance in local storage.
-- `src/components/layout/InstanceSelector.tsx` exposes the dropdown in the sidebar.
+- `src/components/layout/InstanceSelector.tsx` exposes the dropdown in the top navigation.
 - Service calls should take the selected instance base URL from provider state rather than hardcoding one target.
+- Shared request form defaults should come from the selected instance rather
+  than from hardcoded form values.
 
 ## Operations Catalog Direction
-- The WebUI should use the Postman collection structure as its workflow catalog, not a flat endpoint browser.
-- `src/features/operations/registry.ts` is the current static registry for the first workflow slice.
-- `src/pages/EndpointExplorerPage.tsx` is now functioning as the first operations workbench:
-  - left catalog
-  - selected workflow metadata
-  - request/run/visual/raw/history tabs
-  - OpenAPI inventory retained as secondary reference data
+- The WebUI uses a compact operations menu modeled after the Postman
+  collection structure rather than a flat endpoint table.
+- `src/features/operations/operationsNavigation.ts` is the editable registry
+  for top-level operations menu entries.
+- `src/pages/EndpointExplorerPage.tsx` is the current operations page for
+  endpoint-bound request forms and visuals.

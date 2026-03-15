@@ -3,6 +3,15 @@ export interface InstancePollingConfig {
   intervalMs: number;
 }
 
+export interface PypnmRequestDefaults {
+  cableModemMacAddress: string;
+  cableModemIpAddress: string;
+  tftpIpv4: string;
+  tftpIpv6: string;
+  channelIds: string;
+  snmpRwCommunity: string;
+}
+
 export interface PypnmInstance {
   id: string;
   label: string;
@@ -11,6 +20,7 @@ export interface PypnmInstance {
   tags: string[];
   capabilities: string[];
   polling: InstancePollingConfig;
+  requestDefaults: PypnmRequestDefaults;
 }
 
 export interface PypnmInstanceDefaults {

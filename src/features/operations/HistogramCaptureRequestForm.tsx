@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
+import { useCommonRequestFormDefaults } from "@/features/operations/useRequestFormDefaults";
 import type { SingleHistogramCaptureRequest } from "@/types/api";
 
 interface HistogramCaptureFormValues {
@@ -28,16 +30,28 @@ export function HistogramCaptureRequestForm({
   onSubmit,
   errorMessage,
 }: HistogramCaptureRequestFormProps) {
-  const { register, handleSubmit } = useForm<HistogramCaptureFormValues>({
+  const requestDefaults = useCommonRequestFormDefaults();
+  const { register, handleSubmit, reset } = useForm<HistogramCaptureFormValues>({
     defaultValues: {
-      macAddress: "",
-      ipAddress: "",
-      tftpIpv4: "",
-      tftpIpv6: "",
-      community: "private",
+      macAddress: requestDefaults.macAddress,
+      ipAddress: requestDefaults.ipAddress,
+      tftpIpv4: requestDefaults.tftpIpv4,
+      tftpIpv6: requestDefaults.tftpIpv6,
+      community: requestDefaults.community,
       sampleDuration: 10,
     },
   });
+
+  useEffect(() => {
+    reset({
+      macAddress: requestDefaults.macAddress,
+      ipAddress: requestDefaults.ipAddress,
+      tftpIpv4: requestDefaults.tftpIpv4,
+      tftpIpv6: requestDefaults.tftpIpv6,
+      community: requestDefaults.community,
+      sampleDuration: 10,
+    });
+  }, [requestDefaults, reset]);
 
   return (
     <form

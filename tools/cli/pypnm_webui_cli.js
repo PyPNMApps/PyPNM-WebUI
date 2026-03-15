@@ -5,6 +5,7 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 
 import packageJson from "../../package.json" with { type: "json" };
+import { runConfigMenu } from "../config-menu/config_menu.js";
 
 const SUCCESS_EXIT_CODE = 0;
 const EXIT_CODE_USAGE = 2;
@@ -42,6 +43,7 @@ function printRootHelp() {
       "",
       "Commands:",
       "  serve        Start the Vite development server.",
+      "  config-menu  Launch the interactive pypnm-instances.yaml editor.",
       "",
       "Options:",
       "  -h, --help   Show this help.",
@@ -51,6 +53,7 @@ function printRootHelp() {
       "  pypnm-webui serve",
       "  pypnm-webui serve --host 0.0.0.0 --port 4173",
       "  pypnm-webui serve --open",
+      "  pypnm-webui config-menu",
       "",
       'Use "pypnm-webui <command> --help" for command-specific options.',
       "",
@@ -80,6 +83,25 @@ function printServeHelp() {
       "  pypnm-webui serve",
       "  pypnm-webui serve --host 0.0.0.0 --port 4173",
       "  pypnm-webui serve --strict-port --log-level warn",
+      "",
+    ].join("\n"),
+  );
+}
+
+function printConfigMenuHelp() {
+  process.stdout.write(
+    [
+      "Launch the interactive pypnm-instances.yaml configuration menu.",
+      "",
+      "Usage:",
+      "  pypnm-webui config-menu",
+      "",
+      "Behavior:",
+      "  - edits public/config/pypnm-instances.yaml",
+      "  - manages PyPNM agent entries",
+      "  - edits per-agent request defaults like MAC, IP, TFTP, and SNMP RW community",
+      "  - saves after each edit",
+      "  - creates a timestamped backup before overwriting prior config content",
       "",
     ].join("\n"),
   );
@@ -206,7 +228,7 @@ function runServe(options, metaUrl) {
   return SUCCESS_EXIT_CODE;
 }
 
-export function runCli(args, metaUrl) {
+export async function runCli(args, metaUrl) {
   if (args.length === 0 || args[0] === "-h" || args[0] === "--help") {
     printRootHelp();
     return SUCCESS_EXIT_CODE;
@@ -227,6 +249,14 @@ export function runCli(args, metaUrl) {
     }
     runServe(parsed.options, metaUrl);
     return null;
+  }
+
+  if (command === "config-menu") {
+    if (commandArgs.includes("-h") || commandArgs.includes("--help")) {
+      printConfigMenuHelp();
+      return SUCCESS_EXIT_CODE;
+    }
+    return runConfigMenu(metaUrl);
   }
 
   return failUsage(`Unknown command: ${command}`);

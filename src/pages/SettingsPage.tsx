@@ -23,6 +23,12 @@ export function SettingsPage() {
           <span>{instances.length}</span>
           <strong>Config Health Path</strong>
           <span className="mono">{config?.defaults.healthPath ?? "n/a"}</span>
+          <strong>Selected CM MAC</strong>
+          <span className="mono">{selectedInstance?.requestDefaults.cableModemMacAddress ?? "n/a"}</span>
+          <strong>Selected CM IP</strong>
+          <span className="mono">{selectedInstance?.requestDefaults.cableModemIpAddress ?? "n/a"}</span>
+          <strong>Selected SNMP RW</strong>
+          <span className="mono">{selectedInstance?.requestDefaults.snmpRwCommunity ?? "n/a"}</span>
         </div>
       </Panel>
     </>

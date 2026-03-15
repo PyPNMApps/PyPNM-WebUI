@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
+import { useCommonRequestFormDefaults } from "@/features/operations/useRequestFormDefaults";
 import { parseChannelIds } from "@/lib/channelIds";
 import type { SingleConstellationDisplayCaptureRequest } from "@/types/api";
 
@@ -32,19 +34,24 @@ export function ConstellationDisplayCaptureRequestForm({
   onSubmit,
   errorMessage,
 }: ConstellationDisplayCaptureRequestFormProps) {
-  const { register, handleSubmit } = useForm<ConstellationDisplayFormValues>({
+  const requestDefaults = useCommonRequestFormDefaults();
+  const { register, handleSubmit, reset } = useForm<ConstellationDisplayFormValues>({
     defaultValues: {
-      macAddress: "",
-      ipAddress: "",
-      tftpIpv4: "",
-      tftpIpv6: "",
-      channelIds: "0",
-      community: "private",
+      ...requestDefaults,
       displayCrossHair: true,
       modulationOrderOffset: 0,
       numberSampleSymbol: 8192,
     },
   });
+
+  useEffect(() => {
+    reset({
+      ...requestDefaults,
+      displayCrossHair: true,
+      modulationOrderOffset: 0,
+      numberSampleSymbol: 8192,
+    });
+  }, [requestDefaults, reset]);
 
   return (
     <form

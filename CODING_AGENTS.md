@@ -57,6 +57,8 @@
 - API base URL must be environment-driven (`VITE_PYPNM_API_BASE_URL`), never hardcoded.
 - Keep local/dev/prod behavior configurable via environment variables.
 - Document all env vars in `docs/env.md` and `.env.example`.
+- Keep shared request defaults in `public/config/pypnm-instances.yaml` at the instance level when they vary by PyPNM agent.
+- When config fields are edited interactively, route that behavior through `pypnm-webui config-menu` instead of inventing parallel config entry points.
 
 ## Security And Data Hygiene (Required)
 

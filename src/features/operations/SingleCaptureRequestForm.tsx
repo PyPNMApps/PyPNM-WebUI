@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
+import { useCommonRequestFormDefaults } from "@/features/operations/useRequestFormDefaults";
 import { parseChannelIds } from "@/lib/channelIds";
 import type { SingleRxMerCaptureRequest } from "@/types/api";
 
@@ -29,16 +31,14 @@ export function SingleCaptureRequestForm({
   onSubmit,
   errorMessage,
 }: SingleCaptureRequestFormProps) {
-  const { register, handleSubmit } = useForm<SingleCaptureFormValues>({
-    defaultValues: {
-      macAddress: "",
-      ipAddress: "",
-      tftpIpv4: "",
-      tftpIpv6: "",
-      channelIds: "0",
-      community: "private",
-    },
+  const requestDefaults = useCommonRequestFormDefaults();
+  const { register, handleSubmit, reset } = useForm<SingleCaptureFormValues>({
+    defaultValues: requestDefaults,
   });
+
+  useEffect(() => {
+    reset(requestDefaults);
+  }, [requestDefaults, reset]);
 
   return (
     <form

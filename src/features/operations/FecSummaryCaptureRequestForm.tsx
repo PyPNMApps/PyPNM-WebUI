@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
+import { useCommonRequestFormDefaults } from "@/features/operations/useRequestFormDefaults";
 import { parseChannelIds } from "@/lib/channelIds";
 import type { SingleFecSummaryCaptureRequest } from "@/types/api";
 
@@ -30,17 +32,20 @@ export function FecSummaryCaptureRequestForm({
   onSubmit,
   errorMessage,
 }: FecSummaryCaptureRequestFormProps) {
-  const { register, handleSubmit } = useForm<FecSummaryCaptureFormValues>({
+  const requestDefaults = useCommonRequestFormDefaults();
+  const { register, handleSubmit, reset } = useForm<FecSummaryCaptureFormValues>({
     defaultValues: {
-      macAddress: "",
-      ipAddress: "",
-      tftpIpv4: "",
-      tftpIpv6: "",
-      channelIds: "0",
-      community: "private",
+      ...requestDefaults,
       fecSummaryType: 2,
     },
   });
+
+  useEffect(() => {
+    reset({
+      ...requestDefaults,
+      fecSummaryType: 2,
+    });
+  }, [requestDefaults, reset]);
 
   return (
     <form

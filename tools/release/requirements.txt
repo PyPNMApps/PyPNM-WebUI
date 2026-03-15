@@ -1,1 +1,1 @@
-# PyPNM-WebUI release tools currently use Python stdlib only.
+PyYAML>=6.0,<7

@@ -29,6 +29,7 @@ CLI help:
 ```bash
 pypnm-webui --help
 pypnm-webui serve --help
+pypnm-webui config-menu --help
 ```
 
 Common serve examples:
@@ -37,6 +38,7 @@ Common serve examples:
 pypnm-webui serve
 pypnm-webui serve --host 0.0.0.0 --port 4173
 pypnm-webui serve --open
+pypnm-webui config-menu
 ```
 
 ## User docs

@@ -16,6 +16,7 @@ SUMMARY: dict[str, str] = {}
 RELEASE_LOG_DIR: Path | None = None
 REPORT_DIR = Path("release-reports") / "logs"
 BUMP_SCRIPT = Path("tools/support/bump_version.py")
+SANITIZE_RUNTIME_CONFIG_SCRIPT = Path("tools/release/sanitize_runtime_config.py")
 
 
 def _print_banner() -> None:
@@ -177,6 +178,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--skip-lint", action="store_true", help="Skip npm run lint")
     parser.add_argument("--skip-test", action="store_true", help="Skip npm run test")
     parser.add_argument("--skip-build", action="store_true", help="Skip npm run build")
+    parser.add_argument(
+        "--skip-sanitize-runtime-config",
+        action="store_true",
+        help="Skip generating the sanitized release copy of public/config/pypnm-instances.yaml",
+    )
     parser.add_argument("--no-tag", action="store_true", help="Do not create or push a git tag")
     parser.add_argument("--no-push", action="store_true", help="Do not push branch/tag to origin")
     return parser
@@ -212,6 +218,11 @@ def main() -> None:
     _run_step("npm-lint", _npm_cmd("lint"), enabled=not args.skip_lint)
     _run_step("npm-test", _npm_cmd("test"), enabled=not args.skip_test)
     _run_step("npm-build", _npm_cmd("build"), enabled=not args.skip_build)
+    _run_step(
+        "sanitize-runtime-config",
+        [sys.executable, str(SANITIZE_RUNTIME_CONFIG_SCRIPT)],
+        enabled=not args.skip_sanitize_runtime_config,
+    )
 
     tag_name = f"v{version}"
     commit_message = f"{args.commit_msg} - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"

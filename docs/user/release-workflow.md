@@ -62,6 +62,17 @@ Default release flow (checks + commit + tag + push):
 
 When `--next` is omitted, `release.py` performs an implicit `maintenance` bump before validation, commit, tag, and push.
 
+As part of the release flow, `release.py` also generates a sanitized copy of:
+
+- `public/config/pypnm-instances.yaml`
+
+The sanitized copy is written under:
+
+- `release-reports/runtime-config/pypnm-instances.sanitized.yaml`
+
+This preserves the working runtime config file while producing a release-safe
+copy with generic placeholder values.
+
 Release with automatic version bump:
 
 ```bash
@@ -100,3 +111,5 @@ Skip tag creation:
 - Release workflow only allows `main` or `hot-fix` branches.
 - By default, working tree must be clean.
 - Failure logs are stored under `release-reports/logs/`.
+- The sanitized runtime-config release artifact is stored under
+  `release-reports/runtime-config/`.
