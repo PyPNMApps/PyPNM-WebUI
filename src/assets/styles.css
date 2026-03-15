@@ -1136,3 +1136,79 @@ pre {
   color: var(--muted);
   background: rgba(255, 255, 255, 0.04);
 }
+
+
+.atdma-bar-plot {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(92px, 1fr);
+  gap: 10px;
+  align-items: end;
+  min-height: 220px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.atdma-bar-column {
+  display: grid;
+  gap: 6px;
+  align-items: end;
+}
+
+.atdma-bar-slot {
+  height: 150px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 6px;
+  display: flex;
+  align-items: end;
+}
+
+.atdma-bar {
+  width: 100%;
+  min-height: 8px;
+  border-radius: 8px 8px 4px 4px;
+}
+
+.atdma-bar.ok {
+  background: linear-gradient(180deg, rgba(52, 211, 153, 0.95), rgba(96, 165, 250, 0.65));
+}
+
+.atdma-bar.warning {
+  background: linear-gradient(180deg, rgba(251, 191, 36, 0.95), rgba(96, 165, 250, 0.55));
+}
+
+.atdma-bar.violation {
+  background: linear-gradient(180deg, rgba(251, 113, 133, 0.95), rgba(96, 165, 250, 0.50));
+}
+
+.atdma-bar-label,
+.atdma-bar-subtitle {
+  text-align: center;
+  font-size: 11px;
+}
+
+.atdma-bar-subtitle {
+  color: var(--muted);
+}
+
+.atdma-bar-axis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.atdma-bar-axis span:nth-child(2) {
+  text-align: center;
+}
+
+.atdma-bar-axis span:nth-child(3) {
+  text-align: right;
+}
+
+.atdma-counter-grid {
+  margin-top: 16px;
+}

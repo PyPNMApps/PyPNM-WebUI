@@ -327,6 +327,60 @@ export interface InterfaceStatsResponse {
   results?: InterfaceStatsResults;
 }
 
+export interface AtdmaDwrWindowCheck {
+  dwr_warning_db?: number;
+  dwr_violation_db?: number;
+  spread_db?: number;
+  channel_count?: number;
+  min_power_dbmv?: number;
+  max_power_dbmv?: number;
+  is_warning?: boolean;
+  is_violation?: boolean;
+  extreme_channel_ids?: number[];
+}
+
+export interface AtdmaUpstreamChannelEntryData {
+  docsIfUpChannelId?: number | string;
+  docsIfUpChannelFrequency?: number;
+  docsIfUpChannelWidth?: number;
+  docsIf3CmStatusUsTxPower?: number;
+  docsIf3CmStatusUsIsMuted?: boolean;
+  docsIfUpChannelPreEqEnable?: boolean;
+  docsIfUpChannelStatus?: number | string;
+  docsIf3CmStatusUsT3Timeouts?: number | string;
+  docsIf3CmStatusUsT4Timeouts?: number | string;
+  docsIf3CmStatusUsT3Exceededs?: number | string;
+  docsIf3CmStatusUsRangingAborteds?: number | string;
+  docsIf3CmStatusUsModulationType?: number | string;
+  docsIfUpChannelSlotSize?: number | string;
+  docsIfUpChannelTxTimingOffset?: number | string;
+  docsIf3CmStatusUsRangingStatus?: number | string;
+  docsIfUpChannelType?: number | string;
+}
+
+export interface AtdmaUpstreamChannelEntry {
+  index?: number | string;
+  channel_id?: number | string;
+  entry?: AtdmaUpstreamChannelEntryData;
+}
+
+export interface AtdmaChannelStatsResults {
+  entries?: AtdmaUpstreamChannelEntry[];
+  dwr_window_check?: AtdmaDwrWindowCheck | null;
+}
+
+export interface AtdmaChannelStatsResponse {
+  mac_address?: string;
+  status?: number | string;
+  message?: string | null;
+  device?: {
+    mac_address?: string;
+    system_description?: SingleRxMerSystemDescription;
+  };
+  system_description?: SingleRxMerSystemDescription;
+  results?: AtdmaChannelStatsResults;
+}
+
 export interface SingleRxMerAnalysisEntry {
   mac_address?: string;
   channel_id?: number;
