@@ -631,6 +631,43 @@ export interface If31DsOfdmProfileStatsResponse {
   results?: If31DsOfdmProfileStatsChannel[];
 }
 
+export interface If31DsOfdmChannelStatsEntryData {
+  docsIf31CmDsOfdmChanChannelId?: number;
+  docsIf31CmDsOfdmChanChanIndicator?: string;
+  docsIf31CmDsOfdmChanSubcarrierZeroFreq?: number;
+  docsIf31CmDsOfdmChanFirstActiveSubcarrierNum?: number;
+  docsIf31CmDsOfdmChanLastActiveSubcarrierNum?: number;
+  docsIf31CmDsOfdmChanNumActiveSubcarriers?: number;
+  docsIf31CmDsOfdmChanSubcarrierSpacing?: number;
+  docsIf31CmDsOfdmChanCyclicPrefix?: number;
+  docsIf31CmDsOfdmChanRollOffPeriod?: number;
+  docsIf31CmDsOfdmChanPlcFreq?: number;
+  docsIf31CmDsOfdmChanNumPilots?: number;
+  docsIf31CmDsOfdmChanTimeInterleaverDepth?: number;
+  docsIf31CmDsOfdmChanPlcTotalCodewords?: number;
+  docsIf31CmDsOfdmChanPlcUnreliableCodewords?: number;
+  docsIf31CmDsOfdmChanNcpTotalFields?: number;
+  docsIf31CmDsOfdmChanNcpFieldCrcFailures?: number;
+}
+
+export interface If31DsOfdmChannelStatsEntry {
+  index?: number;
+  channel_id?: number;
+  entry?: If31DsOfdmChannelStatsEntryData;
+}
+
+export interface If31DsOfdmChannelStatsResponse {
+  mac_address?: string;
+  status?: number | string;
+  message?: string | null;
+  device?: {
+    mac_address?: string;
+    system_description?: SingleRxMerSystemDescription;
+  };
+  system_description?: SingleRxMerSystemDescription;
+  results?: If31DsOfdmChannelStatsEntry[];
+}
+
 export interface If31SystemDiplexer {
   diplexer_capability?: number;
   cfg_band_edge?: number;

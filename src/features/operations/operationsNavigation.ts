@@ -11,6 +11,15 @@ export interface OperationNavigationItem {
 // Edit this file to add top-row operation navigation entries.
 export const operationNavigationItems: OperationNavigationItem[] = [
   {
+    id: "docs-if31-ds-ofdm-chan-stats",
+    label: "OFDM Channel Stats",
+    routePath: "/operations/ds-ofdm-channel-stats",
+    endpointPath: "/docs/if31/ds/ofdm/chan/stats",
+    description: "DOCSIS 3.1 downstream OFDM channel statistics visual.",
+    menuPath: ["DOCSIS 3.1", "Downstream"],
+    requestTimeoutMs: 90000,
+  },
+  {
     id: "docs-if31-ds-ofdm-profile-stats",
     label: "OFDM Profile Stats",
     routePath: "/operations/ds-ofdm-profile-stats",
