@@ -3,13 +3,14 @@ from __future__ import annotations
 
 import argparse
 import atexit
-import json
 import re
 import subprocess
 import sys
 import tempfile
 from datetime import datetime
 from pathlib import Path
+
+from tools.support.versioning import read_version_file
 
 SUMMARY: dict[str, str] = {}
 RELEASE_LOG_DIR: Path | None = None
@@ -103,22 +104,15 @@ def _ensure_release_branch_allowed() -> str:
     return branch
 
 
-def _get_package_version() -> str:
-    package_json = Path("package.json")
-    if not package_json.is_file():
-        raise RuntimeError("package.json not found")
-    data = json.loads(package_json.read_text(encoding="utf-8"))
-    version = data.get("version")
-    if not isinstance(version, str) or not version.strip():
-        raise RuntimeError("package.json version is missing")
-    return version.strip()
+def _get_repo_version() -> str:
+    return read_version_file()
 
 
 def _bump_version(*, explicit_version: str | None, next_mode: str | None) -> tuple[str, bool]:
     if explicit_version is not None and next_mode is not None:
         raise RuntimeError("--version and --next cannot be used together.")
     if explicit_version is None and next_mode is None:
-        return _get_package_version(), False
+        return _get_repo_version(), False
 
     if not BUMP_SCRIPT.is_file():
         raise RuntimeError(f"Missing bump script: {BUMP_SCRIPT}")
@@ -127,7 +121,7 @@ def _bump_version(*, explicit_version: str | None, next_mode: str | None) -> tup
         _run([sys.executable, str(BUMP_SCRIPT), explicit_version], label="bump-version", capture_output=False)
     else:
         _run([sys.executable, str(BUMP_SCRIPT), "--next", str(next_mode)], label="bump-version", capture_output=False)
-    return _get_package_version(), True
+    return _get_repo_version(), True
 
 
 def _run_step(name: str, cmd: list[str], *, enabled: bool) -> None:
@@ -178,8 +172,8 @@ def _push_branch_and_tag(branch: str, tag_name: str, *, push: bool, tag: bool) -
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="PyPNM-WebUI release workflow")
     parser.add_argument("--commit-msg", default="Release", help="Commit message prefix")
-    parser.add_argument("--version", help="Explicit version to set before release (MAJOR.MINOR.PATCH or ...-rcN)")
-    parser.add_argument("--next", choices=["major", "minor", "patch", "rc"], help="Compute and apply next version")
+    parser.add_argument("--version", help="Explicit version to set before release (MAJOR.MINOR.MAINTENANCE.BUILD)")
+    parser.add_argument("--next", choices=["major", "minor", "maintenance", "build"], help="Compute and apply next version")
     parser.add_argument("--allow-dirty", action="store_true", help="Allow running with uncommitted changes")
     parser.add_argument("--skip-lint", action="store_true", help="Skip npm run lint")
     parser.add_argument("--skip-test", action="store_true", help="Skip npm run test")
@@ -207,7 +201,7 @@ def main() -> None:
     branch = _ensure_release_branch_allowed()
     _print_status("release-branch", "pass")
 
-    version_before = _get_package_version()
+    version_before = _get_repo_version()
     version, bumped = _bump_version(explicit_version=args.version, next_mode=args.next)
     if not bumped:
         _print_status("bump-version", "skip")

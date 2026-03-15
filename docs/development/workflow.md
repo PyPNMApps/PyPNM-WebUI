@@ -14,7 +14,8 @@
 - `./tools/git/git-reset-branch-history.sh` rewrites branch history; use only with care.
 
 ## Release Workflow
-- `.venv/bin/python ./tools/support/bump_version.py --next patch` bumps package version files.
+- `.venv/bin/python ./tools/support/bump_version.py --next maintenance` bumps the repository release version.
+- `.venv/bin/python ./tools/support/bump_version.py --next build` increments the build component only.
 - `.venv/bin/python ./tools/release/check_version.py` validates package version consistency.
 - `.venv/bin/python ./tools/release/test-runner.py` runs lint/test/build gates.
 - `.venv/bin/python ./tools/release/release.py` runs release checks, commit/tag, and optional push.

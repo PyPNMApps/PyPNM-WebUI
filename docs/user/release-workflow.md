@@ -12,6 +12,13 @@ This ensures:
 - Node 22 is installed/selected
 - `.venv` exists for Python tooling
 
+## Release Version Model
+
+- `VERSION` is the release source of truth.
+- It uses `MAJOR.MINOR.MAINTENANCE.BUILD`.
+- Release tags use that value with a `v` prefix, for example `v0.1.0.0`.
+- `package.json` and `package-lock.json` are kept in sync with the derived npm-compatible version `MAJOR.MINOR.MAINTENANCE`.
+
 ## Validate before release
 
 ```bash
@@ -30,13 +37,19 @@ View current:
 Auto bump:
 
 ```bash
-.venv/bin/python ./tools/support/bump_version.py --next patch
+.venv/bin/python ./tools/support/bump_version.py --next maintenance
+```
+
+Build-only bump:
+
+```bash
+.venv/bin/python ./tools/support/bump_version.py --next build
 ```
 
 Set explicit:
 
 ```bash
-.venv/bin/python ./tools/support/bump_version.py 0.2.0
+.venv/bin/python ./tools/support/bump_version.py 0.2.0.0
 ```
 
 ## Run release
@@ -50,13 +63,19 @@ Default release flow (checks + commit + tag + push):
 Release with automatic version bump:
 
 ```bash
-.venv/bin/python ./tools/release/release.py --commit-msg "Release" --next patch
+.venv/bin/python ./tools/release/release.py --commit-msg "Release" --next maintenance
+```
+
+Release with a build bump:
+
+```bash
+.venv/bin/python ./tools/release/release.py --commit-msg "Release" --next build
 ```
 
 Release with explicit version:
 
 ```bash
-.venv/bin/python ./tools/release/release.py --commit-msg "Release" --version 0.2.0
+.venv/bin/python ./tools/release/release.py --commit-msg "Release" --version 0.2.0.0
 ```
 
 Safe dry-style release (no push):
@@ -73,6 +92,9 @@ Skip tag creation:
 
 ## Notes
 
+- `VERSION` is the authoritative release version and uses `MAJOR.MINOR.MAINTENANCE.BUILD`.
+- `package.json` and `package-lock.json` keep the derived npm-compatible `MAJOR.MINOR.MAINTENANCE` version.
+- tag creation follows the `v<version>` pattern, for example `v0.1.0.0`
 - Release workflow only allows `main` or `hot-fix` branches.
 - By default, working tree must be clean.
 - Failure logs are stored under `release-reports/logs/`.

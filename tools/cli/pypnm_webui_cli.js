@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -15,6 +16,20 @@ const VALID_LOG_LEVELS = new Set(["silent", "error", "warn", "info"]);
 function repoRootFromModule(metaUrl) {
   const cliDir = path.dirname(fileURLToPath(metaUrl));
   return path.resolve(cliDir, "../..");
+}
+
+function readCliVersion(metaUrl) {
+  const repoRoot = repoRootFromModule(metaUrl);
+  const versionPath = path.join(repoRoot, "VERSION");
+  try {
+    const version = fs.readFileSync(versionPath, "utf8").trim();
+    if (version) {
+      return version;
+    }
+  } catch {
+    // fall through to package.json version
+  }
+  return packageJson.version;
 }
 
 function printRootHelp() {
@@ -198,7 +213,7 @@ export function runCli(args, metaUrl) {
   }
 
   if (args[0] === "-v" || args[0] === "--version") {
-    process.stdout.write(`${packageJson.version}\n`);
+    process.stdout.write(`${readCliVersion(metaUrl)}\n`);
     return SUCCESS_EXIT_CODE;
   }
 

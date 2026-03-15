@@ -16,25 +16,41 @@ This ensures:
 - Node 22 is installed and selected
 - `.venv` exists for Python-based release tooling
 
+## Release Versioning
+
+- `VERSION` is the authoritative release version file.
+- The format is `MAJOR.MINOR.MAINTENANCE.BUILD`.
+- Git tags are created from `VERSION`, for example `v0.1.0.0`.
+- `package.json` and `package-lock.json` keep the derived npm-compatible version `MAJOR.MINOR.MAINTENANCE`.
+
+This means:
+- release and tagging use the four-part version
+- the Node package metadata keeps a valid npm semver
+
 ## Version Helpers
 
-Show the current package version:
+Show the current repository version:
 
 ```bash
 .venv/bin/python ./tools/support/bump_version.py --current
 ```
 
-Compute and apply the next patch version:
+Compute and apply the next maintenance version:
 
 ```bash
-.venv/bin/python ./tools/support/bump_version.py --next patch
+.venv/bin/python ./tools/support/bump_version.py --next maintenance
 ```
 
 Set an explicit version:
 
 ```bash
-.venv/bin/python ./tools/support/bump_version.py 0.2.0
+.venv/bin/python ./tools/support/bump_version.py 0.2.0.0
 ```
+
+Notes:
+- valid bump modes are `major`, `minor`, `maintenance`, and `build`
+- `--next maintenance` resets the build component to `0`
+- `--next build` increments only the build component
 
 ## Validation Helpers
 

@@ -1,41 +1,32 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import json
 import sys
-from pathlib import Path
 
-
-def _read_version(path: Path) -> str:
-    data = json.loads(path.read_text(encoding="utf-8"))
-    value = data.get("version")
-    return value if isinstance(value, str) else ""
+from tools.support.versioning import read_package_versions, read_version_file, to_package_version
 
 
 def main() -> int:
-    package_json = Path("package.json")
-    package_lock = Path("package-lock.json")
-
-    if not package_json.is_file():
-        print("ERROR: package.json missing")
-        return 1
-    if not package_lock.is_file():
-        print("ERROR: package-lock.json missing")
+    try:
+        repo_version = read_version_file()
+        pkg_version, lock_version = read_package_versions()
+    except RuntimeError as exc:
+        print(f"ERROR: {exc}")
         return 1
 
-    pkg_version = _read_version(package_json)
-    lock_version = _read_version(package_lock)
-
-    if not pkg_version or not lock_version:
-        print("ERROR: missing version in package.json or package-lock.json")
-        return 1
-
+    expected_package_version = to_package_version(repo_version)
+    print(f"VERSION: {repo_version}")
     print(f"package.json: {pkg_version}")
     print(f"package-lock.json: {lock_version}")
+    print(f"expected package version: {expected_package_version}")
 
     if pkg_version != lock_version:
         print("Version mismatch detected.")
         return 2
+
+    if pkg_version != expected_package_version:
+        print("VERSION to package version mismatch detected.")
+        return 3
 
     print("Version match confirmed.")
     return 0
