@@ -258,7 +258,7 @@ function AdvancedRxMerWorkbench() {
       tftpIpv6: requestDefaults.tftpIpv6,
       channelIds: requestDefaults.channelIds,
       community: requestDefaults.community,
-      measurementDuration: 1,
+      measurementDuration: 30,
       sampleInterval: 1,
       measureMode: 1,
     },
@@ -355,7 +355,7 @@ function AdvancedRxMerWorkbench() {
 
   return (
     <>
-      <PageHeader title="Advanced RxMER" subtitle="State-machine driven multi-capture workflow with reusable analysis on one operation." />
+      <PageHeader title="Advanced RxMER" subtitle="" />
 
       <Panel title="Request">
         <form className="grid" onSubmit={requestForm.handleSubmit(() => void machine.start())}>
@@ -547,7 +547,7 @@ function AdvancedChannelEstimationWorkbench() {
       tftpIpv6: requestDefaults.tftpIpv6,
       channelIds: requestDefaults.channelIds,
       community: requestDefaults.community,
-      measurementDuration: 1,
+      measurementDuration: 30,
       sampleInterval: 1,
     },
   });
@@ -826,7 +826,7 @@ function AdvancedOfdmaPreEqWorkbench() {
       tftpIpv6: requestDefaults.tftpIpv6,
       channelIds: requestDefaults.channelIds,
       community: requestDefaults.community,
-      measurementDuration: 300,
+      measurementDuration: 30,
       sampleInterval: 1,
     },
   });
