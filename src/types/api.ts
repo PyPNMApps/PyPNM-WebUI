@@ -344,6 +344,8 @@ export interface SingleSpectrumOfdmCaptureRequest {
   };
 }
 
+export type SingleSpectrumScqamCaptureRequest = SingleSpectrumOfdmCaptureRequest;
+
 export interface DeviceConnectRequest {
   cable_modem: {
     mac_address: string;
@@ -1049,6 +1051,24 @@ export interface SingleSpectrumOfdmCaptureResponse {
   data?: {
     analyses?: SingleSpectrumOfdmAnalysisEntry[];
     measurement_stats?: SpectrumOfdmMeasurementStatsEntry[];
+  };
+}
+
+export interface SpectrumScqamMeasurementStatsEntry extends Omit<SpectrumOfdmMeasurementStatsEntry, "channel_stats"> {
+  channel_stats?: DsScqamChannelEntry;
+}
+
+export type SingleSpectrumScqamAnalysisEntry = SingleSpectrumOfdmAnalysisEntry;
+
+export interface SingleSpectrumScqamCaptureResponse {
+  system_description?: SingleRxMerSystemDescription;
+  mac_address?: string;
+  status?: number;
+  message?: string | null;
+  data?: {
+    analyses?: SingleSpectrumScqamAnalysisEntry[];
+    primative?: unknown;
+    measurement_stats?: SpectrumScqamMeasurementStatsEntry[];
   };
 }
 

@@ -13,6 +13,7 @@ import { FecSummaryCaptureRequestForm } from "@/features/operations/FecSummaryCa
 import { ScqamCodewordErrorRateRequestForm } from "@/features/operations/ScqamCodewordErrorRateRequestForm";
 import { SingleCaptureRequestForm } from "@/features/operations/SingleCaptureRequestForm";
 import { SingleSpectrumOfdmCaptureView } from "@/features/operations/SingleSpectrumOfdmCaptureView";
+import { SingleSpectrumScqamCaptureView } from "@/features/operations/SingleSpectrumScqamCaptureView";
 import { SpectrumFullBandCaptureRequestForm } from "@/features/operations/SpectrumFullBandCaptureRequestForm";
 import { SpectrumOfdmCaptureRequestForm } from "@/features/operations/SpectrumOfdmCaptureRequestForm";
 import { SingleSpectrumFriendlyCaptureView } from "@/features/operations/SingleSpectrumFriendlyCaptureView";
@@ -59,6 +60,7 @@ import { singleModulationProfileFixture } from "@/features/operations/singleModu
 import { singleRxMerFixture } from "@/features/operations/singleRxMerFixture";
 import { singleSpectrumFullBandCaptureFixture } from "@/features/operations/singleSpectrumFullBandCaptureFixture";
 import { singleSpectrumOfdmCaptureFixture } from "@/features/operations/singleSpectrumOfdmCaptureFixture";
+import { singleSpectrumScqamCaptureFixture } from "@/features/operations/singleSpectrumScqamCaptureFixture";
 import { singleSpectrumFriendlyCaptureFixture } from "@/features/operations/singleSpectrumFriendlyCaptureFixture";
 import { singleSystemUpTimeFixture } from "@/features/operations/singleSystemUpTimeFixture";
 import { runSingleCaptureEndpoint } from "@/services/singleCaptureService";
@@ -92,6 +94,8 @@ import type {
   SingleRxMerCaptureResponse,
   SingleSpectrumOfdmCaptureRequest,
   SingleSpectrumOfdmCaptureResponse,
+  SingleSpectrumScqamCaptureRequest,
+  SingleSpectrumScqamCaptureResponse,
   SingleSpectrumFullBandCaptureRequest,
   SingleSpectrumFriendlyCaptureRequest,
   SingleSpectrumFriendlyCaptureResponse,
@@ -140,6 +144,7 @@ export function EndpointExplorerPage() {
   const [spectrumFriendlyResponse, setSpectrumFriendlyResponse] = useState<SingleSpectrumFriendlyCaptureResponse>(singleSpectrumFriendlyCaptureFixture);
   const [spectrumFullBandResponse, setSpectrumFullBandResponse] = useState<SingleSpectrumFriendlyCaptureResponse>(singleSpectrumFullBandCaptureFixture);
   const [spectrumOfdmResponse, setSpectrumOfdmResponse] = useState<SingleSpectrumOfdmCaptureResponse>(singleSpectrumOfdmCaptureFixture);
+  const [spectrumScqamResponse, setSpectrumScqamResponse] = useState<SingleSpectrumScqamCaptureResponse>(singleSpectrumScqamCaptureFixture);
   const selectedOperation = getOperationByRoutePath(location.pathname);
   const mutation = useMutation({
     mutationFn: ({
@@ -157,6 +162,7 @@ export function EndpointExplorerPage() {
         | SingleConstellationDisplayCaptureRequest
         | SingleModulationProfileCaptureRequest
         | SingleSpectrumOfdmCaptureRequest
+        | SingleSpectrumScqamCaptureRequest
         | SingleSpectrumFullBandCaptureRequest
         | SingleSpectrumFriendlyCaptureRequest;
     }) =>
@@ -182,6 +188,7 @@ export function EndpointExplorerPage() {
         | SingleConstellationDisplayCaptureResponse
         | SingleModulationProfileCaptureResponse
         | SingleSpectrumOfdmCaptureResponse
+        | SingleSpectrumScqamCaptureResponse
         | SingleSpectrumFriendlyCaptureResponse
       >(
         selectedInstance?.baseUrl ?? "",
@@ -300,6 +307,11 @@ export function EndpointExplorerPage() {
         return;
       }
 
+      if (selectedOperation?.id === "docs-pnm-ds-spectrumanalyzer-getcapture-scqam") {
+        setSpectrumScqamResponse(data as SingleSpectrumScqamCaptureResponse);
+        return;
+      }
+
       if (selectedOperation?.id === "docs-pnm-ds-histogram-getcapture") {
         setHistogramResponse(data as SingleHistogramCaptureResponse);
       }
@@ -346,6 +358,8 @@ export function EndpointExplorerPage() {
                     ? spectrumFullBandResponse
                     : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-ofdm"
                       ? spectrumOfdmResponse
+                    : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-scqam"
+                      ? spectrumScqamResponse
                 : selectedOperation.id === "docs-pnm-ds-ofdm-modulationprofile-getcapture"
                   ? modulationProfileResponse
                   : selectedOperation.id === "docs-pnm-ds-ofdm-constellationdisplay-getcapture"
@@ -410,7 +424,7 @@ export function EndpointExplorerPage() {
               mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
             }}
           />
-        ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-ofdm" ? (
+        ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-ofdm" || selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-scqam" ? (
           <SpectrumOfdmCaptureRequestForm
             isPending={mutation.isPending}
             canRun={Boolean(selectedInstance)}
@@ -508,6 +522,8 @@ export function EndpointExplorerPage() {
           <SingleSpectrumFriendlyCaptureView response={spectrumFullBandResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-ofdm" ? (
           <SingleSpectrumOfdmCaptureView response={spectrumOfdmResponse} />
+        ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-scqam" ? (
+          <SingleSpectrumScqamCaptureView response={spectrumScqamResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-modulationprofile-getcapture" ? (
           <SingleModulationProfileCaptureView response={modulationProfileResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-constellationdisplay-getcapture" ? (

@@ -186,6 +186,15 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     requestTimeoutMs: 90000,
   },
   {
+    id: "docs-pnm-ds-spectrumanalyzer-getcapture-scqam",
+    label: "SCQAM",
+    routePath: "/operations/spectrum-analyzer-scqam",
+    endpointPath: "/docs/pnm/ds/spectrumAnalyzer/getCapture/scqam",
+    description: "SCQAM downstream spectrum analyzer capture visual.",
+    menuPath: ["PNM", "Spectrum Analyzer"],
+    requestTimeoutMs: 90000,
+  },
+  {
     id: "docs-pnm-ds-ofdm-fecsummary-getcapture",
     label: "FEC Summary",
     routePath: "/operations/fec-summary",

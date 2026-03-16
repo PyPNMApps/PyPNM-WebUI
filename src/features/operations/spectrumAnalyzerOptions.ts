@@ -25,6 +25,6 @@ export const spectrumAnalyzerDirectionOptions = [
 ] as const;
 
 export const defaultSpectrumAnalyzerWindowFunction = 1;
-export const defaultSpectrumAnalyzerRetrievalType = 1;
+export const defaultSpectrumAnalyzerRetrievalType = 2;
 export const defaultSpectrumAnalyzerDirection = "downstream";
 export const defaultSpectrumAnalyzerNumberOfAverages = 1;
