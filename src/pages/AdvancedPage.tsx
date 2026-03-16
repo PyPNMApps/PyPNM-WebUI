@@ -1,5 +1,5 @@
 import { NavLink, Navigate, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { useInstanceConfig } from "@/app/useInstanceConfig";
@@ -7,6 +7,8 @@ import { FieldLabel } from "@/components/common/FieldLabel";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Panel } from "@/components/common/Panel";
 import { ThinkingIndicator } from "@/components/common/ThinkingIndicator";
+import type { CaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
+import { hasCompleteCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import { useCommonRequestFormDefaults } from "@/features/operations/useRequestFormDefaults";
 import { useAdvancedOperationMachine } from "@/features/advanced/useAdvancedOperationMachine";
@@ -22,6 +24,7 @@ import { AdvancedOfdmaPreEqGroupDelayView } from "@/features/advanced/AdvancedOf
 import { AdvancedOfdmaPreEqEchoDetectionView } from "@/features/advanced/AdvancedOfdmaPreEqEchoDetectionView";
 import { parseChannelIds } from "@/lib/channelIds";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
+import { checkCaptureInputsOnline } from "@/services/captureConnectivityService";
 import {
   analyzeAdvancedRxMer,
   getAdvancedRxMerResultsZipUrl,
@@ -152,6 +155,7 @@ interface AdvancedOperationHistoryEntry {
 }
 
 type AdvancedOperationHistorySort = "latest" | "model";
+type CaptureConnectivityStatus = "unknown" | "checking" | "online" | "offline";
 
 function downloadJson(filename: string, payload: unknown) {
   const blob = new Blob([`${JSON.stringify(payload, null, 2)}\n`], { type: "application/json" });
@@ -253,6 +257,30 @@ function sortOperationHistory(entries: AdvancedOperationHistoryEntry[], sortMode
   }
   next.sort((left, right) => right.createdAt - left.createdAt);
   return next;
+}
+
+function buildRequestTitle(status: CaptureConnectivityStatus) {
+  const label = status === "online"
+    ? "Online"
+    : status === "offline"
+      ? "Offline"
+      : status === "checking"
+        ? "Checking"
+        : "Unknown";
+  const stateClass = status === "online"
+    ? "online"
+    : status === "offline"
+      ? "offline"
+      : status === "checking"
+        ? "checking"
+        : "unknown";
+
+  return (
+    <div className="panel-title-inline">
+      <h2 className="panel-title-heading">Request</h2>
+      <span className={`capture-status-chip ${stateClass}`}>{label}</span>
+    </div>
+  );
 }
 
 function buildMinAvgMaxSeries(channel: {
@@ -368,6 +396,19 @@ function AdvancedRxMerWorkbench() {
   const [manualOperationId, setManualOperationId] = useState("");
   const [operationHistory, setOperationHistory] = useState<AdvancedOperationHistoryEntry[]>(() => readOperationHistory("rxmer"));
   const [operationHistorySort, setOperationHistorySort] = useState<AdvancedOperationHistorySort>("latest");
+  const [captureConnectivityStatus, setCaptureConnectivityStatus] = useState<CaptureConnectivityStatus>("unknown");
+  const connectivityCheckSequenceRef = useRef(0);
+  const connectivityHasCheckedInitialRef = useRef(false);
+  const watchedConnectivity = requestForm.watch(["macAddress", "ipAddress", "community"]);
+  const captureConnectivityInputs = useMemo<CaptureConnectivityInputs>(
+    () => ({
+      macAddress: watchedConnectivity[0]?.trim() ?? "",
+      ipAddress: watchedConnectivity[1]?.trim() ?? "",
+      community: watchedConnectivity[2]?.trim() ?? "",
+    }),
+    [watchedConnectivity],
+  );
+  const requestTitle = useMemo(() => buildRequestTitle(captureConnectivityStatus), [captureConnectivityStatus]);
 
   useEffect(() => {
     requestForm.reset((current) => ({
@@ -380,6 +421,52 @@ function AdvancedRxMerWorkbench() {
       community: requestDefaults.community,
     }));
   }, [requestDefaults, requestForm]);
+
+  useEffect(() => {
+    connectivityHasCheckedInitialRef.current = false;
+    connectivityCheckSequenceRef.current += 1;
+    setCaptureConnectivityStatus("unknown");
+  }, [selectedInstance?.baseUrl]);
+
+  useEffect(() => {
+    if (!selectedInstance?.baseUrl || !hasCompleteCaptureConnectivityInputs(captureConnectivityInputs)) {
+      setCaptureConnectivityStatus("unknown");
+      return;
+    }
+
+    const runCheck = async (requestId: number) => {
+      setCaptureConnectivityStatus("checking");
+      try {
+        const isOnline = await checkCaptureInputsOnline(selectedInstance.baseUrl, captureConnectivityInputs);
+        if (connectivityCheckSequenceRef.current !== requestId) {
+          return;
+        }
+        setCaptureConnectivityStatus(isOnline ? "online" : "offline");
+      } catch {
+        if (connectivityCheckSequenceRef.current !== requestId) {
+          return;
+        }
+        setCaptureConnectivityStatus("offline");
+      }
+    };
+
+    const requestId = connectivityCheckSequenceRef.current + 1;
+    connectivityCheckSequenceRef.current = requestId;
+
+    if (!connectivityHasCheckedInitialRef.current) {
+      connectivityHasCheckedInitialRef.current = true;
+      void runCheck(requestId);
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      void runCheck(requestId);
+    }, 3000);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [captureConnectivityInputs, selectedInstance?.baseUrl]);
 
   const machine = useAdvancedOperationMachine<AdvancedMultiRxMerStartResponse, AdvancedMultiRxMerStatusResponse>({
     parseStart: (response) => ({ groupId: response.group_id, operationId: response.operation_id, message: response.message }),
@@ -475,7 +562,7 @@ function AdvancedRxMerWorkbench() {
     <>
       <PageHeader title="Advanced RxMER" subtitle="" />
 
-      <Panel title="Request">
+      <Panel title={requestTitle}>
         <form className="grid" onSubmit={requestForm.handleSubmit(() => void machine.start())}>
           <div className="grid two request-input-grid six-up">
             <div className="field">
@@ -712,6 +799,19 @@ function AdvancedChannelEstimationWorkbench() {
   const [manualOperationId, setManualOperationId] = useState("");
   const [operationHistory, setOperationHistory] = useState<AdvancedOperationHistoryEntry[]>(() => readOperationHistory("channel-estimation"));
   const [operationHistorySort, setOperationHistorySort] = useState<AdvancedOperationHistorySort>("latest");
+  const [captureConnectivityStatus, setCaptureConnectivityStatus] = useState<CaptureConnectivityStatus>("unknown");
+  const connectivityCheckSequenceRef = useRef(0);
+  const connectivityHasCheckedInitialRef = useRef(false);
+  const watchedConnectivity = requestForm.watch(["macAddress", "ipAddress", "community"]);
+  const captureConnectivityInputs = useMemo<CaptureConnectivityInputs>(
+    () => ({
+      macAddress: watchedConnectivity[0]?.trim() ?? "",
+      ipAddress: watchedConnectivity[1]?.trim() ?? "",
+      community: watchedConnectivity[2]?.trim() ?? "",
+    }),
+    [watchedConnectivity],
+  );
+  const requestTitle = useMemo(() => buildRequestTitle(captureConnectivityStatus), [captureConnectivityStatus]);
 
   useEffect(() => {
     requestForm.reset((current) => ({
@@ -724,6 +824,52 @@ function AdvancedChannelEstimationWorkbench() {
       community: requestDefaults.community,
     }));
   }, [requestDefaults, requestForm]);
+
+  useEffect(() => {
+    connectivityHasCheckedInitialRef.current = false;
+    connectivityCheckSequenceRef.current += 1;
+    setCaptureConnectivityStatus("unknown");
+  }, [selectedInstance?.baseUrl]);
+
+  useEffect(() => {
+    if (!selectedInstance?.baseUrl || !hasCompleteCaptureConnectivityInputs(captureConnectivityInputs)) {
+      setCaptureConnectivityStatus("unknown");
+      return;
+    }
+
+    const runCheck = async (requestId: number) => {
+      setCaptureConnectivityStatus("checking");
+      try {
+        const isOnline = await checkCaptureInputsOnline(selectedInstance.baseUrl, captureConnectivityInputs);
+        if (connectivityCheckSequenceRef.current !== requestId) {
+          return;
+        }
+        setCaptureConnectivityStatus(isOnline ? "online" : "offline");
+      } catch {
+        if (connectivityCheckSequenceRef.current !== requestId) {
+          return;
+        }
+        setCaptureConnectivityStatus("offline");
+      }
+    };
+
+    const requestId = connectivityCheckSequenceRef.current + 1;
+    connectivityCheckSequenceRef.current = requestId;
+
+    if (!connectivityHasCheckedInitialRef.current) {
+      connectivityHasCheckedInitialRef.current = true;
+      void runCheck(requestId);
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      void runCheck(requestId);
+    }, 3000);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [captureConnectivityInputs, selectedInstance?.baseUrl]);
 
   const machine = useAdvancedOperationMachine<AdvancedMultiChanEstStartResponse, AdvancedMultiChanEstStatusResponse>({
     parseStart: (response) => ({ groupId: response.group_id, operationId: response.operation_id, message: response.message }),
@@ -819,7 +965,7 @@ function AdvancedChannelEstimationWorkbench() {
     <>
       <PageHeader title="Advanced Channel Estimation" subtitle="" />
 
-      <Panel title="Request">
+      <Panel title={requestTitle}>
         <form className="grid" onSubmit={requestForm.handleSubmit(() => void machine.start())}>
           <div className="grid two request-input-grid six-up">
             <div className="field">
@@ -1047,6 +1193,19 @@ function AdvancedOfdmaPreEqWorkbench() {
   const [manualOperationId, setManualOperationId] = useState("");
   const [operationHistory, setOperationHistory] = useState<AdvancedOperationHistoryEntry[]>(() => readOperationHistory("ofdma-pre-eq"));
   const [operationHistorySort, setOperationHistorySort] = useState<AdvancedOperationHistorySort>("latest");
+  const [captureConnectivityStatus, setCaptureConnectivityStatus] = useState<CaptureConnectivityStatus>("unknown");
+  const connectivityCheckSequenceRef = useRef(0);
+  const connectivityHasCheckedInitialRef = useRef(false);
+  const watchedConnectivity = requestForm.watch(["macAddress", "ipAddress", "community"]);
+  const captureConnectivityInputs = useMemo<CaptureConnectivityInputs>(
+    () => ({
+      macAddress: watchedConnectivity[0]?.trim() ?? "",
+      ipAddress: watchedConnectivity[1]?.trim() ?? "",
+      community: watchedConnectivity[2]?.trim() ?? "",
+    }),
+    [watchedConnectivity],
+  );
+  const requestTitle = useMemo(() => buildRequestTitle(captureConnectivityStatus), [captureConnectivityStatus]);
 
   useEffect(() => {
     requestForm.reset((current) => ({
@@ -1059,6 +1218,52 @@ function AdvancedOfdmaPreEqWorkbench() {
       community: requestDefaults.community,
     }));
   }, [requestDefaults, requestForm]);
+
+  useEffect(() => {
+    connectivityHasCheckedInitialRef.current = false;
+    connectivityCheckSequenceRef.current += 1;
+    setCaptureConnectivityStatus("unknown");
+  }, [selectedInstance?.baseUrl]);
+
+  useEffect(() => {
+    if (!selectedInstance?.baseUrl || !hasCompleteCaptureConnectivityInputs(captureConnectivityInputs)) {
+      setCaptureConnectivityStatus("unknown");
+      return;
+    }
+
+    const runCheck = async (requestId: number) => {
+      setCaptureConnectivityStatus("checking");
+      try {
+        const isOnline = await checkCaptureInputsOnline(selectedInstance.baseUrl, captureConnectivityInputs);
+        if (connectivityCheckSequenceRef.current !== requestId) {
+          return;
+        }
+        setCaptureConnectivityStatus(isOnline ? "online" : "offline");
+      } catch {
+        if (connectivityCheckSequenceRef.current !== requestId) {
+          return;
+        }
+        setCaptureConnectivityStatus("offline");
+      }
+    };
+
+    const requestId = connectivityCheckSequenceRef.current + 1;
+    connectivityCheckSequenceRef.current = requestId;
+
+    if (!connectivityHasCheckedInitialRef.current) {
+      connectivityHasCheckedInitialRef.current = true;
+      void runCheck(requestId);
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      void runCheck(requestId);
+    }, 3000);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [captureConnectivityInputs, selectedInstance?.baseUrl]);
 
   const machine = useAdvancedOperationMachine<AdvancedMultiUsOfdmaPreEqStartResponse, AdvancedMultiUsOfdmaPreEqStatusResponse>({
     parseStart: (response) => ({ groupId: response.group_id, operationId: response.operation_id, message: response.message }),
@@ -1154,7 +1359,7 @@ function AdvancedOfdmaPreEqWorkbench() {
     <>
       <PageHeader title="Advanced OFDMA PreEq" subtitle="" />
 
-      <Panel title="Request">
+      <Panel title={requestTitle}>
         <form className="grid" onSubmit={requestForm.handleSubmit(() => void machine.start())}>
           <div className="grid two request-input-grid six-up">
             <div className="field">
