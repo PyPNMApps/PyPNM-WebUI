@@ -61,6 +61,7 @@
 - Every operation visual must provide a visible JSON download action near the visual header so the current payload can be inspected outside the UI.
 - Support copy-to-clipboard for identifiers and payloads where useful.
 - Default graph lines to thin strokes unless a thicker treatment is required for legibility or a specific visual convention.
+- When a graph renders multiple data series, provide user controls to show or hide individual series so the chart can be isolated without removing the others.
 - When x-axis labels are large numeric values and horizontal rendering hurts readability, angle the labels so they remain visible and readable.
 - Prefer lazy-loading at route or page boundaries when it reduces initial bundle cost.
 - Do not micro-chunk small shared UI pieces; keep lazy-loading focused on meaningful page-level splits.

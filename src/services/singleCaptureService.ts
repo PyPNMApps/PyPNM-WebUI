@@ -11,6 +11,7 @@ import type {
   SingleSpectrumOfdmCaptureRequest,
   SingleSpectrumFullBandCaptureRequest,
   SingleSpectrumFriendlyCaptureRequest,
+  SingleUsOfdmaPreEqualizationCaptureRequest,
 } from "@/types/api";
 
 export async function runSingleCaptureEndpoint<TResponse>(
@@ -25,6 +26,7 @@ export async function runSingleCaptureEndpoint<TResponse>(
     | SingleFecSummaryCaptureRequest
     | SingleConstellationDisplayCaptureRequest
     | SingleModulationProfileCaptureRequest
+    | SingleUsOfdmaPreEqualizationCaptureRequest
     | SingleSpectrumOfdmCaptureRequest
     | SingleSpectrumFullBandCaptureRequest
     | SingleSpectrumFriendlyCaptureRequest,

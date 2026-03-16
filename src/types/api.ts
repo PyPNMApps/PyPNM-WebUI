@@ -876,6 +876,7 @@ export interface SingleRxMerCaptureResponse {
 }
 
 export interface ChannelEstEchoEntry {
+  bin_index?: number;
   time_s: number;
   amplitude: number;
   distance_m: number;
@@ -1564,5 +1565,79 @@ export interface SingleModulationProfileCaptureResponse {
   message?: string | null;
   data?: {
     analysis?: SingleModulationProfileAnalysisEntry[];
+  };
+}
+
+export type SingleUsOfdmaPreEqualizationCaptureRequest = SingleRxMerCaptureRequest;
+
+export interface SingleUsOfdmaPreEqualizationAnalysisEntry {
+  mac_address?: string;
+  channel_id?: number;
+  subcarrier_spacing?: number;
+  first_active_subcarrier_index?: number;
+  subcarrier_zero_frequency?: number;
+  pnm_header?: {
+    file_type?: string;
+    file_type_version?: number;
+    major_version?: number;
+    minor_version?: number;
+    capture_time?: number;
+  };
+  device_details?: {
+    system_description?: SingleRxMerSystemDescription;
+  };
+  carrier_values?: {
+    carrier_count?: number;
+    frequency?: number[];
+    magnitudes?: number[];
+    channel_estimate_magnitude_db?: number[];
+    chan_est?: number[];
+    group_delay?: {
+      magnitude?: number[];
+    };
+  };
+  signal_statistics?: {
+    mean?: number;
+    median?: number;
+    std?: number;
+    variance?: number;
+    power?: number;
+    peak_to_peak?: number;
+    mean_abs_deviation?: number;
+    skewness?: number;
+    kurtosis?: number;
+    crest_factor?: number;
+    zero_crossing_rate?: number;
+    zero_crossings?: number;
+  };
+  echo?: {
+    report?: {
+      channel_id?: number;
+      cable_type?: string;
+      velocity_factor?: number | string;
+      prop_speed_mps?: number;
+      direct_path?: {
+        bin_index?: number;
+        time_s?: number;
+        amplitude?: number;
+        distance_m?: number;
+        distance_ft?: number;
+      };
+      echoes?: ChannelEstEchoEntry[];
+    };
+  };
+}
+
+export interface SingleUsOfdmaPreEqualizationCaptureResponse {
+  system_description?: SingleRxMerSystemDescription;
+  mac_address?: string;
+  status?: number | string;
+  message?: string | null;
+  device?: {
+    mac_address?: string;
+    system_description?: SingleRxMerSystemDescription;
+  };
+  data?: {
+    analysis?: SingleUsOfdmaPreEqualizationAnalysisEntry[];
   };
 }

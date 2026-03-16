@@ -218,6 +218,14 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     description: "Single downstream OFDM modulation profile visual.",
     menuPath: ["PNM", "Single Capture"],
   },
+  {
+    id: "docs-pnm-us-ofdma-preequalization-getcapture",
+    label: "OFDMA PreEqualization",
+    routePath: "/operations/us-ofdma-pre-equalization",
+    endpointPath: "/docs/pnm/us/ofdma/preEqualization/getCapture",
+    description: "Single upstream OFDMA pre-equalization capture visual.",
+    menuPath: ["PNM", "Single Capture"],
+  },
 ];
 
 export function getOperationByRoutePath(routePath: string | undefined): OperationNavigationItem | undefined {

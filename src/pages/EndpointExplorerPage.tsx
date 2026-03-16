@@ -37,6 +37,7 @@ import { getOperationByRoutePath, operationNavigationItems } from "@/features/op
 import { SingleHistogramCaptureView } from "@/features/operations/SingleHistogramCaptureView";
 import { SingleInterfaceStatsView } from "@/features/operations/SingleInterfaceStatsView";
 import { SingleModulationProfileCaptureView } from "@/features/operations/SingleModulationProfileCaptureView";
+import { SingleUsOfdmaPreEqualizationView } from "@/features/operations/SingleUsOfdmaPreEqualizationView";
 import { SingleRxMerCaptureView } from "@/features/operations/SingleRxMerCaptureView";
 import { SingleSystemUpTimeView } from "@/features/operations/SingleSystemUpTimeView";
 import { singleAtdmaChannelStatsFixture } from "@/features/operations/singleAtdmaChannelStatsFixture";
@@ -57,6 +58,7 @@ import { singleIf31DsOfdmProfileStatsFixture } from "@/features/operations/singl
 import { singleIf31SystemDiplexerFixture } from "@/features/operations/singleIf31SystemDiplexerFixture";
 import { singleInterfaceStatsFixture } from "@/features/operations/singleInterfaceStatsFixture";
 import { singleModulationProfileFixture } from "@/features/operations/singleModulationProfileFixture";
+import { singleUsOfdmaPreEqualizationFixture } from "@/features/operations/singleUsOfdmaPreEqualizationFixture";
 import { singleRxMerFixture } from "@/features/operations/singleRxMerFixture";
 import { singleSpectrumFullBandCaptureFixture } from "@/features/operations/singleSpectrumFullBandCaptureFixture";
 import { singleSpectrumOfdmCaptureFixture } from "@/features/operations/singleSpectrumOfdmCaptureFixture";
@@ -90,6 +92,8 @@ import type {
   SingleHistogramCaptureRequest,
   SingleModulationProfileCaptureRequest,
   SingleModulationProfileCaptureResponse,
+  SingleUsOfdmaPreEqualizationCaptureRequest,
+  SingleUsOfdmaPreEqualizationCaptureResponse,
   SingleRxMerCaptureRequest,
   SingleRxMerCaptureResponse,
   SingleSpectrumOfdmCaptureRequest,
@@ -140,6 +144,7 @@ export function EndpointExplorerPage() {
   const [histogramResponse, setHistogramResponse] = useState<SingleHistogramCaptureResponse>(singleHistogramFixture);
   const [interfaceStatsResponse, setInterfaceStatsResponse] = useState<InterfaceStatsResponse>(singleInterfaceStatsFixture);
   const [modulationProfileResponse, setModulationProfileResponse] = useState<SingleModulationProfileCaptureResponse>(singleModulationProfileFixture);
+  const [usOfdmaPreEqualizationResponse, setUsOfdmaPreEqualizationResponse] = useState<SingleUsOfdmaPreEqualizationCaptureResponse>(singleUsOfdmaPreEqualizationFixture);
   const [systemUpTimeResponse, setSystemUpTimeResponse] = useState<SystemUpTimeResponse>(singleSystemUpTimeFixture);
   const [spectrumFriendlyResponse, setSpectrumFriendlyResponse] = useState<SingleSpectrumFriendlyCaptureResponse>(singleSpectrumFriendlyCaptureFixture);
   const [spectrumFullBandResponse, setSpectrumFullBandResponse] = useState<SingleSpectrumFriendlyCaptureResponse>(singleSpectrumFullBandCaptureFixture);
@@ -161,6 +166,7 @@ export function EndpointExplorerPage() {
         | SingleFecSummaryCaptureRequest
         | SingleConstellationDisplayCaptureRequest
         | SingleModulationProfileCaptureRequest
+        | SingleUsOfdmaPreEqualizationCaptureRequest
         | SingleSpectrumOfdmCaptureRequest
         | SingleSpectrumScqamCaptureRequest
         | SingleSpectrumFullBandCaptureRequest
@@ -187,6 +193,7 @@ export function EndpointExplorerPage() {
         | SingleFecSummaryCaptureResponse
         | SingleConstellationDisplayCaptureResponse
         | SingleModulationProfileCaptureResponse
+        | SingleUsOfdmaPreEqualizationCaptureResponse
         | SingleSpectrumOfdmCaptureResponse
         | SingleSpectrumScqamCaptureResponse
         | SingleSpectrumFriendlyCaptureResponse
@@ -292,6 +299,11 @@ export function EndpointExplorerPage() {
         return;
       }
 
+      if (selectedOperation?.id === "docs-pnm-us-ofdma-preequalization-getcapture") {
+        setUsOfdmaPreEqualizationResponse(data as SingleUsOfdmaPreEqualizationCaptureResponse);
+        return;
+      }
+
       if (selectedOperation?.id === "docs-pnm-ds-spectrumanalyzer-getcapture-friendly") {
         setSpectrumFriendlyResponse(data as SingleSpectrumFriendlyCaptureResponse);
         return;
@@ -362,6 +374,8 @@ export function EndpointExplorerPage() {
                       ? spectrumScqamResponse
                 : selectedOperation.id === "docs-pnm-ds-ofdm-modulationprofile-getcapture"
                   ? modulationProfileResponse
+                  : selectedOperation.id === "docs-pnm-us-ofdma-preequalization-getcapture"
+                    ? usOfdmaPreEqualizationResponse
                   : selectedOperation.id === "docs-pnm-ds-ofdm-constellationdisplay-getcapture"
                     ? constellationResponse
                     : selectedOperation.id === "docs-pnm-ds-ofdm-fecsummary-getcapture"
@@ -526,6 +540,8 @@ export function EndpointExplorerPage() {
           <SingleSpectrumScqamCaptureView response={spectrumScqamResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-modulationprofile-getcapture" ? (
           <SingleModulationProfileCaptureView response={modulationProfileResponse} />
+        ) : selectedOperation.id === "docs-pnm-us-ofdma-preequalization-getcapture" ? (
+          <SingleUsOfdmaPreEqualizationView response={usOfdmaPreEqualizationResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-constellationdisplay-getcapture" ? (
           <SingleConstellationDisplayCaptureView response={constellationResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-fecsummary-getcapture" ? (

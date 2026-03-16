@@ -6,6 +6,7 @@ interface LineAnalysisChartProps {
   yLabel: string;
   series: ChartSeries[];
   showLegend?: boolean;
+  yPadding?: number;
 }
 
 function axisLabels(minValue: number, maxValue: number, count: number): number[] {
@@ -42,7 +43,7 @@ function buildPath(
     .join(" ");
 }
 
-export function LineAnalysisChart({ title, subtitle, yLabel, series, showLegend = true }: LineAnalysisChartProps) {
+export function LineAnalysisChart({ title, subtitle, yLabel, series, showLegend = true, yPadding = 0.35 }: LineAnalysisChartProps) {
   const width = 1100;
   const height = 320;
   const allPoints = series.flatMap((item) => item.points);
@@ -63,8 +64,8 @@ export function LineAnalysisChart({ title, subtitle, yLabel, series, showLegend 
   const yValues = allPoints.map((point) => point.y);
   const xMin = Math.min(...xValues);
   const xMax = Math.max(...xValues);
-  const yMin = Math.min(...yValues) - 0.35;
-  const yMax = Math.max(...yValues) + 0.35;
+  const yMin = Math.min(...yValues) - yPadding;
+  const yMax = Math.max(...yValues) + yPadding;
   const yTicks = axisLabels(yMin, yMax, 4);
   const xTicks = axisLabels(xMin, xMax, 6);
 
