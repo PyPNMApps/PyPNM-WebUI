@@ -7,16 +7,18 @@ import type { AdvancedMultiRxMerAnalysisResponse, AdvancedMultiRxMerOfdmProfileC
 
 function buildChannelSeries(channel: AdvancedMultiRxMerOfdmProfileChannel): ChartSeries[] {
   const frequency = channel.frequency ?? [];
+  const avgMer = channel.avg_mer ?? [];
+  const shannonLimits = channel.mer_shannon_limits ?? [];
   const series: ChartSeries[] = [
     {
       label: "Avg MER",
       color: "#79a9ff",
-      points: frequency.slice(0, channel.avg_mer.length).map((value, index) => ({ x: value / 1_000_000, y: channel.avg_mer[index] ?? 0 })),
+      points: frequency.slice(0, avgMer.length).map((value, index) => ({ x: value / 1_000_000, y: avgMer[index] ?? 0 })),
     },
     {
       label: "Shannon Limit",
       color: "#58d0a7",
-      points: frequency.slice(0, channel.mer_shannon_limits.length).map((value, index) => ({ x: value / 1_000_000, y: channel.mer_shannon_limits[index] ?? 0 })),
+      points: frequency.slice(0, shannonLimits.length).map((value, index) => ({ x: value / 1_000_000, y: shannonLimits[index] ?? 0 })),
     },
   ];
 
@@ -80,10 +82,15 @@ export function AdvancedRxMerProfilePerformanceView({ response }: { response: Ad
                       capture_time?: number;
                       profile_id?: number;
                       capacity_delta?: number[];
-                      fec_summary?: { summary?: Array<{ summary?: { total_codewords?: number; corrected?: number; uncorrectable?: number } }> };
+                      fec_summary?: {
+                        summary?: Array<{ summary?: { total_codewords?: number; corrected?: number; uncorrectable?: number } }>;
+                        total_codewords?: number;
+                        corrected?: number;
+                        uncorrectable?: number;
+                      };
                     };
                     const capacity = entry.capacity_delta ?? [];
-                    const summary = entry.fec_summary?.summary?.[0]?.summary;
+                    const summary = entry.fec_summary?.summary?.[0]?.summary ?? entry.fec_summary;
                     return (
                       <tr key={index}>
                         <td className="mono">{entry.profile_id ?? index}</td>

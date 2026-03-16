@@ -12,6 +12,7 @@ describe("mergeRuntimeConfig", () => {
           poll_interval_ms: 5000,
           request_timeout_ms: 30000,
           health_path: "/healthz",
+          logging: { level: "INFO" },
         },
         instances: [
           {
@@ -39,6 +40,7 @@ describe("mergeRuntimeConfig", () => {
           poll_interval_ms: 7000,
           request_timeout_ms: 45000,
           health_path: "/health",
+          logging: { level: "DEBUG" },
         },
         instances: [
           {
@@ -75,12 +77,13 @@ describe("mergeRuntimeConfig", () => {
       },
     ) as {
       version: number;
-      defaults: { health_path: string; selected_instance: string };
+      defaults: { health_path: string; selected_instance: string; logging: { level: string } };
       instances: Array<Record<string, unknown>>;
     };
 
     expect(merged.version).toBe(2);
     expect(merged.defaults.health_path).toBe("/health");
+    expect(merged.defaults.logging.level).toBe("DEBUG");
     expect(merged.instances).toHaveLength(2);
     expect(merged.instances[0]).toMatchObject({
       id: "lab-local",

@@ -188,6 +188,7 @@ function AdvancedRxMerWorkbench() {
   const [analysisResponse, setAnalysisResponse] = useState<AdvancedMultiRxMerAnalysisResponse | null>(null);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [isRunningAnalysis, setIsRunningAnalysis] = useState(false);
+  const [manualOperationId, setManualOperationId] = useState("");
 
   useEffect(() => {
     requestForm.reset((current) => ({
@@ -238,13 +239,21 @@ function AdvancedRxMerWorkbench() {
     stopOperation: (operationId) => stopAdvancedRxMer(selectedInstance?.baseUrl ?? "", operationId),
   });
 
+  useEffect(() => {
+    if (machine.operationId) {
+      setManualOperationId(machine.operationId);
+    }
+  }, [machine.operationId]);
+
+  const effectiveOperationId = machine.hasOperation ? machine.operationId ?? "" : manualOperationId.trim();
+
   const runAnalysis = async () => {
-    if (!machine.operationId || !selectedInstance?.baseUrl) return;
+    if (!effectiveOperationId || !selectedInstance?.baseUrl) return;
     setIsRunningAnalysis(true);
     setAnalysisError(null);
     try {
       const payload: AdvancedMultiRxMerAnalysisRequest = {
-        operation_id: machine.operationId,
+        operation_id: effectiveOperationId,
         analysis: {
           type: analysisType,
           output: { type: "json" },
@@ -260,8 +269,8 @@ function AdvancedRxMerWorkbench() {
     }
   };
 
-  const resultsZipUrl = machine.operationId && selectedInstance?.baseUrl
-    ? getAdvancedRxMerResultsZipUrl(selectedInstance.baseUrl, machine.operationId)
+  const resultsZipUrl = effectiveOperationId && selectedInstance?.baseUrl
+    ? getAdvancedRxMerResultsZipUrl(selectedInstance.baseUrl, effectiveOperationId)
     : null;
 
   return (
@@ -348,8 +357,17 @@ function AdvancedRxMerWorkbench() {
 
       <Panel title="Results">
         <div className="grid two advanced-results-grid">
-          <div className="settings-definition-list">
-            <div className="settings-definition-row"><div className="settings-definition-key">Operation ID</div><div className="mono">{machine.operationId ?? "n/a"}</div></div>
+          <div className="field">
+            <FieldLabel htmlFor="advancedRxmerOperationId" hint={requestFieldHints.operation_id}>Operation ID</FieldLabel>
+            <input
+              id="advancedRxmerOperationId"
+              className="mono"
+              value={machine.hasOperation ? machine.operationId ?? "" : manualOperationId}
+              onChange={(event) => setManualOperationId(event.target.value)}
+              placeholder="Enter an existing operation id"
+              disabled={machine.hasOperation}
+              readOnly={machine.hasOperation}
+            />
           </div>
           <div className="actions advanced-run-actions">
             {resultsZipUrl ? <a className="button-link" href={resultsZipUrl} target="_blank" rel="noreferrer">Download Results ZIP</a> : null}
@@ -370,14 +388,14 @@ function AdvancedRxMerWorkbench() {
             </div>
           </div>
           <div className="actions">
-            <button type="submit" className="primary" disabled={!machine.hasOperation || isRunningAnalysis}>
+            <button type="submit" className="primary" disabled={!effectiveOperationId || isRunningAnalysis}>
               {isRunningAnalysis ? "Running Analysis..." : "Run Analysis"}
             </button>
             {analysisResponse ? (
               <button
                 type="button"
                 disabled={machine.lifecycleState !== "completed" && machine.lifecycleState !== "stopped"}
-                onClick={() => downloadJson(buildAdvancedJsonFilename(analysisType, machine.operationId ?? "operation"), analysisResponse)}
+                onClick={() => downloadJson(buildAdvancedJsonFilename(analysisType, effectiveOperationId || "operation"), analysisResponse)}
               >
                 Download JSON
               </button>
@@ -388,7 +406,7 @@ function AdvancedRxMerWorkbench() {
         </form>
         {isRunningAnalysis ? <ThinkingIndicator label="Running RxMER analysis on the current capture set..." /> : null}
         {analysisError ? <p className="advanced-error-text">{analysisError}</p> : null}
-        {analysisResponse ? <AdvancedRxMerAnalysisView analysisType={analysisType} response={analysisResponse} /> : <p className="panel-copy">Run analysis against the current operation without restarting capture.</p>}
+        {analysisResponse ? <AdvancedRxMerAnalysisView analysisType={analysisType} response={analysisResponse} /> : null}
       </Panel>
     </>
   );

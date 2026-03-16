@@ -15,6 +15,9 @@ describe("config_menu normalization", () => {
         poll_interval_ms: 7000,
         request_timeout_ms: 45000,
         health_path: "/health",
+        logging: {
+          level: "warn",
+        },
       },
       instances: [
         {
@@ -73,6 +76,7 @@ describe("config_menu normalization", () => {
     });
 
     expect(config.defaults.selected_instance).toBe("denver-rack-1");
+    expect(config.defaults.logging.level).toBe("WARN");
     expect(config.instances).toHaveLength(2);
     expect(config.instances[1]?.request_defaults).toEqual({
       cable_modem: {

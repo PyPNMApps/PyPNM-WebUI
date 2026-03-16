@@ -21,6 +21,7 @@ Current user-facing areas documented there include:
 ## Development Documentation
 
 - [Development Workflow](development/workflow.md)
+- [Development Logging](development/logging.md)
 - [Development Field Hints](development/field-hints.md)
 - [Git Helpers](development/git-helpers.md)
 

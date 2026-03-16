@@ -16,17 +16,42 @@ function colorForValue(value: number, min: number, max: number): string {
   return `hsl(${hue} 88% ${light.toFixed(1)}%)`;
 }
 
+function findValueRange(rows: number[][]): { min: number; max: number } {
+  let min = Infinity;
+  let max = -Infinity;
+
+  for (const row of rows) {
+    for (const value of row) {
+      if (typeof value !== "number" || !Number.isFinite(value)) {
+        continue;
+      }
+      if (value < min) {
+        min = value;
+      }
+      if (value > max) {
+        max = value;
+      }
+    }
+  }
+
+  if (!Number.isFinite(min) || !Number.isFinite(max)) {
+    return { min: 0, max: 1 };
+  }
+
+  return { min, max: min === max ? max + 1 : max };
+}
+
 function HeatMapGrid({ channel }: { channel: AdvancedMultiRxMerHeatMapChannel }) {
-  const rows = channel.values ?? [];
-  const flatValues = rows.flat().filter((value) => typeof value === "number" && Number.isFinite(value));
-  const min = flatValues.length ? Math.min(...flatValues) : 0;
-  const max = flatValues.length ? Math.max(...flatValues) : 1;
+  const frequency = Array.isArray(channel.frequency) ? channel.frequency : [];
+  const rows = Array.isArray(channel.values) ? channel.values.filter(Array.isArray) : [];
+  const renderedColumns = Math.min(frequency.length, 120);
+  const { min, max } = findValueRange(rows);
 
   return (
     <div className="advanced-heatmap-shell">
-      <div className="advanced-heatmap-grid" style={{ gridTemplateColumns: `repeat(${Math.min(channel.frequency.length, 120)}, minmax(0, 1fr))` }}>
+      <div className="advanced-heatmap-grid" style={{ gridTemplateColumns: `repeat(${Math.max(renderedColumns, 1)}, minmax(0, 1fr))` }}>
         {rows.flatMap((row, rowIndex) =>
-          row.slice(0, Math.min(channel.frequency.length, 120)).map((value, columnIndex) => (
+          row.slice(0, renderedColumns).map((value, columnIndex) => (
             <span
               key={`${rowIndex}-${columnIndex}`}
               className="advanced-heatmap-cell"
@@ -38,7 +63,7 @@ function HeatMapGrid({ channel }: { channel: AdvancedMultiRxMerHeatMapChannel })
       </div>
       <div className="status-chip-row">
         <span className="analysis-chip"><b>Captures</b> {rows.length}</span>
-        <span className="analysis-chip"><b>Subcarriers</b> {channel.frequency.length}</span>
+        <span className="analysis-chip"><b>Subcarriers</b> {frequency.length}</span>
         <span className="analysis-chip"><b>Range</b> {min.toFixed(2)} to {max.toFixed(2)} dB</span>
       </div>
     </div>
@@ -58,8 +83,8 @@ export function AdvancedRxMerHeatMapView({ response }: { response: AdvancedMulti
       {channels.map(([channelId, channel]) => (
         <Panel key={channelId} title={`Channel ${channelId} · RxMER Heat Map`}>
           <div className="status-chip-row">
-            <span className="analysis-chip"><b>Start</b> {epochToUtcLabel(channel.timestamps?.[0])}</span>
-            <span className="analysis-chip"><b>End</b> {epochToUtcLabel(channel.timestamps?.[channel.timestamps.length - 1])}</span>
+            <span className="analysis-chip"><b>Start</b> {epochToUtcLabel(Array.isArray(channel.timestamps) ? channel.timestamps[0] : undefined)}</span>
+            <span className="analysis-chip"><b>End</b> {epochToUtcLabel(Array.isArray(channel.timestamps) && channel.timestamps.length ? channel.timestamps[channel.timestamps.length - 1] : undefined)}</span>
           </div>
           <HeatMapGrid channel={channel} />
         </Panel>

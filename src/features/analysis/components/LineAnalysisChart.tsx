@@ -46,6 +46,19 @@ export function LineAnalysisChart({ title, subtitle, yLabel, series, showLegend 
   const width = 1100;
   const height = 320;
   const allPoints = series.flatMap((item) => item.points);
+  if (!allPoints.length) {
+    return (
+      <div className="chart-frame">
+        <div className="chart-header">
+          <div>
+            <div className="chart-title">{title}</div>
+            <div className="chart-meta">{subtitle}</div>
+          </div>
+        </div>
+        <div className="panel-copy">No chart data available.</div>
+      </div>
+    );
+  }
   const xValues = allPoints.map((point) => point.x);
   const yValues = allPoints.map((point) => point.y);
   const xMin = Math.min(...xValues);

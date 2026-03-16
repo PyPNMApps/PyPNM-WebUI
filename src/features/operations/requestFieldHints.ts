@@ -26,6 +26,7 @@ export const requestFieldHints = {
   spectrum_direction: "Select whether the full-band spectrum capture resolves downstream or upstream diplexer band edges.",
   number_of_averages: "Number of samples used to calculate the spectrum average per bin.",
   resolution_bandwidth_hz: "Resolution bandwidth in Hz used for the OFDM spectrum capture.",
+  operation_id: "Existing advanced operation identifier used to fetch results and run analysis without starting a new capture.",
   upload_pnm_file: "Upload accepts raw PNM capture files and registers a new transaction in PyPNM.",
   file_mac_search: "Search stored PyPNM files by cable modem MAC address.",
   direct_downloads: "Use the selected MAC archive in browse, or download directly by stored filename and operation ID here.",

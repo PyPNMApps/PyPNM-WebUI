@@ -225,3 +225,6 @@ vite.config.d.ts
 
 # Local release workflow output
 release-reports/logs/
+
+# Local browser/dev logging
+logs/

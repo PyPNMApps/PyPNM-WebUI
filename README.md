@@ -86,3 +86,4 @@ npm run docs:serve
 - [Development Field Hints](docs/development/field-hints.md)
 - [Git Helpers](docs/development/git-helpers.md)
 - [Development Workflow](docs/development/workflow.md)
+- [Development Logging](docs/development/logging.md)

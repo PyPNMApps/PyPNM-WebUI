@@ -295,6 +295,19 @@ a {
   color: var(--ink);
 }
 
+.field select,
+.instance-selector select {
+  appearance: none;
+  background-color: rgba(255, 255, 255, 0.03);
+  color: var(--ink);
+}
+
+.field select option,
+.instance-selector select option {
+  background: #101b2b;
+  color: var(--ink);
+}
+
 .actions {
   display: flex;
   gap: 10px;

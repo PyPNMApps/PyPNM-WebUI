@@ -40,6 +40,7 @@ What it edits:
 
 - runtime instance entries
 - `defaults.selected_instance`
+- `defaults.logging.level`
 - per-instance `request_defaults`
 
 Behavior:
@@ -74,6 +75,10 @@ Those values live under each instance entry as `request_defaults`.
 Example:
 
 ```yaml
+defaults:
+  logging:
+    level: INFO
+
 instances:
   - id: lab-local
     label: Lab Local

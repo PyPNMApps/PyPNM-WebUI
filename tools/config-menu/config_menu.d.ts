@@ -7,6 +7,9 @@ export function normalizeConfig(raw: unknown): {
     poll_interval_ms: number;
     request_timeout_ms: number;
     health_path: string;
+    logging: {
+      level: "DEBUG" | "INFO" | "WARN" | "ERROR" | "OFF";
+    };
   };
   instances: Array<{
     id: string;
@@ -53,6 +56,9 @@ export function saveConfig(
       poll_interval_ms: number;
       request_timeout_ms: number;
       health_path: string;
+      logging: {
+        level: "DEBUG" | "INFO" | "WARN" | "ERROR" | "OFF";
+      };
     };
     instances: Array<{
       id: string;
