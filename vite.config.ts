@@ -6,6 +6,7 @@ import { defineConfig } from "vitest/config";
 
 const srcPath = path.resolve(__dirname, "src");
 const appVersion = fs.readFileSync(path.resolve(__dirname, "VERSION"), "utf8").trim();
+const appLicense = "Apache-2.0";
 
 function clientLogPlugin() {
   return {
@@ -62,6 +63,7 @@ export default defineConfig({
   },
   define: {
     __APP_VERSION__: JSON.stringify(appVersion),
+    __APP_LICENSE__: JSON.stringify(appLicense),
   },
   test: {
     alias: {

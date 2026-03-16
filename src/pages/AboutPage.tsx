@@ -39,6 +39,10 @@ export function AboutPage() {
               <div><VersionValue value={__APP_VERSION__} /></div>
             </div>
             <div className="settings-definition-row">
+              <div className="settings-definition-key">License</div>
+              <div><VersionValue value={__APP_LICENSE__} /></div>
+            </div>
+            <div className="settings-definition-row">
               <div className="settings-definition-key">Latest GitHub Repo Version</div>
               <div>
                 {latestVersionQuery.isPending ? (
