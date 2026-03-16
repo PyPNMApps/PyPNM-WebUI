@@ -71,7 +71,7 @@ export function SingleCaptureRequestForm({
         });
       })}
     >
-      <div className="grid two">
+      <div className="grid two request-input-grid six-up">
         <div className="field">
           <FieldLabel htmlFor="macAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
           <input id="macAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />

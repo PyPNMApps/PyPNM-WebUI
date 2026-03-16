@@ -81,7 +81,7 @@ export function FecSummaryCaptureRequestForm({
         });
       })}
     >
-      <div className="grid two">
+      <div className="grid two request-input-grid">
         <div className="field">
           <FieldLabel htmlFor="fecMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
           <input id="fecMacAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />

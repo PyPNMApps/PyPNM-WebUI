@@ -84,7 +84,7 @@ export function HistogramCaptureRequestForm({
         });
       })}
     >
-      <div className="grid two">
+      <div className="grid two request-input-grid">
         <div className="field">
           <FieldLabel htmlFor="histMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
           <input id="histMacAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />

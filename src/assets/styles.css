@@ -254,6 +254,37 @@ a {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
+.request-input-grid {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  align-items: end;
+}
+
+.request-input-grid.six-up {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.request-input-grid.six-up .field {
+  min-width: 0;
+}
+
+@media (max-width: 1280px) {
+  .request-input-grid.six-up {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .request-input-grid.six-up {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .request-input-grid.six-up {
+    grid-template-columns: 1fr;
+  }
+}
+
 .field {
   display: grid;
   gap: 6px;
