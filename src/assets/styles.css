@@ -1406,6 +1406,10 @@ pre {
   background: rgba(121, 169, 255, 0.12);
 }
 
+.chart-svg {
+  user-select: none;
+}
+
 
 
 

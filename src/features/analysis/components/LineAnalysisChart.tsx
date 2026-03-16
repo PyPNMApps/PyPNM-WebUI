@@ -1,4 +1,7 @@
+import { useMemo, useState } from "react";
+
 import type { ChartPoint, ChartSeries } from "@/features/analysis/types";
+import type { SpectrumSelectionRange } from "@/lib/spectrumPower";
 
 interface LineAnalysisChartProps {
   title: string;
@@ -9,6 +12,9 @@ interface LineAnalysisChartProps {
   yPadding?: number;
   xDomain?: [number, number];
   yDomain?: [number, number];
+  enableRangeSelection?: boolean;
+  selection?: SpectrumSelectionRange | null;
+  onSelectionChange?: (selection: SpectrumSelectionRange | null) => void;
 }
 
 function axisLabels(minValue: number, maxValue: number, count: number): number[] {
@@ -54,9 +60,20 @@ export function LineAnalysisChart({
   yPadding = 0.35,
   xDomain,
   yDomain,
+  enableRangeSelection = false,
+  selection = null,
+  onSelectionChange,
 }: LineAnalysisChartProps) {
   const width = 1100;
   const height = 320;
+  const [dragStartX, setDragStartX] = useState<number | null>(null);
+  const normalizedSelection = useMemo(() => {
+    if (!selection) return null;
+    return {
+      startX: Math.min(selection.startX, selection.endX),
+      endX: Math.max(selection.startX, selection.endX),
+    };
+  }, [selection]);
   const allPoints = series.flatMap((item) => item.points);
   if (!allPoints.length) {
     return (
@@ -79,6 +96,15 @@ export function LineAnalysisChart({
   const yMax = yDomain?.[1] ?? (Math.max(...yValues) + yPadding);
   const yTicks = axisLabels(yMin, yMax, 4);
   const xTicks = axisLabels(xMin, xMax, 6);
+  const usableWidth = width - 64;
+  const left = 44;
+
+  function eventToDataX(clientX: number, svg: SVGSVGElement): number {
+    const rect = svg.getBoundingClientRect();
+    const ratio = rect.width > 0 ? (clientX - rect.left) / rect.width : 0;
+    const viewBoxX = Math.min(Math.max(ratio * width, left), width - 20);
+    return xMin + ((viewBoxX - left) / (usableWidth || 1)) * (xMax - xMin || 1);
+  }
 
   return (
     <div className="chart-frame">
@@ -99,6 +125,17 @@ export function LineAnalysisChart({
         ) : null}
       </div>
       <svg className="chart-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
+        {normalizedSelection ? (
+          <rect
+            x={left + ((normalizedSelection.startX - xMin) / (xMax - xMin || 1)) * usableWidth}
+            y="16"
+            width={Math.max(((normalizedSelection.endX - normalizedSelection.startX) / (xMax - xMin || 1)) * usableWidth, 0)}
+            height={height - 44}
+            fill="rgba(121, 169, 255, 0.10)"
+            stroke="rgba(121, 169, 255, 0.38)"
+            strokeWidth="1"
+          />
+        ) : null}
         {yTicks.map((value) => {
           const y = 16 + (height - 44) - ((value - yMin) / (yMax - yMin || 1)) * (height - 44);
           return (
@@ -140,6 +177,40 @@ export function LineAnalysisChart({
         <text x="10" y="12" fill="#9eb0c9" fontSize="11">
           {yLabel}
         </text>
+        {enableRangeSelection ? (
+          <rect
+            x="44"
+            y="16"
+            width={width - 64}
+            height={height - 44}
+            fill="transparent"
+            style={{ cursor: "crosshair" }}
+            onMouseDown={(event) => {
+              const svg = event.currentTarget.ownerSVGElement;
+              if (!svg) return;
+              const dataX = eventToDataX(event.clientX, svg);
+              setDragStartX(dataX);
+              onSelectionChange?.({ startX: dataX, endX: dataX });
+            }}
+            onMouseMove={(event) => {
+              if (dragStartX === null) return;
+              const svg = event.currentTarget.ownerSVGElement;
+              if (!svg) return;
+              const dataX = eventToDataX(event.clientX, svg);
+              onSelectionChange?.({ startX: dragStartX, endX: dataX });
+            }}
+            onMouseUp={() => {
+              setDragStartX(null);
+            }}
+            onMouseLeave={() => {
+              setDragStartX(null);
+            }}
+            onDoubleClick={() => {
+              setDragStartX(null);
+              onSelectionChange?.(null);
+            }}
+          />
+        ) : null}
       </svg>
     </div>
   );
