@@ -8,6 +8,7 @@
 5. Run production build validation with `npm run build`.
 6. Build docs with `npm run docs:build`.
 7. Serve docs locally with `npm run docs:serve`.
+8. List or stop local WebUI dev processes with `pypnm-webui kill-pypnm-webui`.
 
 ## Git Workflow Helpers
 - `./tools/git/git-save.sh --commit-msg "..."` stages, runs checks, and commits.
@@ -24,6 +25,12 @@
 
 ## Development Logging
 - Use `docs/development/logging.md` for the custom client-to-file logging flow and log-level configuration.
+
+## Maintenance Helpers
+- `pypnm-webui kill-pypnm-webui --list` shows active PyPNM-WebUI processes for this repo.
+- `pypnm-webui kill-pypnm-webui --kill` shows numbered entries and prompts for a selection.
+- `pypnm-webui kill-pypnm-webui --kill <INDEX_OR_PID>` stops one matching process.
+- `pypnm-webui kill-pypnm-webui --kill-all` stops all matching PyPNM-WebUI processes for this repo.
 
 ## PR Guidance
 - Keep changes scoped to a single feature/module when possible.

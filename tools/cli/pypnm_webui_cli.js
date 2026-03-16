@@ -44,6 +44,7 @@ function printRootHelp() {
       "Commands:",
       "  serve        Start the Vite development server.",
       "  config-menu  Launch the interactive pypnm-instances.yaml editor.",
+      "  kill-pypnm-webui  List or stop running local PyPNM-WebUI processes.",
       "",
       "Options:",
       "  -h, --help   Show this help.",
@@ -102,6 +103,25 @@ function printConfigMenuHelp() {
       "  - edits per-agent request defaults like MAC, IP, TFTP, and SNMP RW community",
       "  - saves after each edit",
       "  - creates a timestamped backup before overwriting prior config content",
+      "",
+    ].join("\n"),
+  );
+}
+
+function printKillWebUiHelp() {
+  process.stdout.write(
+    [
+      "List or stop local PyPNM-WebUI processes for this repo.",
+      "",
+      "Usage:",
+      "  pypnm-webui kill-pypnm-webui --list",
+      "  pypnm-webui kill-pypnm-webui --kill [INDEX_OR_PID]",
+      "  pypnm-webui kill-pypnm-webui --kill-all",
+      "",
+      "Behavior:",
+      "  - matches running PyPNM-WebUI / Vite processes for this repo only",
+      "  - --kill with no argument shows numbered entries and prompts for a selection",
+      "  - --kill accepts either a list index or an exact PID",
       "",
     ].join("\n"),
   );
@@ -228,6 +248,31 @@ function runServe(options, metaUrl) {
   return SUCCESS_EXIT_CODE;
 }
 
+function runMaintenanceScript(metaUrl, relativeScriptPath, scriptArgs) {
+  const repoRoot = repoRootFromModule(metaUrl);
+  const scriptPath = path.join(repoRoot, relativeScriptPath);
+  const child = spawn("bash", [scriptPath, ...scriptArgs], {
+    cwd: repoRoot,
+    stdio: "inherit",
+    env: process.env,
+  });
+
+  child.on("exit", (code, signal) => {
+    if (signal) {
+      process.kill(process.pid, signal);
+      return;
+    }
+    process.exit(code ?? 0);
+  });
+
+  child.on("error", (error) => {
+    process.stderr.write(`ERROR: Failed to run maintenance script: ${error.message}\n`);
+    process.exit(1);
+  });
+
+  return SUCCESS_EXIT_CODE;
+}
+
 export async function runCli(args, metaUrl) {
   if (args.length === 0 || args[0] === "-h" || args[0] === "--help") {
     printRootHelp();
@@ -257,6 +302,15 @@ export async function runCli(args, metaUrl) {
       return SUCCESS_EXIT_CODE;
     }
     return runConfigMenu(metaUrl);
+  }
+
+  if (command === "kill-pypnm-webui") {
+    if (commandArgs.includes("-h") || commandArgs.includes("--help")) {
+      printKillWebUiHelp();
+      return SUCCESS_EXIT_CODE;
+    }
+    runMaintenanceScript(metaUrl, "tools/maintenance/kill-pypnm-webui.sh", commandArgs);
+    return null;
   }
 
   return failUsage(`Unknown command: ${command}`);

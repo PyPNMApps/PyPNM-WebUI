@@ -86,3 +86,10 @@ Start the UI with:
 ```bash
 pypnm-webui serve
 ```
+
+If you need to inspect or stop local WebUI dev servers:
+
+```bash
+pypnm-webui kill-pypnm-webui --list
+pypnm-webui kill-pypnm-webui --kill
+```
