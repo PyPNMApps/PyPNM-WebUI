@@ -8,6 +8,7 @@ import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisCh
 import type { ChartSeries } from "@/features/analysis/types";
 import { integrateVisibleSpectrumPower, type SpectrumSelectionRange } from "@/lib/spectrumPower";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
+import { CHART_SERIES_PALETTE, CHART_SERIES_PALETTE_SIZE } from "@/lib/constants";
 import type { If31DsOfdmChannelStatsEntryData, SingleSpectrumOfdmAnalysisEntry, SingleSpectrumOfdmCaptureResponse } from "@/types/api";
 
 type SpectrumMode = "actual" | "avg" | "both";
@@ -150,7 +151,7 @@ export function SingleSpectrumOfdmCaptureView({ response }: { response: SingleSp
     const actual = analysis.signal_analysis?.magnitudes ?? [];
     return frequencies.length ? [{
       label: `Channel ${channelId}`,
-      color: ["#79a9ff", "#58d0a7", "#f59e0b", "#ef4444", "#a78bfa"][index % 5],
+      color: CHART_SERIES_PALETTE[index % CHART_SERIES_PALETTE_SIZE],
       points: frequencies.slice(0, actual.length).map((frequency, pointIndex) => ({ x: frequency / 1_000_000, y: actual[pointIndex] ?? 0 })),
     }] : [];
   });

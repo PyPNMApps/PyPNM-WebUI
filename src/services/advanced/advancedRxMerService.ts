@@ -1,4 +1,8 @@
 import { requestWithBaseUrl } from "@/services/http";
+import {
+  ADVANCED_OPERATION_START_TIMEOUT_MS,
+  ADVANCED_OPERATION_STATUS_TIMEOUT_MS,
+} from "@/lib/constants";
 import type {
   AdvancedMultiRxMerAnalysisRequest,
   AdvancedMultiRxMerAnalysisResponse,
@@ -14,7 +18,7 @@ export async function startAdvancedRxMer(baseUrl: string, payload: AdvancedMulti
     method: "POST",
     url: `${ADVANCED_RXMER_BASE}/start`,
     data: payload,
-    timeout: 120000,
+    timeout: ADVANCED_OPERATION_START_TIMEOUT_MS,
   });
   return response.data;
 }
@@ -23,7 +27,7 @@ export async function getAdvancedRxMerStatus(baseUrl: string, operationId: strin
   const response = await requestWithBaseUrl<AdvancedMultiRxMerStatusResponse>(baseUrl, {
     method: "GET",
     url: `${ADVANCED_RXMER_BASE}/status/${operationId}`,
-    timeout: 30000,
+    timeout: ADVANCED_OPERATION_STATUS_TIMEOUT_MS,
   });
   return response.data;
 }
@@ -32,7 +36,7 @@ export async function stopAdvancedRxMer(baseUrl: string, operationId: string): P
   const response = await requestWithBaseUrl<AdvancedMultiRxMerStatusResponse>(baseUrl, {
     method: "DELETE",
     url: `${ADVANCED_RXMER_BASE}/stop/${operationId}`,
-    timeout: 30000,
+    timeout: ADVANCED_OPERATION_STATUS_TIMEOUT_MS,
   });
   return response.data;
 }
@@ -42,7 +46,7 @@ export async function analyzeAdvancedRxMer(baseUrl: string, payload: AdvancedMul
     method: "POST",
     url: `${ADVANCED_RXMER_BASE}/analysis`,
     data: payload,
-    timeout: 120000,
+    timeout: ADVANCED_OPERATION_START_TIMEOUT_MS,
   });
   return response.data;
 }

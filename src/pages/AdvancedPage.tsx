@@ -25,6 +25,7 @@ import { AdvancedOfdmaPreEqEchoDetectionView } from "@/features/advanced/Advance
 import { parseChannelIds } from "@/lib/channelIds";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import { checkCaptureInputsOnline } from "@/services/captureConnectivityService";
+import { CONNECTIVITY_STATUS_DEBOUNCE_MS } from "@/lib/constants";
 import {
   analyzeAdvancedRxMer,
   getAdvancedRxMerResultsZipUrl,
@@ -461,7 +462,7 @@ function AdvancedRxMerWorkbench() {
 
     const timeoutId = window.setTimeout(() => {
       void runCheck(requestId);
-    }, 3000);
+        }, CONNECTIVITY_STATUS_DEBOUNCE_MS);
 
     return () => {
       window.clearTimeout(timeoutId);
@@ -864,7 +865,7 @@ function AdvancedChannelEstimationWorkbench() {
 
     const timeoutId = window.setTimeout(() => {
       void runCheck(requestId);
-    }, 3000);
+        }, CONNECTIVITY_STATUS_DEBOUNCE_MS);
 
     return () => {
       window.clearTimeout(timeoutId);
@@ -1258,7 +1259,7 @@ function AdvancedOfdmaPreEqWorkbench() {
 
     const timeoutId = window.setTimeout(() => {
       void runCheck(requestId);
-    }, 3000);
+        }, CONNECTIVITY_STATUS_DEBOUNCE_MS);
 
     return () => {
       window.clearTimeout(timeoutId);

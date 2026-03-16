@@ -1,4 +1,8 @@
 import { requestWithBaseUrl } from "@/services/http";
+import {
+  ADVANCED_OPERATION_START_TIMEOUT_MS,
+  ADVANCED_OPERATION_STATUS_TIMEOUT_MS,
+} from "@/lib/constants";
 import type {
   AdvancedMultiChanEstAnalysisRequest,
   AdvancedMultiChanEstAnalysisResponse,
@@ -14,7 +18,7 @@ export async function startAdvancedChannelEstimation(baseUrl: string, payload: A
     method: "POST",
     url: `${ADVANCED_CHANNEL_ESTIMATION_BASE}/start`,
     data: payload,
-    timeout: 120000,
+    timeout: ADVANCED_OPERATION_START_TIMEOUT_MS,
   });
   return response.data;
 }
@@ -23,7 +27,7 @@ export async function getAdvancedChannelEstimationStatus(baseUrl: string, operat
   const response = await requestWithBaseUrl<AdvancedMultiChanEstStatusResponse>(baseUrl, {
     method: "GET",
     url: `${ADVANCED_CHANNEL_ESTIMATION_BASE}/status/${operationId}`,
-    timeout: 30000,
+    timeout: ADVANCED_OPERATION_STATUS_TIMEOUT_MS,
   });
   return response.data;
 }
@@ -32,7 +36,7 @@ export async function stopAdvancedChannelEstimation(baseUrl: string, operationId
   const response = await requestWithBaseUrl<AdvancedMultiChanEstStatusResponse>(baseUrl, {
     method: "DELETE",
     url: `${ADVANCED_CHANNEL_ESTIMATION_BASE}/stop/${operationId}`,
-    timeout: 30000,
+    timeout: ADVANCED_OPERATION_STATUS_TIMEOUT_MS,
   });
   return response.data;
 }
@@ -42,7 +46,7 @@ export async function analyzeAdvancedChannelEstimation(baseUrl: string, payload:
     method: "POST",
     url: `${ADVANCED_CHANNEL_ESTIMATION_BASE}/analysis`,
     data: payload,
-    timeout: 120000,
+    timeout: ADVANCED_OPERATION_START_TIMEOUT_MS,
   });
   return response.data;
 }

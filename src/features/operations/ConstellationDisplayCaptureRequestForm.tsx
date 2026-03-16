@@ -6,6 +6,11 @@ import type { CaptureConnectivityInputs } from "@/features/operations/captureCon
 import { useReportCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import { useCommonRequestFormDefaults } from "@/features/operations/useRequestFormDefaults";
+import {
+  DEFAULT_CONSTELLATION_DISPLAY_CROSS_HAIR,
+  DEFAULT_CONSTELLATION_MODULATION_ORDER_OFFSET,
+  DEFAULT_CONSTELLATION_SAMPLE_SYMBOL_COUNT,
+} from "@/features/operations/operationDefaults";
 import { parseChannelIds } from "@/lib/channelIds";
 import type { SingleConstellationDisplayCaptureRequest } from "@/types/api";
 
@@ -42,9 +47,9 @@ export function ConstellationDisplayCaptureRequestForm({
   const { register, handleSubmit, reset, watch } = useForm<ConstellationDisplayFormValues>({
     defaultValues: {
       ...requestDefaults,
-      displayCrossHair: true,
-      modulationOrderOffset: 0,
-      numberSampleSymbol: 8192,
+      displayCrossHair: DEFAULT_CONSTELLATION_DISPLAY_CROSS_HAIR,
+      modulationOrderOffset: DEFAULT_CONSTELLATION_MODULATION_ORDER_OFFSET,
+      numberSampleSymbol: DEFAULT_CONSTELLATION_SAMPLE_SYMBOL_COUNT,
     },
   });
   const [macAddress, ipAddress, community] = watch(["macAddress", "ipAddress", "community"]);
@@ -52,9 +57,9 @@ export function ConstellationDisplayCaptureRequestForm({
   useEffect(() => {
     reset({
       ...requestDefaults,
-      displayCrossHair: true,
-      modulationOrderOffset: 0,
-      numberSampleSymbol: 8192,
+      displayCrossHair: DEFAULT_CONSTELLATION_DISPLAY_CROSS_HAIR,
+      modulationOrderOffset: DEFAULT_CONSTELLATION_MODULATION_ORDER_OFFSET,
+      numberSampleSymbol: DEFAULT_CONSTELLATION_SAMPLE_SYMBOL_COUNT,
     });
   }, [requestDefaults, reset]);
 

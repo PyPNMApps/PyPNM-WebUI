@@ -1,3 +1,5 @@
+import { LONG_RUNNING_OPERATION_TIMEOUT_MS } from "@/lib/constants";
+
 export interface OperationNavigationItem {
   id: string;
   label: string;
@@ -18,7 +20,7 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     endpointPath: "/docs/if31/docsis/baseCapability",
     description: "DOCSIS 3.1 base capability visual.",
     menuPath: ["DOCSIS 3.1", "DOCSIS"],
-    requestTimeoutMs: 90000,
+    requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
     id: "docs-if31-ds-ofdm-chan-stats",
@@ -27,7 +29,7 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     endpointPath: "/docs/if31/ds/ofdm/chan/stats",
     description: "DOCSIS 3.1 downstream OFDM channel statistics visual.",
     menuPath: ["DOCSIS 3.1", "Downstream"],
-    requestTimeoutMs: 90000,
+    requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
     id: "docs-if31-ds-ofdm-profile-stats",
@@ -36,7 +38,7 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     endpointPath: "/docs/if31/ds/ofdm/profile/stats",
     description: "DOCSIS 3.1 downstream OFDM profile statistics visual.",
     menuPath: ["DOCSIS 3.1", "Downstream"],
-    requestTimeoutMs: 90000,
+    requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
     id: "docs-if31-system-diplexer",
@@ -45,7 +47,7 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     endpointPath: "/docs/if31/system/diplexer",
     description: "DOCSIS 3.1 system diplexer configuration visual.",
     menuPath: ["DOCSIS 3.1", "System"],
-    requestTimeoutMs: 90000,
+    requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
     id: "docs-if31-us-ofdma-channel-stats",
@@ -54,7 +56,7 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     endpointPath: "/docs/if31/us/ofdma/channel/stats",
     description: "DOCSIS 3.1 upstream OFDMA channel statistics visual.",
     menuPath: ["DOCSIS 3.1", "Upstream"],
-    requestTimeoutMs: 90000,
+    requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
     id: "docs-fdd-diplexer-bandedgecapability",
@@ -63,7 +65,7 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     endpointPath: "/docs/fdd/diplexer/bandEdgeCapability",
     description: "DOCSIS 4.0 FDD diplexer band edge capability visual.",
     menuPath: ["DOCSIS 4.0", "FDD"],
-    requestTimeoutMs: 90000,
+    requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
     id: "docs-fdd-system-diplexer-configuration",
@@ -72,7 +74,7 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     endpointPath: "/docs/fdd/system/diplexer/configuration",
     description: "DOCSIS 4.0 FDD active system diplexer configuration visual.",
     menuPath: ["DOCSIS 4.0", "FDD"],
-    requestTimeoutMs: 90000,
+    requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
     id: "docs-if30-ds-scqam-chan-codeworderrorrate",
@@ -81,7 +83,7 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     endpointPath: "/docs/if30/ds/scqam/chan/codewordErrorRate",
     description: "DOCSIS 3.0 downstream SC-QAM codeword error rate visual.",
     menuPath: ["DOCSIS 3.0", "Downstream"],
-    requestTimeoutMs: 90000,
+    requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
     id: "docs-if30-ds-scqam-chan-stats",
@@ -90,7 +92,7 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     endpointPath: "/docs/if30/ds/scqam/chan/stats",
     description: "DOCSIS 3.0 downstream SC-QAM channel statistics visual.",
     menuPath: ["DOCSIS 3.0", "Downstream"],
-    requestTimeoutMs: 90000,
+    requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
     id: "docs-if30-us-atdma-chan-preequalization",
@@ -99,7 +101,7 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     endpointPath: "/docs/if30/us/atdma/chan/preEqualization",
     description: "DOCSIS 3.0 upstream ATDMA pre-equalization visual.",
     menuPath: ["DOCSIS 3.0", "Upstream"],
-    requestTimeoutMs: 90000,
+    requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
     id: "docs-if30-us-atdma-chan-stats",
@@ -108,7 +110,7 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     endpointPath: "/docs/if30/us/atdma/chan/stats",
     description: "DOCSIS 3.0 upstream ATDMA channel statistics visual.",
     menuPath: ["DOCSIS 3.0", "Upstream"],
-    requestTimeoutMs: 90000,
+    requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
     id: "docs-dev-eventlog",
@@ -125,7 +127,7 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     endpointPath: "/docs/pnm/interface/stats",
     description: "DOCSIS interface statistics visual.",
     menuPath: ["Device", "Interface"],
-    requestTimeoutMs: 90000,
+    requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
     id: "system-uptime",
@@ -169,7 +171,7 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     endpointPath: "/docs/pnm/ds/spectrumAnalyzer/getCapture/friendly",
     description: "Friendly downstream spectrum analyzer capture visual.",
     menuPath: ["PNM", "Spectrum Analyzer"],
-    requestTimeoutMs: 90000,
+    requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
     id: "docs-pnm-ds-spectrumanalyzer-getcapture-fullbandcapture",
@@ -178,7 +180,7 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     endpointPath: "/docs/pnm/ds/spectrumAnalyzer/getCapture/fullBandCapture",
     description: "Full-band spectrum analyzer capture visual.",
     menuPath: ["PNM", "Spectrum Analyzer"],
-    requestTimeoutMs: 90000,
+    requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
     id: "docs-pnm-ds-spectrumanalyzer-getcapture-ofdm",
@@ -187,7 +189,7 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     endpointPath: "/docs/pnm/ds/spectrumAnalyzer/getCapture/ofdm",
     description: "OFDM downstream spectrum analyzer capture visual.",
     menuPath: ["PNM", "Spectrum Analyzer"],
-    requestTimeoutMs: 90000,
+    requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
     id: "docs-pnm-ds-spectrumanalyzer-getcapture-scqam",
@@ -196,7 +198,7 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     endpointPath: "/docs/pnm/ds/spectrumAnalyzer/getCapture/scqam",
     description: "SCQAM downstream spectrum analyzer capture visual.",
     menuPath: ["PNM", "Spectrum Analyzer"],
-    requestTimeoutMs: 90000,
+    requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
     id: "docs-pnm-ds-ofdm-fecsummary-getcapture",

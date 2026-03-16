@@ -6,6 +6,7 @@ import type { CaptureConnectivityInputs } from "@/features/operations/captureCon
 import { useReportCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import { useCommonRequestFormDefaults } from "@/features/operations/useRequestFormDefaults";
+import { DEFAULT_HISTOGRAM_SAMPLE_DURATION_SECONDS } from "@/features/operations/operationDefaults";
 import type { SingleHistogramCaptureRequest } from "@/types/api";
 
 interface HistogramCaptureFormValues {
@@ -42,7 +43,7 @@ export function HistogramCaptureRequestForm({
       tftpIpv4: requestDefaults.tftpIpv4,
       tftpIpv6: requestDefaults.tftpIpv6,
       community: requestDefaults.community,
-      sampleDuration: 10,
+      sampleDuration: DEFAULT_HISTOGRAM_SAMPLE_DURATION_SECONDS,
     },
   });
   const [macAddress, ipAddress, community] = watch(["macAddress", "ipAddress", "community"]);
@@ -54,7 +55,7 @@ export function HistogramCaptureRequestForm({
       tftpIpv4: requestDefaults.tftpIpv4,
       tftpIpv6: requestDefaults.tftpIpv6,
       community: requestDefaults.community,
-      sampleDuration: 10,
+      sampleDuration: DEFAULT_HISTOGRAM_SAMPLE_DURATION_SECONDS,
     });
   }, [requestDefaults, reset]);
 

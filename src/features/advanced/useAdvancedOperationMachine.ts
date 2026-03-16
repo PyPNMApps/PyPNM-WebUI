@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ADVANCED_OPERATION_POLL_INTERVAL_MS } from "@/lib/constants";
 
 export type AdvancedOperationLifecycleState = "idle" | "starting" | "running" | "stopping" | "completed" | "stopped" | "failed";
 
@@ -32,7 +33,7 @@ function mapBackendState(state: string): AdvancedOperationLifecycleState {
 }
 
 export function useAdvancedOperationMachine<TStartResponse, TStatusResponse>({
-  pollIntervalMs = 3000,
+  pollIntervalMs = ADVANCED_OPERATION_POLL_INTERVAL_MS,
   parseStart,
   parseStatus,
   startOperation,

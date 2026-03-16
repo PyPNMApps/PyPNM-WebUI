@@ -1,6 +1,7 @@
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { Panel } from "@/components/common/Panel";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
+import { CHART_SERIES_PALETTE, CHART_SERIES_PALETTE_SIZE } from "@/lib/constants";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import type { ChartSeries } from "@/features/analysis/types";
 import type { AdvancedMultiChanEstAnalysisResponse, AdvancedMultiChanEstMinAvgMaxResult } from "@/types/api";
@@ -29,7 +30,7 @@ function buildMinAvgMaxSeries(channel: AdvancedMultiChanEstMinAvgMaxResult): Cha
 function buildAlignedAverageSeries(results: AdvancedMultiChanEstMinAvgMaxResult[]): ChartSeries[] {
   return results.map((channel, index) => ({
     label: `Channel ${channel.channel_id ?? index}`,
-    color: ["#79a9ff", "#58d0a7", "#ef4444", "#f59e0b", "#a78bfa"][index % 5],
+    color: CHART_SERIES_PALETTE[index % CHART_SERIES_PALETTE_SIZE],
     points: (channel.frequency ?? []).slice(0, (channel.avg ?? []).length).map((value, pointIndex) => ({
       x: value / 1_000_000,
       y: channel.avg[pointIndex] ?? 0,

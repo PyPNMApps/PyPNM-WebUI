@@ -1,4 +1,9 @@
 import { requestWithBaseUrl } from "@/services/http";
+import {
+  ADVANCED_OFDMA_PRE_EQ_ANALYSIS_TIMEOUT_MS,
+  ADVANCED_OPERATION_START_TIMEOUT_MS,
+  ADVANCED_OPERATION_STATUS_TIMEOUT_MS,
+} from "@/lib/constants";
 import type {
   AdvancedMultiUsOfdmaPreEqAnalysisRequest,
   AdvancedMultiUsOfdmaPreEqAnalysisResponse,
@@ -14,7 +19,7 @@ export async function startAdvancedOfdmaPreEq(baseUrl: string, payload: Advanced
     method: "POST",
     url: `${ADVANCED_OFDMA_PRE_EQ_BASE}/start`,
     data: payload,
-    timeout: 120000,
+    timeout: ADVANCED_OPERATION_START_TIMEOUT_MS,
   });
   return response.data;
 }
@@ -23,7 +28,7 @@ export async function getAdvancedOfdmaPreEqStatus(baseUrl: string, operationId: 
   const response = await requestWithBaseUrl<AdvancedMultiUsOfdmaPreEqStatusResponse>(baseUrl, {
     method: "GET",
     url: `${ADVANCED_OFDMA_PRE_EQ_BASE}/status/${operationId}`,
-    timeout: 30000,
+    timeout: ADVANCED_OPERATION_STATUS_TIMEOUT_MS,
   });
   return response.data;
 }
@@ -32,7 +37,7 @@ export async function stopAdvancedOfdmaPreEq(baseUrl: string, operationId: strin
   const response = await requestWithBaseUrl<AdvancedMultiUsOfdmaPreEqStatusResponse>(baseUrl, {
     method: "DELETE",
     url: `${ADVANCED_OFDMA_PRE_EQ_BASE}/stop/${operationId}`,
-    timeout: 30000,
+    timeout: ADVANCED_OPERATION_STATUS_TIMEOUT_MS,
   });
   return response.data;
 }
@@ -42,7 +47,7 @@ export async function analyzeAdvancedOfdmaPreEq(baseUrl: string, payload: Advanc
     method: "POST",
     url: `${ADVANCED_OFDMA_PRE_EQ_BASE}/analysis`,
     data: payload,
-    timeout: 300000,
+    timeout: ADVANCED_OFDMA_PRE_EQ_ANALYSIS_TIMEOUT_MS,
   });
   return response.data;
 }

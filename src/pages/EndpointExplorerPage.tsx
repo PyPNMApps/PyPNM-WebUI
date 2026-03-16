@@ -68,6 +68,7 @@ import { singleSpectrumScqamCaptureFixture } from "@/features/operations/singleS
 import { singleSpectrumFriendlyCaptureFixture } from "@/features/operations/singleSpectrumFriendlyCaptureFixture";
 import { singleSystemUpTimeFixture } from "@/features/operations/singleSystemUpTimeFixture";
 import { checkCaptureInputsOnline } from "@/services/captureConnectivityService";
+import { CONNECTIVITY_STATUS_DEBOUNCE_MS } from "@/lib/constants";
 import { runSingleCaptureEndpoint } from "@/services/singleCaptureService";
 import type {
   AtdmaChannelStatsResponse,
@@ -225,7 +226,7 @@ export function EndpointExplorerPage() {
 
     const timeoutId = window.setTimeout(() => {
       void runCheck(requestId);
-    }, 3000);
+    }, CONNECTIVITY_STATUS_DEBOUNCE_MS);
 
     return () => {
       window.clearTimeout(timeoutId);

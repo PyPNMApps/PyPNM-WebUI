@@ -6,6 +6,8 @@ import type { CaptureConnectivityInputs } from "@/features/operations/captureCon
 import { useReportCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import {
+  DEFAULT_SPECTRUM_ANALYZER_MOVING_AVERAGE_POINTS,
+  DEFAULT_SPECTRUM_ANALYZER_OFDM_RESOLUTION_BANDWIDTH_HZ,
   defaultSpectrumAnalyzerNumberOfAverages,
   defaultSpectrumAnalyzerRetrievalType,
   spectrumAnalyzerRetrievalTypeOptions,
@@ -47,9 +49,9 @@ export function SpectrumOfdmCaptureRequestForm({ isPending, canRun, submitLabel,
       tftpIpv6: requestDefaults.tftpIpv6,
       channelIds: requestDefaults.channelIds,
       community: requestDefaults.community,
-      movingAveragePoints: 10,
+      movingAveragePoints: DEFAULT_SPECTRUM_ANALYZER_MOVING_AVERAGE_POINTS,
       numberOfAverages: defaultSpectrumAnalyzerNumberOfAverages,
-      resolutionBandwidthHz: formatIntegerLikeInput(25_000),
+      resolutionBandwidthHz: formatIntegerLikeInput(DEFAULT_SPECTRUM_ANALYZER_OFDM_RESOLUTION_BANDWIDTH_HZ),
       spectrumRetrievalType: defaultSpectrumAnalyzerRetrievalType,
     },
   });

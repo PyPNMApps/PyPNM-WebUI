@@ -5,6 +5,7 @@ import { FieldLabel } from "@/components/common/FieldLabel";
 import type { CaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { useReportCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
+import { DEFAULT_SCQAM_CODEWORD_SAMPLE_TIME_SECONDS } from "@/features/operations/operationDefaults";
 import { useDeviceConnectFormDefaults } from "@/features/operations/useRequestFormDefaults";
 import type { DsScqamCodewordErrorRateRequest } from "@/types/api";
 
@@ -36,7 +37,7 @@ export function ScqamCodewordErrorRateRequestForm({
   const { register, handleSubmit, reset, watch } = useForm<ScqamCodewordErrorRateFormValues>({
     defaultValues: {
       ...requestDefaults,
-      sampleTimeElapsed: 5,
+      sampleTimeElapsed: DEFAULT_SCQAM_CODEWORD_SAMPLE_TIME_SECONDS,
     },
   });
   const [macAddress, ipAddress, community] = watch(["macAddress", "ipAddress", "community"]);
@@ -44,7 +45,7 @@ export function ScqamCodewordErrorRateRequestForm({
   useEffect(() => {
     reset({
       ...requestDefaults,
-      sampleTimeElapsed: 5,
+      sampleTimeElapsed: DEFAULT_SCQAM_CODEWORD_SAMPLE_TIME_SECONDS,
     });
   }, [requestDefaults, reset]);
 
