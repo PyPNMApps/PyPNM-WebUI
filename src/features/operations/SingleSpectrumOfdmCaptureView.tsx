@@ -2,8 +2,11 @@ import { useMemo, useState } from "react";
 
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { Panel } from "@/components/common/Panel";
+import { SeriesVisibilityChips } from "@/components/common/SeriesVisibilityChips";
+import { SpectrumSelectionSummary } from "@/components/common/SpectrumSelectionSummary";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import type { ChartSeries } from "@/features/analysis/types";
+import { integrateVisibleSpectrumPower, type SpectrumSelectionRange } from "@/lib/spectrumPower";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import type { If31DsOfdmChannelStatsEntryData, SingleSpectrumOfdmAnalysisEntry, SingleSpectrumOfdmCaptureResponse } from "@/types/api";
 
@@ -75,9 +78,14 @@ function SpectrumOfdmChannelCard({
   channelStats: If31DsOfdmChannelStatsEntryData | undefined;
 }) {
   const [mode, setMode] = useState<SpectrumMode>("actual");
+  const [selection, setSelection] = useState<SpectrumSelectionRange | null>(null);
   const magnitudes = analysis.signal_analysis?.magnitudes ?? [];
   const averagePower = mean(magnitudes);
   const series = useMemo(() => channelSeries(mode, analysis), [mode, analysis]);
+  const integratedPower = useMemo(
+    () => integrateVisibleSpectrumPower(series, selection, analysis.signal_analysis?.channel_power_dbmv ?? null),
+    [series, selection, analysis.signal_analysis?.channel_power_dbmv],
+  );
   const stats = asChannelStats(channelStats);
 
   return (
@@ -97,7 +105,11 @@ function SpectrumOfdmChannelCard({
         subtitle={formatRangeMhz(analysis.capture_parameters?.first_segment_center_freq, analysis.capture_parameters?.last_segment_center_freq)}
         yLabel="dB"
         series={series}
+        enableRangeSelection
+        selection={selection}
+        onSelectionChange={setSelection}
       />
+      <SpectrumSelectionSummary selection={selection} integratedPower={integratedPower} />
       <table className="channel-metrics-table">
         <tbody>
           <tr><th>Indicator</th><td className="mono">{stats.indicator}</td></tr>
@@ -117,6 +129,8 @@ function SpectrumOfdmChannelCard({
 }
 
 export function SingleSpectrumOfdmCaptureView({ response }: { response: SingleSpectrumOfdmCaptureResponse }) {
+  const [combinedSelection, setCombinedSelection] = useState<SpectrumSelectionRange | null>(null);
+  const [combinedVisibility, setCombinedVisibility] = useState<Record<string, boolean>>({});
   const analyses = response.data?.analyses ?? [];
   const measurementStats = response.data?.measurement_stats ?? [];
   const deviceInfo = toDeviceInfo(
@@ -140,6 +154,14 @@ export function SingleSpectrumOfdmCaptureView({ response }: { response: SingleSp
       points: frequencies.slice(0, actual.length).map((frequency, pointIndex) => ({ x: frequency / 1_000_000, y: actual[pointIndex] ?? 0 })),
     }] : [];
   });
+  const visibleCombinedSeries = combinedSeries.filter((entry) => combinedVisibility[entry.label] !== false);
+  const combinedPowerByLabel = Object.fromEntries(
+    channels.map(({ analysis, channelId }) => [`Channel ${channelId}`, analysis.signal_analysis?.channel_power_dbmv ?? null]),
+  );
+  const combinedIntegratedPower = useMemo(
+    () => integrateVisibleSpectrumPower(visibleCombinedSeries, combinedSelection, combinedPowerByLabel),
+    [visibleCombinedSeries, combinedSelection, combinedPowerByLabel],
+  );
 
   if (!channels.length) {
     return <p className="panel-copy">No OFDM spectrum analyzer data available yet.</p>;
@@ -153,12 +175,22 @@ export function SingleSpectrumOfdmCaptureView({ response }: { response: SingleSp
         <span className="analysis-chip"><b>Total Captures</b> {analyses.length}</span>
       </div>
       <Panel title="Combined Spectrum Overlay">
+        <SeriesVisibilityChips
+          series={combinedSeries}
+          visibility={combinedVisibility}
+          onToggle={(label) => setCombinedVisibility((current) => ({ ...current, [label]: current[label] === false }))}
+        />
         <LineAnalysisChart
           title="All Channels / Captures"
           subtitle="All OFDM captures aligned by frequency"
           yLabel="dB"
-          series={combinedSeries}
+          showLegend={false}
+          series={visibleCombinedSeries}
+          enableRangeSelection
+          selection={combinedSelection}
+          onSelectionChange={setCombinedSelection}
         />
+        <SpectrumSelectionSummary selection={combinedSelection} integratedPower={combinedIntegratedPower} />
       </Panel>
       <div className="if31-ds-ofdm-channel-grid">
         {channels.map(({ analysis, channelStats, channelId }) => (

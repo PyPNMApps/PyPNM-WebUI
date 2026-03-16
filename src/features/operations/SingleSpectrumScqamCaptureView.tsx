@@ -2,8 +2,11 @@ import { useMemo, useState } from "react";
 
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { Panel } from "@/components/common/Panel";
+import { SeriesVisibilityChips } from "@/components/common/SeriesVisibilityChips";
+import { SpectrumSelectionSummary } from "@/components/common/SpectrumSelectionSummary";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import type { ChartSeries } from "@/features/analysis/types";
+import { integrateVisibleSpectrumPower, type SpectrumSelectionRange } from "@/lib/spectrumPower";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import type { DsScqamChannelEntryData, SingleSpectrumScqamAnalysisEntry, SingleSpectrumScqamCaptureResponse } from "@/types/api";
 
@@ -67,9 +70,14 @@ function SpectrumScqamChannelCard({
   channelStats: DsScqamChannelEntryData | undefined;
 }) {
   const [mode, setMode] = useState<SpectrumMode>("actual");
+  const [selection, setSelection] = useState<SpectrumSelectionRange | null>(null);
   const magnitudes = analysis.signal_analysis?.magnitudes ?? [];
   const averagePower = mean(magnitudes);
   const series = useMemo(() => channelSeries(mode, analysis), [mode, analysis]);
+  const integratedPower = useMemo(
+    () => integrateVisibleSpectrumPower(series, selection, analysis.signal_analysis?.channel_power_dbmv ?? null),
+    [series, selection, analysis.signal_analysis?.channel_power_dbmv],
+  );
 
   return (
     <Panel title={`Channel ${channelId}`}>
@@ -89,7 +97,11 @@ function SpectrumScqamChannelCard({
         subtitle={`${formatRangeMhz(analysis.capture_parameters?.first_segment_center_freq, analysis.capture_parameters?.last_segment_center_freq)} · Channel Power ${typeof analysis.signal_analysis?.channel_power_dbmv === "number" ? `${analysis.signal_analysis.channel_power_dbmv.toFixed(2)} dBmV` : "n/a"}`}
         yLabel="dB"
         series={series}
+        enableRangeSelection
+        selection={selection}
+        onSelectionChange={setSelection}
       />
+      <SpectrumSelectionSummary selection={selection} integratedPower={integratedPower} />
       <table className="channel-metrics-table">
         <tbody>
           <tr><th>Modulation</th><td className="mono">{channelStats?.docsIfDownChannelModulation ?? "n/a"}</td></tr>
@@ -125,6 +137,8 @@ function SpectrumScqamChannelCard({
 }
 
 export function SingleSpectrumScqamCaptureView({ response }: { response: SingleSpectrumScqamCaptureResponse }) {
+  const [combinedSelection, setCombinedSelection] = useState<SpectrumSelectionRange | null>(null);
+  const [combinedVisibility, setCombinedVisibility] = useState<Record<string, boolean>>({});
   const analyses = response.data?.analyses ?? [];
   const measurementStats = response.data?.measurement_stats ?? [];
   const deviceInfo = toDeviceInfo(
@@ -150,6 +164,14 @@ export function SingleSpectrumScqamCaptureView({ response }: { response: SingleS
         }]
       : [];
   });
+  const visibleCombinedSeries = combinedSeries.filter((entry) => combinedVisibility[entry.label] !== false);
+  const combinedPowerByLabel = Object.fromEntries(
+    channels.map(({ analysis, channelId }) => [`Channel ${channelId}`, analysis.signal_analysis?.channel_power_dbmv ?? null]),
+  );
+  const combinedIntegratedPower = useMemo(
+    () => integrateVisibleSpectrumPower(visibleCombinedSeries, combinedSelection, combinedPowerByLabel),
+    [visibleCombinedSeries, combinedSelection, combinedPowerByLabel],
+  );
 
   if (!channels.length) {
     return <p className="panel-copy">No SCQAM spectrum analyzer data available yet.</p>;
@@ -163,12 +185,22 @@ export function SingleSpectrumScqamCaptureView({ response }: { response: SingleS
         <span className="analysis-chip"><b>Total Captures</b> {analyses.length}</span>
       </div>
       <Panel title="Combined Spectrum Overlay">
+        <SeriesVisibilityChips
+          series={combinedSeries}
+          visibility={combinedVisibility}
+          onToggle={(label) => setCombinedVisibility((current) => ({ ...current, [label]: current[label] === false }))}
+        />
         <LineAnalysisChart
           title="All Channels / Captures"
           subtitle="All SCQAM captures aligned by frequency"
           yLabel="dB"
-          series={combinedSeries}
+          showLegend={false}
+          series={visibleCombinedSeries}
+          enableRangeSelection
+          selection={combinedSelection}
+          onSelectionChange={setCombinedSelection}
         />
+        <SpectrumSelectionSummary selection={combinedSelection} integratedPower={combinedIntegratedPower} />
       </Panel>
       <div className="if31-ds-ofdm-channel-grid">
         {channels.map(({ analysis, channelStats, channelId }) => (

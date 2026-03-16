@@ -2,8 +2,10 @@ import { useMemo, useState } from "react";
 
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { Panel } from "@/components/common/Panel";
+import { SpectrumSelectionSummary } from "@/components/common/SpectrumSelectionSummary";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import type { ChartSeries } from "@/features/analysis/types";
+import { integrateVisibleSpectrumPower, type SpectrumSelectionRange } from "@/lib/spectrumPower";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import type { SingleSpectrumFriendlyCaptureResponse } from "@/types/api";
 
@@ -24,12 +26,15 @@ export function SingleSpectrumFriendlyCaptureView({
   response: SingleSpectrumFriendlyCaptureResponse;
 }) {
   const [mode, setMode] = useState<SpectrumMode>("actual");
+  const [selection, setSelection] = useState<SpectrumSelectionRange | null>(null);
   const firstAnalysis = response.data?.analysis?.[0];
 
   const deviceInfo = toDeviceInfo(
     firstAnalysis?.device_details?.system_description ?? response.system_description,
     response.mac_address,
   );
+  const captureParameters = firstAnalysis?.capture_parameters;
+  const signalAnalysis = firstAnalysis?.signal_analysis;
 
   const series = useMemo<ChartSeries[]>(() => {
     if (!firstAnalysis?.signal_analysis?.frequencies?.length) {
@@ -63,13 +68,15 @@ export function SingleSpectrumFriendlyCaptureView({
     }
     return out;
   }, [firstAnalysis, mode]);
+  const integratedPower = useMemo(
+    () => integrateVisibleSpectrumPower(series, selection, signalAnalysis?.channel_power_dbmv ?? null),
+    [series, selection, signalAnalysis?.channel_power_dbmv],
+  );
 
   if (!firstAnalysis?.signal_analysis?.frequencies?.length) {
     return <p className="panel-copy">No spectrum analyzer capture data available yet.</p>;
   }
 
-  const captureParameters = firstAnalysis.capture_parameters;
-  const signalAnalysis = firstAnalysis.signal_analysis;
   const centerHz = typeof captureParameters?.first_segment_center_freq === "number" && typeof captureParameters?.last_segment_center_freq === "number"
     ? (captureParameters.first_segment_center_freq + captureParameters.last_segment_center_freq) / 2
     : undefined;
@@ -112,7 +119,11 @@ export function SingleSpectrumFriendlyCaptureView({
           subtitle={formatRangeMhz(captureParameters?.first_segment_center_freq, captureParameters?.last_segment_center_freq)}
           yLabel="dBmV"
           series={series}
+          enableRangeSelection
+          selection={selection}
+          onSelectionChange={setSelection}
         />
+        <SpectrumSelectionSummary selection={selection} integratedPower={integratedPower} />
       </Panel>
     </div>
   );
