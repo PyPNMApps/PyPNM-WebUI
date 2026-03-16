@@ -81,7 +81,7 @@ export function FecSummaryCaptureRequestForm({
         });
       })}
     >
-      <div className="grid two request-input-grid">
+      <div className="grid two request-input-grid six-up">
         <div className="field">
           <FieldLabel htmlFor="fecMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
           <input id="fecMacAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
@@ -108,6 +108,8 @@ export function FecSummaryCaptureRequestForm({
           <FieldLabel htmlFor="fecCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
           <input id="fecCommunity" {...register("community")} placeholder="private" />
         </div>
+      </div>
+      <div className="grid two request-input-grid">
         <div className="field">
           <FieldLabel htmlFor="fecSummaryType" hint={requestFieldHints.fec_summary_type}>FEC Summary Type</FieldLabel>
           <select id="fecSummaryType" {...register("fecSummaryType", { valueAsNumber: true })}>

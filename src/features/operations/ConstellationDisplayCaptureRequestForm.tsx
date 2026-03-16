@@ -93,7 +93,7 @@ export function ConstellationDisplayCaptureRequestForm({
         });
       })}
     >
-      <div className="grid two">
+      <div className="grid two request-input-grid six-up">
         <div className="field">
           <FieldLabel htmlFor="constMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
           <input id="constMacAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
@@ -120,6 +120,8 @@ export function ConstellationDisplayCaptureRequestForm({
           <FieldLabel htmlFor="constCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
           <input id="constCommunity" {...register("community")} placeholder="private" />
         </div>
+      </div>
+      <div className="grid two request-input-grid">
         <div className="field">
           <FieldLabel htmlFor="displayCrossHair" hint={requestFieldHints.display_cross_hair}>Display Cross Hair</FieldLabel>
           <select id="displayCrossHair" {...register("displayCrossHair", { setValueAs: (value) => value === "true" })}>
