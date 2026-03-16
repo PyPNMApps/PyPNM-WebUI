@@ -1298,6 +1298,24 @@ pre {
   background: rgba(121, 169, 255, 0.08);
 }
 
+.analysis-chip-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ink);
+  font-size: 12px;
+}
+
+.analysis-chip-button.active {
+  border-color: rgba(121, 169, 255, 0.48);
+  background: rgba(121, 169, 255, 0.12);
+}
+
 
 
 

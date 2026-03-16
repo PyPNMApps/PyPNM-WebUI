@@ -159,6 +159,15 @@ export const operationNavigationItems: OperationNavigationItem[] = [
     menuPath: ["PNM", "Single Capture"],
   },
   {
+    id: "docs-pnm-ds-spectrumanalyzer-getcapture-friendly",
+    label: "Spectrum Analyzer",
+    routePath: "/operations/spectrum-analyzer",
+    endpointPath: "/docs/pnm/ds/spectrumAnalyzer/getCapture/friendly",
+    description: "Friendly downstream spectrum analyzer capture visual.",
+    menuPath: ["PNM", "Single Capture"],
+    requestTimeoutMs: 90000,
+  },
+  {
     id: "docs-pnm-ds-ofdm-fecsummary-getcapture",
     label: "FEC Summary",
     routePath: "/operations/fec-summary",

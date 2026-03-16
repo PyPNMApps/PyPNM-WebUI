@@ -215,6 +215,50 @@ export interface SingleHistogramCaptureRequest {
   };
 }
 
+export interface SingleSpectrumFriendlyCaptureRequest {
+  cable_modem: {
+    mac_address: string;
+    ip_address: string;
+    pnm_parameters: {
+      tftp: {
+        ipv4: string;
+        ipv6: string;
+      };
+    };
+    snmp: {
+      snmpV2C: {
+        community: string;
+      };
+    };
+  };
+  analysis: {
+    type: "basic";
+    output: {
+      type: "json";
+    };
+    plot: {
+      ui: {
+        theme: "dark";
+      };
+    };
+    spectrum_analysis: {
+      moving_average: {
+        points: number;
+      };
+    };
+  };
+  capture_parameters: {
+    inactivity_timeout: number;
+    first_segment_center_freq: number;
+    last_segment_center_freq: number;
+    resolution_bw: number;
+    noise_bw: number;
+    window_function: number;
+    num_averages: number;
+    spectrum_retrieval_type: number;
+  };
+}
+
 export interface DeviceConnectRequest {
   cable_modem: {
     mac_address: string;
@@ -844,6 +888,44 @@ export interface SingleHistogramCaptureResponse {
   message?: string | null;
   data?: {
     analysis?: SingleHistogramAnalysisEntry[];
+  };
+}
+
+export interface SingleSpectrumFriendlyAnalysisEntry {
+  device_details?: {
+    system_description?: SingleRxMerSystemDescription;
+  };
+  capture_parameters?: {
+    inactivity_timeout?: number;
+    first_segment_center_freq?: number;
+    last_segment_center_freq?: number;
+    segment_freq_span?: number;
+    num_bins_per_segment?: number;
+    noise_bw?: number;
+    window_function?: number;
+    num_averages?: number;
+    spectrum_retrieval_type?: number;
+  };
+  signal_analysis?: {
+    bin_bandwidth?: number;
+    segment_length?: number;
+    frequencies?: number[];
+    magnitudes?: number[];
+    window_average?: {
+      points?: number;
+      magnitudes?: number[];
+    };
+    channel_power_dbmv?: number;
+  };
+}
+
+export interface SingleSpectrumFriendlyCaptureResponse {
+  system_description?: SingleRxMerSystemDescription;
+  mac_address?: string;
+  status?: number;
+  message?: string | null;
+  data?: {
+    analysis?: SingleSpectrumFriendlyAnalysisEntry[];
   };
 }
 

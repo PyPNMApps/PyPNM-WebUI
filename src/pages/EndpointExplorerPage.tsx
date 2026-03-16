@@ -12,6 +12,8 @@ import { HistogramCaptureRequestForm } from "@/features/operations/HistogramCapt
 import { FecSummaryCaptureRequestForm } from "@/features/operations/FecSummaryCaptureRequestForm";
 import { ScqamCodewordErrorRateRequestForm } from "@/features/operations/ScqamCodewordErrorRateRequestForm";
 import { SingleCaptureRequestForm } from "@/features/operations/SingleCaptureRequestForm";
+import { SingleSpectrumFriendlyCaptureView } from "@/features/operations/SingleSpectrumFriendlyCaptureView";
+import { SpectrumFriendlyCaptureRequestForm } from "@/features/operations/SpectrumFriendlyCaptureRequestForm";
 import { SingleAtdmaChannelStatsView } from "@/features/operations/SingleAtdmaChannelStatsView";
 import { SingleFddDiplexerBandEdgeCapabilityView } from "@/features/operations/SingleFddDiplexerBandEdgeCapabilityView";
 import { SingleFddSystemDiplexerConfigurationView } from "@/features/operations/SingleFddSystemDiplexerConfigurationView";
@@ -52,6 +54,7 @@ import { singleIf31SystemDiplexerFixture } from "@/features/operations/singleIf3
 import { singleInterfaceStatsFixture } from "@/features/operations/singleInterfaceStatsFixture";
 import { singleModulationProfileFixture } from "@/features/operations/singleModulationProfileFixture";
 import { singleRxMerFixture } from "@/features/operations/singleRxMerFixture";
+import { singleSpectrumFriendlyCaptureFixture } from "@/features/operations/singleSpectrumFriendlyCaptureFixture";
 import { singleSystemUpTimeFixture } from "@/features/operations/singleSystemUpTimeFixture";
 import { runSingleCaptureEndpoint } from "@/services/singleCaptureService";
 import type {
@@ -82,6 +85,8 @@ import type {
   SingleModulationProfileCaptureResponse,
   SingleRxMerCaptureRequest,
   SingleRxMerCaptureResponse,
+  SingleSpectrumFriendlyCaptureRequest,
+  SingleSpectrumFriendlyCaptureResponse,
   SystemUpTimeResponse,
 } from "@/types/api";
 
@@ -124,6 +129,7 @@ export function EndpointExplorerPage() {
   const [interfaceStatsResponse, setInterfaceStatsResponse] = useState<InterfaceStatsResponse>(singleInterfaceStatsFixture);
   const [modulationProfileResponse, setModulationProfileResponse] = useState<SingleModulationProfileCaptureResponse>(singleModulationProfileFixture);
   const [systemUpTimeResponse, setSystemUpTimeResponse] = useState<SystemUpTimeResponse>(singleSystemUpTimeFixture);
+  const [spectrumFriendlyResponse, setSpectrumFriendlyResponse] = useState<SingleSpectrumFriendlyCaptureResponse>(singleSpectrumFriendlyCaptureFixture);
   const selectedOperation = getOperationByRoutePath(location.pathname);
   const mutation = useMutation({
     mutationFn: ({
@@ -139,7 +145,8 @@ export function EndpointExplorerPage() {
         | SingleHistogramCaptureRequest
         | SingleFecSummaryCaptureRequest
         | SingleConstellationDisplayCaptureRequest
-        | SingleModulationProfileCaptureRequest;
+        | SingleModulationProfileCaptureRequest
+        | SingleSpectrumFriendlyCaptureRequest;
     }) =>
       runSingleCaptureEndpoint<
         | AtdmaChannelStatsResponse
@@ -162,6 +169,7 @@ export function EndpointExplorerPage() {
         | SingleFecSummaryCaptureResponse
         | SingleConstellationDisplayCaptureResponse
         | SingleModulationProfileCaptureResponse
+        | SingleSpectrumFriendlyCaptureResponse
       >(
         selectedInstance?.baseUrl ?? "",
         endpointPath,
@@ -264,6 +272,11 @@ export function EndpointExplorerPage() {
         return;
       }
 
+      if (selectedOperation?.id === "docs-pnm-ds-spectrumanalyzer-getcapture-friendly") {
+        setSpectrumFriendlyResponse(data as SingleSpectrumFriendlyCaptureResponse);
+        return;
+      }
+
       if (selectedOperation?.id === "docs-pnm-ds-histogram-getcapture") {
         setHistogramResponse(data as SingleHistogramCaptureResponse);
       }
@@ -304,6 +317,8 @@ export function EndpointExplorerPage() {
               ? eventLogResponse
               : selectedOperation.id === "docs-pnm-ds-ofdm-rxmer-getcapture"
                 ? rxMerResponse
+                : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-friendly"
+                  ? spectrumFriendlyResponse
                 : selectedOperation.id === "docs-pnm-ds-ofdm-modulationprofile-getcapture"
                   ? modulationProfileResponse
                   : selectedOperation.id === "docs-pnm-ds-ofdm-constellationdisplay-getcapture"
@@ -340,6 +355,16 @@ export function EndpointExplorerPage() {
           />
         ) : selectedOperation.id === "docs-pnm-ds-histogram-getcapture" ? (
           <HistogramCaptureRequestForm
+            isPending={mutation.isPending}
+            canRun={Boolean(selectedInstance)}
+            submitLabel={`Run ${selectedOperation.label}`}
+            errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            onSubmit={(payload) => {
+              mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
+            }}
+          />
+        ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-friendly" ? (
+          <SpectrumFriendlyCaptureRequestForm
             isPending={mutation.isPending}
             canRun={Boolean(selectedInstance)}
             submitLabel={`Run ${selectedOperation.label}`}
@@ -430,6 +455,8 @@ export function EndpointExplorerPage() {
           <SingleDeviceEventLogView response={eventLogResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-rxmer-getcapture" ? (
           <SingleRxMerCaptureView response={rxMerResponse} />
+        ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-friendly" ? (
+          <SingleSpectrumFriendlyCaptureView response={spectrumFriendlyResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-modulationprofile-getcapture" ? (
           <SingleModulationProfileCaptureView response={modulationProfileResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-constellationdisplay-getcapture" ? (

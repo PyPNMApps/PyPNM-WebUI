@@ -1,0 +1,200 @@
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+
+import { FieldLabel } from "@/components/common/FieldLabel";
+import { requestFieldHints } from "@/features/operations/requestFieldHints";
+import {
+  defaultSpectrumAnalyzerRetrievalType,
+  defaultSpectrumAnalyzerWindowFunction,
+  spectrumAnalyzerRetrievalTypeOptions,
+  spectrumAnalyzerWindowFunctionOptions,
+} from "@/features/operations/spectrumAnalyzerOptions";
+import { useCommonRequestFormDefaults } from "@/features/operations/useRequestFormDefaults";
+import { formatIntegerLikeInput, parseIntegerLikeInput } from "@/lib/forms/numericInput";
+import type { SingleSpectrumFriendlyCaptureRequest } from "@/types/api";
+
+interface SpectrumFriendlyFormValues {
+  macAddress: string;
+  ipAddress: string;
+  tftpIpv4: string;
+  tftpIpv6: string;
+  community: string;
+  movingAveragePoints: number;
+  inactivityTimeout: number;
+  firstSegmentCenterFreq: string;
+  lastSegmentCenterFreq: string;
+  resolutionBw: string;
+  noiseBw: string;
+  windowFunction: number;
+  numAverages: number;
+  spectrumRetrievalType: number;
+}
+
+interface SpectrumFriendlyCaptureRequestFormProps {
+  isPending: boolean;
+  canRun: boolean;
+  submitLabel: string;
+  onSubmit: (payload: SingleSpectrumFriendlyCaptureRequest) => void;
+  errorMessage?: string;
+}
+
+export function SpectrumFriendlyCaptureRequestForm({
+  isPending,
+  canRun,
+  submitLabel,
+  onSubmit,
+  errorMessage,
+}: SpectrumFriendlyCaptureRequestFormProps) {
+  const requestDefaults = useCommonRequestFormDefaults();
+  const { register, handleSubmit, reset } = useForm<SpectrumFriendlyFormValues>({
+    defaultValues: {
+      macAddress: requestDefaults.macAddress,
+      ipAddress: requestDefaults.ipAddress,
+      tftpIpv4: requestDefaults.tftpIpv4,
+      tftpIpv6: requestDefaults.tftpIpv6,
+      community: requestDefaults.community,
+      movingAveragePoints: 10,
+      inactivityTimeout: 60,
+      firstSegmentCenterFreq: formatIntegerLikeInput(300_000_000),
+      lastSegmentCenterFreq: formatIntegerLikeInput(900_000_000),
+      resolutionBw: formatIntegerLikeInput(30_000),
+      noiseBw: formatIntegerLikeInput(150),
+      windowFunction: defaultSpectrumAnalyzerWindowFunction,
+      numAverages: 1,
+      spectrumRetrievalType: defaultSpectrumAnalyzerRetrievalType,
+    },
+  });
+
+  useEffect(() => {
+    reset((current) => ({
+      ...current,
+      macAddress: requestDefaults.macAddress,
+      ipAddress: requestDefaults.ipAddress,
+      tftpIpv4: requestDefaults.tftpIpv4,
+      tftpIpv6: requestDefaults.tftpIpv6,
+      community: requestDefaults.community,
+    }));
+  }, [requestDefaults, reset]);
+
+  return (
+    <form
+      className="grid"
+      onSubmit={handleSubmit((values) => {
+        onSubmit({
+          cable_modem: {
+            mac_address: values.macAddress,
+            ip_address: values.ipAddress,
+            pnm_parameters: {
+              tftp: {
+                ipv4: values.tftpIpv4,
+                ipv6: values.tftpIpv6,
+              },
+            },
+            snmp: {
+              snmpV2C: {
+                community: values.community,
+              },
+            },
+          },
+          analysis: {
+            type: "basic",
+            output: { type: "json" },
+            plot: { ui: { theme: "dark" } },
+            spectrum_analysis: {
+              moving_average: {
+                points: Number(values.movingAveragePoints),
+              },
+            },
+          },
+          capture_parameters: {
+            inactivity_timeout: Number(values.inactivityTimeout),
+            first_segment_center_freq: parseIntegerLikeInput(values.firstSegmentCenterFreq),
+            last_segment_center_freq: parseIntegerLikeInput(values.lastSegmentCenterFreq),
+            resolution_bw: parseIntegerLikeInput(values.resolutionBw),
+            noise_bw: parseIntegerLikeInput(values.noiseBw),
+            window_function: Number(values.windowFunction),
+            num_averages: Number(values.numAverages),
+            spectrum_retrieval_type: Number(values.spectrumRetrievalType),
+          },
+        });
+      })}
+    >
+      <div className="grid two">
+        <div className="field">
+          <FieldLabel htmlFor="spectrumFriendlyMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
+          <input id="spectrumFriendlyMacAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
+        </div>
+        <div className="field">
+          <FieldLabel htmlFor="spectrumFriendlyIpAddress" hint={requestFieldHints.ip_address}>IP Address</FieldLabel>
+          <input id="spectrumFriendlyIpAddress" {...register("ipAddress")} placeholder="192.168.100.10" />
+        </div>
+        <div className="field">
+          <FieldLabel htmlFor="spectrumFriendlyTftpIpv4" hint={requestFieldHints.tftp_ipv4}>TFTP IPv4</FieldLabel>
+          <input id="spectrumFriendlyTftpIpv4" {...register("tftpIpv4")} placeholder="192.168.100.2" />
+        </div>
+        <div className="field">
+          <FieldLabel htmlFor="spectrumFriendlyTftpIpv6" hint={requestFieldHints.tftp_ipv6}>TFTP IPv6</FieldLabel>
+          <input id="spectrumFriendlyTftpIpv6" {...register("tftpIpv6")} placeholder="::1" />
+        </div>
+        <div className="field">
+          <FieldLabel htmlFor="spectrumFriendlyCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
+          <input id="spectrumFriendlyCommunity" {...register("community")} placeholder="private" />
+        </div>
+        <div className="field">
+          <FieldLabel htmlFor="spectrumFriendlyMovingAveragePoints" hint={requestFieldHints.moving_average_points}>Moving Average Points</FieldLabel>
+          <input id="spectrumFriendlyMovingAveragePoints" type="number" {...register("movingAveragePoints", { valueAsNumber: true })} />
+        </div>
+        <div className="field">
+          <FieldLabel htmlFor="spectrumFriendlyInactivityTimeout" hint={requestFieldHints.inactivity_timeout}>Inactivity Timeout</FieldLabel>
+          <input id="spectrumFriendlyInactivityTimeout" type="number" {...register("inactivityTimeout", { valueAsNumber: true })} />
+        </div>
+        <div className="field">
+          <FieldLabel htmlFor="spectrumFriendlyResolutionBw" hint={requestFieldHints.resolution_bw}>Resolution BW</FieldLabel>
+          <input id="spectrumFriendlyResolutionBw" type="text" inputMode="numeric" {...register("resolutionBw")} />
+        </div>
+        <div className="field">
+          <FieldLabel htmlFor="spectrumFriendlyFirstSegmentCenterFreq" hint={requestFieldHints.first_segment_center_freq}>First Segment Center Freq</FieldLabel>
+          <input id="spectrumFriendlyFirstSegmentCenterFreq" type="text" inputMode="numeric" {...register("firstSegmentCenterFreq")} />
+        </div>
+        <div className="field">
+          <FieldLabel htmlFor="spectrumFriendlyLastSegmentCenterFreq" hint={requestFieldHints.last_segment_center_freq}>Last Segment Center Freq</FieldLabel>
+          <input id="spectrumFriendlyLastSegmentCenterFreq" type="text" inputMode="numeric" {...register("lastSegmentCenterFreq")} />
+        </div>
+        <div className="field">
+          <FieldLabel htmlFor="spectrumFriendlyNoiseBw" hint={requestFieldHints.noise_bw}>Noise BW</FieldLabel>
+          <input id="spectrumFriendlyNoiseBw" type="text" inputMode="numeric" {...register("noiseBw")} />
+        </div>
+        <div className="field">
+          <FieldLabel htmlFor="spectrumFriendlyWindowFunction" hint={requestFieldHints.window_function}>Window Function</FieldLabel>
+          <select id="spectrumFriendlyWindowFunction" {...register("windowFunction", { valueAsNumber: true })}>
+            {spectrumAnalyzerWindowFunctionOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="field">
+          <FieldLabel htmlFor="spectrumFriendlyNumAverages" hint={requestFieldHints.num_averages}>Num Averages</FieldLabel>
+          <input id="spectrumFriendlyNumAverages" type="number" {...register("numAverages", { valueAsNumber: true })} />
+        </div>
+        <div className="field">
+          <FieldLabel htmlFor="spectrumFriendlySpectrumRetrievalType" hint={requestFieldHints.spectrum_retrieval_type}>Spectrum Retrieval Type</FieldLabel>
+          <select id="spectrumFriendlySpectrumRetrievalType" {...register("spectrumRetrievalType", { valueAsNumber: true })}>
+            {spectrumAnalyzerRetrievalTypeOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <div className="actions">
+        <button type="submit" className="primary" disabled={isPending || !canRun}>
+          {isPending ? "Running..." : submitLabel}
+        </button>
+      </div>
+      {errorMessage ? <p>{errorMessage}</p> : null}
+    </form>
+  );
+}
