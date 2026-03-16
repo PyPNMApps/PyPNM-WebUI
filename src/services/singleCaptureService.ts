@@ -8,6 +8,8 @@ import type {
   SingleHistogramCaptureRequest,
   SingleModulationProfileCaptureRequest,
   SingleRxMerCaptureRequest,
+  SingleSpectrumOfdmCaptureRequest,
+  SingleSpectrumFullBandCaptureRequest,
   SingleSpectrumFriendlyCaptureRequest,
 } from "@/types/api";
 
@@ -23,6 +25,8 @@ export async function runSingleCaptureEndpoint<TResponse>(
     | SingleFecSummaryCaptureRequest
     | SingleConstellationDisplayCaptureRequest
     | SingleModulationProfileCaptureRequest
+    | SingleSpectrumOfdmCaptureRequest
+    | SingleSpectrumFullBandCaptureRequest
     | SingleSpectrumFriendlyCaptureRequest,
   timeoutMs?: number,
 ): Promise<TResponse> {

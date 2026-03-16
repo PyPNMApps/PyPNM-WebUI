@@ -12,6 +12,9 @@ import { HistogramCaptureRequestForm } from "@/features/operations/HistogramCapt
 import { FecSummaryCaptureRequestForm } from "@/features/operations/FecSummaryCaptureRequestForm";
 import { ScqamCodewordErrorRateRequestForm } from "@/features/operations/ScqamCodewordErrorRateRequestForm";
 import { SingleCaptureRequestForm } from "@/features/operations/SingleCaptureRequestForm";
+import { SingleSpectrumOfdmCaptureView } from "@/features/operations/SingleSpectrumOfdmCaptureView";
+import { SpectrumFullBandCaptureRequestForm } from "@/features/operations/SpectrumFullBandCaptureRequestForm";
+import { SpectrumOfdmCaptureRequestForm } from "@/features/operations/SpectrumOfdmCaptureRequestForm";
 import { SingleSpectrumFriendlyCaptureView } from "@/features/operations/SingleSpectrumFriendlyCaptureView";
 import { SpectrumFriendlyCaptureRequestForm } from "@/features/operations/SpectrumFriendlyCaptureRequestForm";
 import { SingleAtdmaChannelStatsView } from "@/features/operations/SingleAtdmaChannelStatsView";
@@ -54,6 +57,8 @@ import { singleIf31SystemDiplexerFixture } from "@/features/operations/singleIf3
 import { singleInterfaceStatsFixture } from "@/features/operations/singleInterfaceStatsFixture";
 import { singleModulationProfileFixture } from "@/features/operations/singleModulationProfileFixture";
 import { singleRxMerFixture } from "@/features/operations/singleRxMerFixture";
+import { singleSpectrumFullBandCaptureFixture } from "@/features/operations/singleSpectrumFullBandCaptureFixture";
+import { singleSpectrumOfdmCaptureFixture } from "@/features/operations/singleSpectrumOfdmCaptureFixture";
 import { singleSpectrumFriendlyCaptureFixture } from "@/features/operations/singleSpectrumFriendlyCaptureFixture";
 import { singleSystemUpTimeFixture } from "@/features/operations/singleSystemUpTimeFixture";
 import { runSingleCaptureEndpoint } from "@/services/singleCaptureService";
@@ -85,6 +90,9 @@ import type {
   SingleModulationProfileCaptureResponse,
   SingleRxMerCaptureRequest,
   SingleRxMerCaptureResponse,
+  SingleSpectrumOfdmCaptureRequest,
+  SingleSpectrumOfdmCaptureResponse,
+  SingleSpectrumFullBandCaptureRequest,
   SingleSpectrumFriendlyCaptureRequest,
   SingleSpectrumFriendlyCaptureResponse,
   SystemUpTimeResponse,
@@ -130,6 +138,8 @@ export function EndpointExplorerPage() {
   const [modulationProfileResponse, setModulationProfileResponse] = useState<SingleModulationProfileCaptureResponse>(singleModulationProfileFixture);
   const [systemUpTimeResponse, setSystemUpTimeResponse] = useState<SystemUpTimeResponse>(singleSystemUpTimeFixture);
   const [spectrumFriendlyResponse, setSpectrumFriendlyResponse] = useState<SingleSpectrumFriendlyCaptureResponse>(singleSpectrumFriendlyCaptureFixture);
+  const [spectrumFullBandResponse, setSpectrumFullBandResponse] = useState<SingleSpectrumFriendlyCaptureResponse>(singleSpectrumFullBandCaptureFixture);
+  const [spectrumOfdmResponse, setSpectrumOfdmResponse] = useState<SingleSpectrumOfdmCaptureResponse>(singleSpectrumOfdmCaptureFixture);
   const selectedOperation = getOperationByRoutePath(location.pathname);
   const mutation = useMutation({
     mutationFn: ({
@@ -146,6 +156,8 @@ export function EndpointExplorerPage() {
         | SingleFecSummaryCaptureRequest
         | SingleConstellationDisplayCaptureRequest
         | SingleModulationProfileCaptureRequest
+        | SingleSpectrumOfdmCaptureRequest
+        | SingleSpectrumFullBandCaptureRequest
         | SingleSpectrumFriendlyCaptureRequest;
     }) =>
       runSingleCaptureEndpoint<
@@ -169,6 +181,7 @@ export function EndpointExplorerPage() {
         | SingleFecSummaryCaptureResponse
         | SingleConstellationDisplayCaptureResponse
         | SingleModulationProfileCaptureResponse
+        | SingleSpectrumOfdmCaptureResponse
         | SingleSpectrumFriendlyCaptureResponse
       >(
         selectedInstance?.baseUrl ?? "",
@@ -277,6 +290,16 @@ export function EndpointExplorerPage() {
         return;
       }
 
+      if (selectedOperation?.id === "docs-pnm-ds-spectrumanalyzer-getcapture-fullbandcapture") {
+        setSpectrumFullBandResponse(data as SingleSpectrumFriendlyCaptureResponse);
+        return;
+      }
+
+      if (selectedOperation?.id === "docs-pnm-ds-spectrumanalyzer-getcapture-ofdm") {
+        setSpectrumOfdmResponse(data as SingleSpectrumOfdmCaptureResponse);
+        return;
+      }
+
       if (selectedOperation?.id === "docs-pnm-ds-histogram-getcapture") {
         setHistogramResponse(data as SingleHistogramCaptureResponse);
       }
@@ -319,6 +342,10 @@ export function EndpointExplorerPage() {
                 ? rxMerResponse
                 : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-friendly"
                   ? spectrumFriendlyResponse
+                  : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-fullbandcapture"
+                    ? spectrumFullBandResponse
+                    : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-ofdm"
+                      ? spectrumOfdmResponse
                 : selectedOperation.id === "docs-pnm-ds-ofdm-modulationprofile-getcapture"
                   ? modulationProfileResponse
                   : selectedOperation.id === "docs-pnm-ds-ofdm-constellationdisplay-getcapture"
@@ -365,6 +392,26 @@ export function EndpointExplorerPage() {
           />
         ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-friendly" ? (
           <SpectrumFriendlyCaptureRequestForm
+            isPending={mutation.isPending}
+            canRun={Boolean(selectedInstance)}
+            submitLabel={`Run ${selectedOperation.label}`}
+            errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            onSubmit={(payload) => {
+              mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
+            }}
+          />
+        ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-fullbandcapture" ? (
+          <SpectrumFullBandCaptureRequestForm
+            isPending={mutation.isPending}
+            canRun={Boolean(selectedInstance)}
+            submitLabel={`Run ${selectedOperation.label}`}
+            errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            onSubmit={(payload) => {
+              mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
+            }}
+          />
+        ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-ofdm" ? (
+          <SpectrumOfdmCaptureRequestForm
             isPending={mutation.isPending}
             canRun={Boolean(selectedInstance)}
             submitLabel={`Run ${selectedOperation.label}`}
@@ -457,6 +504,10 @@ export function EndpointExplorerPage() {
           <SingleRxMerCaptureView response={rxMerResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-friendly" ? (
           <SingleSpectrumFriendlyCaptureView response={spectrumFriendlyResponse} />
+        ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-fullbandcapture" ? (
+          <SingleSpectrumFriendlyCaptureView response={spectrumFullBandResponse} />
+        ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-ofdm" ? (
+          <SingleSpectrumOfdmCaptureView response={spectrumOfdmResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-modulationprofile-getcapture" ? (
           <SingleModulationProfileCaptureView response={modulationProfileResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-constellationdisplay-getcapture" ? (

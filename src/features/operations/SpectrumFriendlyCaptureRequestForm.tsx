@@ -5,6 +5,7 @@ import { FieldLabel } from "@/components/common/FieldLabel";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import {
   defaultSpectrumAnalyzerRetrievalType,
+  defaultSpectrumAnalyzerNumberOfAverages,
   defaultSpectrumAnalyzerWindowFunction,
   spectrumAnalyzerRetrievalTypeOptions,
   spectrumAnalyzerWindowFunctionOptions,
@@ -60,7 +61,7 @@ export function SpectrumFriendlyCaptureRequestForm({
       resolutionBw: formatIntegerLikeInput(30_000),
       noiseBw: formatIntegerLikeInput(150),
       windowFunction: defaultSpectrumAnalyzerWindowFunction,
-      numAverages: 1,
+      numAverages: defaultSpectrumAnalyzerNumberOfAverages,
       spectrumRetrievalType: defaultSpectrumAnalyzerRetrievalType,
     },
   });
