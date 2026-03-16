@@ -6,6 +6,9 @@ import { AppLayout } from "@/layouts/AppLayout";
 const AboutPage = lazy(() =>
   import("@/pages/AboutPage").then((module) => ({ default: module.AboutPage })),
 );
+const AdvancedPage = lazy(() =>
+  import("@/pages/AdvancedPage").then((module) => ({ default: module.AdvancedPage })),
+);
 const AnalysisViewerPage = lazy(() =>
   import("@/pages/AnalysisViewerPage").then((module) => ({ default: module.AnalysisViewerPage })),
 );
@@ -46,6 +49,8 @@ export function AppRoutes() {
           <Route path="/" element={<Navigate to="/about" replace />} />
           <Route path="/health" element={<HealthPage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/advanced" element={<AdvancedPage />} />
+          <Route path="/advanced/rxmer" element={<AdvancedPage />} />
           <Route path="/endpoints" element={<Navigate to="/operations" replace />} />
           <Route path="/operations" element={<EndpointExplorerPage />} />
           <Route path="/operations/:operationId" element={<EndpointExplorerPage />} />

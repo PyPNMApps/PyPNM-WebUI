@@ -5,6 +5,7 @@
 The top navigation includes:
 - `Settings`
 - `Operations`
+- `Advanced`
 - `Files`
 - `Health`
 - `About`
@@ -46,6 +47,37 @@ All operation pages currently expose:
 - visible waiting indicator while data is being collected
 - right-aligned `Download JSON` action for the current response
 - bound visual below the form
+
+## Advanced
+
+The `Advanced` tab is the long-running multi-capture workflow area.
+
+Current first slice:
+
+- `RxMER`
+
+The Advanced RxMER workbench is state-machine driven and includes:
+
+- `Request`
+  - start a multi-capture operation
+- `Run`
+  - live status polling
+  - collected count
+  - time remaining
+  - stop control while capture is active
+- `Results`
+  - operation and group identifiers
+  - ZIP download for collected captures
+- `Analysis`
+  - run multiple analysis types against the same `operation_id`
+  - no need to restart capture for a different analysis type
+
+Current Advanced RxMER analysis types:
+
+- `Min / Avg / Max`
+- `Heat Map`
+- `Echo Detection 1`
+- `OFDM Profile Performance 1`
 
 ## Input Validation
 

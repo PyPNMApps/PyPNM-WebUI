@@ -52,6 +52,7 @@ Open:
 
 ## 5. Common first workflows
 
+- `Advanced -> RxMER` for stateful multi-capture, polling, stop, results ZIP, and reusable analysis
 - `PNM -> Spectrum Analyzer` for friendly, full-band, OFDM, and SCQAM capture flows
 - `Files` for stored capture search, hexdump, JSON inspection, and file analysis
 

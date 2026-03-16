@@ -1391,3 +1391,43 @@ pre {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.advanced-subnav {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.advanced-run-grid,
+.advanced-results-grid {
+  align-items: start;
+}
+
+.advanced-run-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.advanced-json-block {
+  margin: 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ink);
+  font-size: 12px;
+  line-height: 1.55;
+  overflow: auto;
+  font-family: "IBM Plex Mono", "Consolas", monospace;
+}
+
+.advanced-error-text,
+.field-error {
+  margin: 6px 0 0;
+  color: #ff8d9f;
+  font-size: 12px;
+}
