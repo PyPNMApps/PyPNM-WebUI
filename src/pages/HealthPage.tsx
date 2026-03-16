@@ -7,6 +7,32 @@ import { classifyHealthError, getHealth } from "@/services/healthService";
 
 const MAX_HEALTH_TIMEOUT_MS = 4000;
 
+function formatUptime(seconds: number | undefined): string {
+  if (typeof seconds !== "number" || !Number.isFinite(seconds)) {
+    return "n/a";
+  }
+
+  const days = Math.floor(seconds / 86_400);
+  const hours = Math.floor((seconds % 86_400) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+  const parts = [];
+
+  if (days > 0) parts.push(`${days}d`);
+  if (hours > 0 || parts.length) parts.push(`${hours}h`);
+  if (minutes > 0 || parts.length) parts.push(`${minutes}m`);
+  parts.push(`${remainingSeconds}s`);
+
+  return parts.join(" ");
+}
+
+function formatBytes(bytes: number | undefined): string {
+  if (typeof bytes !== "number" || !Number.isFinite(bytes)) {
+    return "n/a";
+  }
+  return bytes.toLocaleString();
+}
+
 export function HealthPage() {
   const { config, instances, selectedInstance } = useInstanceConfig();
   const healthTimeoutMs = Math.min(config?.defaults.requestTimeoutMs ?? MAX_HEALTH_TIMEOUT_MS, MAX_HEALTH_TIMEOUT_MS);
@@ -31,9 +57,11 @@ export function HealthPage() {
       isSelected: instance.id == selectedInstance?.id,
       status: query.isPending ? "loading" : errorState?.status ?? String(data?.status ?? "unknown"),
       message: errorState?.message ?? data?.message ?? "n/a",
-      service: data?.output?.service ?? "n/a",
-      version: data?.output?.version ?? "n/a",
-      timestamp: data?.timestamp ?? "n/a",
+      service: data?.service?.name ?? "n/a",
+      version: data?.service?.version ?? "n/a",
+      uptime: formatUptime(data?.uptime?.uptime),
+      dataPath: data?.data?.path ?? "n/a",
+      dataSize: formatBytes(data?.data?.size_bytes),
     };
   });
 
@@ -56,7 +84,9 @@ export function HealthPage() {
                 <th>Message</th>
                 <th>Service</th>
                 <th>Version</th>
-                <th>Timestamp</th>
+                <th>Uptime</th>
+                <th>Data Path</th>
+                <th>Data Size</th>
               </tr>
             </thead>
             <tbody>
@@ -70,7 +100,9 @@ export function HealthPage() {
                   <td>{row.message}</td>
                   <td>{row.service}</td>
                   <td>{row.version}</td>
-                  <td className="mono">{row.timestamp}</td>
+                  <td className="mono">{row.uptime}</td>
+                  <td className="mono">{row.dataPath}</td>
+                  <td className="mono">{row.dataSize}</td>
                 </tr>
               ))}
             </tbody>

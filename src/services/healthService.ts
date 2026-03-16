@@ -1,5 +1,5 @@
 import { requestWithBaseUrl } from "@/services/http";
-import type { ApiEnvelope, HealthOutput } from "@/types/api";
+import type { HealthResponse } from "@/types/api";
 
 const DEFAULT_HEALTH_TIMEOUT_MS = 4000;
 
@@ -24,8 +24,8 @@ export async function getHealth(
   baseUrl: string,
   healthPath = "/health",
   timeoutMs = DEFAULT_HEALTH_TIMEOUT_MS,
-): Promise<ApiEnvelope<HealthOutput>> {
-  const response = await requestWithBaseUrl<ApiEnvelope<HealthOutput>>(baseUrl, {
+): Promise<HealthResponse> {
+  const response = await requestWithBaseUrl<HealthResponse>(baseUrl, {
     method: "GET",
     timeout: timeoutMs,
     url: healthPath,

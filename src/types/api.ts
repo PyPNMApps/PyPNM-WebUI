@@ -7,10 +7,28 @@ export interface ApiEnvelope<T> {
   output?: T;
 }
 
-export interface HealthOutput {
-  service?: string;
+export interface HealthServiceInfo {
+  name?: string;
   version?: string;
-  uptime_seconds?: number;
+}
+
+export interface HealthUptimeInfo {
+  starttime?: number;
+  uptime?: number;
+}
+
+export interface HealthDataInfo {
+  path?: string;
+  size_bytes?: number;
+  directories?: Record<string, number>;
+}
+
+export interface HealthResponse {
+  status?: ApiStatus | string;
+  message?: string;
+  service?: HealthServiceInfo;
+  uptime?: HealthUptimeInfo;
+  data?: HealthDataInfo;
 }
 
 export interface EndpointDescriptor {
