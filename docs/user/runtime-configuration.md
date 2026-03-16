@@ -40,6 +40,7 @@ What it edits:
 
 - runtime instance entries
 - `defaults.selected_instance`
+- `defaults.logging.level`
 - per-instance `request_defaults`
 
 Behavior:
@@ -55,7 +56,7 @@ Behavior:
 - the UI starts on the instance named by `defaults.selected_instance`
 - the selected instance overrides `VITE_PYPNM_API_BASE_URL`
 - `VITE_PYPNM_API_BASE_URL` remains the fallback when the YAML file is missing
-- use the `PyPNM Target` dropdown to switch between configured PyPNM instances at runtime
+- use the `PyPNM Agent` dropdown to switch between configured PyPNM instances at runtime
 
 ## Per-Agent Request Defaults
 
@@ -74,6 +75,10 @@ Those values live under each instance entry as `request_defaults`.
 Example:
 
 ```yaml
+defaults:
+  logging:
+    level: INFO
+
 instances:
   - id: lab-local
     label: Lab Local

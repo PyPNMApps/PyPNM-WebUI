@@ -13,6 +13,9 @@ const DEFAULT_CONFIG = {
     poll_interval_ms: 5000,
     request_timeout_ms: 30000,
     health_path: "/health",
+    logging: {
+      level: "INFO",
+    },
   },
   instances: [
     {
@@ -45,6 +48,23 @@ const DEFAULT_CONFIG = {
     },
   ],
 };
+
+function normalizeLogLevel(value) {
+  switch (typeof value === "string" ? value.trim().toUpperCase() : "") {
+    case "DEBUG":
+      return "DEBUG";
+    case "WARN":
+    case "WARNING":
+      return "WARN";
+    case "ERROR":
+      return "ERROR";
+    case "OFF":
+      return "OFF";
+    case "INFO":
+    default:
+      return "INFO";
+  }
+}
 
 function interactiveAllowed() {
   if (process.env.CI || process.env.GITHUB_ACTIONS) {
@@ -148,6 +168,9 @@ export function normalizeConfig(raw) {
       typeof raw?.defaults?.health_path === "string" && raw.defaults.health_path.trim() !== ""
         ? raw.defaults.health_path.trim()
         : base.defaults.health_path,
+    logging: {
+      level: normalizeLogLevel(raw?.defaults?.logging?.level ?? base.defaults.logging.level),
+    },
   };
 
   const instances = Array.isArray(raw?.instances) && raw.instances.length > 0
@@ -293,6 +316,8 @@ async function editRuntimeDefaults(rl, config) {
   config.defaults.poll_interval_ms = await promptNumber(rl, "Default poll interval ms", config.defaults.poll_interval_ms);
   config.defaults.request_timeout_ms = await promptNumber(rl, "Request timeout ms", config.defaults.request_timeout_ms);
   config.defaults.health_path = await promptLine(rl, "Health path", config.defaults.health_path);
+  config.defaults.logging.level = await promptLine(rl, "Logging level (DEBUG/INFO/WARN/ERROR/OFF)", config.defaults.logging.level);
+  config.defaults.logging.level = normalizeLogLevel(config.defaults.logging.level);
   config.defaults.selected_instance = await promptSelectedInstance(rl, config.instances, config.defaults.selected_instance);
 }
 

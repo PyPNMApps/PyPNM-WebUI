@@ -4,18 +4,24 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 
 import { InstanceConfigProvider } from "@/app/InstanceConfigProvider";
+import { AppErrorBoundary } from "@/components/common/AppErrorBoundary";
+import { installGlobalLoggingHandlers } from "@/lib/logger";
 import { AppRoutes } from "./routes/AppRoutes";
 import { queryClient } from "./services/queryClient";
 import "./assets/styles.css";
 
+installGlobalLoggingHandlers();
+
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <InstanceConfigProvider>
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
-      </InstanceConfigProvider>
-    </QueryClientProvider>
+    <AppErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <InstanceConfigProvider>
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </InstanceConfigProvider>
+      </QueryClientProvider>
+    </AppErrorBoundary>
   </React.StrictMode>,
 );

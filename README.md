@@ -1,3 +1,12 @@
+<p align="center">
+  <a href="docs/index.md">
+    <picture>
+      <source srcset="docs/images/PyPNM-WebUI-dark.png" media="(prefers-color-scheme: dark)" />
+      <img src="docs/images/PyPNM-WebUI-light.png" alt="PyPNM WebUI" width="240" style="border-radius: 24px;" />
+    </picture>
+  </a>
+</p>
+
 # PyPNM-WebUI
 
 Frontend-only web client for PyPNM REST APIs.
@@ -77,3 +86,4 @@ npm run docs:serve
 - [Development Field Hints](docs/development/field-hints.md)
 - [Git Helpers](docs/development/git-helpers.md)
 - [Development Workflow](docs/development/workflow.md)
+- [Development Logging](docs/development/logging.md)

@@ -26,6 +26,7 @@ nav:
       - Release Workflow: user/release-workflow.md
   - Development:
       - Workflow: development/workflow.md
+      - Logging: development/logging.md
       - Git Helpers: development/git-helpers.md
       - Field Hints: development/field-hints.md
   - Reference:

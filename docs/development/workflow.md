@@ -22,6 +22,9 @@
 - `.venv/bin/python ./tools/release/test-runner.py` runs lint/test/build gates.
 - `.venv/bin/python ./tools/release/release.py` runs release checks, performs a default maintenance bump, then commits/tags/pushes unless overridden.
 
+## Development Logging
+- Use `docs/development/logging.md` for the custom client-to-file logging flow and log-level configuration.
+
 ## PR Guidance
 - Keep changes scoped to a single feature/module when possible.
 - Include screenshots for UI-impacting changes.

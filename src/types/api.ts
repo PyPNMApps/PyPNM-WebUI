@@ -1072,6 +1072,413 @@ export interface SingleSpectrumScqamCaptureResponse {
   };
 }
 
+export interface AdvancedMultiRxMerCaptureParameters {
+  measurement_duration: number;
+  sample_interval: number;
+}
+
+export interface AdvancedMultiRxMerMeasureConfig {
+  mode: number;
+}
+
+export interface AdvancedMultiRxMerRequest {
+  cable_modem: {
+    mac_address: string;
+    ip_address: string;
+    pnm_parameters: {
+      tftp: {
+        ipv4: string;
+        ipv6: string;
+      };
+      capture: {
+        channel_ids: number[];
+      };
+    };
+    snmp: {
+      snmpV2C: {
+        community: string;
+      };
+    };
+  };
+  capture: {
+    parameters: AdvancedMultiRxMerCaptureParameters;
+  };
+  measure: AdvancedMultiRxMerMeasureConfig;
+}
+
+export interface AdvancedMultiRxMerOperationStatus {
+  operation_id: string;
+  state: string;
+  collected: number;
+  time_remaining: number;
+  message?: string | null;
+}
+
+export interface AdvancedMultiRxMerStartResponse {
+  status?: number | string;
+  message?: string | null;
+  mac_address?: string;
+  system_description?: SingleRxMerSystemDescription;
+  group_id: string;
+  operation_id: string;
+}
+
+export interface AdvancedMultiRxMerStatusResponse {
+  status?: number | string;
+  message?: string | null;
+  mac_address?: string;
+  system_description?: SingleRxMerSystemDescription;
+  operation: AdvancedMultiRxMerOperationStatus;
+}
+
+export interface AdvancedMultiRxMerAnalysisRequest {
+  operation_id: string;
+  analysis: {
+    type: "min-avg-max" | "rxmer-heat-map" | "ofdm-profile-performance-1" | "echo-reflection-1";
+    output: {
+      type: "json";
+    };
+    plot: {
+      ui: {
+        theme: "dark";
+      };
+    };
+  };
+}
+
+export interface AdvancedMultiRxMerMinAvgMaxChannel {
+  channel_id: number;
+  frequency: number[];
+  min: number[];
+  avg: number[];
+  max: number[];
+}
+
+export interface AdvancedMultiRxMerHeatMapChannel {
+  channel_id: number;
+  frequency: number[];
+  timestamps: number[];
+  values: number[][];
+}
+
+export interface AdvancedMultiRxMerEchoChannel {
+  channel_id: number;
+  rxmer?: {
+    frequency?: number[];
+    avg?: number[];
+    avg_preprocessed?: number[];
+  };
+  echo_report?: Record<string, unknown>;
+}
+
+export interface AdvancedMultiRxMerOfdmProfileChannel {
+  channel_id: number;
+  frequency: number[];
+  avg_mer: number[];
+  mer_shannon_limits: number[];
+  profiles: Array<Record<string, unknown>>;
+}
+
+export interface AdvancedMultiRxMerAnalysisResponse {
+  status?: number | string;
+  message?: string | null;
+  mac_address?: string;
+  system_description?: SingleRxMerSystemDescription;
+  device?: {
+    mac_address?: string;
+    system_description?: SingleRxMerSystemDescription;
+  };
+  data?: Record<string, AdvancedMultiRxMerMinAvgMaxChannel | AdvancedMultiRxMerHeatMapChannel | AdvancedMultiRxMerEchoChannel | AdvancedMultiRxMerOfdmProfileChannel>;
+}
+
+export interface AdvancedMultiChanEstRequest {
+  cable_modem: {
+    mac_address: string;
+    ip_address: string;
+    pnm_parameters: {
+      tftp: {
+        ipv4: string;
+        ipv6: string;
+      };
+      capture: {
+        channel_ids: number[];
+      };
+    };
+    snmp: {
+      snmpV2C: {
+        community: string;
+      };
+    };
+  };
+  capture: {
+    parameters: {
+      measurement_duration: number;
+      sample_interval: number;
+    };
+  };
+  measure: {
+    mode: 0;
+  };
+}
+
+export interface AdvancedMultiChanEstOperationStatus {
+  operation_id: string;
+  state: string;
+  collected: number;
+  time_remaining: number;
+  message?: string | null;
+}
+
+export interface AdvancedMultiChanEstStartResponse {
+  status?: number | string;
+  message?: string | null;
+  mac_address?: string;
+  system_description?: SingleRxMerSystemDescription;
+  group_id: string;
+  operation_id: string;
+}
+
+export interface AdvancedMultiChanEstStatusResponse {
+  status?: number | string;
+  message?: string | null;
+  mac_address?: string;
+  system_description?: SingleRxMerSystemDescription;
+  operation: AdvancedMultiChanEstOperationStatus;
+}
+
+export interface AdvancedMultiChanEstAnalysisRequest {
+  operation_id: string;
+  analysis: {
+    type: "min-avg-max" | "group-delay" | "lte-detection-phase-slope" | "echo-detection-ifft";
+    output: {
+      type: "json";
+    };
+    plot: {
+      ui: {
+        theme: "dark";
+      };
+    };
+  };
+}
+
+export interface AdvancedMultiChanEstMinAvgMaxResult {
+  channel_id: number;
+  frequency: number[];
+  min: number[];
+  avg: number[];
+  max: number[];
+}
+
+export interface AdvancedMultiChanEstGroupDelayResult {
+  channel_id: number;
+  frequency: number[];
+  group_delay_us: number[];
+}
+
+export interface AdvancedMultiChanEstLteDetectionResult {
+  channel_id: number;
+  anomalies: number[];
+  threshold: number;
+  bin_widths: number[];
+}
+
+export interface AdvancedMultiChanEstEchoDetectionResult {
+  channel_id: number;
+  dataset_info?: {
+    subcarriers?: number;
+    snapshots?: number;
+  };
+  sample_rate_hz?: number;
+  complex_unit?: string;
+  cable_type?: string;
+  velocity_factor?: number;
+  prop_speed_mps?: number;
+  direct_path?: {
+    bin_index?: number;
+    time_s?: number;
+    amplitude?: number;
+    distance_m?: number;
+    distance_ft?: number;
+  };
+  echoes?: Array<{
+    bin_index?: number;
+    time_s?: number;
+    amplitude?: number;
+    distance_m?: number;
+    distance_ft?: number;
+  }>;
+  threshold_frac?: number;
+  guard_bins?: number;
+  min_separation_s?: number | null;
+  max_delay_s?: number | null;
+  max_peaks?: number;
+  time_response?: {
+    n_fft?: number;
+    time_axis_s?: number[];
+    time_response?: number[];
+  };
+}
+
+export interface AdvancedMultiChanEstAnalysisResponse {
+  status?: number | string;
+  message?: string | null;
+  mac_address?: string;
+  system_description?: SingleRxMerSystemDescription;
+  device?: {
+    mac_address?: string;
+    system_description?: SingleRxMerSystemDescription;
+  };
+  data?: {
+    analysis_type?: string;
+    results?: Array<
+      AdvancedMultiChanEstMinAvgMaxResult |
+      AdvancedMultiChanEstGroupDelayResult |
+      AdvancedMultiChanEstLteDetectionResult |
+      AdvancedMultiChanEstEchoDetectionResult
+    >;
+  };
+}
+
+export interface AdvancedMultiUsOfdmaPreEqRequest {
+  cable_modem: {
+    mac_address: string;
+    ip_address: string;
+    pnm_parameters: {
+      tftp: {
+        ipv4: string;
+        ipv6: string;
+      };
+      capture: {
+        channel_ids: number[];
+      };
+    };
+    snmp: {
+      snmpV2C: {
+        community: string;
+      };
+    };
+  };
+  capture: {
+    parameters: {
+      measurement_duration: number;
+      sample_interval: number;
+    };
+  };
+  measure: {
+    mode: 0;
+  };
+}
+
+export interface AdvancedMultiUsOfdmaPreEqOperationStatus {
+  operation_id: string;
+  state: string;
+  collected: number;
+  time_remaining: number;
+  message?: string | null;
+}
+
+export interface AdvancedMultiUsOfdmaPreEqStartResponse {
+  status?: number | string;
+  message?: string | null;
+  mac_address?: string;
+  system_description?: SingleRxMerSystemDescription;
+  group_id: string;
+  operation_id: string;
+}
+
+export interface AdvancedMultiUsOfdmaPreEqStatusResponse {
+  status?: number | string;
+  message?: string | null;
+  mac_address?: string;
+  system_description?: SingleRxMerSystemDescription;
+  operation: AdvancedMultiUsOfdmaPreEqOperationStatus;
+}
+
+export interface AdvancedMultiUsOfdmaPreEqAnalysisRequest {
+  operation_id: string;
+  analysis: {
+    type: "min-avg-max" | "group-delay" | "echo-detection-ifft";
+    output: {
+      type: "json";
+    };
+    plot: {
+      ui: {
+        theme: "dark";
+      };
+    };
+  };
+}
+
+export interface AdvancedMultiUsOfdmaPreEqMinAvgMaxResult {
+  channel_id: number;
+  frequency: number[];
+  min: number[];
+  avg: number[];
+  max: number[];
+}
+
+export interface AdvancedMultiUsOfdmaPreEqGroupDelayResult {
+  channel_id: number;
+  frequency: number[];
+  group_delay_us: number[];
+}
+
+export interface AdvancedMultiUsOfdmaPreEqEchoDetectionResult {
+  channel_id: number;
+  dataset_info?: {
+    subcarriers?: number;
+    snapshots?: number;
+  };
+  sample_rate_hz?: number;
+  complex_unit?: string;
+  cable_type?: string;
+  velocity_factor?: number;
+  prop_speed_mps?: number;
+  direct_path?: {
+    bin_index?: number;
+    time_s?: number;
+    amplitude?: number;
+    distance_m?: number;
+    distance_ft?: number;
+  };
+  echoes?: Array<{
+    bin_index?: number;
+    time_s?: number;
+    amplitude?: number;
+    distance_m?: number;
+    distance_ft?: number;
+  }>;
+  threshold_frac?: number;
+  guard_bins?: number;
+  min_separation_s?: number | null;
+  max_delay_s?: number | null;
+  max_peaks?: number;
+  time_response?: {
+    n_fft?: number;
+    time_axis_s?: number[];
+    time_response?: number[];
+  };
+}
+
+export interface AdvancedMultiUsOfdmaPreEqAnalysisResponse {
+  status?: number | string;
+  message?: string | null;
+  mac_address?: string;
+  system_description?: SingleRxMerSystemDescription;
+  device?: {
+    mac_address?: string;
+    system_description?: SingleRxMerSystemDescription;
+  };
+  data?: {
+    analysis_type?: string;
+    results?: Array<
+      AdvancedMultiUsOfdmaPreEqMinAvgMaxResult |
+      AdvancedMultiUsOfdmaPreEqGroupDelayResult |
+      AdvancedMultiUsOfdmaPreEqEchoDetectionResult
+    >;
+  };
+}
+
 export interface SingleFecSummaryCodewords {
   timestamps: number[];
   total_codewords: number[];

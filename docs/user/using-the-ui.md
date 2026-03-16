@@ -5,11 +5,12 @@
 The top navigation includes:
 - `Settings`
 - `Operations`
+- `Advanced`
 - `Files`
 - `Health`
 - `About`
 
-The top bar also includes the `PyPNM Target` dropdown sourced from:
+The top bar also includes the `PyPNM Agent` dropdown sourced from:
 
 - `public/config/pypnm-instances.yaml`
 - `public/config/pypnm-instances.local.yaml`
@@ -46,6 +47,52 @@ All operation pages currently expose:
 - visible waiting indicator while data is being collected
 - right-aligned `Download JSON` action for the current response
 - bound visual below the form
+
+## Advanced
+
+The `Advanced` tab is the long-running multi-capture workflow area.
+
+Current workflows:
+
+- `RxMER`
+- `Channel Estimation`
+- `OFDMA PreEq`
+
+Each Advanced workbench includes:
+
+- `Request`
+  - start a multi-capture operation
+- `Run`
+  - live status polling
+  - collected count
+  - time remaining
+  - stop control while capture is active
+- `Results`
+  - operation and group identifiers
+  - ZIP download for collected captures
+- `Analysis`
+  - run multiple analysis types against the same `operation_id`
+  - no need to restart capture for a different analysis type
+
+Advanced RxMER analysis types:
+
+- `Min / Avg / Max`
+- `Heat Map`
+- `Echo Detection 1`
+- `OFDM Profile Performance 1`
+
+Advanced Channel Estimation analysis types:
+
+- `Min / Avg / Max`
+- `Group Delay`
+- `LTE Detection Phase Slope`
+- `Echo Detection IFFT`
+
+Advanced OFDMA PreEq analysis types:
+
+- `Min / Avg / Max`
+- `Group Delay`
+- `Echo Detection IFFT`
 
 ## Input Validation
 
@@ -91,7 +138,7 @@ capture visuals where available.
    - confirm API status and metadata for all configured agents.
 2. `Operations`
    - choose the endpoint visual you want to run from the operations menu.
-3. `PyPNM Target`
+3. `PyPNM Agent`
    - switch to the correct configured backend instance for that operation.
 4. request form
    - confirm the prefilled per-instance MAC, IP, TFTP, and SNMP defaults before running.

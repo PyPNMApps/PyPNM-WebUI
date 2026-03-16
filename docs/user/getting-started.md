@@ -44,7 +44,7 @@ Open:
 
 ## 4. First checks
 
-- Use the top-bar `PyPNM Target` dropdown to confirm the active instance from the runtime YAML config.
+- Use the top-bar `PyPNM Agent` dropdown to confirm the active instance from the runtime YAML config.
 - Open `Health` page and verify backend connectivity.
 - Open `Operations` and confirm the capture pages are using the selected
   instance defaults.
@@ -52,6 +52,7 @@ Open:
 
 ## 5. Common first workflows
 
+- `Advanced -> RxMER`, `Channel Estimation`, or `OFDMA PreEq` for stateful multi-capture, polling, stop, results ZIP, and reusable analysis
 - `PNM -> Spectrum Analyzer` for friendly, full-band, OFDM, and SCQAM capture flows
 - `Files` for stored capture search, hexdump, JSON inspection, and file analysis
 

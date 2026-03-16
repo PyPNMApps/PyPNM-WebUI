@@ -3,6 +3,12 @@ export interface InstancePollingConfig {
   intervalMs: number;
 }
 
+export type PypnmLogLevel = "DEBUG" | "INFO" | "WARN" | "ERROR" | "OFF";
+
+export interface PypnmLoggingConfig {
+  level: PypnmLogLevel;
+}
+
 export interface PypnmRequestDefaults {
   cableModemMacAddress: string;
   cableModemIpAddress: string;
@@ -28,6 +34,7 @@ export interface PypnmInstanceDefaults {
   pollIntervalMs: number;
   requestTimeoutMs: number;
   healthPath: string;
+  logging: PypnmLoggingConfig;
 }
 
 export interface PypnmInstanceConfig {
