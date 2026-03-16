@@ -8,6 +8,9 @@ export interface AdvancedOperationStatusSummary {
   collected: number;
   timeRemaining: number;
   message?: string | null;
+  macAddress?: string | null;
+  model?: string | null;
+  vendor?: string | null;
 }
 
 interface UseAdvancedOperationMachineOptions<TStartResponse, TStatusResponse> {

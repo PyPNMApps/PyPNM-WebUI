@@ -142,6 +142,17 @@ interface AdvancedOfdmaPreEqAnalysisFormValues {
   analysisType: AdvancedOfdmaPreEqAnalysisType;
 }
 
+interface AdvancedOperationHistoryEntry {
+  operationId: string;
+  createdAt: number;
+  macAddress?: string;
+  model?: string;
+  vendor?: string;
+  agentLabel?: string;
+}
+
+type AdvancedOperationHistorySort = "latest" | "model";
+
 function downloadJson(filename: string, payload: unknown) {
   const blob = new Blob([`${JSON.stringify(payload, null, 2)}\n`], { type: "application/json" });
   const url = URL.createObjectURL(blob);
@@ -156,6 +167,92 @@ function downloadJson(filename: string, payload: unknown) {
 
 function buildAdvancedJsonFilename(analysisType: string, operationId: string) {
   return `advanced-rxmer-${analysisType}-${operationId}.json`;
+}
+
+function operationHistoryStorageKey(workflow: string) {
+  return `pypnm-webui:advanced:${workflow}:operations`;
+}
+
+function readOperationHistory(workflow: string): AdvancedOperationHistoryEntry[] {
+  if (typeof window === "undefined") {
+    return [];
+  }
+
+  try {
+    const raw = window.localStorage.getItem(operationHistoryStorageKey(workflow));
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as AdvancedOperationHistoryEntry[];
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((entry) => entry && typeof entry.operationId === "string" && entry.operationId.trim())
+      .map((entry) => ({
+        operationId: entry.operationId.trim(),
+        createdAt: typeof entry.createdAt === "number" ? entry.createdAt : 0,
+        macAddress: typeof entry.macAddress === "string" && entry.macAddress.trim() ? entry.macAddress.trim() : undefined,
+        model: typeof entry.model === "string" && entry.model.trim() ? entry.model.trim() : undefined,
+        vendor: typeof entry.vendor === "string" && entry.vendor.trim() ? entry.vendor.trim() : undefined,
+        agentLabel: typeof entry.agentLabel === "string" && entry.agentLabel.trim() ? entry.agentLabel.trim() : undefined,
+      }))
+      .sort((left, right) => right.createdAt - left.createdAt);
+  } catch {
+    return [];
+  }
+}
+
+function writeOperationHistory(
+  workflow: string,
+  entry: {
+    operationId: string;
+    macAddress?: string;
+    model?: string;
+    vendor?: string;
+    agentLabel?: string;
+  },
+) {
+  if (typeof window === "undefined" || !entry.operationId.trim()) {
+    return;
+  }
+
+  const operationId = entry.operationId.trim();
+  const existing = readOperationHistory(workflow).find((historyEntry) => historyEntry.operationId === operationId);
+  const nextEntry: AdvancedOperationHistoryEntry = {
+    operationId,
+    createdAt: existing?.createdAt ?? Date.now(),
+    macAddress: entry.macAddress?.trim() || existing?.macAddress,
+    model: entry.model?.trim() || existing?.model,
+    vendor: entry.vendor?.trim() || existing?.vendor,
+    agentLabel: entry.agentLabel?.trim() || existing?.agentLabel,
+  };
+  const deduped = [nextEntry, ...readOperationHistory(workflow).filter((historyEntry) => historyEntry.operationId !== operationId)]
+    .sort((left, right) => right.createdAt - left.createdAt)
+    .slice(0, 20);
+  window.localStorage.setItem(operationHistoryStorageKey(workflow), JSON.stringify(deduped));
+}
+
+function formatOperationHistoryLabel(entry: AdvancedOperationHistoryEntry) {
+  const identity = [
+    entry.model,
+    entry.macAddress,
+    entry.vendor,
+  ].filter(Boolean).join(" · ");
+  const timestamp = new Date(entry.createdAt).toLocaleString();
+  return [identity || null, entry.operationId, timestamp].filter(Boolean).join(" | ");
+}
+
+function sortOperationHistory(entries: AdvancedOperationHistoryEntry[], sortMode: AdvancedOperationHistorySort) {
+  const next = [...entries];
+  if (sortMode === "model") {
+    next.sort((left, right) => {
+      const leftModel = left.model?.toLowerCase() ?? "";
+      const rightModel = right.model?.toLowerCase() ?? "";
+      const byModel = leftModel.localeCompare(rightModel);
+      if (byModel !== 0) return byModel;
+      return right.createdAt - left.createdAt;
+    });
+    return next;
+  }
+  next.sort((left, right) => right.createdAt - left.createdAt);
+  return next;
 }
 
 function buildMinAvgMaxSeries(channel: {
@@ -269,6 +366,8 @@ function AdvancedRxMerWorkbench() {
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [isRunningAnalysis, setIsRunningAnalysis] = useState(false);
   const [manualOperationId, setManualOperationId] = useState("");
+  const [operationHistory, setOperationHistory] = useState<AdvancedOperationHistoryEntry[]>(() => readOperationHistory("rxmer"));
+  const [operationHistorySort, setOperationHistorySort] = useState<AdvancedOperationHistorySort>("latest");
 
   useEffect(() => {
     requestForm.reset((current) => ({
@@ -290,6 +389,9 @@ function AdvancedRxMerWorkbench() {
       collected: response.operation.collected,
       timeRemaining: response.operation.time_remaining,
       message: response.operation.message ?? response.message,
+      macAddress: response.mac_address ?? null,
+      model: response.system_description?.MODEL ?? null,
+      vendor: response.system_description?.VENDOR ?? null,
     }),
     startOperation: async () => {
       const values = requestForm.getValues();
@@ -322,10 +424,26 @@ function AdvancedRxMerWorkbench() {
   useEffect(() => {
     if (machine.operationId) {
       setManualOperationId(machine.operationId);
+      writeOperationHistory("rxmer", {
+        operationId: machine.operationId,
+        macAddress: machine.statusSummary?.macAddress ?? requestForm.getValues().macAddress,
+        model: machine.statusSummary?.model ?? undefined,
+        vendor: machine.statusSummary?.vendor ?? undefined,
+        agentLabel: selectedInstance?.label,
+      });
+      setOperationHistory(readOperationHistory("rxmer"));
     }
-  }, [machine.operationId]);
+  }, [
+    machine.operationId,
+    machine.statusSummary?.macAddress,
+    machine.statusSummary?.model,
+    machine.statusSummary?.vendor,
+    requestForm,
+    selectedInstance?.label,
+  ]);
 
   const effectiveOperationId = machine.hasOperation ? machine.operationId ?? "" : manualOperationId.trim();
+  const visibleOperationHistory = sortOperationHistory(operationHistory, operationHistorySort);
 
   const runAnalysis = async () => {
     if (!effectiveOperationId || !selectedInstance?.baseUrl) return;
@@ -439,6 +557,39 @@ function AdvancedRxMerWorkbench() {
 
       <Panel title="Results">
         <div className="grid two advanced-results-grid">
+          <div className="field">
+            <FieldLabel htmlFor="advancedRxmerRecentOperationId">Recent Operations</FieldLabel>
+            <select
+              id="advancedRxmerRecentOperationId"
+              className="advanced-results-select"
+              value={machine.hasOperation ? machine.operationId ?? "" : ""}
+              onChange={(event) => {
+                const value = event.target.value;
+                if (value) {
+                  setManualOperationId(value);
+                }
+              }}
+              disabled={machine.hasOperation || !operationHistory.length}
+            >
+              <option value="">{operationHistory.length ? "Select an operation id" : "No saved operations"}</option>
+              {visibleOperationHistory.map((entry) => (
+                <option key={entry.operationId} value={entry.operationId}>{formatOperationHistoryLabel(entry)}</option>
+              ))}
+            </select>
+          </div>
+          <div className="field">
+            <FieldLabel htmlFor="advancedRxmerOperationSort">Sort Recent Operations</FieldLabel>
+            <select
+              id="advancedRxmerOperationSort"
+              className="advanced-results-select"
+              value={operationHistorySort}
+              onChange={(event) => setOperationHistorySort(event.target.value as AdvancedOperationHistorySort)}
+              disabled={machine.hasOperation || !operationHistory.length}
+            >
+              <option value="latest">Latest First</option>
+              <option value="model">Model</option>
+            </select>
+          </div>
           <div className="field">
             <FieldLabel htmlFor="advancedRxmerOperationId" hint={requestFieldHints.operation_id}>Operation ID</FieldLabel>
             <input
@@ -559,6 +710,8 @@ function AdvancedChannelEstimationWorkbench() {
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [isRunningAnalysis, setIsRunningAnalysis] = useState(false);
   const [manualOperationId, setManualOperationId] = useState("");
+  const [operationHistory, setOperationHistory] = useState<AdvancedOperationHistoryEntry[]>(() => readOperationHistory("channel-estimation"));
+  const [operationHistorySort, setOperationHistorySort] = useState<AdvancedOperationHistorySort>("latest");
 
   useEffect(() => {
     requestForm.reset((current) => ({
@@ -580,6 +733,9 @@ function AdvancedChannelEstimationWorkbench() {
       collected: response.operation.collected,
       timeRemaining: response.operation.time_remaining,
       message: response.operation.message ?? response.message,
+      macAddress: response.mac_address ?? null,
+      model: response.system_description?.MODEL ?? null,
+      vendor: response.system_description?.VENDOR ?? null,
     }),
     startOperation: async () => {
       const values = requestForm.getValues();
@@ -612,10 +768,26 @@ function AdvancedChannelEstimationWorkbench() {
   useEffect(() => {
     if (machine.operationId) {
       setManualOperationId(machine.operationId);
+      writeOperationHistory("channel-estimation", {
+        operationId: machine.operationId,
+        macAddress: machine.statusSummary?.macAddress ?? requestForm.getValues().macAddress,
+        model: machine.statusSummary?.model ?? undefined,
+        vendor: machine.statusSummary?.vendor ?? undefined,
+        agentLabel: selectedInstance?.label,
+      });
+      setOperationHistory(readOperationHistory("channel-estimation"));
     }
-  }, [machine.operationId]);
+  }, [
+    machine.operationId,
+    machine.statusSummary?.macAddress,
+    machine.statusSummary?.model,
+    machine.statusSummary?.vendor,
+    requestForm,
+    selectedInstance?.label,
+  ]);
 
   const effectiveOperationId = machine.hasOperation ? machine.operationId ?? "" : manualOperationId.trim();
+  const visibleOperationHistory = sortOperationHistory(operationHistory, operationHistorySort);
 
   const runAnalysis = async () => {
     if (!effectiveOperationId || !selectedInstance?.baseUrl) return;
@@ -722,6 +894,39 @@ function AdvancedChannelEstimationWorkbench() {
 
       <Panel title="Results">
         <div className="grid two advanced-results-grid">
+          <div className="field">
+            <FieldLabel htmlFor="advancedChanEstRecentOperationId">Recent Operations</FieldLabel>
+            <select
+              id="advancedChanEstRecentOperationId"
+              className="advanced-results-select"
+              value={machine.hasOperation ? machine.operationId ?? "" : ""}
+              onChange={(event) => {
+                const value = event.target.value;
+                if (value) {
+                  setManualOperationId(value);
+                }
+              }}
+              disabled={machine.hasOperation || !operationHistory.length}
+            >
+              <option value="">{operationHistory.length ? "Select an operation id" : "No saved operations"}</option>
+              {visibleOperationHistory.map((entry) => (
+                <option key={entry.operationId} value={entry.operationId}>{formatOperationHistoryLabel(entry)}</option>
+              ))}
+            </select>
+          </div>
+          <div className="field">
+            <FieldLabel htmlFor="advancedChanEstOperationSort">Sort Recent Operations</FieldLabel>
+            <select
+              id="advancedChanEstOperationSort"
+              className="advanced-results-select"
+              value={operationHistorySort}
+              onChange={(event) => setOperationHistorySort(event.target.value as AdvancedOperationHistorySort)}
+              disabled={machine.hasOperation || !operationHistory.length}
+            >
+              <option value="latest">Latest First</option>
+              <option value="model">Model</option>
+            </select>
+          </div>
           <div className="field">
             <FieldLabel htmlFor="advancedChanEstOperationId" hint={requestFieldHints.operation_id}>Operation ID</FieldLabel>
             <input
@@ -840,6 +1045,8 @@ function AdvancedOfdmaPreEqWorkbench() {
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [isRunningAnalysis, setIsRunningAnalysis] = useState(false);
   const [manualOperationId, setManualOperationId] = useState("");
+  const [operationHistory, setOperationHistory] = useState<AdvancedOperationHistoryEntry[]>(() => readOperationHistory("ofdma-pre-eq"));
+  const [operationHistorySort, setOperationHistorySort] = useState<AdvancedOperationHistorySort>("latest");
 
   useEffect(() => {
     requestForm.reset((current) => ({
@@ -861,6 +1068,9 @@ function AdvancedOfdmaPreEqWorkbench() {
       collected: response.operation.collected,
       timeRemaining: response.operation.time_remaining,
       message: response.operation.message ?? response.message,
+      macAddress: response.mac_address ?? null,
+      model: response.system_description?.MODEL ?? null,
+      vendor: response.system_description?.VENDOR ?? null,
     }),
     startOperation: async () => {
       const values = requestForm.getValues();
@@ -893,10 +1103,26 @@ function AdvancedOfdmaPreEqWorkbench() {
   useEffect(() => {
     if (machine.operationId) {
       setManualOperationId(machine.operationId);
+      writeOperationHistory("ofdma-pre-eq", {
+        operationId: machine.operationId,
+        macAddress: machine.statusSummary?.macAddress ?? requestForm.getValues().macAddress,
+        model: machine.statusSummary?.model ?? undefined,
+        vendor: machine.statusSummary?.vendor ?? undefined,
+        agentLabel: selectedInstance?.label,
+      });
+      setOperationHistory(readOperationHistory("ofdma-pre-eq"));
     }
-  }, [machine.operationId]);
+  }, [
+    machine.operationId,
+    machine.statusSummary?.macAddress,
+    machine.statusSummary?.model,
+    machine.statusSummary?.vendor,
+    requestForm,
+    selectedInstance?.label,
+  ]);
 
   const effectiveOperationId = machine.hasOperation ? machine.operationId ?? "" : manualOperationId.trim();
+  const visibleOperationHistory = sortOperationHistory(operationHistory, operationHistorySort);
 
   const runAnalysis = async () => {
     if (!effectiveOperationId || !selectedInstance?.baseUrl) return;
@@ -1003,6 +1229,39 @@ function AdvancedOfdmaPreEqWorkbench() {
 
       <Panel title="Results">
         <div className="grid two advanced-results-grid">
+          <div className="field">
+            <FieldLabel htmlFor="advancedOfdmaPreEqRecentOperationId">Recent Operations</FieldLabel>
+            <select
+              id="advancedOfdmaPreEqRecentOperationId"
+              className="advanced-results-select"
+              value={machine.hasOperation ? machine.operationId ?? "" : ""}
+              onChange={(event) => {
+                const value = event.target.value;
+                if (value) {
+                  setManualOperationId(value);
+                }
+              }}
+              disabled={machine.hasOperation || !operationHistory.length}
+            >
+              <option value="">{operationHistory.length ? "Select an operation id" : "No saved operations"}</option>
+              {visibleOperationHistory.map((entry) => (
+                <option key={entry.operationId} value={entry.operationId}>{formatOperationHistoryLabel(entry)}</option>
+              ))}
+            </select>
+          </div>
+          <div className="field">
+            <FieldLabel htmlFor="advancedOfdmaPreEqOperationSort">Sort Recent Operations</FieldLabel>
+            <select
+              id="advancedOfdmaPreEqOperationSort"
+              className="advanced-results-select"
+              value={operationHistorySort}
+              onChange={(event) => setOperationHistorySort(event.target.value as AdvancedOperationHistorySort)}
+              disabled={machine.hasOperation || !operationHistory.length}
+            >
+              <option value="latest">Latest First</option>
+              <option value="model">Model</option>
+            </select>
+          </div>
           <div className="field">
             <FieldLabel htmlFor="advancedOfdmaPreEqOperationId" hint={requestFieldHints.operation_id}>Operation ID</FieldLabel>
             <input
