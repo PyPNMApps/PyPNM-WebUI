@@ -12,21 +12,7 @@ const links = [
 ] as const;
 
 function PyPnmWebUiIcon() {
-  return (
-    <svg viewBox="0 0 64 64" aria-hidden="true" className="top-nav-brand-icon">
-      <defs>
-        <linearGradient id="pypnm-webui-icon-fill" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#79a9ff" />
-          <stop offset="100%" stopColor="#58d0a7" />
-        </linearGradient>
-      </defs>
-      <rect x="6" y="6" width="52" height="52" rx="14" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.12)" />
-      <path
-        d="M18 43V21h8.5c4.4 0 7 2.3 7 6.1 0 3.9-2.6 6.3-7 6.3H23v9.6zm5-13.7h3.2c1.8 0 2.8-.8 2.8-2.3 0-1.4-1-2.1-2.8-2.1H23zm15 13.7V21h4.9l7.1 12.7V21h4.5v22h-4.7l-7.3-13V43z"
-        fill="url(#pypnm-webui-icon-fill)"
-      />
-    </svg>
-  );
+  return <img src="/images/PyPNM-WebUI-favicon.ico" alt="" aria-hidden="true" className="top-nav-brand-icon" />;
 }
 
 export function AppTopNav() {

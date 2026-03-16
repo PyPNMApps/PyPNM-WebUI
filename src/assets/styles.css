@@ -72,11 +72,12 @@ a {
   height: 42px;
   flex: 0 0 auto;
   display: block;
+  border-radius: 10px;
 }
 
-.top-nav-brand:hover .top-nav-brand-icon rect,
-.top-nav-brand:focus-visible .top-nav-brand-icon rect {
-  stroke: rgba(121, 169, 255, 0.35);
+.top-nav-brand:hover .top-nav-brand-icon,
+.top-nav-brand:focus-visible .top-nav-brand-icon {
+  box-shadow: 0 0 0 1px rgba(121, 169, 255, 0.35);
 }
 
 .instance-selector {
@@ -1423,6 +1424,29 @@ pre {
   line-height: 1.55;
   overflow: auto;
   font-family: "IBM Plex Mono", "Consolas", monospace;
+}
+
+.advanced-heatmap-shell {
+  display: grid;
+  gap: 14px;
+}
+
+.advanced-heatmap-grid {
+  display: grid;
+  gap: 2px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  overflow-x: auto;
+}
+
+.advanced-heatmap-cell {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 2px;
+  min-width: 0;
 }
 
 .advanced-error-text,

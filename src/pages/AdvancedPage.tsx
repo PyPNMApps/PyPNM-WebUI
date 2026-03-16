@@ -10,6 +10,9 @@ import { ThinkingIndicator } from "@/components/common/ThinkingIndicator";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import { useCommonRequestFormDefaults } from "@/features/operations/useRequestFormDefaults";
 import { useAdvancedOperationMachine } from "@/features/advanced/useAdvancedOperationMachine";
+import { AdvancedRxMerEchoDetectionView } from "@/features/advanced/AdvancedRxMerEchoDetectionView";
+import { AdvancedRxMerHeatMapView } from "@/features/advanced/AdvancedRxMerHeatMapView";
+import { AdvancedRxMerProfilePerformanceView } from "@/features/advanced/AdvancedRxMerProfilePerformanceView";
 import { parseChannelIds } from "@/lib/channelIds";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import {
@@ -109,10 +112,6 @@ function AdvancedRxMerAnalysisView({
   response: AdvancedMultiRxMerAnalysisResponse;
 }) {
   const channels = Object.entries(response.data ?? {});
-  const deviceInfo = toDeviceInfo(
-    response.device?.system_description ?? response.system_description,
-    response.device?.mac_address ?? response.mac_address,
-  );
 
   if (!channels.length) {
     return <p className="panel-copy">No analysis data available yet.</p>;
@@ -120,28 +119,49 @@ function AdvancedRxMerAnalysisView({
 
   return (
     <div className="operations-visual-stack">
-      <DeviceInfoTable deviceInfo={deviceInfo} />
       <div className="status-chip-row">
         <span className="analysis-chip"><b>Analysis</b> {analysisOptions.find((option) => option.value === analysisType)?.label ?? analysisType}</span>
         <span className="analysis-chip"><b>Channels</b> {channels.length}</span>
       </div>
       {analysisType === "min-avg-max" ? (
-        <div className="if31-ds-ofdm-channel-grid">
-          {channels.map(([channelId, channel]) => (
-            <Panel key={channelId} title={`Channel ${channelId}`}>
-              <LineAnalysisChart
-                title={`Min / Avg / Max · Channel ${channelId}`}
-                subtitle="Per-subcarrier RxMER summary"
-                yLabel="dB"
-                series={buildMinAvgMaxSeries(channel as { frequency: number[]; min: number[]; avg: number[]; max: number[] })}
-              />
-            </Panel>
-          ))}
-        </div>
+        <>
+          <DeviceInfoTable
+            deviceInfo={toDeviceInfo(
+              response.device?.system_description ?? response.system_description,
+              response.device?.mac_address ?? response.mac_address,
+            )}
+          />
+          <div className="if31-ds-ofdm-channel-grid">
+            {channels.map(([channelId, channel]) => (
+              <Panel key={channelId} title={`Channel ${channelId}`}>
+                <LineAnalysisChart
+                  title={`Min / Avg / Max · Channel ${channelId}`}
+                  subtitle="Per-subcarrier RxMER summary"
+                  yLabel="dB"
+                  series={buildMinAvgMaxSeries(channel as { frequency: number[]; min: number[]; avg: number[]; max: number[] })}
+                />
+              </Panel>
+            ))}
+          </div>
+        </>
+      ) : analysisType === "rxmer-heat-map" ? (
+        <AdvancedRxMerHeatMapView response={response} />
+      ) : analysisType === "echo-reflection-1" ? (
+        <AdvancedRxMerEchoDetectionView response={response} />
+      ) : analysisType === "ofdm-profile-performance-1" ? (
+        <AdvancedRxMerProfilePerformanceView response={response} />
       ) : (
-        <Panel title="Analysis JSON">
-          <pre className="advanced-json-block">{JSON.stringify(response.data, null, 2)}</pre>
-        </Panel>
+        <>
+          <DeviceInfoTable
+            deviceInfo={toDeviceInfo(
+              response.device?.system_description ?? response.system_description,
+              response.device?.mac_address ?? response.mac_address,
+            )}
+          />
+          <Panel title="Analysis JSON">
+            <pre className="advanced-json-block">{JSON.stringify(response.data, null, 2)}</pre>
+          </Panel>
+        </>
       )}
     </div>
   );
@@ -159,7 +179,7 @@ function AdvancedRxMerWorkbench() {
       channelIds: requestDefaults.channelIds,
       community: requestDefaults.community,
       measurementDuration: 300,
-      sampleInterval: 30,
+      sampleInterval: 1,
       measureMode: 1,
     },
   });
@@ -276,15 +296,15 @@ function AdvancedRxMerWorkbench() {
               <input id="advancedRxmerCommunity" {...requestForm.register("community")} placeholder="private" />
             </div>
             <div className="field">
-              <FieldLabel htmlFor="advancedRxmerDuration">Measurement Duration</FieldLabel>
+              <FieldLabel htmlFor="advancedRxmerDuration" hint={requestFieldHints.measurement_duration}>Measurement Duration</FieldLabel>
               <input id="advancedRxmerDuration" type="number" min="1" step="1" {...requestForm.register("measurementDuration", { valueAsNumber: true })} />
             </div>
             <div className="field">
-              <FieldLabel htmlFor="advancedRxmerInterval">Sample Interval</FieldLabel>
+              <FieldLabel htmlFor="advancedRxmerInterval" hint={requestFieldHints.sample_interval}>Sample Interval</FieldLabel>
               <input id="advancedRxmerInterval" type="number" min="1" step="1" {...requestForm.register("sampleInterval", { valueAsNumber: true })} />
             </div>
             <div className="field">
-              <FieldLabel htmlFor="advancedRxmerMeasureMode">Measure Mode</FieldLabel>
+              <FieldLabel htmlFor="advancedRxmerMeasureMode" hint={requestFieldHints.measure_mode}>Measure Mode</FieldLabel>
               <select id="advancedRxmerMeasureMode" {...requestForm.register("measureMode", { valueAsNumber: true })}>
                 <option value={0}>Continuous</option>
                 <option value={1}>OFDM Performance 1</option>
