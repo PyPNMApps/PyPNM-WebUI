@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
+import type { CaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
+import { useReportCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import { useDeviceConnectFormDefaults } from "@/features/operations/useRequestFormDefaults";
 import type { DsScqamCodewordErrorRateRequest } from "@/types/api";
@@ -18,6 +20,7 @@ interface ScqamCodewordErrorRateRequestFormProps {
   canRun: boolean;
   submitLabel: string;
   onSubmit: (payload: DsScqamCodewordErrorRateRequest) => void;
+  onConnectivityInputsChange?: (inputs: CaptureConnectivityInputs) => void;
   errorMessage?: string;
 }
 
@@ -26,15 +29,17 @@ export function ScqamCodewordErrorRateRequestForm({
   canRun,
   submitLabel,
   onSubmit,
+  onConnectivityInputsChange,
   errorMessage,
 }: ScqamCodewordErrorRateRequestFormProps) {
   const requestDefaults = useDeviceConnectFormDefaults();
-  const { register, handleSubmit, reset } = useForm<ScqamCodewordErrorRateFormValues>({
+  const { register, handleSubmit, reset, watch } = useForm<ScqamCodewordErrorRateFormValues>({
     defaultValues: {
       ...requestDefaults,
       sampleTimeElapsed: 5,
     },
   });
+  const [macAddress, ipAddress, community] = watch(["macAddress", "ipAddress", "community"]);
 
   useEffect(() => {
     reset({
@@ -42,6 +47,8 @@ export function ScqamCodewordErrorRateRequestForm({
       sampleTimeElapsed: 5,
     });
   }, [requestDefaults, reset]);
+
+  useReportCaptureConnectivityInputs({ macAddress, ipAddress, community }, onConnectivityInputsChange);
 
   return (
     <form

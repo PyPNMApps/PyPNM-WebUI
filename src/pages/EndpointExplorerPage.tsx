@@ -1,5 +1,5 @@
 import { NavLink, Navigate, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 
 import { useInstanceConfig } from "@/app/useInstanceConfig";
@@ -12,6 +12,8 @@ import { HistogramCaptureRequestForm } from "@/features/operations/HistogramCapt
 import { FecSummaryCaptureRequestForm } from "@/features/operations/FecSummaryCaptureRequestForm";
 import { ScqamCodewordErrorRateRequestForm } from "@/features/operations/ScqamCodewordErrorRateRequestForm";
 import { SingleCaptureRequestForm } from "@/features/operations/SingleCaptureRequestForm";
+import type { CaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
+import { hasCompleteCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { SingleSpectrumOfdmCaptureView } from "@/features/operations/SingleSpectrumOfdmCaptureView";
 import { SingleSpectrumScqamCaptureView } from "@/features/operations/SingleSpectrumScqamCaptureView";
 import { SpectrumFullBandCaptureRequestForm } from "@/features/operations/SpectrumFullBandCaptureRequestForm";
@@ -65,6 +67,7 @@ import { singleSpectrumOfdmCaptureFixture } from "@/features/operations/singleSp
 import { singleSpectrumScqamCaptureFixture } from "@/features/operations/singleSpectrumScqamCaptureFixture";
 import { singleSpectrumFriendlyCaptureFixture } from "@/features/operations/singleSpectrumFriendlyCaptureFixture";
 import { singleSystemUpTimeFixture } from "@/features/operations/singleSystemUpTimeFixture";
+import { checkCaptureInputsOnline } from "@/services/captureConnectivityService";
 import { runSingleCaptureEndpoint } from "@/services/singleCaptureService";
 import type {
   AtdmaChannelStatsResponse,
@@ -106,6 +109,8 @@ import type {
   SystemUpTimeResponse,
 } from "@/types/api";
 
+type CaptureConnectivityStatus = "unknown" | "checking" | "online" | "offline";
+
 function downloadJson(filename: string, payload: unknown) {
   const blob = new Blob([`${JSON.stringify(payload, null, 2)}\n`], { type: "application/json" });
   const url = URL.createObjectURL(blob);
@@ -126,6 +131,10 @@ export function EndpointExplorerPage() {
   const location = useLocation();
   const { selectedInstance } = useInstanceConfig();
   const isSingleCaptureRoute = location.pathname.startsWith("/single-capture");
+  const [captureConnectivityInputs, setCaptureConnectivityInputs] = useState<CaptureConnectivityInputs | null>(null);
+  const [captureConnectivityStatus, setCaptureConnectivityStatus] = useState<CaptureConnectivityStatus>("unknown");
+  const connectivityCheckSequenceRef = useRef(0);
+  const connectivityHasCheckedInitialRef = useRef(false);
   const [atdmaChannelStatsResponse, setAtdmaChannelStatsResponse] = useState<AtdmaChannelStatsResponse>(singleAtdmaChannelStatsFixture);
   const [fddDiplexerBandEdgeCapabilityResponse, setFddDiplexerBandEdgeCapabilityResponse] = useState<FddDiplexerBandEdgeCapabilityResponse>(singleFddDiplexerBandEdgeCapabilityFixture);
   const [fddSystemDiplexerConfigurationResponse, setFddSystemDiplexerConfigurationResponse] = useState<FddSystemDiplexerConfigurationResponse>(singleFddSystemDiplexerConfigurationFixture);
@@ -152,6 +161,77 @@ export function EndpointExplorerPage() {
   const [spectrumOfdmResponse, setSpectrumOfdmResponse] = useState<SingleSpectrumOfdmCaptureResponse>(singleSpectrumOfdmCaptureFixture);
   const [spectrumScqamResponse, setSpectrumScqamResponse] = useState<SingleSpectrumScqamCaptureResponse>(singleSpectrumScqamCaptureFixture);
   const selectedOperation = getOperationByRoutePath(location.pathname);
+  const captureInputsTitle = useMemo(() => {
+    const label = captureConnectivityStatus === "online"
+      ? "Online"
+      : captureConnectivityStatus === "offline"
+        ? "Offline"
+        : captureConnectivityStatus === "checking"
+          ? "Checking"
+          : "Unknown";
+    const stateClass = captureConnectivityStatus === "online"
+      ? "online"
+      : captureConnectivityStatus === "offline"
+        ? "offline"
+        : captureConnectivityStatus === "checking"
+          ? "checking"
+          : "unknown";
+
+    return (
+      <div className="panel-title-inline">
+        <h2 className="panel-title-heading">Capture Inputs</h2>
+        <span className={`capture-status-chip ${stateClass}`}>{label}</span>
+      </div>
+    );
+  }, [captureConnectivityStatus]);
+
+  useEffect(() => {
+    connectivityHasCheckedInitialRef.current = false;
+    connectivityCheckSequenceRef.current += 1;
+    setCaptureConnectivityInputs(null);
+    setCaptureConnectivityStatus("unknown");
+  }, [selectedOperation?.id]);
+
+  useEffect(() => {
+    if (!selectedInstance?.baseUrl || !hasCompleteCaptureConnectivityInputs(captureConnectivityInputs)) {
+      setCaptureConnectivityStatus("unknown");
+      return;
+    }
+
+    const runCheck = async (requestId: number) => {
+      setCaptureConnectivityStatus("checking");
+      try {
+        const isOnline = await checkCaptureInputsOnline(selectedInstance.baseUrl, captureConnectivityInputs);
+        if (connectivityCheckSequenceRef.current !== requestId) {
+          return;
+        }
+        setCaptureConnectivityStatus(isOnline ? "online" : "offline");
+      } catch {
+        if (connectivityCheckSequenceRef.current !== requestId) {
+          return;
+        }
+        setCaptureConnectivityStatus("offline");
+      }
+    };
+
+    const requestId = connectivityCheckSequenceRef.current + 1;
+    connectivityCheckSequenceRef.current = requestId;
+
+    if (!connectivityHasCheckedInitialRef.current) {
+      connectivityHasCheckedInitialRef.current = true;
+      void runCheck(requestId);
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      void runCheck(requestId);
+    }, 3000);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [captureConnectivityInputs, selectedInstance?.baseUrl]);
+
   const mutation = useMutation({
     mutationFn: ({
       endpointPath,
@@ -402,13 +482,14 @@ export function EndpointExplorerPage() {
         </nav>
       ) : null}
       <PageHeader title={selectedOperation.label} subtitle="" />
-      <Panel title="Capture Inputs">
+      <Panel title={captureInputsTitle}>
         {selectedOperation.id === "docs-if30-ds-scqam-chan-codeworderrorrate" ? (
           <ScqamCodewordErrorRateRequestForm
             isPending={mutation.isPending}
             canRun={Boolean(selectedInstance)}
             submitLabel={`Run ${selectedOperation.label}`}
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
               mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
             }}
@@ -419,6 +500,7 @@ export function EndpointExplorerPage() {
             canRun={Boolean(selectedInstance)}
             submitLabel={`Run ${selectedOperation.label}`}
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
               mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
             }}
@@ -429,6 +511,7 @@ export function EndpointExplorerPage() {
             canRun={Boolean(selectedInstance)}
             submitLabel={`Run ${selectedOperation.label}`}
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
               mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
             }}
@@ -439,6 +522,7 @@ export function EndpointExplorerPage() {
             canRun={Boolean(selectedInstance)}
             submitLabel={`Run ${selectedOperation.label}`}
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
               mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
             }}
@@ -449,6 +533,7 @@ export function EndpointExplorerPage() {
             canRun={Boolean(selectedInstance)}
             submitLabel={`Run ${selectedOperation.label}`}
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
               mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
             }}
@@ -459,6 +544,7 @@ export function EndpointExplorerPage() {
             canRun={Boolean(selectedInstance)}
             submitLabel={`Run ${selectedOperation.label}`}
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
               mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
             }}
@@ -469,6 +555,7 @@ export function EndpointExplorerPage() {
             canRun={Boolean(selectedInstance)}
             submitLabel={`Run ${selectedOperation.label}`}
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
               mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
             }}
@@ -479,6 +566,7 @@ export function EndpointExplorerPage() {
             canRun={Boolean(selectedInstance)}
             submitLabel={`Run ${selectedOperation.label}`}
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
               mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
             }}
@@ -489,6 +577,7 @@ export function EndpointExplorerPage() {
             canRun={Boolean(selectedInstance)}
             submitLabel={`Run ${selectedOperation.label}`}
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
               mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
             }}

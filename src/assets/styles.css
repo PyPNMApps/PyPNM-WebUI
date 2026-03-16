@@ -570,6 +570,60 @@ button.secondary,
   gap: 10px;
 }
 
+.panel-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.panel-title-inline {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.panel-title-heading {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.capture-status-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 64px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.capture-status-chip.online {
+  color: #bff3d0;
+  background: rgba(91, 211, 159, 0.16);
+  border-color: rgba(91, 211, 159, 0.4);
+}
+
+.capture-status-chip.offline {
+  color: #ffd4d4;
+  background: rgba(220, 70, 70, 0.16);
+  border-color: rgba(220, 70, 70, 0.4);
+}
+
+.capture-status-chip.checking,
+.capture-status-chip.unknown {
+  color: #d9e5fa;
+  background: rgba(121, 169, 255, 0.12);
+  border-color: rgba(121, 169, 255, 0.32);
+}
+
 .status-chip-row {
   display: flex;
   gap: 10px;

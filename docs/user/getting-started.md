@@ -48,6 +48,7 @@ Open:
 - Open `Health` page and verify backend connectivity.
 - Open `Single Capture` and confirm the PNM capture pages are using the selected
   instance defaults.
+- Confirm the `Capture Inputs` chip turns green when the current MAC, IP, and SNMP community can be verified through `/system/sysDescr`.
 - Open `About` and confirm the loaded WebUI version.
 
 ## 5. Common first workflows

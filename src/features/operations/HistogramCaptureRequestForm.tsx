@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
+import type { CaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
+import { useReportCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import { useCommonRequestFormDefaults } from "@/features/operations/useRequestFormDefaults";
 import type { SingleHistogramCaptureRequest } from "@/types/api";
@@ -20,6 +22,7 @@ interface HistogramCaptureRequestFormProps {
   canRun: boolean;
   submitLabel: string;
   onSubmit: (payload: SingleHistogramCaptureRequest) => void;
+  onConnectivityInputsChange?: (inputs: CaptureConnectivityInputs) => void;
   errorMessage?: string;
 }
 
@@ -28,10 +31,11 @@ export function HistogramCaptureRequestForm({
   canRun,
   submitLabel,
   onSubmit,
+  onConnectivityInputsChange,
   errorMessage,
 }: HistogramCaptureRequestFormProps) {
   const requestDefaults = useCommonRequestFormDefaults();
-  const { register, handleSubmit, reset } = useForm<HistogramCaptureFormValues>({
+  const { register, handleSubmit, reset, watch } = useForm<HistogramCaptureFormValues>({
     defaultValues: {
       macAddress: requestDefaults.macAddress,
       ipAddress: requestDefaults.ipAddress,
@@ -41,6 +45,7 @@ export function HistogramCaptureRequestForm({
       sampleDuration: 10,
     },
   });
+  const [macAddress, ipAddress, community] = watch(["macAddress", "ipAddress", "community"]);
 
   useEffect(() => {
     reset({
@@ -52,6 +57,8 @@ export function HistogramCaptureRequestForm({
       sampleDuration: 10,
     });
   }, [requestDefaults, reset]);
+
+  useReportCaptureConnectivityInputs({ macAddress, ipAddress, community }, onConnectivityInputsChange);
 
   return (
     <form

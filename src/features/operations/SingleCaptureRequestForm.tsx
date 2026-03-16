@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
+import type { CaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
+import { useReportCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import { useCommonRequestFormDefaults } from "@/features/operations/useRequestFormDefaults";
 import { parseChannelIds } from "@/lib/channelIds";
@@ -21,6 +23,7 @@ interface SingleCaptureRequestFormProps {
   canRun: boolean;
   submitLabel: string;
   onSubmit: (payload: SingleRxMerCaptureRequest) => void;
+  onConnectivityInputsChange?: (inputs: CaptureConnectivityInputs) => void;
   errorMessage?: string;
 }
 
@@ -29,16 +32,20 @@ export function SingleCaptureRequestForm({
   canRun,
   submitLabel,
   onSubmit,
+  onConnectivityInputsChange,
   errorMessage,
 }: SingleCaptureRequestFormProps) {
   const requestDefaults = useCommonRequestFormDefaults();
-  const { register, handleSubmit, reset } = useForm<SingleCaptureFormValues>({
+  const { register, handleSubmit, reset, watch } = useForm<SingleCaptureFormValues>({
     defaultValues: requestDefaults,
   });
+  const [macAddress, ipAddress, community] = watch(["macAddress", "ipAddress", "community"]);
 
   useEffect(() => {
     reset(requestDefaults);
   }, [requestDefaults, reset]);
+
+  useReportCaptureConnectivityInputs({ macAddress, ipAddress, community }, onConnectivityInputsChange);
 
   return (
     <form

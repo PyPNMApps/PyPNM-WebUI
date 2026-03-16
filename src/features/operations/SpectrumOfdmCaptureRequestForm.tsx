@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
+import type { CaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
+import { useReportCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import {
   defaultSpectrumAnalyzerNumberOfAverages,
@@ -31,12 +33,13 @@ interface SpectrumOfdmCaptureRequestFormProps {
   canRun: boolean;
   submitLabel: string;
   onSubmit: (payload: SingleSpectrumOfdmCaptureRequest) => void;
+  onConnectivityInputsChange?: (inputs: CaptureConnectivityInputs) => void;
   errorMessage?: string;
 }
 
-export function SpectrumOfdmCaptureRequestForm({ isPending, canRun, submitLabel, onSubmit, errorMessage }: SpectrumOfdmCaptureRequestFormProps) {
+export function SpectrumOfdmCaptureRequestForm({ isPending, canRun, submitLabel, onSubmit, onConnectivityInputsChange, errorMessage }: SpectrumOfdmCaptureRequestFormProps) {
   const requestDefaults = useCommonRequestFormDefaults();
-  const { register, handleSubmit, reset } = useForm<SpectrumOfdmFormValues>({
+  const { register, handleSubmit, reset, watch } = useForm<SpectrumOfdmFormValues>({
     defaultValues: {
       macAddress: requestDefaults.macAddress,
       ipAddress: requestDefaults.ipAddress,
@@ -50,6 +53,7 @@ export function SpectrumOfdmCaptureRequestForm({ isPending, canRun, submitLabel,
       spectrumRetrievalType: defaultSpectrumAnalyzerRetrievalType,
     },
   });
+  const [macAddress, ipAddress, community] = watch(["macAddress", "ipAddress", "community"]);
 
   useEffect(() => {
     reset((current) => ({
@@ -62,6 +66,8 @@ export function SpectrumOfdmCaptureRequestForm({ isPending, canRun, submitLabel,
       community: requestDefaults.community,
     }));
   }, [requestDefaults, reset]);
+
+  useReportCaptureConnectivityInputs({ macAddress, ipAddress, community }, onConnectivityInputsChange);
 
   return (
     <form

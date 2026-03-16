@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
+import type { CaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
+import { useReportCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import {
   defaultSpectrumAnalyzerRetrievalType,
@@ -36,6 +38,7 @@ interface SpectrumFriendlyCaptureRequestFormProps {
   canRun: boolean;
   submitLabel: string;
   onSubmit: (payload: SingleSpectrumFriendlyCaptureRequest) => void;
+  onConnectivityInputsChange?: (inputs: CaptureConnectivityInputs) => void;
   errorMessage?: string;
 }
 
@@ -44,10 +47,11 @@ export function SpectrumFriendlyCaptureRequestForm({
   canRun,
   submitLabel,
   onSubmit,
+  onConnectivityInputsChange,
   errorMessage,
 }: SpectrumFriendlyCaptureRequestFormProps) {
   const requestDefaults = useCommonRequestFormDefaults();
-  const { register, handleSubmit, reset } = useForm<SpectrumFriendlyFormValues>({
+  const { register, handleSubmit, reset, watch } = useForm<SpectrumFriendlyFormValues>({
     defaultValues: {
       macAddress: requestDefaults.macAddress,
       ipAddress: requestDefaults.ipAddress,
@@ -65,6 +69,7 @@ export function SpectrumFriendlyCaptureRequestForm({
       spectrumRetrievalType: defaultSpectrumAnalyzerRetrievalType,
     },
   });
+  const [macAddress, ipAddress, community] = watch(["macAddress", "ipAddress", "community"]);
 
   useEffect(() => {
     reset((current) => ({
@@ -76,6 +81,8 @@ export function SpectrumFriendlyCaptureRequestForm({
       community: requestDefaults.community,
     }));
   }, [requestDefaults, reset]);
+
+  useReportCaptureConnectivityInputs({ macAddress, ipAddress, community }, onConnectivityInputsChange);
 
   return (
     <form

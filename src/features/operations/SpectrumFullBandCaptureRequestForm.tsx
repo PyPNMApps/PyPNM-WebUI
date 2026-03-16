@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
+import type { CaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
+import { useReportCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import {
   defaultSpectrumAnalyzerDirection,
@@ -37,6 +39,7 @@ interface SpectrumFullBandCaptureRequestFormProps {
   canRun: boolean;
   submitLabel: string;
   onSubmit: (payload: SingleSpectrumFullBandCaptureRequest) => void;
+  onConnectivityInputsChange?: (inputs: CaptureConnectivityInputs) => void;
   errorMessage?: string;
 }
 
@@ -45,10 +48,11 @@ export function SpectrumFullBandCaptureRequestForm({
   canRun,
   submitLabel,
   onSubmit,
+  onConnectivityInputsChange,
   errorMessage,
 }: SpectrumFullBandCaptureRequestFormProps) {
   const requestDefaults = useCommonRequestFormDefaults();
-  const { register, handleSubmit, reset } = useForm<SpectrumFullBandFormValues>({
+  const { register, handleSubmit, reset, watch } = useForm<SpectrumFullBandFormValues>({
     defaultValues: {
       macAddress: requestDefaults.macAddress,
       ipAddress: requestDefaults.ipAddress,
@@ -65,6 +69,7 @@ export function SpectrumFullBandCaptureRequestForm({
       spectrumRetrievalType: defaultSpectrumAnalyzerRetrievalType,
     },
   });
+  const [macAddress, ipAddress, community] = watch(["macAddress", "ipAddress", "community"]);
 
   useEffect(() => {
     reset((current) => ({
@@ -76,6 +81,8 @@ export function SpectrumFullBandCaptureRequestForm({
       community: requestDefaults.community,
     }));
   }, [requestDefaults, reset]);
+
+  useReportCaptureConnectivityInputs({ macAddress, ipAddress, community }, onConnectivityInputsChange);
 
   return (
     <form

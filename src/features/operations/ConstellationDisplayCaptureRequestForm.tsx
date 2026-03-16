@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
+import type { CaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
+import { useReportCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import { useCommonRequestFormDefaults } from "@/features/operations/useRequestFormDefaults";
 import { parseChannelIds } from "@/lib/channelIds";
@@ -24,6 +26,7 @@ interface ConstellationDisplayCaptureRequestFormProps {
   canRun: boolean;
   submitLabel: string;
   onSubmit: (payload: SingleConstellationDisplayCaptureRequest) => void;
+  onConnectivityInputsChange?: (inputs: CaptureConnectivityInputs) => void;
   errorMessage?: string;
 }
 
@@ -32,10 +35,11 @@ export function ConstellationDisplayCaptureRequestForm({
   canRun,
   submitLabel,
   onSubmit,
+  onConnectivityInputsChange,
   errorMessage,
 }: ConstellationDisplayCaptureRequestFormProps) {
   const requestDefaults = useCommonRequestFormDefaults();
-  const { register, handleSubmit, reset } = useForm<ConstellationDisplayFormValues>({
+  const { register, handleSubmit, reset, watch } = useForm<ConstellationDisplayFormValues>({
     defaultValues: {
       ...requestDefaults,
       displayCrossHair: true,
@@ -43,6 +47,7 @@ export function ConstellationDisplayCaptureRequestForm({
       numberSampleSymbol: 8192,
     },
   });
+  const [macAddress, ipAddress, community] = watch(["macAddress", "ipAddress", "community"]);
 
   useEffect(() => {
     reset({
@@ -52,6 +57,8 @@ export function ConstellationDisplayCaptureRequestForm({
       numberSampleSymbol: 8192,
     });
   }, [requestDefaults, reset]);
+
+  useReportCaptureConnectivityInputs({ macAddress, ipAddress, community }, onConnectivityInputsChange);
 
   return (
     <form

@@ -41,6 +41,8 @@ Current workflows:
 Each Single Capture page includes:
 
 - request form
+- `Capture Inputs` online/offline chip driven by `/system/sysDescr`
+- immediate status check on page load, then a 3 second debounce after MAC, IP, or SNMP community changes
 - visible waiting indicator while data is being collected
 - right-aligned `Download JSON` action for the current response
 - bound visual below the form
@@ -69,6 +71,8 @@ Current `PNM -> Spectrum Analyzer` entries include:
 All operation pages currently expose:
 
 - request form
+- `Capture Inputs` online/offline chip driven by `/system/sysDescr`
+- immediate status check on page load, then a 3 second debounce after MAC, IP, or SNMP community changes
 - visible waiting indicator while data is being collected
 - right-aligned `Download JSON` action for the current response
 - bound visual below the form
