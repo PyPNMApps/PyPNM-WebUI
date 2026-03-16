@@ -10,7 +10,7 @@ The top navigation includes:
 - `Health`
 - `About`
 
-The top bar also includes the `PyPNM Target` dropdown sourced from:
+The top bar also includes the `PyPNM Agent` dropdown sourced from:
 
 - `public/config/pypnm-instances.yaml`
 - `public/config/pypnm-instances.local.yaml`
@@ -123,7 +123,7 @@ capture visuals where available.
    - confirm API status and metadata for all configured agents.
 2. `Operations`
    - choose the endpoint visual you want to run from the operations menu.
-3. `PyPNM Target`
+3. `PyPNM Agent`
    - switch to the correct configured backend instance for that operation.
 4. request form
    - confirm the prefilled per-instance MAC, IP, TFTP, and SNMP defaults before running.

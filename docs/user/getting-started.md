@@ -44,7 +44,7 @@ Open:
 
 ## 4. First checks
 
-- Use the top-bar `PyPNM Target` dropdown to confirm the active instance from the runtime YAML config.
+- Use the top-bar `PyPNM Agent` dropdown to confirm the active instance from the runtime YAML config.
 - Open `Health` page and verify backend connectivity.
 - Open `Operations` and confirm the capture pages are using the selected
   instance defaults.
