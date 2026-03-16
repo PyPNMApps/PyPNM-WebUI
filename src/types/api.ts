@@ -1339,6 +1339,146 @@ export interface AdvancedMultiChanEstAnalysisResponse {
   };
 }
 
+export interface AdvancedMultiUsOfdmaPreEqRequest {
+  cable_modem: {
+    mac_address: string;
+    ip_address: string;
+    pnm_parameters: {
+      tftp: {
+        ipv4: string;
+        ipv6: string;
+      };
+      capture: {
+        channel_ids: number[];
+      };
+    };
+    snmp: {
+      snmpV2C: {
+        community: string;
+      };
+    };
+  };
+  capture: {
+    parameters: {
+      measurement_duration: number;
+      sample_interval: number;
+    };
+  };
+  measure: {
+    mode: 0;
+  };
+}
+
+export interface AdvancedMultiUsOfdmaPreEqOperationStatus {
+  operation_id: string;
+  state: string;
+  collected: number;
+  time_remaining: number;
+  message?: string | null;
+}
+
+export interface AdvancedMultiUsOfdmaPreEqStartResponse {
+  status?: number | string;
+  message?: string | null;
+  mac_address?: string;
+  system_description?: SingleRxMerSystemDescription;
+  group_id: string;
+  operation_id: string;
+}
+
+export interface AdvancedMultiUsOfdmaPreEqStatusResponse {
+  status?: number | string;
+  message?: string | null;
+  mac_address?: string;
+  system_description?: SingleRxMerSystemDescription;
+  operation: AdvancedMultiUsOfdmaPreEqOperationStatus;
+}
+
+export interface AdvancedMultiUsOfdmaPreEqAnalysisRequest {
+  operation_id: string;
+  analysis: {
+    type: "min-avg-max" | "group-delay" | "echo-detection-ifft";
+    output: {
+      type: "json";
+    };
+    plot: {
+      ui: {
+        theme: "dark";
+      };
+    };
+  };
+}
+
+export interface AdvancedMultiUsOfdmaPreEqMinAvgMaxResult {
+  channel_id: number;
+  frequency: number[];
+  min: number[];
+  avg: number[];
+  max: number[];
+}
+
+export interface AdvancedMultiUsOfdmaPreEqGroupDelayResult {
+  channel_id: number;
+  frequency: number[];
+  group_delay_us: number[];
+}
+
+export interface AdvancedMultiUsOfdmaPreEqEchoDetectionResult {
+  channel_id: number;
+  dataset_info?: {
+    subcarriers?: number;
+    snapshots?: number;
+  };
+  sample_rate_hz?: number;
+  complex_unit?: string;
+  cable_type?: string;
+  velocity_factor?: number;
+  prop_speed_mps?: number;
+  direct_path?: {
+    bin_index?: number;
+    time_s?: number;
+    amplitude?: number;
+    distance_m?: number;
+    distance_ft?: number;
+  };
+  echoes?: Array<{
+    bin_index?: number;
+    time_s?: number;
+    amplitude?: number;
+    distance_m?: number;
+    distance_ft?: number;
+  }>;
+  threshold_frac?: number;
+  guard_bins?: number;
+  min_separation_s?: number | null;
+  max_delay_s?: number | null;
+  max_peaks?: number;
+  time_response?: {
+    n_fft?: number;
+    time_axis_s?: number[];
+    time_response?: number[];
+  };
+}
+
+export interface AdvancedMultiUsOfdmaPreEqAnalysisResponse {
+  status?: number | string;
+  message?: string | null;
+  mac_address?: string;
+  system_description?: SingleRxMerSystemDescription;
+  device?: {
+    mac_address?: string;
+    system_description?: SingleRxMerSystemDescription;
+  };
+  data?: {
+    analysis_type?: string;
+    results?: Array<
+      AdvancedMultiUsOfdmaPreEqMinAvgMaxResult |
+      AdvancedMultiUsOfdmaPreEqGroupDelayResult |
+      AdvancedMultiUsOfdmaPreEqEchoDetectionResult
+    >;
+  };
+}
+
 export interface SingleFecSummaryCodewords {
   timestamps: number[];
   total_codewords: number[];

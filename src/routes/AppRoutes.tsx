@@ -52,6 +52,7 @@ export function AppRoutes() {
           <Route path="/advanced" element={<AdvancedPage />} />
           <Route path="/advanced/rxmer" element={<AdvancedPage />} />
           <Route path="/advanced/channel-estimation" element={<AdvancedPage />} />
+          <Route path="/advanced/ofdma-pre-eq" element={<AdvancedPage />} />
           <Route path="/endpoints" element={<Navigate to="/operations" replace />} />
           <Route path="/operations" element={<EndpointExplorerPage />} />
           <Route path="/operations/:operationId" element={<EndpointExplorerPage />} />

@@ -52,11 +52,13 @@ All operation pages currently expose:
 
 The `Advanced` tab is the long-running multi-capture workflow area.
 
-Current first slice:
+Current workflows:
 
 - `RxMER`
+- `Channel Estimation`
+- `OFDMA PreEq`
 
-The Advanced RxMER workbench is state-machine driven and includes:
+Each Advanced workbench includes:
 
 - `Request`
   - start a multi-capture operation
@@ -72,12 +74,25 @@ The Advanced RxMER workbench is state-machine driven and includes:
   - run multiple analysis types against the same `operation_id`
   - no need to restart capture for a different analysis type
 
-Current Advanced RxMER analysis types:
+Advanced RxMER analysis types:
 
 - `Min / Avg / Max`
 - `Heat Map`
 - `Echo Detection 1`
 - `OFDM Profile Performance 1`
+
+Advanced Channel Estimation analysis types:
+
+- `Min / Avg / Max`
+- `Group Delay`
+- `LTE Detection Phase Slope`
+- `Echo Detection IFFT`
+
+Advanced OFDMA PreEq analysis types:
+
+- `Min / Avg / Max`
+- `Group Delay`
+- `Echo Detection IFFT`
 
 ## Input Validation
 

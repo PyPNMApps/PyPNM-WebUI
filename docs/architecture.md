@@ -122,11 +122,13 @@ Required persisted workflow context:
   - live refresh while the job is active
 - The user should always have an explicit `Stop` action while the job is running.
 
-### Advanced RxMER First Slice
+### Advanced First Slices
 
-The first Advanced implementation should be:
+The first Advanced implementations should be:
 
-- `Advanced -> Downstream -> RxMER`
+- `Advanced -> RxMER`
+- `Advanced -> Channel Estimation`
+- `Advanced -> OFDMA PreEq`
 
 RxMER is the correct first slice because the backend already exposes:
 
