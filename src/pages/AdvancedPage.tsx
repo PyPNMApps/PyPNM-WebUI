@@ -359,7 +359,7 @@ function AdvancedRxMerWorkbench() {
 
       <Panel title="Request">
         <form className="grid" onSubmit={requestForm.handleSubmit(() => void machine.start())}>
-          <div className="grid two">
+          <div className="grid two request-input-grid six-up">
             <div className="field">
               <FieldLabel htmlFor="advancedRxmerMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
               <input id="advancedRxmerMacAddress" {...requestForm.register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
@@ -384,6 +384,8 @@ function AdvancedRxMerWorkbench() {
               <FieldLabel htmlFor="advancedRxmerCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
               <input id="advancedRxmerCommunity" {...requestForm.register("community")} placeholder="private" />
             </div>
+          </div>
+          <div className="grid two request-input-grid">
             <div className="field">
               <FieldLabel htmlFor="advancedRxmerDuration" hint={requestFieldHints.measurement_duration}>Measurement Duration</FieldLabel>
               <input id="advancedRxmerDuration" type="number" min="1" step="1" {...requestForm.register("measurementDuration", { valueAsNumber: true })} />
@@ -647,7 +649,7 @@ function AdvancedChannelEstimationWorkbench() {
 
       <Panel title="Request">
         <form className="grid" onSubmit={requestForm.handleSubmit(() => void machine.start())}>
-          <div className="grid two">
+          <div className="grid two request-input-grid six-up">
             <div className="field">
               <FieldLabel htmlFor="advancedChanEstMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
               <input id="advancedChanEstMacAddress" {...requestForm.register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
@@ -672,6 +674,8 @@ function AdvancedChannelEstimationWorkbench() {
               <FieldLabel htmlFor="advancedChanEstCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
               <input id="advancedChanEstCommunity" {...requestForm.register("community")} placeholder="private" />
             </div>
+          </div>
+          <div className="grid two request-input-grid">
             <div className="field">
               <FieldLabel htmlFor="advancedChanEstDuration" hint={requestFieldHints.measurement_duration}>Measurement Duration</FieldLabel>
               <input id="advancedChanEstDuration" type="number" min="1" step="1" {...requestForm.register("measurementDuration", { valueAsNumber: true })} />
@@ -926,7 +930,7 @@ function AdvancedOfdmaPreEqWorkbench() {
 
       <Panel title="Request">
         <form className="grid" onSubmit={requestForm.handleSubmit(() => void machine.start())}>
-          <div className="grid two">
+          <div className="grid two request-input-grid six-up">
             <div className="field">
               <FieldLabel htmlFor="advancedOfdmaPreEqMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
               <input id="advancedOfdmaPreEqMacAddress" {...requestForm.register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
@@ -951,6 +955,8 @@ function AdvancedOfdmaPreEqWorkbench() {
               <FieldLabel htmlFor="advancedOfdmaPreEqCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
               <input id="advancedOfdmaPreEqCommunity" {...requestForm.register("community")} placeholder="private" />
             </div>
+          </div>
+          <div className="grid two request-input-grid">
             <div className="field">
               <FieldLabel htmlFor="advancedOfdmaPreEqDuration" hint={requestFieldHints.measurement_duration}>Measurement Duration</FieldLabel>
               <input id="advancedOfdmaPreEqDuration" type="number" min="1" step="1" {...requestForm.register("measurementDuration", { valueAsNumber: true })} />
