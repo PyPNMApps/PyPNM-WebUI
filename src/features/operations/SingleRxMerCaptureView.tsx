@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
+import { SeriesVisibilityChips } from "@/components/common/SeriesVisibilityChips";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import { ModulationCountsChart } from "@/features/operations/ModulationCountsChart";
 import type { ChartSeries } from "@/features/analysis/types";
@@ -30,6 +32,8 @@ const palette = ["#79a9ff", "#58d0a7", "#ff7a6b", "#f1c75b"] as const;
 
 export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCaptureResponse }) {
   const analysis = response.data?.analysis ?? [];
+  const [combinedVisibility, setCombinedVisibility] = useState<Record<string, boolean>>({});
+  const [channelVisibility, setChannelVisibility] = useState<Record<number, Record<string, boolean>>>({});
 
   if (!analysis.length) {
     return <p className="panel-copy">No RxMER capture data available yet.</p>;
@@ -42,6 +46,7 @@ export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCapt
     primary?.mac_address ?? response.mac_address,
   );
   const combinedSeries = analysis.map((channel, index) => toSeries(channel, palette[index % palette.length]));
+  const visibleCombinedSeries = combinedSeries.filter((series) => combinedVisibility[series.label] !== false);
   return (
     <div className="operations-visual-stack">
       <div className="status-chip-row">
@@ -52,13 +57,31 @@ export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCapt
 
       <DeviceInfoTable deviceInfo={deviceInfo} />
 
-      <LineAnalysisChart title="All Channels" subtitle="" yLabel="RxMER (dB)" series={combinedSeries} />
+      <SeriesVisibilityChips
+        series={combinedSeries}
+        visibility={combinedVisibility}
+        onToggle={(label) => setCombinedVisibility((current) => ({ ...current, [label]: current[label] === false }))}
+      />
+      <LineAnalysisChart title="All Channels" subtitle="" yLabel="RxMER (dB)" showLegend={false} series={visibleCombinedSeries} />
 
       <div className="analysis-channels-grid">
         {analysis.map((channel, index) => {
           const magnitude = channel.carrier_values?.magnitude ?? [];
           const stats = summarize(magnitude);
           const bits = channel.modulation_statistics?.bits_per_symbol ?? [];
+          const channelSeries = [
+            toSeries(channel, palette[index % palette.length], "RxMER"),
+            {
+              label: "Regression",
+              color: "#ff7a6b",
+              points: (channel.regression?.slope ?? []).map((value, pointIndex) => ({
+                x: ((channel.carrier_values?.frequency ?? [])[pointIndex] ?? 0) / 1_000_000,
+                y: value,
+              })),
+            },
+          ];
+          const perChannelVisibility = channelVisibility[channel.channel_id ?? index] ?? {};
+          const visibleChannelSeries = channelSeries.filter((series) => perChannelVisibility[series.label] !== false);
 
           return (
             <article key={channel.channel_id ?? index} className="analysis-channel-card">
@@ -88,21 +111,23 @@ export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCapt
                   </div>
                 </div>
 
+                <SeriesVisibilityChips
+                  series={channelSeries}
+                  visibility={perChannelVisibility}
+                  onToggle={(label) => setChannelVisibility((current) => ({
+                    ...current,
+                    [channel.channel_id ?? index]: {
+                      ...(current[channel.channel_id ?? index] ?? {}),
+                      [label]: (current[channel.channel_id ?? index]?.[label] ?? true) === false,
+                    },
+                  }))}
+                />
                 <LineAnalysisChart
                   title={`RxMER and Regression (Channel ${channel.channel_id ?? "n/a"})`}
                   subtitle=""
                   yLabel="RxMER (dB)"
-                  series={[
-                    toSeries(channel, palette[index % palette.length], "RxMER"),
-                    {
-                      label: "Regression",
-                      color: "#ff7a6b",
-                      points: (channel.regression?.slope ?? []).map((value, pointIndex) => ({
-                        x: ((channel.carrier_values?.frequency ?? [])[pointIndex] ?? 0) / 1_000_000,
-                        y: value,
-                      })),
-                    },
-                  ]}
+                  showLegend={false}
+                  series={visibleChannelSeries}
                 />
 
                 <ModulationCountsChart

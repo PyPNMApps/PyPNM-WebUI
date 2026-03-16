@@ -1,6 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
+import { SeriesVisibilityChips } from "@/components/common/SeriesVisibilityChips";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import type { ChartSeries } from "@/features/analysis/types";
 import { formatEpochSecondsUtc } from "@/lib/formatters/dateTime";
@@ -41,6 +42,15 @@ export function SingleModulationProfileCaptureView({ response }: { response: Sin
   );
   const [visibleChannelKeys, setVisibleChannelKeys] = useState<string[]>(channelKeys);
   const [visibleProfileKeys, setVisibleProfileKeys] = useState<string[]>(profileKeys.includes("0") ? ["0"] : profileKeys.slice(0, 1));
+  const [combinedSeriesVisibility, setCombinedSeriesVisibility] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    setVisibleChannelKeys(channelKeys);
+  }, [channelKeys]);
+
+  useEffect(() => {
+    setVisibleProfileKeys(profileKeys.includes("0") ? ["0"] : profileKeys.slice(0, 1));
+  }, [profileKeys]);
 
   if (!channels.length) {
     return <p className="panel-copy">No modulation profile channels found.</p>;
@@ -68,6 +78,14 @@ export function SingleModulationProfileCaptureView({ response }: { response: Sin
           ),
         ),
     );
+  const visibleCombinedSeries = combinedSeries.filter((series) => combinedSeriesVisibility[series.label] !== false);
+  const combinedPoints = combinedSeries.flatMap((series) => series.points);
+  const combinedXDomain = combinedPoints.length
+    ? [Math.min(...combinedPoints.map((point) => point.x)), Math.max(...combinedPoints.map((point) => point.x))] as [number, number]
+    : undefined;
+  const combinedYDomain = combinedPoints.length
+    ? [Math.min(...combinedPoints.map((point) => point.y)) - 0.35, Math.max(...combinedPoints.map((point) => point.y)) + 0.35] as [number, number]
+    : undefined;
 
   return (
     <div className="operations-visual-stack">
@@ -136,7 +154,20 @@ export function SingleModulationProfileCaptureView({ response }: { response: Sin
             </div>
           </div>
         </div>
-        <LineAnalysisChart title="" subtitle="" yLabel="Shannon Min MER (dB)" series={combinedSeries} showLegend={false} />
+        <SeriesVisibilityChips
+          series={combinedSeries}
+          visibility={combinedSeriesVisibility}
+          onToggle={(label) => setCombinedSeriesVisibility((current) => ({ ...current, [label]: current[label] === false }))}
+        />
+        <LineAnalysisChart
+          title=""
+          subtitle=""
+          yLabel="Shannon Min MER (dB)"
+          series={visibleCombinedSeries}
+          showLegend={false}
+          xDomain={combinedXDomain}
+          yDomain={combinedYDomain}
+        />
       </div>
 
       <div className="analysis-channels-grid">

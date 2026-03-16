@@ -1,5 +1,6 @@
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { Panel } from "@/components/common/Panel";
+import { SeriesVisibilityChips } from "@/components/common/SeriesVisibilityChips";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import type { ChartSeries } from "@/features/analysis/types";
@@ -91,6 +92,7 @@ export function SingleUsOfdmaPreEqualizationView({ response }: { response: Singl
   }).filter((series) => series.points.length);
   const [channelLineVisibility, setChannelLineVisibility] = useState<Record<number, { estimated: boolean; preEq: boolean }>>({});
   const [channelSeriesVisibility, setChannelSeriesVisibility] = useState<Record<number, Record<string, boolean>>>({});
+  const [groupDelaySeriesVisibility, setGroupDelaySeriesVisibility] = useState<Record<number, Record<string, boolean>>>({});
 
   return (
     <div className="operations-visual-stack">
@@ -137,6 +139,8 @@ export function SingleUsOfdmaPreEqualizationView({ response }: { response: Singl
           ];
           const seriesVisibility = channelSeriesVisibility[channelId] ?? {};
           const visibleChannelSeries = combinedChannelSeries.filter((series) => seriesVisibility[series.label] !== false);
+          const groupDelaySeries = buildLineSeries(entries, (entry) => entry.carrier_values?.group_delay?.magnitude, ["#58d0a7", "#f59e0b"]);
+          const visibleGroupDelay = groupDelaySeries.filter((series) => (groupDelaySeriesVisibility[channelId] ?? {})[series.label] !== false);
 
           return (
             <Panel key={`us-ofdma-preeq-${channelId}`} title={`Channel ${channelId}`}>
@@ -233,12 +237,24 @@ export function SingleUsOfdmaPreEqualizationView({ response }: { response: Singl
               </Panel>
 
               <Panel title="Group Delay">
+                <SeriesVisibilityChips
+                  series={groupDelaySeries}
+                  visibility={groupDelaySeriesVisibility[channelId] ?? {}}
+                  onToggle={(label) => setGroupDelaySeriesVisibility((current) => ({
+                    ...current,
+                    [channelId]: {
+                      ...(current[channelId] ?? {}),
+                      [label]: (current[channelId]?.[label] ?? true) === false,
+                    },
+                  }))}
+                />
                 <LineAnalysisChart
                   title="Group Delay"
                   subtitle={`Channel ${channelId} · current vs last update`}
                   yLabel="μs"
                   yPadding={0.05}
-                  series={buildLineSeries(entries, (entry) => entry.carrier_values?.group_delay?.magnitude, ["#58d0a7", "#f59e0b"])}
+                  showLegend={false}
+                  series={visibleGroupDelay}
                 />
               </Panel>
 

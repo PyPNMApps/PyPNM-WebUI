@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
+import { SeriesVisibilityChips } from "@/components/common/SeriesVisibilityChips";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import type { ChartSeries } from "@/features/analysis/types";
 import { formatEpochSecondsUtc } from "@/lib/formatters/dateTime";
@@ -43,6 +45,7 @@ const palette = ["#79a9ff", "#58d0a7", "#ff7a6b", "#f1c75b"] as const;
 
 export function SingleChannelEstCoeffCaptureView({ response }: { response: SingleChannelEstCoeffCaptureResponse }) {
   const analysis = response.data?.analysis ?? [];
+  const [combinedVisibility, setCombinedVisibility] = useState<Record<string, boolean>>({});
 
   if (!analysis.length) {
     return <p className="panel-copy">No channel-est capture data available yet.</p>;
@@ -53,6 +56,7 @@ export function SingleChannelEstCoeffCaptureView({ response }: { response: Singl
   const magnitudeSeries = analysis.map((channel, index) =>
     toSeries(`Channel ${channel.channel_id ?? "n/a"}`, palette[index % palette.length], channel.carrier_values.frequency, channel.carrier_values.magnitudes),
   );
+  const visibleMagnitudeSeries = magnitudeSeries.filter((series) => combinedVisibility[series.label] !== false);
   const captureTimeLabel = captureTime(analysis);
   const fallbackChannelCaptureTime = fallbackCaptureTime(analysis);
 
@@ -69,7 +73,12 @@ export function SingleChannelEstCoeffCaptureView({ response }: { response: Singl
 
       <DeviceInfoTable deviceInfo={deviceInfo} />
 
-      <LineAnalysisChart title="All Channels Magnitude Response" subtitle="" yLabel="Magnitude (dB)" series={magnitudeSeries} />
+      <SeriesVisibilityChips
+        series={magnitudeSeries}
+        visibility={combinedVisibility}
+        onToggle={(label) => setCombinedVisibility((current) => ({ ...current, [label]: current[label] === false }))}
+      />
+      <LineAnalysisChart title="All Channels Magnitude Response" subtitle="" yLabel="Magnitude (dB)" showLegend={false} series={visibleMagnitudeSeries} />
 
       <div className="analysis-channels-grid">
         {analysis.map((channel, index) => {
