@@ -50,6 +50,41 @@ Then re-run `./install.sh`.
 - verify `.env` `VITE_PYPNM_API_BASE_URL` if YAML fallback is being used
 - check browser devtools network tab for failing request paths/statuses
 
+## Request form rejects MAC or IP input
+
+The UI now validates common network inputs before submit.
+
+Checks include:
+
+- MAC address must resolve to 12 hex characters
+- IP address must be valid IPv4 or IPv6 where accepted
+- TFTP IPv4 must be valid IPv4 when provided
+- TFTP IPv6 must be valid IPv6 when provided
+
+Examples of accepted MAC delimiters:
+
+- `aa:bb:cc:dd:ee:ff`
+- `aa-bb-cc-dd-ee-ff`
+- `aa.bb.cc.dd.ee.ff`
+
+If a field is still rejected:
+
+- remove mixed delimiter styles from the same value
+- remove non-hex characters from MAC input
+- verify IPv4 octets are within `0-255`
+- verify IPv6 uses a valid compressed or full notation
+
+## Files hexdump or analysis opens a blank or missing page
+
+The Files workflow hands hexdump and analysis payloads to a dedicated browser
+tab through browser storage.
+
+If the new tab looks wrong:
+
+- make sure browser popups are allowed for the WebUI origin
+- retry the action from the `Files` page
+- hard refresh the new tab if the browser cached an older bundle
+
 ## `pypnm-webui: command not found`
 
 Re-register the local CLI from the repo root:

@@ -65,6 +65,7 @@ npm run docs:serve
 
 - [Documentation Index](docs/index.md)
 - [Getting Started](docs/user/getting-started.md)
+- [Install And Bootstrap](docs/user/install-and-bootstrap.md)
 - [Release Helpers](docs/user/release-helpers.md)
 - [Runtime Configuration](docs/user/runtime-configuration.md)
 - [Using The UI](docs/user/using-the-ui.md)

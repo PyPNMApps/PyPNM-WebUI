@@ -10,6 +10,13 @@
 - [Release Helpers](user/release-helpers.md)
 - [Release Workflow](user/release-workflow.md)
 
+Current user-facing areas documented there include:
+
+- runtime target selection and config-menu usage
+- operations and spectrum-analyzer workflows
+- Files browsing, hexdump, JSON, and analysis flows
+- health, settings, and about pages
+
 ## Development Documentation
 
 - [Development Workflow](development/workflow.md)

@@ -48,3 +48,16 @@ Open:
 - Open `Health` page and verify backend connectivity.
 - Open `Operations` and confirm the capture pages are using the selected
   instance defaults.
+- Open `About` and confirm the loaded WebUI version.
+
+## 5. Common first workflows
+
+- `PNM -> Spectrum Analyzer` for friendly, full-band, OFDM, and SCQAM capture flows
+- `Files` for stored capture search, hexdump, JSON inspection, and file analysis
+
+Request forms validate common network fields before submit:
+
+- `MAC Address`
+- `IP Address`
+- `TFTP IPv4`
+- `TFTP IPv6`

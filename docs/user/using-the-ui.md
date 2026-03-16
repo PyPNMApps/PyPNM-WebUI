@@ -28,29 +28,67 @@ The `Operations` entry opens the endpoint navigation menu.
 Current implemented groups include:
 
 - `Device`
-- `Operations`
 - `PNM`
+- `DOCSIS 3.0`
+- `DOCSIS 3.1`
+- `DOCSIS 4.0`
+
+Current `PNM -> Spectrum Analyzer` entries include:
+
+- `Friendly`
+- `Full Band`
+- `OFDM`
+- `SCQAM`
+
+All operation pages currently expose:
+
+- request form
+- visible waiting indicator while data is being collected
+- right-aligned `Download JSON` action for the current response
+- bound visual below the form
+
+## Input Validation
+
+Request forms now validate common network fields in the browser before submit.
+
+Validated fields include:
+
+- `MAC Address`
+- `IP Address`
+- `TFTP IPv4`
+- `TFTP IPv6`
+
+Rules:
+
+- MAC address may use any common delimiter
+- the MAC must still resolve to exactly 12 hex characters
+- IP address accepts either IPv4 or IPv6 where that field allows it
+- TFTP IPv4 requires valid IPv4 when present
+- TFTP IPv6 requires valid IPv6 when present
 
 ## Files
 
 The `Files` tab is the dedicated PyPNM file-manager surface.
 
-Current first slice:
+Current behavior:
 
 - browse registered MAC addresses with stored PNM files
 - search file entries by MAC address
 - download a stored file by transaction ID
 - download by selected MAC archive, stored filename, or operation ID
 - upload a raw PNM file into the PyPNM file ledger
-- inspect a transaction with hexdump or backend-triggered analysis
+- inspect a transaction with:
+  - `Hexdump` in a dedicated browser tab
+  - `JSON` inline on the Files page
+  - `Analyze` in a dedicated browser tab
 
-Later slices will add:
-- analysis-specific visuals for supported uploaded PNM file types
+Supported file analysis visuals currently route by PNM file type into matching
+capture visuals where available.
 
 ## Recommended workflow
 
 1. `Health`
-   - confirm API status and metadata.
+   - confirm API status and metadata for all configured agents.
 2. `Operations`
    - choose the endpoint visual you want to run from the operations menu.
 3. `PyPNM Target`
@@ -67,6 +105,15 @@ Later slices will add:
 - configured instance count
 - runtime health path from YAML config
 - selected instance request defaults for MAC, IP, and SNMP RW community
+
+## About
+
+`About` displays:
+
+- a brief product description
+- the repository link
+- the current loaded WebUI version
+- the latest GitHub tag discovered from the remote repository
 
 ## Runtime Config Changes
 
