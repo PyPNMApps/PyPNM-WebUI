@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 
-import { operationNavigationItems } from "@/features/operations/operationsNavigation";
+import { operationsMenuNavigationItems } from "@/features/operations/operationsNavigation";
 
 function uniqueValues(values: string[]): string[] {
   return [...new Set(values)];
@@ -12,7 +12,7 @@ export function OperationsMenu() {
   const isActive = location.pathname.startsWith("/operations");
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
-  const levelOneItems = uniqueValues(operationNavigationItems.map((item) => item.menuPath[0]));
+  const levelOneItems = uniqueValues(operationsMenuNavigationItems.map((item) => item.menuPath[0]));
 
   useEffect(() => {
     setIsOpen(false);
@@ -49,7 +49,7 @@ export function OperationsMenu() {
       <div className="operations-menu-popover">
         <div className="operations-menu-columns">
           {levelOneItems.map((levelOne) => {
-            const matchingItems = operationNavigationItems.filter((item) => item.menuPath[0] === levelOne);
+            const matchingItems = operationsMenuNavigationItems.filter((item) => item.menuPath[0] === levelOne);
             const levelTwoItems = uniqueValues(matchingItems.map((item) => item.menuPath[1]));
 
             return (

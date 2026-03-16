@@ -46,12 +46,13 @@ Open:
 
 - Use the top-bar `PyPNM Agent` dropdown to confirm the active instance from the runtime YAML config.
 - Open `Health` page and verify backend connectivity.
-- Open `Operations` and confirm the capture pages are using the selected
+- Open `Single Capture` and confirm the PNM capture pages are using the selected
   instance defaults.
 - Open `About` and confirm the loaded WebUI version.
 
 ## 5. Common first workflows
 
+- `Single Capture` for one-shot PNM capture flows such as RxMER, histogram, FEC summary, modulation profile, and OFDMA pre-equalization
 - `Advanced -> RxMER`, `Channel Estimation`, or `OFDMA PreEq` for stateful multi-capture, polling, stop, results ZIP, and reusable analysis
 - `PNM -> Spectrum Analyzer` for friendly, full-band, OFDM, and SCQAM capture flows
 - `Files` for stored capture search, hexdump, JSON inspection, and file analysis

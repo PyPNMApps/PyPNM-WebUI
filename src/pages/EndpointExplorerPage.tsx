@@ -1,4 +1,4 @@
-import { Navigate, useLocation } from "react-router-dom";
+import { NavLink, Navigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 
@@ -33,7 +33,7 @@ import { SingleChannelEstCoeffCaptureView } from "@/features/operations/SingleCh
 import { SingleConstellationDisplayCaptureView } from "@/features/operations/SingleConstellationDisplayCaptureView";
 import { SingleDeviceEventLogView } from "@/features/operations/SingleDeviceEventLogView";
 import { SingleFecSummaryCaptureView } from "@/features/operations/SingleFecSummaryCaptureView";
-import { getOperationByRoutePath, operationNavigationItems } from "@/features/operations/operationsNavigation";
+import { getOperationByRoutePath, operationNavigationItems, singleCaptureNavigationItems } from "@/features/operations/operationsNavigation";
 import { SingleHistogramCaptureView } from "@/features/operations/SingleHistogramCaptureView";
 import { SingleInterfaceStatsView } from "@/features/operations/SingleInterfaceStatsView";
 import { SingleModulationProfileCaptureView } from "@/features/operations/SingleModulationProfileCaptureView";
@@ -125,6 +125,7 @@ function buildJsonFilename(label: string): string {
 export function EndpointExplorerPage() {
   const location = useLocation();
   const { selectedInstance } = useInstanceConfig();
+  const isSingleCaptureRoute = location.pathname.startsWith("/single-capture");
   const [atdmaChannelStatsResponse, setAtdmaChannelStatsResponse] = useState<AtdmaChannelStatsResponse>(singleAtdmaChannelStatsFixture);
   const [fddDiplexerBandEdgeCapabilityResponse, setFddDiplexerBandEdgeCapabilityResponse] = useState<FddDiplexerBandEdgeCapabilityResponse>(singleFddDiplexerBandEdgeCapabilityFixture);
   const [fddSystemDiplexerConfigurationResponse, setFddSystemDiplexerConfigurationResponse] = useState<FddSystemDiplexerConfigurationResponse>(singleFddSystemDiplexerConfigurationFixture);
@@ -331,7 +332,12 @@ export function EndpointExplorerPage() {
   });
 
   if (!selectedOperation) {
-    return <Navigate to={operationNavigationItems[0]?.routePath ?? "/"} replace />;
+    return (
+      <Navigate
+        to={isSingleCaptureRoute ? (singleCaptureNavigationItems[0]?.routePath ?? "/") : (operationNavigationItems[0]?.routePath ?? "/")}
+        replace
+      />
+    );
   }
 
   const selectedResponse = selectedOperation.id === "docs-if30-ds-scqam-chan-codeworderrorrate"
@@ -386,6 +392,15 @@ export function EndpointExplorerPage() {
 
   return (
     <>
+      {isSingleCaptureRoute ? (
+        <nav className="advanced-subnav">
+          {singleCaptureNavigationItems.map((item) => (
+            <NavLink key={item.id} to={item.routePath} className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+      ) : null}
       <PageHeader title={selectedOperation.label} subtitle="" />
       <Panel title="Capture Inputs">
         {selectedOperation.id === "docs-if30-ds-scqam-chan-codeworderrorrate" ? (

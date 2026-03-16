@@ -4,6 +4,7 @@
 
 The top navigation includes:
 - `Settings`
+- `Single Capture`
 - `Operations`
 - `Advanced`
 - `Files`
@@ -23,16 +24,40 @@ Important:
 - after changing that file, reload the browser page so the updated runtime config
   is loaded
 
+## Single Capture
+
+The `Single Capture` tab is the dedicated one-shot PNM capture area.
+
+Current workflows:
+
+- `RxMER`
+- `Channel Est Coeff`
+- `Histogram`
+- `FEC Summary`
+- `Constellation Display`
+- `Modulation Profile`
+- `OFDMA PreEqualization`
+
+Each Single Capture page includes:
+
+- request form
+- visible waiting indicator while data is being collected
+- right-aligned `Download JSON` action for the current response
+- bound visual below the form
+
 ## Operations Menu
 
-The `Operations` entry opens the endpoint navigation menu.
+The `Operations` entry opens the endpoint navigation menu for non-single-capture operation areas.
 Current implemented groups include:
 
 - `Device`
-- `PNM`
 - `DOCSIS 3.0`
 - `DOCSIS 3.1`
 - `DOCSIS 4.0`
+
+Current `PNM` operations in the menu are:
+
+- `Spectrum Analyzer`
 
 Current `PNM -> Spectrum Analyzer` entries include:
 
@@ -136,8 +161,8 @@ capture visuals where available.
 
 1. `Health`
    - confirm API status and metadata for all configured agents.
-2. `Operations`
-   - choose the endpoint visual you want to run from the operations menu.
+2. `Single Capture` or `Operations`
+   - choose the workflow area you want to run.
 3. `PyPNM Agent`
    - switch to the correct configured backend instance for that operation.
 4. request form

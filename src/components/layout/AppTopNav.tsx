@@ -5,6 +5,7 @@ import { OperationsMenu } from "@/features/operations/components/OperationsMenu"
 
 const links = [
   ["/settings", "Settings"],
+  ["/single-capture", "Single Capture"],
   ["/advanced", "Advanced"],
   ["/files", "Files"],
   ["/health", "Health"],
@@ -26,8 +27,11 @@ export function AppTopNav() {
         <NavLink to={links[0][0]} className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
           {links[0][1]}
         </NavLink>
+        <NavLink to={links[1][0]} className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
+          {links[1][1]}
+        </NavLink>
         <OperationsMenu />
-        {links.slice(1).map(([to, label]) => (
+        {links.slice(2).map(([to, label]) => (
           <NavLink key={to} to={to} className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
             {label}
           </NavLink>
