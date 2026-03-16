@@ -215,6 +215,137 @@ export interface SingleHistogramCaptureRequest {
   };
 }
 
+export interface SingleSpectrumFriendlyCaptureRequest {
+  cable_modem: {
+    mac_address: string;
+    ip_address: string;
+    pnm_parameters: {
+      tftp: {
+        ipv4: string;
+        ipv6: string;
+      };
+    };
+    snmp: {
+      snmpV2C: {
+        community: string;
+      };
+    };
+  };
+  analysis: {
+    type: "basic";
+    output: {
+      type: "json";
+    };
+    plot: {
+      ui: {
+        theme: "dark";
+      };
+    };
+    spectrum_analysis: {
+      moving_average: {
+        points: number;
+      };
+    };
+  };
+  capture_parameters: {
+    inactivity_timeout: number;
+    first_segment_center_freq: number;
+    last_segment_center_freq: number;
+    resolution_bw: number;
+    noise_bw: number;
+    window_function: number;
+    num_averages: number;
+    spectrum_retrieval_type: number;
+  };
+}
+
+export interface SingleSpectrumFullBandCaptureRequest {
+  cable_modem: {
+    mac_address: string;
+    ip_address: string;
+    pnm_parameters: {
+      tftp: {
+        ipv4: string;
+        ipv6: string;
+      };
+    };
+    snmp: {
+      snmpV2C: {
+        community: string;
+      };
+    };
+  };
+  analysis: {
+    type: "basic";
+    output: {
+      type: "json";
+    };
+    plot: {
+      ui: {
+        theme: "dark";
+      };
+    };
+    spectrum_analysis: {
+      moving_average: {
+        points: number;
+      };
+    };
+  };
+  capture_parameters: {
+    inactivity_timeout: number;
+    direction: "downstream" | "upstream";
+    resolution_bw: number;
+    noise_bw: number;
+    window_function: number;
+    num_averages: number;
+    spectrum_retrieval_type: number;
+  };
+}
+
+export interface SingleSpectrumOfdmCaptureRequest {
+  cable_modem: {
+    mac_address: string;
+    ip_address: string;
+    pnm_parameters: {
+      tftp: {
+        ipv4: string;
+        ipv6: string;
+      };
+      capture: {
+        channel_ids: number[];
+      };
+    };
+    snmp: {
+      snmpV2C: {
+        community: string;
+      };
+    };
+  };
+  analysis: {
+    type: "basic";
+    output: {
+      type: "json";
+    };
+    plot: {
+      ui: {
+        theme: "dark";
+      };
+    };
+    spectrum_analysis: {
+      moving_average: {
+        points: number;
+      };
+    };
+  };
+  capture_parameters: {
+    number_of_averages: number;
+    resolution_bandwidth_hz: number;
+    spectrum_retrieval_type: number;
+  };
+}
+
+export type SingleSpectrumScqamCaptureRequest = SingleSpectrumOfdmCaptureRequest;
+
 export interface DeviceConnectRequest {
   cable_modem: {
     mac_address: string;
@@ -844,6 +975,100 @@ export interface SingleHistogramCaptureResponse {
   message?: string | null;
   data?: {
     analysis?: SingleHistogramAnalysisEntry[];
+  };
+}
+
+export interface SingleSpectrumFriendlyAnalysisEntry {
+  device_details?: {
+    system_description?: SingleRxMerSystemDescription;
+  };
+  capture_parameters?: {
+    inactivity_timeout?: number;
+    first_segment_center_freq?: number;
+    last_segment_center_freq?: number;
+    segment_freq_span?: number;
+    num_bins_per_segment?: number;
+    noise_bw?: number;
+    window_function?: number;
+    num_averages?: number;
+    spectrum_retrieval_type?: number;
+  };
+  signal_analysis?: {
+    bin_bandwidth?: number;
+    segment_length?: number;
+    frequencies?: number[];
+    magnitudes?: number[];
+    window_average?: {
+      points?: number;
+      magnitudes?: number[];
+    };
+    channel_power_dbmv?: number;
+  };
+}
+
+export interface SingleSpectrumFriendlyCaptureResponse {
+  system_description?: SingleRxMerSystemDescription;
+  mac_address?: string;
+  status?: number;
+  message?: string | null;
+  data?: {
+    analysis?: SingleSpectrumFriendlyAnalysisEntry[];
+  };
+}
+
+export interface SpectrumOfdmMeasurementStatsEntry {
+  index?: number;
+  entry?: {
+    docsIf3CmSpectrumAnalysisCtrlCmdEnable?: boolean;
+    docsIf3CmSpectrumAnalysisCtrlCmdInactivityTimeout?: number;
+    docsIf3CmSpectrumAnalysisCtrlCmdFirstSegmentCenterFrequency?: number;
+    docsIf3CmSpectrumAnalysisCtrlCmdLastSegmentCenterFrequency?: number;
+    docsIf3CmSpectrumAnalysisCtrlCmdSegmentFrequencySpan?: number;
+    docsIf3CmSpectrumAnalysisCtrlCmdNumBinsPerSegment?: number;
+    docsIf3CmSpectrumAnalysisCtrlCmdEquivalentNoiseBandwidth?: number;
+    docsIf3CmSpectrumAnalysisCtrlCmdWindowFunction?: number;
+    docsIf3CmSpectrumAnalysisCtrlCmdNumberOfAverages?: number;
+    docsIf3CmSpectrumAnalysisCtrlCmdFileEnable?: boolean;
+    docsIf3CmSpectrumAnalysisCtrlCmdMeasStatus?: string;
+    docsIf3CmSpectrumAnalysisCtrlCmdFileName?: string;
+  };
+  channel_stats?: If31DsOfdmChannelStatsEntry;
+}
+
+export interface SingleSpectrumOfdmAnalysisEntry extends SingleSpectrumFriendlyAnalysisEntry {
+  pnm_header?: {
+    capture_time?: number;
+  };
+  mac_address?: string;
+  channel_id?: number;
+}
+
+export interface SingleSpectrumOfdmCaptureResponse {
+  system_description?: SingleRxMerSystemDescription;
+  mac_address?: string;
+  status?: number;
+  message?: string | null;
+  data?: {
+    analyses?: SingleSpectrumOfdmAnalysisEntry[];
+    measurement_stats?: SpectrumOfdmMeasurementStatsEntry[];
+  };
+}
+
+export interface SpectrumScqamMeasurementStatsEntry extends Omit<SpectrumOfdmMeasurementStatsEntry, "channel_stats"> {
+  channel_stats?: DsScqamChannelEntry;
+}
+
+export type SingleSpectrumScqamAnalysisEntry = SingleSpectrumOfdmAnalysisEntry;
+
+export interface SingleSpectrumScqamCaptureResponse {
+  system_description?: SingleRxMerSystemDescription;
+  mac_address?: string;
+  status?: number;
+  message?: string | null;
+  data?: {
+    analyses?: SingleSpectrumScqamAnalysisEntry[];
+    primative?: unknown;
+    measurement_stats?: SpectrumScqamMeasurementStatsEntry[];
   };
 }
 

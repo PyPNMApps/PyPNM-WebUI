@@ -30,6 +30,9 @@
   via a common constant instead of repeating inline objects.
 - Validate external API payloads at boundaries (for example with Zod).
 - Prefer shared type aliases/interfaces over ad-hoc inline types.
+- For large integer-style UI inputs such as Hz, bandwidth, or bin counts,
+  parse user-entered separators through a shared numeric-input utility
+  rather than relying on endpoint-local string cleanup.
 
 ## Architecture Constraints (Required)
 

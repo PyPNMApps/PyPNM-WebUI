@@ -21,8 +21,8 @@ instances:
       interval_ms: 5000
     request_defaults:
       cable_modem:
-        mac_address: B0:F5:30:83:69:C0
-        ip_address: 172.19.32.150
+        mac_address: FC:77:7B:0B:1B:E0
+        ip_address: 172.19.32.53
       tftp:
         ipv4: 172.19.8.28
         ipv6: ::1

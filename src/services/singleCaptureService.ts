@@ -8,6 +8,9 @@ import type {
   SingleHistogramCaptureRequest,
   SingleModulationProfileCaptureRequest,
   SingleRxMerCaptureRequest,
+  SingleSpectrumOfdmCaptureRequest,
+  SingleSpectrumFullBandCaptureRequest,
+  SingleSpectrumFriendlyCaptureRequest,
 } from "@/types/api";
 
 export async function runSingleCaptureEndpoint<TResponse>(
@@ -21,7 +24,10 @@ export async function runSingleCaptureEndpoint<TResponse>(
     | SingleHistogramCaptureRequest
     | SingleFecSummaryCaptureRequest
     | SingleConstellationDisplayCaptureRequest
-    | SingleModulationProfileCaptureRequest,
+    | SingleModulationProfileCaptureRequest
+    | SingleSpectrumOfdmCaptureRequest
+    | SingleSpectrumFullBandCaptureRequest
+    | SingleSpectrumFriendlyCaptureRequest,
   timeoutMs?: number,
 ): Promise<TResponse> {
   const response = await requestWithBaseUrl<TResponse>(baseUrl, {
