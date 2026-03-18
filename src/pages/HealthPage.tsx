@@ -30,7 +30,38 @@ function formatBytes(bytes: number | undefined): string {
   if (typeof bytes !== "number" || !Number.isFinite(bytes)) {
     return "n/a";
   }
-  return bytes.toLocaleString();
+  const units = ["B", "KB", "MB", "GB", "TB"];
+  let value = bytes;
+  let unitIndex = 0;
+
+  while (value >= 1024 && unitIndex < units.length - 1) {
+    value /= 1024;
+    unitIndex += 1;
+  }
+
+  const precision = unitIndex === 0 ? 0 : 1;
+  return `${value.toFixed(precision)} ${units[unitIndex]}`;
+}
+
+function formatEpoch(epochSeconds: number | undefined): string {
+  if (typeof epochSeconds !== "number" || !Number.isFinite(epochSeconds)) {
+    return "n/a";
+  }
+
+  return new Date(epochSeconds * 1000).toLocaleString();
+}
+
+function formatDirectorySizes(directories: Record<string, number> | undefined): string {
+  if (!directories) {
+    return "n/a";
+  }
+
+  const entries = Object.entries(directories).sort((left, right) => right[1] - left[1]);
+  if (entries.length === 0) {
+    return "n/a";
+  }
+
+  return entries.map(([name, size]) => `${name}: ${formatBytes(size)}`).join(" | ");
 }
 
 export function HealthPage() {
@@ -60,8 +91,11 @@ export function HealthPage() {
       service: data?.service?.name ?? "n/a",
       version: data?.service?.version ?? "n/a",
       uptime: formatUptime(data?.uptime?.uptime),
+      starttime: formatEpoch(data?.uptime?.starttime),
+      memory: formatBytes(data?.memory?.rss_bytes),
       dataPath: data?.data?.path ?? "n/a",
       dataSize: formatBytes(data?.data?.size_bytes),
+      dataDirectories: formatDirectorySizes(data?.data?.directories),
     };
   });
 
@@ -84,9 +118,12 @@ export function HealthPage() {
                 <th>Message</th>
                 <th>Service</th>
                 <th>Version</th>
+                <th>Start Time</th>
                 <th>Uptime</th>
+                <th>Memory</th>
                 <th>Data Path</th>
                 <th>Data Size</th>
+                <th>.data Directories</th>
               </tr>
             </thead>
             <tbody>
@@ -100,9 +137,12 @@ export function HealthPage() {
                   <td>{row.message}</td>
                   <td>{row.service}</td>
                   <td>{row.version}</td>
+                  <td className="mono">{row.starttime}</td>
                   <td className="mono">{row.uptime}</td>
+                  <td className="mono">{row.memory}</td>
                   <td className="mono">{row.dataPath}</td>
                   <td className="mono">{row.dataSize}</td>
+                  <td className="mono">{row.dataDirectories}</td>
                 </tr>
               ))}
             </tbody>

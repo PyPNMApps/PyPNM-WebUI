@@ -23,11 +23,16 @@ export interface HealthDataInfo {
   directories?: Record<string, number>;
 }
 
+export interface HealthMemoryInfo {
+  rss_bytes?: number;
+}
+
 export interface HealthResponse {
   status?: ApiStatus | string;
   message?: string;
   service?: HealthServiceInfo;
   uptime?: HealthUptimeInfo;
+  memory?: HealthMemoryInfo;
   data?: HealthDataInfo;
 }
 
