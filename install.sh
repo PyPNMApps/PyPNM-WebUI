@@ -271,19 +271,23 @@ ensure_env_file() {
   fi
 }
 
+run_isolated_venv_python() {
+  env -u PYTHONPATH -u PYTHONHOME .venv/bin/python -I "$@"
+}
+
 ensure_python_venv() {
   if [ ! -d .venv ]; then
     log "Creating Python virtual environment (.venv)"
-    "${PYTHON_BIN}" -m venv .venv
+    env -u PYTHONPATH -u PYTHONHOME "${PYTHON_BIN}" -I -m venv .venv
   else
     log "Keeping existing Python virtual environment (.venv)"
   fi
 
   log "Installing Python release-tool dependencies"
-  .venv/bin/python -m pip install --upgrade pip >/dev/null
-  .venv/bin/python -m pip install -r tools/release/requirements.txt >/dev/null
+  run_isolated_venv_python -m pip install --upgrade pip >/dev/null
+  run_isolated_venv_python -m pip install -r tools/release/requirements.txt >/dev/null
   log "Installing Python documentation dependencies"
-  .venv/bin/python -m pip install -r requirements-docs.txt >/dev/null
+  run_isolated_venv_python -m pip install -r requirements-docs.txt >/dev/null
 }
 
 merge_runtime_config_override() {
