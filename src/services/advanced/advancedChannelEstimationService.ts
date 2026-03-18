@@ -1,5 +1,6 @@
 import { requestWithBaseUrl } from "@/services/http";
 import {
+  ADVANCED_OPERATION_ANALYSIS_TIMEOUT_MS,
   ADVANCED_OPERATION_START_TIMEOUT_MS,
   ADVANCED_OPERATION_STATUS_TIMEOUT_MS,
 } from "@/lib/constants";
@@ -46,7 +47,7 @@ export async function analyzeAdvancedChannelEstimation(baseUrl: string, payload:
     method: "POST",
     url: `${ADVANCED_CHANNEL_ESTIMATION_BASE}/analysis`,
     data: payload,
-    timeout: ADVANCED_OPERATION_START_TIMEOUT_MS,
+    timeout: ADVANCED_OPERATION_ANALYSIS_TIMEOUT_MS,
   });
   return response.data;
 }

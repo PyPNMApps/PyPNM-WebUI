@@ -7,6 +7,7 @@ NODE_MAJOR="22"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 UPDATE_WEBUI=0
 UPDATE_TAG=""
+UPDATE_BRANCH_PREFIX="webui-"
 RUNTIME_TEMPLATE_PATH="public/config/pypnm-instances.yaml"
 RUNTIME_LOCAL_PATH="public/config/pypnm-instances.local.yaml"
 
@@ -337,8 +338,10 @@ run_update_checkout() {
 
   local target_ref
   target_ref="$(resolve_update_ref)"
-  log "Checking out ${target_ref}"
-  git checkout --detach "$target_ref"
+  local target_branch
+  target_branch="${UPDATE_BRANCH_PREFIX}${target_ref}"
+  log "Checking out ${target_ref} on branch ${target_branch}"
+  git checkout -B "$target_branch" "$target_ref"
 }
 
 main() {
@@ -359,7 +362,7 @@ main() {
   ensure_env_file
 
   log "Installing npm dependencies"
-  npm install
+  npm ci
 
   log "Registering pypnm-webui CLI"
   npm link >/dev/null
@@ -370,6 +373,9 @@ main() {
   log "Install complete"
   if [ "$UPDATE_WEBUI" -eq 1 ]; then
     log "Update complete"
+    log "Checked out update branch: $(git branch --show-current)"
+    log "Restart any running WebUI server to load the updated version"
+    log "If About still shows the prior version, hard refresh the browser"
   fi
   log "Start dev server with: pypnm-webui serve"
   log "Edit runtime config with: pypnm-webui config-menu"
