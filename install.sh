@@ -278,6 +278,8 @@ run_isolated_venv_python() {
 ensure_cli_shim() {
   local user_bin_dir="$HOME/.local/bin"
   local shim_path="${user_bin_dir}/pypnm-webui"
+  local path_export='export PATH="$HOME/.local/bin:$PATH"'
+  local shell_profiles=("$HOME/.bashrc" "$HOME/.profile")
 
   mkdir -p "$user_bin_dir"
   cat >"$shim_path" <<EOF
@@ -291,8 +293,18 @@ EOF
     *":${user_bin_dir}:"*)
       ;;
     *)
+      local profile
+      for profile in "${shell_profiles[@]}"; do
+        if [ ! -f "$profile" ]; then
+          touch "$profile"
+        fi
+        if ! grep -Fqx "$path_export" "$profile"; then
+          printf '\n%s\n' "$path_export" >>"$profile"
+          log "Added ${user_bin_dir} to PATH in ${profile}"
+        fi
+      done
       log "${user_bin_dir} is not on PATH in this shell"
-      log "Add it to your shell profile or run: export PATH=\"${user_bin_dir}:\$PATH\""
+      log "Run: source ~/.bashrc"
       ;;
   esac
 }
