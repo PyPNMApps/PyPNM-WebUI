@@ -26,7 +26,7 @@ Then reinstall dependencies if needed:
 
 ```bash
 rm -rf node_modules package-lock.json
-npm install
+npm ci
 npm link
 ```
 
@@ -40,6 +40,30 @@ source ~/.bashrc
 ```
 
 Then re-run `./install.sh`.
+
+## Clean install shows `pypnm-docsis` pip dependency warnings
+
+Cause:
+- the calling shell may have leaked Python project state into the install
+  process, typically through `PYTHONPATH` or `PYTHONHOME`.
+
+Current behavior:
+- `install.sh` now creates and uses `.venv` in isolated mode to avoid inheriting
+  those variables.
+
+If you still see the warning on an older checkout:
+
+```bash
+rm -rf .venv
+./install.sh
+```
+
+If you still see it after that, check:
+
+```bash
+echo "$PYTHONPATH"
+echo "$PYTHONHOME"
+```
 
 ## UI loads but API requests fail
 

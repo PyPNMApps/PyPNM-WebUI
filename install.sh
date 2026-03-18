@@ -275,6 +275,28 @@ run_isolated_venv_python() {
   env -u PYTHONPATH -u PYTHONHOME .venv/bin/python -I "$@"
 }
 
+ensure_cli_shim() {
+  local user_bin_dir="$HOME/.local/bin"
+  local shim_path="${user_bin_dir}/pypnm-webui"
+
+  mkdir -p "$user_bin_dir"
+  cat >"$shim_path" <<EOF
+#!/usr/bin/env bash
+exec "${ROOT_DIR}/tools/cli/pypnm-webui.js" "\$@"
+EOF
+  chmod +x "$shim_path"
+  log "Installed CLI shim at ${shim_path}"
+
+  case ":$PATH:" in
+    *":${user_bin_dir}:"*)
+      ;;
+    *)
+      log "${user_bin_dir} is not on PATH in this shell"
+      log "Add it to your shell profile or run: export PATH=\"${user_bin_dir}:\$PATH\""
+      ;;
+  esac
+}
+
 ensure_python_venv() {
   if [ ! -d .venv ]; then
     log "Creating Python virtual environment (.venv)"
@@ -370,6 +392,7 @@ main() {
 
   log "Registering pypnm-webui CLI"
   npm link >/dev/null
+  ensure_cli_shim
 
   ensure_python_venv
   merge_runtime_config_override

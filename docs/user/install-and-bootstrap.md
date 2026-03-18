@@ -60,8 +60,11 @@ sudo apt-get install -y git
 - installs and uses Node 22
 - sets Node 22 as the default
 - creates `.env` from `.env.example` if needed
-- runs `npm install`
+- runs `npm ci`
 - creates `.venv` and installs Python release-tool dependencies
+- installs Python dependencies in isolated mode so local `PYTHONPATH` or
+  `PYTHONHOME` values do not leak other project metadata into the WebUI
+  environment
 - refreshes `public/config/pypnm-instances.local.yaml` from the version-controlled
   template while preserving local values
 
@@ -71,8 +74,11 @@ When `--update-webui` is used:
 
 - the script fetches tags from `origin`
 - checks out the latest tag unless you provide one explicitly
+- creates or resets a local branch for that tag instead of leaving the repo in a
+  detached `HEAD` state
 - does not overwrite your active runtime config directly
 - merges your local runtime config values into the current template shape
+- reminds you to restart any running WebUI server after the update
 
 Runtime config model:
 

@@ -31,7 +31,7 @@ sudo apt-get install -y git
 ## Get PyPNM-WebUI
 
 ```bash
-git clone https://github.com/your-repo/PyPNM-WebUI.git
+git clone https://github.com/PyPNMApps/PyPNM-WebUI.git
 cd PyPNM-WebUI
 ```
 
