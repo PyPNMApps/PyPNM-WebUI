@@ -1,6 +1,13 @@
+import { useRef } from "react";
+
+import { ExportActions } from "@/components/common/ExportActions";
+import { downloadCsv } from "@/lib/export/csv";
+import { downloadSvgAsPng } from "@/lib/export/png";
+
 interface ModulationCountsChartProps {
   title: string;
   counts: Record<string, number> | undefined;
+  exportBaseName?: string;
 }
 
 interface ModulationEntry {
@@ -38,8 +45,9 @@ function toEntries(counts: Record<string, number> | undefined): ModulationEntry[
     });
 }
 
-export function ModulationCountsChart({ title, counts }: ModulationCountsChartProps) {
+export function ModulationCountsChart({ title, counts, exportBaseName }: ModulationCountsChartProps) {
   const entries = toEntries(counts);
+  const svgRef = useRef<SVGSVGElement | null>(null);
 
   if (!entries.length) {
     return null;
@@ -67,8 +75,26 @@ export function ModulationCountsChart({ title, counts }: ModulationCountsChartPr
     <div className="chart-frame">
       <div className="chart-header">
         <div className="chart-title">{title}</div>
+        {exportBaseName ? (
+          <ExportActions
+            onPng={() => {
+              if (!svgRef.current) return;
+              return downloadSvgAsPng(exportBaseName, svgRef.current);
+            }}
+            onCsv={() => downloadCsv(
+              exportBaseName,
+              entries.map((entry) => ({
+                key: entry.key,
+                label: entry.label,
+                qam_order: entry.order,
+                bits_per_symbol: entry.bits ?? "n/a",
+                carrier_count: entry.value,
+              })),
+            )}
+          />
+        ) : null}
       </div>
-      <svg className="chart-svg chart-svg-short" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
+      <svg ref={svgRef} className="chart-svg chart-svg-short" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
         {Array.from({ length: yTicks + 1 }, (_, index) => {
           const value = (yMax / yTicks) * index;
           const y = top + usableHeight - (value / yMax) * usableHeight;

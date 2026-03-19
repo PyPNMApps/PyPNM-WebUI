@@ -1498,6 +1498,21 @@ pre {
   background: rgba(121, 169, 255, 0.08);
 }
 
+.operations-export-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.chart-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 .analysis-chip-button {
   display: inline-flex;
   align-items: center;

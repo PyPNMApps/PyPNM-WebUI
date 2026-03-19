@@ -31,7 +31,7 @@ export function SingleHistogramCaptureView({ response }: { response: SingleHisto
 
       <DeviceInfoTable deviceInfo={deviceInfo} />
 
-      <HistogramBarChart title="Histogram Distribution" values={hitCounts} />
+      <HistogramBarChart title="Histogram Distribution" values={hitCounts} exportBaseName="single-histogram-distribution" />
     </div>
   );
 }

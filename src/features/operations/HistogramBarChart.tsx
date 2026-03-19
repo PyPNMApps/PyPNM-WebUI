@@ -1,9 +1,17 @@
+import { useRef } from "react";
+
+import { ExportActions } from "@/components/common/ExportActions";
+import { downloadCsv } from "@/lib/export/csv";
+import { downloadSvgAsPng } from "@/lib/export/png";
+
 interface HistogramBarChartProps {
   title: string;
   values: number[];
+  exportBaseName?: string;
 }
 
-export function HistogramBarChart({ title, values }: HistogramBarChartProps) {
+export function HistogramBarChart({ title, values, exportBaseName }: HistogramBarChartProps) {
+  const svgRef = useRef<SVGSVGElement | null>(null);
   if (!values.length) {
     return <p className="panel-copy">No histogram bins available.</p>;
   }
@@ -27,8 +35,17 @@ export function HistogramBarChart({ title, values }: HistogramBarChartProps) {
     <div className="chart-frame">
       <div className="chart-header">
         <div className="chart-title">{title}</div>
+        {exportBaseName ? (
+          <ExportActions
+            onPng={() => {
+              if (!svgRef.current) return;
+              return downloadSvgAsPng(exportBaseName, svgRef.current);
+            }}
+            onCsv={() => downloadCsv(exportBaseName, values.map((value, index) => ({ bin_index: index, hit_count: value })))}
+          />
+        ) : null}
       </div>
-      <svg className="chart-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
+      <svg ref={svgRef} className="chart-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
         {Array.from({ length: 5 }, (_, index) => {
           const value = (yMax / 4) * index;
           const y = top + usableHeight - (value / yMax) * usableHeight;

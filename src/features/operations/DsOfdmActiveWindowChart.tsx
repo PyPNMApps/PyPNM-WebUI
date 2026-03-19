@@ -1,3 +1,9 @@
+import { useRef } from "react";
+
+import { ExportActions } from "@/components/common/ExportActions";
+import { downloadCsv } from "@/lib/export/csv";
+import { downloadSvgAsPng } from "@/lib/export/png";
+
 interface DsOfdmActiveWindowDatum {
   label: string;
   zeroMhz: number;
@@ -12,9 +18,11 @@ interface DsOfdmActiveWindowChartProps {
   title: string;
   subtitle?: string;
   values: DsOfdmActiveWindowDatum[];
+  exportBaseName?: string;
 }
 
-export function DsOfdmActiveWindowChart({ title, subtitle, values }: DsOfdmActiveWindowChartProps) {
+export function DsOfdmActiveWindowChart({ title, subtitle, values, exportBaseName }: DsOfdmActiveWindowChartProps) {
+  const svgRef = useRef<SVGSVGElement | null>(null);
   if (!values.length) {
     return <p className="panel-copy">No OFDM active window data available.</p>;
   }
@@ -37,8 +45,17 @@ export function DsOfdmActiveWindowChart({ title, subtitle, values }: DsOfdmActiv
           <div className="chart-title">{title}</div>
           {subtitle ? <div className="chart-meta">{subtitle}</div> : null}
         </div>
+        {exportBaseName ? (
+          <ExportActions
+            onPng={() => {
+              if (!svgRef.current) return;
+              return downloadSvgAsPng(exportBaseName, svgRef.current);
+            }}
+            onCsv={() => downloadCsv(exportBaseName, values.map((value) => ({ ...value })))}
+          />
+        ) : null}
       </div>
-      <svg className="chart-svg-short" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
+      <svg ref={svgRef} className="chart-svg-short" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
         {values.map((value, index) => {
           const y = top + index * rowHeight + 8;
           const zeroX = scale(value.zeroMhz);

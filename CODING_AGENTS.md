@@ -65,6 +65,11 @@
 - When x-axis labels are large numeric values and horizontal rendering hurts readability, angle the labels so they remain visible and readable.
 - Prefer lazy-loading at route or page boundaries when it reduces initial bundle cost.
 - Do not micro-chunk small shared UI pieces; keep lazy-loading focused on meaningful page-level splits.
+- For generated modem-specific download artifacts, place the modem identity and
+  capture/export timestamp at the end of the filename in this suffix format:
+  `MAC-HHMM-YYYYMMDD`
+- For that modem-specific filename suffix, remove MAC delimiters so the MAC is
+  filename-safe and stable across export types.
 
 ## Environment And Configuration (Required)
 

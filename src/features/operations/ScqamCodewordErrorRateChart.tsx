@@ -1,3 +1,9 @@
+import { useRef } from "react";
+
+import { ExportActions } from "@/components/common/ExportActions";
+import { downloadCsv } from "@/lib/export/csv";
+import { downloadSvgAsPng } from "@/lib/export/png";
+
 interface ScqamCodewordErrorRateChartDatum {
   channelId: string;
   totalCodewords: number;
@@ -7,9 +13,11 @@ interface ScqamCodewordErrorRateChartDatum {
 interface ScqamCodewordErrorRateChartProps {
   title: string;
   values: ScqamCodewordErrorRateChartDatum[];
+  exportBaseName?: string;
 }
 
-export function ScqamCodewordErrorRateChart({ title, values }: ScqamCodewordErrorRateChartProps) {
+export function ScqamCodewordErrorRateChart({ title, values, exportBaseName }: ScqamCodewordErrorRateChartProps) {
+  const svgRef = useRef<SVGSVGElement | null>(null);
   if (!values.length) {
     return <p className="panel-copy">No SCQAM codeword error rate data available.</p>;
   }
@@ -41,8 +49,17 @@ export function ScqamCodewordErrorRateChart({ title, values }: ScqamCodewordErro
             Total Errors
           </span>
         </div>
+        {exportBaseName ? (
+          <ExportActions
+            onPng={() => {
+              if (!svgRef.current) return;
+              return downloadSvgAsPng(exportBaseName, svgRef.current);
+            }}
+            onCsv={() => downloadCsv(exportBaseName, values.map((value) => ({ ...value })))}
+          />
+        ) : null}
       </div>
-      <svg className="chart-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
+      <svg ref={svgRef} className="chart-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
         {Array.from({ length: 5 }, (_, index) => {
           const value = (yMax / 4) * index;
           const y = top + usableHeight - (value / yMax) * usableHeight;

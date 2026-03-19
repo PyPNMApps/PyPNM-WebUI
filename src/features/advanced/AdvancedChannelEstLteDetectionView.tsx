@@ -1,10 +1,14 @@
+import { ExportActions } from "@/components/common/ExportActions";
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { Panel } from "@/components/common/Panel";
+import { downloadCsv } from "@/lib/export/csv";
+import { buildExportBaseName } from "@/lib/export/naming";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import type { AdvancedMultiChanEstAnalysisResponse, AdvancedMultiChanEstLteDetectionResult } from "@/types/api";
 
 export function AdvancedChannelEstLteDetectionView({ response }: { response: AdvancedMultiChanEstAnalysisResponse }) {
   const results = (response.data?.results ?? []) as AdvancedMultiChanEstLteDetectionResult[];
+  const macAddress = response.device?.mac_address ?? response.mac_address;
   const deviceInfo = toDeviceInfo(
     response.device?.system_description ?? response.system_description,
     response.device?.mac_address ?? response.mac_address,
@@ -19,6 +23,17 @@ export function AdvancedChannelEstLteDetectionView({ response }: { response: Adv
             <div className="status-chip-row">
               <span className="analysis-chip"><b>Threshold</b> {channel.threshold?.toExponential?.(2) ?? "n/a"}</span>
               <span className="analysis-chip"><b>Anomalies</b> {channel.anomalies?.length ?? 0}</span>
+            </div>
+            <div className="operations-visual-actions">
+              <ExportActions
+                onCsv={() => downloadCsv(
+                  buildExportBaseName(macAddress, undefined, `advanced-channel-estimation-lte-detection-channel-${channel.channel_id}`),
+                  (channel.bin_widths ?? []).map((width, index) => ({
+                    bin_width_hz: width,
+                    anomaly_delta: channel.anomalies?.[index]?.toExponential?.(3) ?? "n/a",
+                  })),
+                )}
+              />
             </div>
             <div className="table-scroll">
               <table className="channel-metrics-table">

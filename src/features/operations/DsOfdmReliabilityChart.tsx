@@ -1,9 +1,16 @@
+import { useRef } from "react";
+
+import { ExportActions } from "@/components/common/ExportActions";
+import { downloadCsv } from "@/lib/export/csv";
+import { downloadSvgAsPng } from "@/lib/export/png";
+
 interface DsOfdmReliabilityChartProps {
   title: string;
   plcTotalCw: number;
   plcUnreliableCw: number;
   ncpTotalFields: number;
   ncpCrcFailures: number;
+  exportBaseName?: string;
 }
 
 function formatSi(value: number): string {
@@ -20,7 +27,9 @@ export function DsOfdmReliabilityChart({
   plcUnreliableCw,
   ncpTotalFields,
   ncpCrcFailures,
+  exportBaseName,
 }: DsOfdmReliabilityChartProps) {
+  const svgRef = useRef<SVGSVGElement | null>(null);
   const width = 520;
   const height = 220;
   const left = 42;
@@ -49,8 +58,22 @@ export function DsOfdmReliabilityChart({
             Errors
           </span>
         </div>
+        {exportBaseName ? (
+          <ExportActions
+            onPng={() => {
+              if (!svgRef.current) return;
+              return downloadSvgAsPng(exportBaseName, svgRef.current);
+            }}
+            onCsv={() => downloadCsv(exportBaseName, [
+              { metric: "plc_total_codewords", value: plcTotalCw },
+              { metric: "plc_unreliable_codewords", value: plcUnreliableCw },
+              { metric: "ncp_total_fields", value: ncpTotalFields },
+              { metric: "ncp_crc_failures", value: ncpCrcFailures },
+            ])}
+          />
+        ) : null}
       </div>
-      <svg className="chart-svg-short" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
+      <svg ref={svgRef} className="chart-svg-short" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
         {Array.from({ length: 5 }, (_, index) => {
           const value = (yMax / 4) * index;
           const y = top + usableHeight - (value / yMax) * usableHeight;

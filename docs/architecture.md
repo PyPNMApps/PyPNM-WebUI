@@ -29,6 +29,9 @@
   - `DeviceInfoTable`
   - `LineAnalysisChart`
   - `ChannelAnalysisCard`
+- `src/components/common/ExportActions.tsx` and `src/lib/export/` provide the
+  shared export framework so advanced and single-capture views reuse the same
+  PNG/CSV logic instead of implementing endpoint-local download code.
 - `src/pages/AnalysisViewerPage.tsx` composes those pieces into the current RxMER echo analysis route.
 - Current state: fixture-backed UI proving the analysis composition model without duplicating backend logic.
 

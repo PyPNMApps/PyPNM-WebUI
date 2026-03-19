@@ -1,3 +1,9 @@
+import { useRef } from "react";
+
+import { ExportActions } from "@/components/common/ExportActions";
+import { downloadCsv } from "@/lib/export/csv";
+import { downloadSvgAsPng } from "@/lib/export/png";
+
 interface OFDMAActiveWindowDatum {
   label: string;
   zeroMhz: number;
@@ -8,9 +14,11 @@ interface OFDMAActiveWindowDatum {
 interface OFDMAActiveWindowChartProps {
   title: string;
   values: OFDMAActiveWindowDatum[];
+  exportBaseName?: string;
 }
 
-export function OFDMAActiveWindowChart({ title, values }: OFDMAActiveWindowChartProps) {
+export function OFDMAActiveWindowChart({ title, values, exportBaseName }: OFDMAActiveWindowChartProps) {
+  const svgRef = useRef<SVGSVGElement | null>(null);
   if (!values.length) {
     return <p className="panel-copy">No OFDMA active window data available.</p>;
   }
@@ -28,8 +36,17 @@ export function OFDMAActiveWindowChart({ title, values }: OFDMAActiveWindowChart
     <div className="chart-frame">
       <div className="chart-header">
         <div className="chart-title">{title}</div>
+        {exportBaseName ? (
+          <ExportActions
+            onPng={() => {
+              if (!svgRef.current) return;
+              return downloadSvgAsPng(exportBaseName, svgRef.current);
+            }}
+            onCsv={() => downloadCsv(exportBaseName, values.map((value) => ({ ...value })))}
+          />
+        ) : null}
       </div>
-      <svg className="chart-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
+      <svg ref={svgRef} className="chart-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
         {values.map((value, index) => {
           const y = top + index * rowHeight + 8;
           const zeroX = left + ((value.zeroMhz - minX) / (maxX - minX || 1)) * usableWidth;

@@ -123,6 +123,15 @@ Advanced OFDMA PreEq analysis types:
 - `Group Delay`
 - `Echo Detection IFFT`
 
+Analysis export behavior:
+
+- SVG-backed charts expose per-panel `PNG` and `CSV` actions
+- table-backed analysis views expose per-panel `CSV` actions
+- chart CSV exports are derived from the same plotted series shown in the UI
+- table CSV exports are derived from the typed rows used to render the table
+- RxMER heat-map analysis currently exposes `CSV` export for source values;
+  PNG export is currently limited to SVG-backed charts
+
 ## Input Validation
 
 Request forms now validate common network fields in the browser before submit.

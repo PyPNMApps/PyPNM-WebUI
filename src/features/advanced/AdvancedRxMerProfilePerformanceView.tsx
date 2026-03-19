@@ -1,6 +1,9 @@
+import { ExportActions } from "@/components/common/ExportActions";
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { Panel } from "@/components/common/Panel";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
+import { downloadCsv } from "@/lib/export/csv";
+import { buildExportBaseName } from "@/lib/export/naming";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import type { ChartSeries } from "@/features/analysis/types";
 import type { AdvancedMultiRxMerAnalysisResponse, AdvancedMultiRxMerOfdmProfileChannel } from "@/types/api";
@@ -44,6 +47,7 @@ function formatCaptureTime(epoch: unknown): string {
 
 export function AdvancedRxMerProfilePerformanceView({ response }: { response: AdvancedMultiRxMerAnalysisResponse }) {
   const channels = Object.entries(response.data ?? {}) as Array<[string, AdvancedMultiRxMerOfdmProfileChannel]>;
+  const macAddress = response.device?.mac_address ?? response.mac_address;
   const deviceInfo = toDeviceInfo(
     response.device?.system_description ?? response.system_description,
     response.device?.mac_address ?? response.mac_address,
@@ -61,7 +65,48 @@ export function AdvancedRxMerProfilePerformanceView({ response }: { response: Ad
               subtitle={`Profiles: ${profiles.length}`}
               yLabel="MER (dB)"
               series={buildChannelSeries(channel)}
+              exportBaseName={buildExportBaseName(
+                macAddress,
+                Number((profiles[0] as { capture_time?: number } | undefined)?.capture_time),
+                `advanced-rxmer-profile-performance-channel-${channelId}`,
+              )}
             />
+            <div className="operations-visual-actions">
+              <ExportActions
+                onCsv={() => downloadCsv(
+                  buildExportBaseName(
+                    macAddress,
+                    Number((profiles[0] as { capture_time?: number } | undefined)?.capture_time),
+                    `advanced-rxmer-profile-performance-channel-${channelId}-table`,
+                  ),
+                  profiles.map((profile, index) => {
+                    const entry = profile as {
+                      capture_time?: number;
+                      profile_id?: number;
+                      capacity_delta?: number[];
+                      fec_summary?: {
+                        summary?: Array<{ summary?: { total_codewords?: number; corrected?: number; uncorrectable?: number } }>;
+                        total_codewords?: number;
+                        corrected?: number;
+                        uncorrectable?: number;
+                      };
+                    };
+                    const capacity = entry.capacity_delta ?? [];
+                    const summary = entry.fec_summary?.summary?.[0]?.summary ?? entry.fec_summary;
+                    return {
+                      profile_id: entry.profile_id ?? index,
+                      capture_time_utc: formatCaptureTime(entry.capture_time),
+                      capacity_delta_min: capacity.length ? Math.min(...capacity).toFixed(2) : "n/a",
+                      capacity_delta_avg: capacity.length ? (capacity.reduce((sum, value) => sum + value, 0) / capacity.length).toFixed(2) : "n/a",
+                      capacity_delta_max: capacity.length ? Math.max(...capacity).toFixed(2) : "n/a",
+                      total_codewords: summary?.total_codewords ?? "n/a",
+                      corrected: summary?.corrected ?? "n/a",
+                      uncorrectable: summary?.uncorrectable ?? "n/a",
+                    };
+                  }),
+                )}
+              />
+            </div>
             <div className="table-scroll">
               <table className="channel-metrics-table">
                 <thead>

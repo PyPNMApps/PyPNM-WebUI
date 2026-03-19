@@ -113,6 +113,7 @@ export function SingleUsOfdmaPreEqualizationView({ response }: { response: Singl
             subtitle="Primary OFDMA pre-equalization captures only"
             yLabel="dB"
             series={combinedMagnitudeSeries}
+            exportBaseName="single-us-ofdma-pre-eq-all-channels"
           />
         </Panel>
       ) : null}
@@ -233,6 +234,7 @@ export function SingleUsOfdmaPreEqualizationView({ response }: { response: Singl
                   yLabel="dB"
                   showLegend={false}
                   series={visibleChannelSeries}
+                  exportBaseName={`single-us-ofdma-pre-eq-frequency-response-channel-${channelId}`}
                 />
               </Panel>
 
@@ -255,6 +257,7 @@ export function SingleUsOfdmaPreEqualizationView({ response }: { response: Singl
                   yPadding={0.05}
                   showLegend={false}
                   series={visibleGroupDelay}
+                  exportBaseName={`single-us-ofdma-pre-eq-group-delay-channel-${channelId}`}
                 />
               </Panel>
 

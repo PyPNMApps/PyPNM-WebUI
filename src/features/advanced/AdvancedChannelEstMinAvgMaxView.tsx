@@ -2,6 +2,7 @@ import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { Panel } from "@/components/common/Panel";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import { CHART_SERIES_PALETTE, CHART_SERIES_PALETTE_SIZE } from "@/lib/constants";
+import { buildExportBaseName } from "@/lib/export/naming";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import type { ChartSeries } from "@/features/analysis/types";
 import type { AdvancedMultiChanEstAnalysisResponse, AdvancedMultiChanEstMinAvgMaxResult } from "@/types/api";
@@ -40,6 +41,7 @@ function buildAlignedAverageSeries(results: AdvancedMultiChanEstMinAvgMaxResult[
 
 export function AdvancedChannelEstMinAvgMaxView({ response }: { response: AdvancedMultiChanEstAnalysisResponse }) {
   const results = (response.data?.results ?? []) as AdvancedMultiChanEstMinAvgMaxResult[];
+  const macAddress = response.device?.mac_address ?? response.mac_address;
   const deviceInfo = toDeviceInfo(
     response.device?.system_description ?? response.system_description,
     response.device?.mac_address ?? response.mac_address,
@@ -54,6 +56,7 @@ export function AdvancedChannelEstMinAvgMaxView({ response }: { response: Advanc
           subtitle={`Channels: ${results.length}`}
           yLabel="RMER Chan Est (dB)"
           series={buildAlignedAverageSeries(results)}
+          exportBaseName={buildExportBaseName(macAddress, undefined, "advanced-channel-estimation-min-avg-max-all-channels")}
         />
       </Panel>
       <div className="if31-ds-ofdm-channel-grid">
@@ -64,6 +67,7 @@ export function AdvancedChannelEstMinAvgMaxView({ response }: { response: Advanc
               subtitle="Per-subcarrier Channel Estimation summary"
               yLabel="dB"
               series={buildMinAvgMaxSeries(channel)}
+              exportBaseName={buildExportBaseName(macAddress, undefined, `advanced-channel-estimation-min-avg-max-channel-${channel.channel_id}`)}
             />
           </Panel>
         ))}

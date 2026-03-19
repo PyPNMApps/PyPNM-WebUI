@@ -91,6 +91,7 @@ export function SingleDsScqamCodewordErrorRateView({ response }: { response: DsS
             totalCodewords: entry.totalCodewords,
             totalErrors: entry.totalErrors,
           }))}
+          exportBaseName="single-ds-scqam-codeword-error-rate"
         />
       </Panel>
 

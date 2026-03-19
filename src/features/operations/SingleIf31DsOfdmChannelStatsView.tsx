@@ -144,6 +144,7 @@ export function SingleIf31DsOfdmChannelStatsView({ response }: { response: If31D
             isPrimary: isPrimaryIndicator(channel.indicator),
             isBackupPrimary: isBackupPrimaryIndicator(channel.indicator),
           }))}
+          exportBaseName="single-if31-ds-ofdm-active-spectrum-windows"
         />
       </Panel>
 
@@ -185,6 +186,7 @@ export function SingleIf31DsOfdmChannelStatsView({ response }: { response: If31D
               plcUnreliableCw={channel.plcUnreliableCw}
               ncpTotalFields={channel.ncpTotalFields}
               ncpCrcFailures={channel.ncpCrcFailures}
+              exportBaseName={`single-if31-ds-ofdm-reliability-channel-${channel.channelId}`}
             />
             <div className="table-wrap">
               <table className="channel-metrics-table">

@@ -167,6 +167,7 @@ export function SingleModulationProfileCaptureView({ response }: { response: Sin
           showLegend={false}
           xDomain={combinedXDomain}
           yDomain={combinedYDomain}
+          exportBaseName="single-modulation-profile-all-channels"
         />
       </div>
 
@@ -192,6 +193,7 @@ export function SingleModulationProfileCaptureView({ response }: { response: Sin
                     profileColors[(profile.profile_id ?? index) % profileColors.length],
                   ),
                 )}
+                exportBaseName={`single-modulation-profile-channel-${channel.channel_id ?? "n/a"}`}
               />
             </div>
           </article>
