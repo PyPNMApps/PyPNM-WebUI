@@ -11,6 +11,10 @@ The top navigation includes:
 - `Health`
 - `About`
 
+The `Health` page includes per-agent `Reload` buttons and a `Reload All Web
+Services` action. These send `GET /pypnm/system/webService/reload` to one or
+all configured agents and then refresh the health table.
+
 The top bar also includes the `PyPNM Agent` dropdown sourced from:
 
 - `public/config/pypnm-instances.yaml`

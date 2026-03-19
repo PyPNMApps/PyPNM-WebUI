@@ -1,9 +1,9 @@
-import { useQueries } from "@tanstack/react-query";
+import { useMutation, useQueries } from "@tanstack/react-query";
 
 import { useInstanceConfig } from "@/app/useInstanceConfig";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Panel } from "@/components/common/Panel";
-import { classifyHealthError, getHealth } from "@/services/healthService";
+import { classifyHealthError, getHealth, reloadWebService } from "@/services/healthService";
 
 const MAX_HEALTH_TIMEOUT_MS = 4000;
 
@@ -105,6 +105,24 @@ export function HealthPage() {
     };
   });
 
+  const reloadMutation = useMutation({
+    mutationFn: async (baseUrl: string) => {
+      await reloadWebService(baseUrl);
+    },
+    onSuccess: async () => {
+      await Promise.all(healthQueries.map(async (query) => query.refetch()));
+    },
+  });
+
+  const reloadAllMutation = useMutation({
+    mutationFn: async () => {
+      await Promise.all(instances.map(async (instance) => reloadWebService(instance.baseUrl)));
+    },
+    onSuccess: async () => {
+      await Promise.all(healthQueries.map(async (query) => query.refetch()));
+    },
+  });
+
   return (
     <>
       <PageHeader title="Health" subtitle="Verify connectivity and view backend service metadata." />
@@ -115,11 +133,26 @@ export function HealthPage() {
           {config ? ` · Path ${config.defaults.healthPath}` : ""}
           {` · Reachability timeout ${healthTimeoutMs} ms`}
         </div>
+        <div className="actions">
+          <button
+            type="button"
+            className="primary"
+            disabled={instances.length === 0 || reloadAllMutation.isPending || reloadMutation.isPending}
+            onClick={() => reloadAllMutation.mutate()}
+          >
+            {reloadAllMutation.isPending ? "Reloading All..." : "Reload All Web Services"}
+          </button>
+        </div>
+        {reloadAllMutation.isError ? <p className="panel-copy">{(reloadAllMutation.error as Error).message}</p> : null}
+        {reloadAllMutation.isSuccess ? <p className="panel-copy">Web service reload request sent to all agents.</p> : null}
+        {reloadMutation.isError ? <p className="panel-copy">{(reloadMutation.error as Error).message}</p> : null}
+        {reloadMutation.isSuccess ? <p className="panel-copy">Web service reload request sent.</p> : null}
         <div className="table-wrap">
           <table>
             <thead>
               <tr>
                 <th title="Configured PyPNM instance label and base URL.">Agent</th>
+                <th title="Send a GET reload request to this agent's web service.">Reload</th>
                 <th title="Latest health status returned by the backend.">Status</th>
                 <th title="Health message or transport error summary.">Message</th>
                 <th title="Backend service name reported by /health.">Service</th>
@@ -142,6 +175,16 @@ export function HealthPage() {
                   <td>
                     <div>{row.instance.label}</div>
                     <div className="health-agent-meta mono">{row.instance.baseUrl}</div>
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      className="primary"
+                      disabled={reloadMutation.isPending || reloadAllMutation.isPending}
+                      onClick={() => reloadMutation.mutate(row.instance.baseUrl)}
+                    >
+                      {reloadMutation.isPending ? "Reloading..." : "Reload"}
+                    </button>
                   </td>
                   <td>{row.status}</td>
                   <td>{row.message}</td>

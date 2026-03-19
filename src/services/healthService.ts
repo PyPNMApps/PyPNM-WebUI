@@ -2,6 +2,7 @@ import { requestWithBaseUrl } from "@/services/http";
 import type { HealthResponse } from "@/types/api";
 
 const DEFAULT_HEALTH_TIMEOUT_MS = 4000;
+const DEFAULT_RELOAD_TIMEOUT_MS = 15000;
 
 export function classifyHealthError(error: Error): { status: string; message: string } {
   const message = error.message.trim();
@@ -32,4 +33,16 @@ export async function getHealth(
   });
 
   return response.data;
+}
+
+export async function reloadWebService(
+  baseUrl: string,
+  reloadPath = "/pypnm/system/webService/reload",
+  timeoutMs = DEFAULT_RELOAD_TIMEOUT_MS,
+): Promise<void> {
+  await requestWithBaseUrl(baseUrl, {
+    method: "GET",
+    timeout: timeoutMs,
+    url: reloadPath,
+  });
 }
