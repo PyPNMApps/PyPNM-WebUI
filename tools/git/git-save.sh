@@ -20,6 +20,27 @@ Options:
 USAGE
 }
 
+read_current_version() {
+  python3 ./tools/support/bump_version.py --current | sed -n 's/^Current version: //p'
+}
+
+bump_build_version() {
+  local previous_version
+  local next_version
+
+  previous_version="$(read_current_version)"
+  echo "Bumping build version..."
+  python3 ./tools/support/bump_version.py --next build
+  next_version="$(read_current_version)"
+
+  if [[ "${previous_version}" == "${next_version}" ]]; then
+    echo "Build version unchanged."
+    return
+  fi
+
+  echo "Build version updated locally: ${previous_version} -> ${next_version}"
+}
+
 run_check() {
   local label="$1"
   shift
@@ -119,6 +140,8 @@ if [[ "${skip_checks}" != "true" ]]; then
 else
   echo "Skipping quality checks (--skip-checks)."
 fi
+
+bump_build_version
 
 echo "Staging changes..."
 git add -A

@@ -104,6 +104,18 @@
   - `docs/development/workflow.md`
   - `docs/roadmap.md`
 
+## Version Control And Release Hygiene (Required)
+
+- Review `tools/git/`, `tools/release/`, and `tools/support/bump_version.py`
+  before changing version or release behavior.
+- `./tools/git/git-save.sh` must run checks first, then bump only the `BUILD`
+  segment before staging and commit.
+- The `git-save.sh` commit must include the updated `VERSION`,
+  `package.json`, and `package-lock.json` files.
+- Do not leave build bumps as dirty local changes after a save.
+- `tools/release/release.py` remains the release path for committed release
+  version updates, tags, and pushes.
+
 ## Commit Message Guidance
 
 - If request via chat request starts with `commit-msg`, then preface command `./tools/git/git-save.sh` with `commit-msg "<commit-msg>"`

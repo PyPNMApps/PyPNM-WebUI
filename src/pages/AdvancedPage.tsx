@@ -1,6 +1,6 @@
 import { NavLink, Navigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 
 import { useInstanceConfig } from "@/app/useInstanceConfig";
 import { FieldLabel } from "@/components/common/FieldLabel";
@@ -400,14 +400,16 @@ function AdvancedRxMerWorkbench() {
   const [captureConnectivityStatus, setCaptureConnectivityStatus] = useState<CaptureConnectivityStatus>("unknown");
   const connectivityCheckSequenceRef = useRef(0);
   const connectivityHasCheckedInitialRef = useRef(false);
-  const watchedConnectivity = requestForm.watch(["macAddress", "ipAddress", "community"]);
+  const watchedMacAddress = useWatch({ control: requestForm.control, name: "macAddress" });
+  const watchedIpAddress = useWatch({ control: requestForm.control, name: "ipAddress" });
+  const watchedCommunity = useWatch({ control: requestForm.control, name: "community" });
   const captureConnectivityInputs = useMemo<CaptureConnectivityInputs>(
     () => ({
-      macAddress: watchedConnectivity[0]?.trim() ?? "",
-      ipAddress: watchedConnectivity[1]?.trim() ?? "",
-      community: watchedConnectivity[2]?.trim() ?? "",
+      macAddress: watchedMacAddress?.trim() ?? "",
+      ipAddress: watchedIpAddress?.trim() ?? "",
+      community: watchedCommunity?.trim() ?? "",
     }),
-    [watchedConnectivity],
+    [watchedMacAddress, watchedIpAddress, watchedCommunity],
   );
   const requestTitle = useMemo(() => buildRequestTitle(captureConnectivityStatus), [captureConnectivityStatus]);
 
@@ -803,14 +805,16 @@ function AdvancedChannelEstimationWorkbench() {
   const [captureConnectivityStatus, setCaptureConnectivityStatus] = useState<CaptureConnectivityStatus>("unknown");
   const connectivityCheckSequenceRef = useRef(0);
   const connectivityHasCheckedInitialRef = useRef(false);
-  const watchedConnectivity = requestForm.watch(["macAddress", "ipAddress", "community"]);
+  const watchedMacAddress = useWatch({ control: requestForm.control, name: "macAddress" });
+  const watchedIpAddress = useWatch({ control: requestForm.control, name: "ipAddress" });
+  const watchedCommunity = useWatch({ control: requestForm.control, name: "community" });
   const captureConnectivityInputs = useMemo<CaptureConnectivityInputs>(
     () => ({
-      macAddress: watchedConnectivity[0]?.trim() ?? "",
-      ipAddress: watchedConnectivity[1]?.trim() ?? "",
-      community: watchedConnectivity[2]?.trim() ?? "",
+      macAddress: watchedMacAddress?.trim() ?? "",
+      ipAddress: watchedIpAddress?.trim() ?? "",
+      community: watchedCommunity?.trim() ?? "",
     }),
-    [watchedConnectivity],
+    [watchedMacAddress, watchedIpAddress, watchedCommunity],
   );
   const requestTitle = useMemo(() => buildRequestTitle(captureConnectivityStatus), [captureConnectivityStatus]);
 
@@ -1197,14 +1201,16 @@ function AdvancedOfdmaPreEqWorkbench() {
   const [captureConnectivityStatus, setCaptureConnectivityStatus] = useState<CaptureConnectivityStatus>("unknown");
   const connectivityCheckSequenceRef = useRef(0);
   const connectivityHasCheckedInitialRef = useRef(false);
-  const watchedConnectivity = requestForm.watch(["macAddress", "ipAddress", "community"]);
+  const watchedMacAddress = useWatch({ control: requestForm.control, name: "macAddress" });
+  const watchedIpAddress = useWatch({ control: requestForm.control, name: "ipAddress" });
+  const watchedCommunity = useWatch({ control: requestForm.control, name: "community" });
   const captureConnectivityInputs = useMemo<CaptureConnectivityInputs>(
     () => ({
-      macAddress: watchedConnectivity[0]?.trim() ?? "",
-      ipAddress: watchedConnectivity[1]?.trim() ?? "",
-      community: watchedConnectivity[2]?.trim() ?? "",
+      macAddress: watchedMacAddress?.trim() ?? "",
+      ipAddress: watchedIpAddress?.trim() ?? "",
+      community: watchedCommunity?.trim() ?? "",
     }),
-    [watchedConnectivity],
+    [watchedMacAddress, watchedIpAddress, watchedCommunity],
   );
   const requestTitle = useMemo(() => buildRequestTitle(captureConnectivityStatus), [captureConnectivityStatus]);
 

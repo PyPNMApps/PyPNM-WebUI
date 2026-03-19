@@ -19,6 +19,18 @@ This ensures:
 - Release tags use that value with a `v` prefix, for example `v0.1.0.0`.
 - `package.json` and `package-lock.json` are kept in sync with the derived npm-compatible version `MAJOR.MINOR.MAINTENANCE`.
 
+## Development Saves And Release Cleanliness
+
+Normal development commits should use:
+
+```bash
+./tools/git/git-save.sh --commit-msg "Message"
+```
+
+`git-save.sh` runs checks first, then bumps only the `BUILD` segment, stages all
+changes, and creates the commit. This keeps version files committed and avoids
+release failures caused by dirty local version bumps.
+
 ## Validate before release
 
 ```bash
@@ -107,6 +119,7 @@ Skip tag creation:
 
 - `VERSION` is the authoritative release version and uses `MAJOR.MINOR.MAINTENANCE.BUILD`.
 - `package.json` and `package-lock.json` keep the derived npm-compatible `MAJOR.MINOR.MAINTENANCE` version.
+- `git-save.sh` includes the build bump in the save commit before release work begins.
 - tag creation follows the `v<version>` pattern, for example `v0.1.0.0`
 - Release workflow only allows `main` or `hot-fix` branches.
 - By default, working tree must be clean.

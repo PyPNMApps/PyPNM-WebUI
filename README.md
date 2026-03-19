@@ -89,3 +89,17 @@ npm run docs:serve
 - [Git Helpers](docs/development/git-helpers.md)
 - [Development Workflow](docs/development/workflow.md)
 - [Development Logging](docs/development/logging.md)
+
+## Git Save And Versioning
+
+Use `./tools/git/git-save.sh --commit-msg "..."` for normal development saves.
+
+The script:
+- runs lint, test, and build checks
+- bumps the `BUILD` segment in `VERSION`
+- syncs `package.json` and `package-lock.json`
+- stages changes
+- creates the save commit
+
+This keeps version notation committed and prevents later release failures caused
+by uncommitted local version bumps.

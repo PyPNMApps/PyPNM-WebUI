@@ -52,6 +52,21 @@ Notes:
 - `--next maintenance` resets the build component to `0`
 - `--next build` increments only the build component
 
+## Development Save Behavior
+
+`./tools/git/git-save.sh` uses the build bump during normal development saves.
+
+It performs this order:
+
+1. run lint, test, and build checks
+2. bump the `BUILD` segment in `VERSION`
+3. sync `package.json` and `package-lock.json`
+4. stage changes
+5. create the save commit
+
+This means the save commit already contains the updated version notation.
+The build bump is not left behind as an uncommitted local change.
+
 ## Validation Helpers
 
 Run release-oriented validation checks:

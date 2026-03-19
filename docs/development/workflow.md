@@ -11,7 +11,7 @@
 8. List or stop local WebUI dev processes with `pypnm-webui kill-pypnm-webui`.
 
 ## Git Workflow Helpers
-- `./tools/git/git-save.sh --commit-msg "..."` stages, runs checks, and commits.
+- `./tools/git/git-save.sh --commit-msg "..."` runs checks, bumps the `BUILD` notation, stages, and commits.
 - `./tools/git/git-save.sh --commit-msg "..." --push` also pushes.
 - `./tools/git/git-push.sh --commit-msg "..."` commit+push helper for quick flows.
 - `./tools/git/git-reset-branch-history.sh` rewrites branch history; use only with care.
@@ -22,6 +22,7 @@
 - `.venv/bin/python ./tools/release/check_version.py` validates package version consistency.
 - `.venv/bin/python ./tools/release/test-runner.py` runs lint/test/build gates.
 - `.venv/bin/python ./tools/release/release.py` runs release checks, performs a default maintenance bump, then commits/tags/pushes unless overridden.
+- `git-save.sh` now commits the build bump so `release.py` does not fail later on dirty version files.
 
 ## Development Logging
 - Use `docs/development/logging.md` for the custom client-to-file logging flow and log-level configuration.
