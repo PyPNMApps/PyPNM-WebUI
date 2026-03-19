@@ -1,5 +1,8 @@
+import { ExportActions } from "@/components/common/ExportActions";
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { Panel } from "@/components/common/Panel";
+import { downloadCsv } from "@/lib/export/csv";
+import { buildExportBaseName } from "@/lib/export/naming";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import type { AdvancedMultiRxMerAnalysisResponse, AdvancedMultiRxMerHeatMapChannel } from "@/types/api";
 
@@ -72,6 +75,7 @@ function HeatMapGrid({ channel }: { channel: AdvancedMultiRxMerHeatMapChannel })
 
 export function AdvancedRxMerHeatMapView({ response }: { response: AdvancedMultiRxMerAnalysisResponse }) {
   const channels = Object.entries(response.data ?? {}) as Array<[string, AdvancedMultiRxMerHeatMapChannel]>;
+  const macAddress = response.device?.mac_address ?? response.mac_address;
   const deviceInfo = toDeviceInfo(
     response.device?.system_description ?? response.system_description,
     response.device?.mac_address ?? response.mac_address,
@@ -85,6 +89,25 @@ export function AdvancedRxMerHeatMapView({ response }: { response: AdvancedMulti
           <div className="status-chip-row">
             <span className="analysis-chip"><b>Start</b> {epochToUtcLabel(Array.isArray(channel.timestamps) ? channel.timestamps[0] : undefined)}</span>
             <span className="analysis-chip"><b>End</b> {epochToUtcLabel(Array.isArray(channel.timestamps) && channel.timestamps.length ? channel.timestamps[channel.timestamps.length - 1] : undefined)}</span>
+          </div>
+          <div className="operations-visual-actions">
+            <ExportActions
+              onCsv={() => downloadCsv(
+                buildExportBaseName(
+                  macAddress,
+                  Array.isArray(channel.timestamps) ? channel.timestamps[0] : undefined,
+                  `advanced-rxmer-heat-map-channel-${channelId}`,
+                ),
+                (channel.values ?? []).flatMap((row, captureIndex) =>
+                  row.map((value, binIndex) => ({
+                    capture_index: captureIndex + 1,
+                    bin_index: binIndex + 1,
+                    frequency_hz: channel.frequency?.[binIndex] ?? "n/a",
+                    value_db: value,
+                  })),
+                ),
+              )}
+            />
           </div>
           <HeatMapGrid channel={channel} />
         </Panel>

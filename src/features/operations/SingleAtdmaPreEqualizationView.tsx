@@ -173,6 +173,7 @@ export function SingleAtdmaPreEqualizationView({ response }: { response: AtdmaPr
                     },
                   ]}
                   showLegend={false}
+                  exportBaseName={`single-atdma-pre-eq-frequency-response-us-${usKey}`}
                 />
               </Panel>
               <Panel title="Group Delay">
@@ -188,6 +189,7 @@ export function SingleAtdmaPreEqualizationView({ response }: { response: AtdmaPr
                     },
                   ]}
                   showLegend={false}
+                  exportBaseName={`single-atdma-pre-eq-group-delay-us-${usKey}`}
                 />
               </Panel>
             </div>

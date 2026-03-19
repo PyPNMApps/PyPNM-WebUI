@@ -179,6 +179,7 @@ export function SingleIf31DsOfdmProfileStatsView({
               subtitle="Per-profile codeword counters for this OFDM downstream channel"
               mode="codewords"
               values={channel.profiles}
+              exportBaseName={`single-if31-ds-ofdm-profile-stats-codewords-channel-${channel.channelId}`}
             />
             <div className="profile-stats-stack">
               <If31DsOfdmProfileStatsChart
@@ -186,12 +187,14 @@ export function SingleIf31DsOfdmProfileStatsView({
                 subtitle="Per-profile downstream octet totals"
                 mode="octets"
                 values={channel.profiles}
+                exportBaseName={`single-if31-ds-ofdm-profile-stats-octets-channel-${channel.channelId}`}
               />
               <If31DsOfdmProfileStatsChart
                 title="Unicast vs Multicast Octets"
                 subtitle="Traffic split by profile"
                 mode="traffic"
                 values={channel.profiles}
+                exportBaseName={`single-if31-ds-ofdm-profile-stats-traffic-channel-${channel.channelId}`}
               />
             </div>
           </Panel>

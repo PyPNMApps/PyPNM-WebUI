@@ -1,12 +1,20 @@
+import { useRef } from "react";
+
+import { ExportActions } from "@/components/common/ExportActions";
+import { downloadCsv } from "@/lib/export/csv";
+import { downloadSvgAsPng } from "@/lib/export/png";
+
 interface OFDMAEventBarChartProps {
   title: string;
   t3: number;
   t4: number;
   abort: number;
   exceed: number;
+  exportBaseName?: string;
 }
 
-export function OFDMAEventBarChart({ title, t3, t4, abort, exceed }: OFDMAEventBarChartProps) {
+export function OFDMAEventBarChart({ title, t3, t4, abort, exceed, exportBaseName }: OFDMAEventBarChartProps) {
+  const svgRef = useRef<SVGSVGElement | null>(null);
   const values = [
     { label: "T3", value: t3 },
     { label: "T4", value: t4 },
@@ -26,8 +34,17 @@ export function OFDMAEventBarChart({ title, t3, t4, abort, exceed }: OFDMAEventB
     <div className="chart-frame chart-frame-compact">
       <div className="chart-header">
         <div className="chart-title">{title}</div>
+        {exportBaseName ? (
+          <ExportActions
+            onPng={() => {
+              if (!svgRef.current) return;
+              return downloadSvgAsPng(exportBaseName, svgRef.current);
+            }}
+            onCsv={() => downloadCsv(exportBaseName, values.map((item) => ({ event: item.label, count: item.value })))}
+          />
+        ) : null}
       </div>
-      <svg className="chart-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
+      <svg ref={svgRef} className="chart-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
         {Array.from({ length: 5 }, (_, index) => {
           const value = (yMax / 4) * index;
           const y = top + usableHeight - (value / yMax) * usableHeight;

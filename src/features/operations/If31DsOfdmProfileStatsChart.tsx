@@ -1,3 +1,9 @@
+import { useRef } from "react";
+
+import { ExportActions } from "@/components/common/ExportActions";
+import { downloadCsv } from "@/lib/export/csv";
+import { downloadSvgAsPng } from "@/lib/export/png";
+
 interface If31DsOfdmProfileStatsChartDatum {
   label: string;
   total: number;
@@ -13,6 +19,7 @@ interface If31DsOfdmProfileStatsChartProps {
   subtitle: string;
   values: If31DsOfdmProfileStatsChartDatum[];
   mode: "codewords" | "octets" | "traffic";
+  exportBaseName?: string;
 }
 
 function formatSi(value: number): string {
@@ -28,7 +35,9 @@ export function If31DsOfdmProfileStatsChart({
   subtitle,
   values,
   mode,
+  exportBaseName,
 }: If31DsOfdmProfileStatsChartProps) {
+  const svgRef = useRef<SVGSVGElement | null>(null);
   if (!values.length) {
     return <p className="panel-copy">No OFDM profile stats data available.</p>;
   }
@@ -83,8 +92,17 @@ export function If31DsOfdmProfileStatsChart({
             </span>
           ))}
         </div>
+        {exportBaseName ? (
+          <ExportActions
+            onPng={() => {
+              if (!svgRef.current) return;
+              return downloadSvgAsPng(exportBaseName, svgRef.current);
+            }}
+            onCsv={() => downloadCsv(exportBaseName, values.map((value) => ({ ...value })))}
+          />
+        ) : null}
       </div>
-      <svg className="chart-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
+      <svg ref={svgRef} className="chart-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
         {Array.from({ length: 5 }, (_, index) => {
           const value = (yMax / 4) * index;
           const y = top + usableHeight - (value / yMax) * usableHeight;

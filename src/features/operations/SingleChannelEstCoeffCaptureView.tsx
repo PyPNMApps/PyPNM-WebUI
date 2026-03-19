@@ -1,8 +1,10 @@
+import { ExportActions } from "@/components/common/ExportActions";
 import { useState } from "react";
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { SeriesVisibilityChips } from "@/components/common/SeriesVisibilityChips";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import type { ChartSeries } from "@/features/analysis/types";
+import { downloadCsv } from "@/lib/export/csv";
 import { formatEpochSecondsUtc } from "@/lib/formatters/dateTime";
 import { formatFrequencyRangeMhz } from "@/lib/formatters/frequency";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
@@ -78,7 +80,14 @@ export function SingleChannelEstCoeffCaptureView({ response }: { response: Singl
         visibility={combinedVisibility}
         onToggle={(label) => setCombinedVisibility((current) => ({ ...current, [label]: current[label] === false }))}
       />
-      <LineAnalysisChart title="All Channels Magnitude Response" subtitle="" yLabel="Magnitude (dB)" showLegend={false} series={visibleMagnitudeSeries} />
+      <LineAnalysisChart
+        title="All Channels Magnitude Response"
+        subtitle=""
+        yLabel="Magnitude (dB)"
+        showLegend={false}
+        series={visibleMagnitudeSeries}
+        exportBaseName="single-channel-estimation-all-channels"
+      />
 
       <div className="analysis-channels-grid">
         {analysis.map((channel, index) => {
@@ -112,13 +121,18 @@ export function SingleChannelEstCoeffCaptureView({ response }: { response: Singl
               </div>
 
               <div className="channel-est-grid">
-                <IqScatterChart title="I/Q Equalizer Scatter Plot" points={primitive?.values ?? []} />
+                <IqScatterChart
+                  title="I/Q Equalizer Scatter Plot"
+                  points={primitive?.values ?? []}
+                  exportBaseName={`single-channel-estimation-iq-scatter-channel-${channel.channel_id ?? index}`}
+                />
                 <div className="channel-est-graphs">
                   <LineAnalysisChart
                     title="Channel Estimation - Magnitude Response (dB)"
                     subtitle=""
                     yLabel="Magnitude (dB)"
                     series={[toSeries("Magnitude", palette[index % palette.length], channel.carrier_values.frequency, channel.carrier_values.magnitudes)]}
+                    exportBaseName={`single-channel-estimation-magnitude-channel-${channel.channel_id ?? index}`}
                   />
                   <LineAnalysisChart
                     title="Channel Estimation - Group Delay"
@@ -127,6 +141,7 @@ export function SingleChannelEstCoeffCaptureView({ response }: { response: Singl
                     series={[
                       toSeries("Group Delay", "#58d0a7", channel.carrier_values.frequency, channel.carrier_values.group_delay?.magnitude ?? []),
                     ]}
+                    exportBaseName={`single-channel-estimation-group-delay-channel-${channel.channel_id ?? index}`}
                   />
                 </div>
               </div>
@@ -138,28 +153,44 @@ export function SingleChannelEstCoeffCaptureView({ response }: { response: Singl
                   <span>Propagation Speed: {formatFixed(channel.echo?.report?.prop_speed_mps, 2)} m/s</span>
                 </div>
                 {echoes.length ? (
-                  <table className="analysis-echo-table">
-                    <thead>
-                      <tr>
-                        <th>Echo #</th>
-                        <th>Time (us)</th>
-                        <th>Amplitude</th>
-                        <th>Distance (m)</th>
-                        <th>Distance (ft)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {echoes.map((echo, echoIndex) => (
-                        <tr key={`${channel.channel_id ?? index}-${echoIndex}`}>
-                          <td>{echoIndex + 1}</td>
-                          <td>{(echo.time_s * 1_000_000).toFixed(3)}</td>
-                          <td>{echo.amplitude.toFixed(6)}</td>
-                          <td>{echo.distance_m.toFixed(2)}</td>
-                          <td>{echo.distance_ft.toFixed(2)}</td>
+                  <>
+                    <div className="operations-visual-actions">
+                      <ExportActions
+                        onCsv={() => downloadCsv(
+                          `single-channel-estimation-echoes-channel-${channel.channel_id ?? index}`,
+                          echoes.map((echo, echoIndex) => ({
+                            echo_rank: echoIndex + 1,
+                            time_us: (echo.time_s * 1_000_000).toFixed(3),
+                            amplitude: echo.amplitude.toFixed(6),
+                            distance_m: echo.distance_m.toFixed(2),
+                            distance_ft: echo.distance_ft.toFixed(2),
+                          })),
+                        )}
+                      />
+                    </div>
+                    <table className="analysis-echo-table">
+                      <thead>
+                        <tr>
+                          <th>Echo #</th>
+                          <th>Time (us)</th>
+                          <th>Amplitude</th>
+                          <th>Distance (m)</th>
+                          <th>Distance (ft)</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {echoes.map((echo, echoIndex) => (
+                          <tr key={`${channel.channel_id ?? index}-${echoIndex}`}>
+                            <td>{echoIndex + 1}</td>
+                            <td>{(echo.time_s * 1_000_000).toFixed(3)}</td>
+                            <td>{echo.amplitude.toFixed(6)}</td>
+                            <td>{echo.distance_m.toFixed(2)}</td>
+                            <td>{echo.distance_ft.toFixed(2)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </>
                 ) : (
                   <p className="panel-copy">No significant echoes detected.</p>
                 )}

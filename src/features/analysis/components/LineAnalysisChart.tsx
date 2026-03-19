@@ -1,6 +1,9 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
+import { ExportActions } from "@/components/common/ExportActions";
 import type { ChartPoint, ChartSeries } from "@/features/analysis/types";
+import { downloadCsv, seriesToCsvRows } from "@/lib/export/csv";
+import { downloadSvgAsPng } from "@/lib/export/png";
 import type { SpectrumSelectionRange } from "@/lib/spectrumPower";
 
 interface LineAnalysisChartProps {
@@ -15,6 +18,7 @@ interface LineAnalysisChartProps {
   enableRangeSelection?: boolean;
   selection?: SpectrumSelectionRange | null;
   onSelectionChange?: (selection: SpectrumSelectionRange | null) => void;
+  exportBaseName?: string;
 }
 
 function axisLabels(minValue: number, maxValue: number, count: number): number[] {
@@ -63,10 +67,12 @@ export function LineAnalysisChart({
   enableRangeSelection = false,
   selection = null,
   onSelectionChange,
+  exportBaseName,
 }: LineAnalysisChartProps) {
   const width = 1100;
   const height = 320;
   const [dragStartX, setDragStartX] = useState<number | null>(null);
+  const svgRef = useRef<SVGSVGElement | null>(null);
   const normalizedSelection = useMemo(() => {
     if (!selection) return null;
     return {
@@ -113,18 +119,31 @@ export function LineAnalysisChart({
           <div className="chart-title">{title}</div>
           <div className="chart-meta">{subtitle}</div>
         </div>
-        {showLegend ? (
-          <div className="status-chip-row">
-            {series.map((item) => (
-              <span key={item.label} className="analysis-chip">
-                <span className="analysis-swatch" style={{ backgroundColor: item.color }} />
-                {item.label}
-              </span>
-            ))}
-          </div>
-        ) : null}
+        <div className="chart-header-actions">
+          {showLegend ? (
+            <div className="status-chip-row">
+              {series.map((item) => (
+                <span key={item.label} className="analysis-chip">
+                  <span className="analysis-swatch" style={{ backgroundColor: item.color }} />
+                  {item.label}
+                </span>
+              ))}
+            </div>
+          ) : null}
+          {exportBaseName ? (
+            <ExportActions
+              onPng={() => {
+                if (!svgRef.current) {
+                  return;
+                }
+                return downloadSvgAsPng(exportBaseName, svgRef.current);
+              }}
+              onCsv={() => downloadCsv(exportBaseName, seriesToCsvRows(series), ["x", ...series.map((item) => item.label)])}
+            />
+          ) : null}
+        </div>
       </div>
-      <svg className="chart-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
+      <svg ref={svgRef} className="chart-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
         {normalizedSelection ? (
           <rect
             x={left + ((normalizedSelection.startX - xMin) / (xMax - xMin || 1)) * usableWidth}

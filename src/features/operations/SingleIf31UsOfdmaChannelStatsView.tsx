@@ -134,6 +134,7 @@ export function SingleIf31UsOfdmaChannelStatsView({ response }: { response: If31
             startMhz: channel.startMhz,
             endMhz: channel.endMhz,
           }))}
+          exportBaseName="single-if31-us-ofdma-active-spectrum-windows"
         />
       </Panel>
 
@@ -150,6 +151,7 @@ export function SingleIf31UsOfdmaChannelStatsView({ response }: { response: If31
               points: channels.map((channel) => ({ x: channel.centerMhz, y: channel.txPowerDbmv })),
             },
           ]}
+          exportBaseName="single-if31-us-ofdma-tx-power"
         />
       </Panel>
 
@@ -173,7 +175,14 @@ export function SingleIf31UsOfdmaChannelStatsView({ response }: { response: If31
               <div className="settings-definition-row"><div className="settings-definition-key">Roll-Off Period</div><div className="mono">{channel.rollOffPeriod}</div></div>
               <div className="settings-definition-row"><div className="settings-definition-key">Symbols Per Frame</div><div className="mono">{channel.symbolsPerFrame}</div></div>
             </div>
-            <OFDMAEventBarChart title="Timeout / Event Counters" t3={channel.t3} t4={channel.t4} abort={channel.abort} exceed={channel.exceed} />
+            <OFDMAEventBarChart
+              title="Timeout / Event Counters"
+              t3={channel.t3}
+              t4={channel.t4}
+              abort={channel.abort}
+              exceed={channel.exceed}
+              exportBaseName={`single-if31-us-ofdma-event-counters-channel-${channel.channelId}`}
+            />
           </Panel>
         ))}
       </div>

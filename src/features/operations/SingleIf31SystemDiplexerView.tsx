@@ -1,4 +1,9 @@
+import { useRef } from "react";
+
+import { ExportActions } from "@/components/common/ExportActions";
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
+import { downloadCsv } from "@/lib/export/csv";
+import { downloadSvgAsPng } from "@/lib/export/png";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import type { If31SystemDiplexerResponse } from "@/types/api";
 
@@ -90,11 +95,14 @@ function DiplexerResponseChart({
   bandEdgeHz,
   dsLowerHz,
   dsUpperHz,
+  exportBaseName,
 }: {
   bandEdgeHz: number | null;
   dsLowerHz: number | null;
   dsUpperHz: number | null;
+  exportBaseName?: string;
 }) {
+  const svgRef = useRef<SVGSVGElement | null>(null);
   const width = 1100;
   const height = 340;
   const { upstream, downstream, xMin, xMax, yMin, yMax } = buildButterworthCurves(bandEdgeHz, dsLowerHz, dsUpperHz);
@@ -106,7 +114,22 @@ function DiplexerResponseChart({
 
   return (
     <div className="chart-frame">
-      <svg className="chart-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label="Diplexer frequency response">
+      <div className="chart-header">
+        {exportBaseName ? (
+          <ExportActions
+            onPng={() => {
+              if (!svgRef.current) return;
+              return downloadSvgAsPng(exportBaseName, svgRef.current);
+            }}
+            onCsv={() => downloadCsv(exportBaseName, [
+              { metric: "us_cutoff_hz", value: bandEdgeHz ?? "n/a" },
+              { metric: "ds_lower_hz", value: dsLowerHz ?? "n/a" },
+              { metric: "ds_upper_hz", value: dsUpperHz ?? "n/a" },
+            ])}
+          />
+        ) : null}
+      </div>
+      <svg ref={svgRef} className="chart-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label="Diplexer frequency response">
         {yTicks.map((value) => {
           const y = 16 + (height - 56) - ((value - yMin) / (yMax - yMin || 1)) * (height - 56);
           return (
@@ -203,6 +226,7 @@ export function SingleIf31SystemDiplexerView({ response }: { response: If31Syste
           bandEdgeHz={cfgBandEdge}
           dsLowerHz={cfgDsLowerBandEdge}
           dsUpperHz={cfgDsUpperBandEdge}
+          exportBaseName="single-if31-system-diplexer-response"
         />
         <div className="diplexer-legend">
           <div className="diplexer-legend-item">

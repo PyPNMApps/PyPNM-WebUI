@@ -1,11 +1,15 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
+import { ExportActions } from "@/components/common/ExportActions";
+import { downloadCsv } from "@/lib/export/csv";
+import { downloadSvgAsPng } from "@/lib/export/png";
 import { formatEpochSecondsUtc } from "@/lib/formatters/dateTime";
 import type { SingleFecSummaryProfileEntry } from "@/types/api";
 
 interface FecChannelChartProps {
   title: string;
   profiles: SingleFecSummaryProfileEntry[];
+  exportBaseName?: string;
 }
 
 const totalPalette = ["#79a9ff", "#4f7cff", "#9bbcff", "#3f68d8"] as const;
@@ -25,7 +29,8 @@ function formatSi(value: number): string {
   return String(Math.round(value));
 }
 
-export function FecChannelChart({ title, profiles }: FecChannelChartProps) {
+export function FecChannelChart({ title, profiles, exportBaseName }: FecChannelChartProps) {
+  const svgRef = useRef<SVGSVGElement | null>(null);
   const defaultProfileKey = useMemo(() => {
     const profileZero = profiles.find((profile) => String(profile.profile) === "0");
     return String((profileZero ?? profiles[0])?.profile ?? "");
@@ -64,6 +69,26 @@ export function FecChannelChart({ title, profiles }: FecChannelChartProps) {
     <div className="chart-frame">
       <div className="chart-header">
         <div className="chart-title">{title}</div>
+        {exportBaseName ? (
+          <ExportActions
+            onPng={() => {
+              if (!svgRef.current) return;
+              return downloadSvgAsPng(exportBaseName, svgRef.current);
+            }}
+            onCsv={() => downloadCsv(
+              exportBaseName,
+              profiles.flatMap((profile) =>
+                profile.codewords.timestamps.map((timestamp, index) => ({
+                  profile: profile.profile,
+                  timestamp_utc: formatEpochSecondsUtc(timestamp),
+                  total_codewords: profile.codewords.total_codewords[index] ?? "n/a",
+                  corrected: profile.codewords.corrected[index] ?? "n/a",
+                  uncorrected: profile.codewords.uncorrected[index] ?? "n/a",
+                })),
+              ),
+            )}
+          />
+        ) : null}
       </div>
       <div className="status-chip-row fec-toggle-row">
         {profiles.map((profile, index) => {
@@ -89,7 +114,7 @@ export function FecChannelChart({ title, profiles }: FecChannelChartProps) {
           );
         })}
       </div>
-      <svg className="chart-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
+      <svg ref={svgRef} className="chart-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label={title}>
         {Array.from({ length: 5 }, (_, index) => {
           const value = (totalMax / 4) * index;
           const y = top + usableHeight - (value / totalMax) * usableHeight;

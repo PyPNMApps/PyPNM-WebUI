@@ -1,6 +1,9 @@
+import { ExportActions } from "@/components/common/ExportActions";
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { Panel } from "@/components/common/Panel";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
+import { downloadCsv } from "@/lib/export/csv";
+import { buildExportBaseName } from "@/lib/export/naming";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import type { ChartSeries } from "@/features/analysis/types";
 import type { AdvancedMultiRxMerAnalysisResponse, AdvancedMultiRxMerEchoChannel } from "@/types/api";
@@ -25,6 +28,7 @@ function buildSeries(channel: AdvancedMultiRxMerEchoChannel): ChartSeries[] {
 
 export function AdvancedRxMerEchoDetectionView({ response }: { response: AdvancedMultiRxMerAnalysisResponse }) {
   const channels = Object.entries(response.data ?? {}) as Array<[string, AdvancedMultiRxMerEchoChannel]>;
+  const macAddress = response.device?.mac_address ?? response.mac_address;
   const deviceInfo = toDeviceInfo(
     response.device?.system_description ?? response.system_description,
     response.device?.mac_address ?? response.mac_address,
@@ -55,7 +59,33 @@ export function AdvancedRxMerEchoDetectionView({ response }: { response: Advance
               subtitle={echoes.length ? "Echo detected" : "No secondary echoes detected"}
               yLabel="dB"
               series={buildSeries(channel)}
+              exportBaseName={buildExportBaseName(macAddress, undefined, `advanced-rxmer-echo-detection-channel-${channelId}`)}
             />
+            <div className="operations-visual-actions">
+              <ExportActions
+                onCsv={() => downloadCsv(
+                  buildExportBaseName(macAddress, undefined, `advanced-rxmer-echo-detection-channel-${channelId}-table`),
+                  [
+                    {
+                      type: "Direct",
+                      rank: 0,
+                      delay_us: typeof report?.direct_path?.time_s === "number" ? (report.direct_path.time_s * 1_000_000).toFixed(3) : "0.000",
+                      distance_m: "0.00",
+                      distance_ft: "0.00",
+                      amplitude: typeof report?.direct_path?.amplitude === "number" ? report.direct_path.amplitude.toFixed(3) : "n/a",
+                    },
+                    ...echoes.map((echo, index) => ({
+                      type: "Echo",
+                      rank: index + 1,
+                      delay_us: typeof echo.time_s === "number" ? (echo.time_s * 1_000_000).toFixed(3) : "n/a",
+                      distance_m: typeof echo.distance_m === "number" ? echo.distance_m.toFixed(2) : "n/a",
+                      distance_ft: typeof echo.distance_ft === "number" ? echo.distance_ft.toFixed(2) : "n/a",
+                      amplitude: typeof echo.amplitude === "number" ? echo.amplitude.toFixed(3) : "n/a",
+                    })),
+                  ],
+                )}
+              />
+            </div>
             <div className="table-scroll">
               <table className="channel-metrics-table">
                 <thead>

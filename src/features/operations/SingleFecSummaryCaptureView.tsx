@@ -39,7 +39,11 @@ export function SingleFecSummaryCaptureView({ response }: { response: SingleFecS
               </div>
             </div>
             <div className="analysis-channel-body">
-              <FecChannelChart title={`Channel ${channel.channel_id ?? "n/a"} Codeword Analysis`} profiles={channel.profiles ?? []} />
+              <FecChannelChart
+                title={`Channel ${channel.channel_id ?? "n/a"} Codeword Analysis`}
+                profiles={channel.profiles ?? []}
+                exportBaseName={`single-fec-summary-channel-${channel.channel_id ?? "n/a"}`}
+              />
             </div>
           </article>
         ))}

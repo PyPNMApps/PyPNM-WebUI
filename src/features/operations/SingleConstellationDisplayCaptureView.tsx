@@ -57,7 +57,7 @@ export function SingleConstellationDisplayCaptureView({ response }: { response: 
         </table>
       </div>
 
-      <ConstellationGridChart channels={channels} />
+      <ConstellationGridChart channels={channels} exportBaseName="single-constellation-display" />
     </div>
   );
 }

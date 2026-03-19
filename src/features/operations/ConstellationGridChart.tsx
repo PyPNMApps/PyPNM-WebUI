@@ -1,3 +1,8 @@
+import { useRef } from "react";
+
+import { ExportActions } from "@/components/common/ExportActions";
+import { downloadCsv } from "@/lib/export/csv";
+import { downloadSvgAsPng } from "@/lib/export/png";
 import type { SingleConstellationDisplayAnalysisEntry } from "@/types/api";
 
 function asPoints(values: SingleConstellationDisplayAnalysisEntry["soft"] | SingleConstellationDisplayAnalysisEntry["hard"]): Array<[number, number]> {
@@ -12,9 +17,11 @@ function asPoints(values: SingleConstellationDisplayAnalysisEntry["soft"] | Sing
 
 interface ConstellationGridChartProps {
   channels: SingleConstellationDisplayAnalysisEntry[];
+  exportBaseName?: string;
 }
 
-export function ConstellationGridChart({ channels }: ConstellationGridChartProps) {
+export function ConstellationGridChart({ channels, exportBaseName }: ConstellationGridChartProps) {
+  const svgRefs = useRef<Record<string, SVGSVGElement | null>>({});
   const plots = channels.map((channel) => {
     const soft = asPoints(channel.soft);
     const hard = asPoints(channel.hard);
@@ -56,7 +63,34 @@ export function ConstellationGridChart({ channels }: ConstellationGridChartProps
             <span>QAM {channel.modulation_order ?? "n/a"}</span>
             <span>Sample Symbols: {channel.num_sample_symbols ?? "n/a"}</span>
           </div>
-          <svg className="chart-svg chart-svg-square" viewBox="0 0 360 360" preserveAspectRatio="xMidYMid meet" role="img" aria-label={`Constellation Channel ${channel.channel_id ?? "n/a"}`}>
+          {exportBaseName ? (
+            <div className="operations-visual-actions">
+              <ExportActions
+                onPng={() => {
+                  const svg = svgRefs.current[String(channel.channel_id ?? index)];
+                  if (!svg) return;
+                  return downloadSvgAsPng(`${exportBaseName}-channel-${channel.channel_id ?? index}`, svg);
+                }}
+                onCsv={() => downloadCsv(
+                  `${exportBaseName}-channel-${channel.channel_id ?? index}`,
+                  [
+                    ...soft.map((point, pointIndex) => ({ point_type: "soft", point_index: pointIndex + 1, i: point[0], q: point[1] })),
+                    ...hard.map((point, pointIndex) => ({ point_type: "hard", point_index: pointIndex + 1, i: point[0], q: point[1] })),
+                  ],
+                )}
+              />
+            </div>
+          ) : null}
+          <svg
+            ref={(node) => {
+              svgRefs.current[String(channel.channel_id ?? index)] = node;
+            }}
+            className="chart-svg chart-svg-square"
+            viewBox="0 0 360 360"
+            preserveAspectRatio="xMidYMid meet"
+            role="img"
+            aria-label={`Constellation Channel ${channel.channel_id ?? "n/a"}`}
+          >
             <rect x="28" y="28" width="304" height="304" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.18)" />
             <line x1="180" y1="28" x2="180" y2="332" stroke="rgba(255,255,255,0.12)" />
             <line x1="28" y1="180" x2="332" y2="180" stroke="rgba(255,255,255,0.12)" />

@@ -62,7 +62,14 @@ export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCapt
         visibility={combinedVisibility}
         onToggle={(label) => setCombinedVisibility((current) => ({ ...current, [label]: current[label] === false }))}
       />
-      <LineAnalysisChart title="All Channels" subtitle="" yLabel="RxMER (dB)" showLegend={false} series={visibleCombinedSeries} />
+      <LineAnalysisChart
+        title="All Channels"
+        subtitle=""
+        yLabel="RxMER (dB)"
+        showLegend={false}
+        series={visibleCombinedSeries}
+        exportBaseName="single-rxmer-all-channels"
+      />
 
       <div className="analysis-channels-grid">
         {analysis.map((channel, index) => {
@@ -128,11 +135,13 @@ export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCapt
                   yLabel="RxMER (dB)"
                   showLegend={false}
                   series={visibleChannelSeries}
+                  exportBaseName={`single-rxmer-channel-${channel.channel_id ?? index}`}
                 />
 
                 <ModulationCountsChart
                   title={`Supported Modulation Counts (Channel ${channel.channel_id ?? "n/a"})`}
                   counts={channel.modulation_statistics?.supported_modulation_counts}
+                  exportBaseName={`single-rxmer-modulation-counts-channel-${channel.channel_id ?? index}`}
                 />
               </div>
             </article>

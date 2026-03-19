@@ -23,6 +23,7 @@ import { AdvancedOfdmaPreEqMinAvgMaxView } from "@/features/advanced/AdvancedOfd
 import { AdvancedOfdmaPreEqGroupDelayView } from "@/features/advanced/AdvancedOfdmaPreEqGroupDelayView";
 import { AdvancedOfdmaPreEqEchoDetectionView } from "@/features/advanced/AdvancedOfdmaPreEqEchoDetectionView";
 import { parseChannelIds } from "@/lib/channelIds";
+import { buildExportBaseName } from "@/lib/export/naming";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import { checkCaptureInputsOnline } from "@/services/captureConnectivityService";
 import { CONNECTIVITY_STATUS_DEBOUNCE_MS } from "@/lib/constants";
@@ -345,6 +346,11 @@ function AdvancedRxMerAnalysisView({
                   subtitle="Per-subcarrier RxMER summary"
                   yLabel="dB"
                   series={buildMinAvgMaxSeries(channel as { frequency: number[]; min: number[]; avg: number[]; max: number[] })}
+                  exportBaseName={buildExportBaseName(
+                    response.device?.mac_address ?? response.mac_address,
+                    undefined,
+                    `advanced-rxmer-min-avg-max-channel-${channelId}`,
+                  )}
                 />
               </Panel>
             ))}
