@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
+import packageJson from "../../package.json";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Panel } from "@/components/common/Panel";
 import { ThinkingIndicator } from "@/components/common/ThinkingIndicator";
@@ -36,6 +37,10 @@ export function AboutPage() {
           <div className="settings-definition-list">
             <div className="settings-definition-row">
               <div className="settings-definition-key">Current Loaded Version</div>
+              <div><VersionValue value={packageJson.version} /></div>
+            </div>
+            <div className="settings-definition-row">
+              <div className="settings-definition-key">Build Version Notation</div>
               <div><VersionValue value={__APP_VERSION__} /></div>
             </div>
             <div className="settings-definition-row">
