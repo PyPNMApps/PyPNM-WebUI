@@ -51,17 +51,12 @@ function formatEpoch(epochSeconds: number | undefined): string {
   return new Date(epochSeconds * 1000).toLocaleString();
 }
 
-function formatDirectorySizes(directories: Record<string, number> | undefined): string {
+function getDirectoryEntries(directories: Record<string, number> | undefined): Array<[string, number]> {
   if (!directories) {
-    return "n/a";
+    return [];
   }
 
-  const entries = Object.entries(directories).sort((left, right) => right[1] - left[1]);
-  if (entries.length === 0) {
-    return "n/a";
-  }
-
-  return entries.map(([name, size]) => `${name}: ${formatBytes(size)}`).join(" | ");
+  return Object.entries(directories).sort((left, right) => right[1] - left[1]);
 }
 
 export function HealthPage() {
@@ -93,9 +88,8 @@ export function HealthPage() {
       uptime: formatUptime(data?.uptime?.uptime),
       starttime: formatEpoch(data?.uptime?.starttime),
       memory: formatBytes(data?.memory?.rss_bytes),
-      dataPath: data?.data?.path ?? "n/a",
       dataSize: formatBytes(data?.data?.size_bytes),
-      dataDirectories: formatDirectorySizes(data?.data?.directories),
+      dataDirectories: getDirectoryEntries(data?.data?.directories),
     };
   });
 
@@ -121,7 +115,6 @@ export function HealthPage() {
                 <th>Start Time</th>
                 <th>Uptime</th>
                 <th>Memory</th>
-                <th>Data Path</th>
                 <th>Data Size</th>
                 <th>.data Directories</th>
               </tr>
@@ -140,9 +133,26 @@ export function HealthPage() {
                   <td className="mono">{row.starttime}</td>
                   <td className="mono">{row.uptime}</td>
                   <td className="mono">{row.memory}</td>
-                  <td className="mono">{row.dataPath}</td>
                   <td className="mono">{row.dataSize}</td>
-                  <td className="mono">{row.dataDirectories}</td>
+                  <td>
+                    {row.dataDirectories.length === 0 ? (
+                      <span className="mono">n/a</span>
+                    ) : (
+                      <details className="health-popup">
+                        <summary className="health-popup-trigger mono">
+                          View ({row.dataDirectories.length})
+                        </summary>
+                        <div className="health-popup-card">
+                          {row.dataDirectories.map(([name, size]) => (
+                            <div key={`${row.instance.id}-${name}`} className="health-popup-row mono">
+                              <span>{name}</span>
+                              <span>{formatBytes(size)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </details>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>

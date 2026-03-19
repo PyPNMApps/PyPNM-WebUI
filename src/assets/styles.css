@@ -989,6 +989,54 @@ pre {
   font-size: 11px;
 }
 
+.health-popup {
+  position: relative;
+}
+
+.health-popup summary {
+  list-style: none;
+}
+
+.health-popup summary::-webkit-details-marker {
+  display: none;
+}
+
+.health-popup-trigger {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.health-popup-card {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 3;
+  min-width: 240px;
+  padding: 10px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  background: rgba(12, 20, 32, 0.98);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.36);
+}
+
+.health-popup-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.health-popup-row + .health-popup-row {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
 .channel-est-grid {
   display: grid;
   grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
