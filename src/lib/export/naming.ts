@@ -26,5 +26,5 @@ export function buildExportBaseName(
   const timestamp = toExportDate(epochSeconds);
   const hhmm = `${padTwoDigits(timestamp.getHours())}${padTwoDigits(timestamp.getMinutes())}`;
   const yyyymmdd = `${timestamp.getFullYear()}${padTwoDigits(timestamp.getMonth() + 1)}${padTwoDigits(timestamp.getDate())}`;
-  return sanitizeExportBaseName(`${normalizeMacAddress(macAddress)}-${hhmm}-${yyyymmdd}-${suffix}`);
+  return sanitizeExportBaseName(`${suffix}-${normalizeMacAddress(macAddress)}-${hhmm}-${yyyymmdd}`);
 }

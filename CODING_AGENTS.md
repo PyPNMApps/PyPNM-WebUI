@@ -92,6 +92,9 @@
 
 ## Testing Expectations (Required)
 
+- Any new source file or new non-trivial source module behavior must include a
+  companion test in the same change set unless a concrete technical reason is
+  documented in the summary.
 - Add tests for new behavior where practical:
   - unit tests for helpers/mappers
   - component tests for UI logic
