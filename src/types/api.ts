@@ -25,6 +25,10 @@ export interface HealthDataInfo {
 
 export interface HealthMemoryInfo {
   rss_bytes?: number;
+  total_bytes?: number;
+  free_bytes?: number;
+  available_bytes?: number;
+  usage_percent?: number;
 }
 
 export interface HealthResponse {

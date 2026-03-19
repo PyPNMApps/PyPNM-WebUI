@@ -59,6 +59,14 @@ function getDirectoryEntries(directories: Record<string, number> | undefined): A
   return Object.entries(directories).sort((left, right) => right[1] - left[1]);
 }
 
+function formatMemorySummary(
+  rssBytes: number | undefined,
+  availableBytes: number | undefined,
+  totalBytes: number | undefined,
+): string {
+  return `${formatBytes(rssBytes)} / ${formatBytes(availableBytes)} / ${formatBytes(totalBytes)}`;
+}
+
 export function HealthPage() {
   const { config, instances, selectedInstance } = useInstanceConfig();
   const healthTimeoutMs = Math.min(config?.defaults.requestTimeoutMs ?? MAX_HEALTH_TIMEOUT_MS, MAX_HEALTH_TIMEOUT_MS);
@@ -87,7 +95,11 @@ export function HealthPage() {
       version: data?.service?.version ?? "n/a",
       uptime: formatUptime(data?.uptime?.uptime),
       starttime: formatEpoch(data?.uptime?.starttime),
-      memory: formatBytes(data?.memory?.rss_bytes),
+      memory: formatMemorySummary(
+        data?.memory?.rss_bytes,
+        data?.memory?.available_bytes,
+        data?.memory?.total_bytes,
+      ),
       dataSize: formatBytes(data?.data?.size_bytes),
       dataDirectories: getDirectoryEntries(data?.data?.directories),
     };
@@ -107,16 +119,21 @@ export function HealthPage() {
           <table>
             <thead>
               <tr>
-                <th>Agent</th>
-                <th>Status</th>
-                <th>Message</th>
-                <th>Service</th>
-                <th>Version</th>
-                <th>Start Time</th>
-                <th>Uptime</th>
-                <th>Memory</th>
-                <th>Data Size</th>
-                <th>.data Directories</th>
+                <th title="Configured PyPNM instance label and base URL.">Agent</th>
+                <th title="Latest health status returned by the backend.">Status</th>
+                <th title="Health message or transport error summary.">Message</th>
+                <th title="Backend service name reported by /health.">Service</th>
+                <th title="Running backend version reported by /health.">Version</th>
+                <th title="Backend process start time converted from epoch seconds.">Start Time</th>
+                <th title="Elapsed backend uptime since the reported start time.">Uptime</th>
+                <th
+                  className="health-memory-heading"
+                  title="Process resident memory, then host available memory, then host total memory."
+                >
+                  Memory
+                </th>
+                <th title="Total size of the backend .data directory.">Data Size</th>
+                <th title="First-level .data directories and their current sizes.">.data Directories</th>
               </tr>
             </thead>
             <tbody>
@@ -132,7 +149,7 @@ export function HealthPage() {
                   <td>{row.version}</td>
                   <td className="mono">{row.starttime}</td>
                   <td className="mono">{row.uptime}</td>
-                  <td className="mono">{row.memory}</td>
+                  <td className="mono health-memory-cell">{row.memory}</td>
                   <td className="mono">{row.dataSize}</td>
                   <td>
                     {row.dataDirectories.length === 0 ? (

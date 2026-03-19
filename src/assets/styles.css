@@ -989,6 +989,14 @@ pre {
   font-size: 11px;
 }
 
+.health-memory-heading {
+  text-align: center;
+}
+
+.health-memory-cell {
+  text-align: center;
+}
+
 .health-popup {
   position: relative;
 }
