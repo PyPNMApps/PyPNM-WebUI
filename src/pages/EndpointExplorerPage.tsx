@@ -653,9 +653,9 @@ export function EndpointExplorerPage() {
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-rxmer-getcapture" ? (
           <SingleRxMerCaptureView response={rxMerResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-friendly" ? (
-          <SingleSpectrumFriendlyCaptureView response={spectrumFriendlyResponse} />
+          <SingleSpectrumFriendlyCaptureView response={spectrumFriendlyResponse} exportVariant="friendly" />
         ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-fullbandcapture" ? (
-          <SingleSpectrumFriendlyCaptureView response={spectrumFullBandResponse} />
+          <SingleSpectrumFriendlyCaptureView response={spectrumFullBandResponse} exportVariant="full-band" />
         ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-ofdm" ? (
           <SingleSpectrumOfdmCaptureView response={spectrumOfdmResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-scqam" ? (

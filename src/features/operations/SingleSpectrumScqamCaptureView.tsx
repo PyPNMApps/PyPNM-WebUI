@@ -6,6 +6,7 @@ import { SeriesVisibilityChips } from "@/components/common/SeriesVisibilityChips
 import { SpectrumSelectionSummary } from "@/components/common/SpectrumSelectionSummary";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import type { ChartSeries } from "@/features/analysis/types";
+import { buildExportBaseName } from "@/lib/export/naming";
 import { integrateVisibleSpectrumPower, type SpectrumSelectionRange } from "@/lib/spectrumPower";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import type { DsScqamChannelEntryData, SingleSpectrumScqamAnalysisEntry, SingleSpectrumScqamCaptureResponse } from "@/types/api";
@@ -100,6 +101,11 @@ function SpectrumScqamChannelCard({
         enableRangeSelection
         selection={selection}
         onSelectionChange={setSelection}
+        exportBaseName={buildExportBaseName(
+          analysis.mac_address,
+          undefined,
+          `single-spectrum-scqam-channel-${channelId}`,
+        )}
       />
       <SpectrumSelectionSummary selection={selection} integratedPower={integratedPower} />
       <table className="channel-metrics-table">
@@ -199,6 +205,11 @@ export function SingleSpectrumScqamCaptureView({ response }: { response: SingleS
           enableRangeSelection
           selection={combinedSelection}
           onSelectionChange={setCombinedSelection}
+          exportBaseName={buildExportBaseName(
+            analyses[0]?.mac_address ?? response.mac_address,
+            undefined,
+            "single-spectrum-scqam-combined",
+          )}
         />
         <SpectrumSelectionSummary selection={combinedSelection} integratedPower={combinedIntegratedPower} />
       </Panel>

@@ -5,6 +5,7 @@ import { Panel } from "@/components/common/Panel";
 import { SpectrumSelectionSummary } from "@/components/common/SpectrumSelectionSummary";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import type { ChartSeries } from "@/features/analysis/types";
+import { buildExportBaseName } from "@/lib/export/naming";
 import { integrateVisibleSpectrumPower, type SpectrumSelectionRange } from "@/lib/spectrumPower";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import type { SingleSpectrumFriendlyCaptureResponse } from "@/types/api";
@@ -22,8 +23,10 @@ function formatRangeMhz(startHz: number | undefined, endHz: number | undefined):
 
 export function SingleSpectrumFriendlyCaptureView({
   response,
+  exportVariant = "friendly",
 }: {
   response: SingleSpectrumFriendlyCaptureResponse;
+  exportVariant?: "friendly" | "full-band";
 }) {
   const [mode, setMode] = useState<SpectrumMode>("actual");
   const [selection, setSelection] = useState<SpectrumSelectionRange | null>(null);
@@ -122,6 +125,11 @@ export function SingleSpectrumFriendlyCaptureView({
           enableRangeSelection
           selection={selection}
           onSelectionChange={setSelection}
+          exportBaseName={buildExportBaseName(
+            response.mac_address,
+            undefined,
+            `single-spectrum-${exportVariant}`,
+          )}
         />
         <SpectrumSelectionSummary selection={selection} integratedPower={integratedPower} />
       </Panel>
