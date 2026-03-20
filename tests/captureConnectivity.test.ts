@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  buildCaptureConnectivityInputsFromInstance,
   hasCompleteCaptureConnectivityInputs,
   isCaptureConnectivityOnline,
   normalizeCaptureConnectivityInputs,
@@ -43,5 +44,24 @@ describe("captureConnectivity", () => {
     expect(isCaptureConnectivityOnline("unknown")).toBe(false);
     expect(isCaptureConnectivityOnline("checking")).toBe(false);
     expect(isCaptureConnectivityOnline("offline")).toBe(false);
+  });
+
+  it("seeds connectivity inputs from selected-instance defaults when complete", () => {
+    expect(
+      buildCaptureConnectivityInputsFromInstance({
+        requestDefaults: {
+          cableModemMacAddress: " FC:77:7B:0B:1B:E0 ",
+          cableModemIpAddress: " 172.19.32.53 ",
+          tftpIpv4: "",
+          tftpIpv6: "",
+          channelIds: "0",
+          snmpRwCommunity: " private ",
+        },
+      }),
+    ).toEqual({
+      macAddress: "FC:77:7B:0B:1B:E0",
+      ipAddress: "172.19.32.53",
+      community: "private",
+    });
   });
 });

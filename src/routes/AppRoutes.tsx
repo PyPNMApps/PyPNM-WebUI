@@ -53,11 +53,17 @@ export function AppRoutes() {
           <Route path="/advanced/rxmer" element={<AdvancedPage />} />
           <Route path="/advanced/channel-estimation" element={<AdvancedPage />} />
           <Route path="/advanced/ofdma-pre-eq" element={<AdvancedPage />} />
-          <Route path="/single-capture" element={<EndpointExplorerPage />} />
+          <Route path="/single-capture" element={<Navigate to="/single-capture/rxmer" replace />} />
           <Route path="/single-capture/:operationId" element={<EndpointExplorerPage />} />
+          <Route path="/spectrum-analyzer" element={<Navigate to="/spectrum-analyzer/friendly" replace />} />
+          <Route path="/spectrum-analyzer/:operationId" element={<EndpointExplorerPage />} />
           <Route path="/endpoints" element={<Navigate to="/operations" replace />} />
           <Route path="/operations" element={<EndpointExplorerPage />} />
           <Route path="/operations/:operationId" element={<EndpointExplorerPage />} />
+          <Route path="/operations/spectrum-analyzer" element={<Navigate to="/spectrum-analyzer/friendly" replace />} />
+          <Route path="/operations/spectrum-analyzer-full-band" element={<Navigate to="/spectrum-analyzer/full-band" replace />} />
+          <Route path="/operations/spectrum-analyzer-ofdm" element={<Navigate to="/spectrum-analyzer/ofdm" replace />} />
+          <Route path="/operations/spectrum-analyzer-scqam" element={<Navigate to="/spectrum-analyzer/scqam" replace />} />
           <Route path="/measurements" element={<MeasurementRequestPage />} />
           <Route path="/results" element={<ResultsPage />} />
           <Route path="/files" element={<FileListPage />} />

@@ -167,37 +167,41 @@ export const operationNavigationItems: OperationNavigationItem[] = [
   {
     id: "docs-pnm-ds-spectrumanalyzer-getcapture-friendly",
     label: "Friendly",
-    routePath: "/operations/spectrum-analyzer",
+    routePath: "/spectrum-analyzer/friendly",
     endpointPath: "/docs/pnm/ds/spectrumAnalyzer/getCapture/friendly",
     description: "Friendly downstream spectrum analyzer capture visual.",
     menuPath: ["PNM", "Spectrum Analyzer"],
+    showInOperationsMenu: false,
     requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
     id: "docs-pnm-ds-spectrumanalyzer-getcapture-fullbandcapture",
     label: "Full Band",
-    routePath: "/operations/spectrum-analyzer-full-band",
+    routePath: "/spectrum-analyzer/full-band",
     endpointPath: "/docs/pnm/ds/spectrumAnalyzer/getCapture/fullBandCapture",
     description: "Full-band spectrum analyzer capture visual.",
     menuPath: ["PNM", "Spectrum Analyzer"],
+    showInOperationsMenu: false,
     requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
     id: "docs-pnm-ds-spectrumanalyzer-getcapture-ofdm",
     label: "OFDM",
-    routePath: "/operations/spectrum-analyzer-ofdm",
+    routePath: "/spectrum-analyzer/ofdm",
     endpointPath: "/docs/pnm/ds/spectrumAnalyzer/getCapture/ofdm",
     description: "OFDM downstream spectrum analyzer capture visual.",
     menuPath: ["PNM", "Spectrum Analyzer"],
+    showInOperationsMenu: false,
     requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
     id: "docs-pnm-ds-spectrumanalyzer-getcapture-scqam",
     label: "SCQAM",
-    routePath: "/operations/spectrum-analyzer-scqam",
+    routePath: "/spectrum-analyzer/scqam",
     endpointPath: "/docs/pnm/ds/spectrumAnalyzer/getCapture/scqam",
     description: "SCQAM downstream spectrum analyzer capture visual.",
     menuPath: ["PNM", "Spectrum Analyzer"],
+    showInOperationsMenu: false,
     requestTimeoutMs: LONG_RUNNING_OPERATION_TIMEOUT_MS,
   },
   {
@@ -244,6 +248,10 @@ export function getOperationByRoutePath(routePath: string | undefined): Operatio
 
 export const singleCaptureNavigationItems = operationNavigationItems.filter(
   (item) => item.menuPath[0] === "PNM" && item.menuPath[1] === "Single Capture",
+);
+
+export const spectrumAnalyzerNavigationItems = operationNavigationItems.filter(
+  (item) => item.menuPath[0] === "PNM" && item.menuPath[1] === "Spectrum Analyzer",
 );
 
 export const operationsMenuNavigationItems = operationNavigationItems.filter(

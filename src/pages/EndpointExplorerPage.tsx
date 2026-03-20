@@ -13,7 +13,11 @@ import { FecSummaryCaptureRequestForm } from "@/features/operations/FecSummaryCa
 import { ScqamCodewordErrorRateRequestForm } from "@/features/operations/ScqamCodewordErrorRateRequestForm";
 import { SingleCaptureRequestForm } from "@/features/operations/SingleCaptureRequestForm";
 import type { CaptureConnectivityInputs, CaptureConnectivityStatus } from "@/features/operations/captureConnectivity";
-import { hasCompleteCaptureConnectivityInputs, isCaptureConnectivityOnline } from "@/features/operations/captureConnectivity";
+import {
+  buildCaptureConnectivityInputsFromInstance,
+  hasCompleteCaptureConnectivityInputs,
+  isCaptureConnectivityOnline,
+} from "@/features/operations/captureConnectivity";
 import { SingleSpectrumOfdmCaptureView } from "@/features/operations/SingleSpectrumOfdmCaptureView";
 import { SingleSpectrumScqamCaptureView } from "@/features/operations/SingleSpectrumScqamCaptureView";
 import { SpectrumFullBandCaptureRequestForm } from "@/features/operations/SpectrumFullBandCaptureRequestForm";
@@ -35,7 +39,12 @@ import { SingleChannelEstCoeffCaptureView } from "@/features/operations/SingleCh
 import { SingleConstellationDisplayCaptureView } from "@/features/operations/SingleConstellationDisplayCaptureView";
 import { SingleDeviceEventLogView } from "@/features/operations/SingleDeviceEventLogView";
 import { SingleFecSummaryCaptureView } from "@/features/operations/SingleFecSummaryCaptureView";
-import { getOperationByRoutePath, operationNavigationItems, singleCaptureNavigationItems } from "@/features/operations/operationsNavigation";
+import {
+  getOperationByRoutePath,
+  operationNavigationItems,
+  singleCaptureNavigationItems,
+  spectrumAnalyzerNavigationItems,
+} from "@/features/operations/operationsNavigation";
 import { SingleHistogramCaptureView } from "@/features/operations/SingleHistogramCaptureView";
 import { SingleInterfaceStatsView } from "@/features/operations/SingleInterfaceStatsView";
 import { SingleModulationProfileCaptureView } from "@/features/operations/SingleModulationProfileCaptureView";
@@ -130,6 +139,7 @@ export function EndpointExplorerPage() {
   const location = useLocation();
   const { selectedInstance } = useInstanceConfig();
   const isSingleCaptureRoute = location.pathname.startsWith("/single-capture");
+  const isSpectrumAnalyzerRoute = location.pathname.startsWith("/spectrum-analyzer");
   const [captureConnectivityInputs, setCaptureConnectivityInputs] = useState<CaptureConnectivityInputs | null>(null);
   const [captureConnectivityStatus, setCaptureConnectivityStatus] = useState<CaptureConnectivityStatus>("unknown");
   const connectivityCheckSequenceRef = useRef(0);
@@ -188,9 +198,9 @@ export function EndpointExplorerPage() {
   useEffect(() => {
     connectivityHasCheckedInitialRef.current = false;
     connectivityCheckSequenceRef.current += 1;
-    setCaptureConnectivityInputs(null);
+    setCaptureConnectivityInputs(buildCaptureConnectivityInputsFromInstance(selectedInstance));
     setCaptureConnectivityStatus("unknown");
-  }, [selectedOperation?.id]);
+  }, [selectedInstance, selectedOperation?.id]);
 
   useEffect(() => {
     if (!selectedInstance?.baseUrl || !hasCompleteCaptureConnectivityInputs(captureConnectivityInputs)) {
@@ -475,6 +485,14 @@ export function EndpointExplorerPage() {
       {isSingleCaptureRoute ? (
         <nav className="advanced-subnav">
           {singleCaptureNavigationItems.map((item) => (
+            <NavLink key={item.id} to={item.routePath} className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+      ) : isSpectrumAnalyzerRoute ? (
+        <nav className="advanced-subnav">
+          {spectrumAnalyzerNavigationItems.map((item) => (
             <NavLink key={item.id} to={item.routePath} className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
               {item.label}
             </NavLink>

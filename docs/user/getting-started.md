@@ -57,7 +57,7 @@ Open:
 
 - `Single Capture` for one-shot PNM capture flows such as RxMER, histogram, FEC summary, modulation profile, and OFDMA pre-equalization
 - `Advanced -> RxMER`, `Channel Estimation`, or `OFDMA PreEq` for stateful multi-capture, polling, stop, results ZIP, and reusable analysis
-- `PNM -> Spectrum Analyzer` for friendly, full-band, OFDM, and SCQAM capture flows
+- `Spectrum Analyzer` for friendly, full-band, OFDM, and SCQAM capture flows
 - `Files` for stored capture search, hexdump, JSON inspection, and file analysis
 
 Request forms validate common network fields before submit:

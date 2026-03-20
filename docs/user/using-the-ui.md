@@ -4,8 +4,9 @@
 
 The top navigation includes:
 - `Settings`
-- `Single Capture`
 - `Operations`
+- `Spectrum Analyzer`
+- `Single Capture`
 - `Advanced`
 - `Files`
 - `Health`
@@ -73,13 +74,6 @@ Current `PNM` operations in the menu are:
 
 - `Spectrum Analyzer`
 
-Current `PNM -> Spectrum Analyzer` entries include:
-
-- `Friendly`
-- `Full Band`
-- `OFDM`
-- `SCQAM`
-
 All operation pages currently expose:
 
 - request form
@@ -116,6 +110,21 @@ Each Advanced workbench includes:
 - `Analysis`
   - run multiple analysis types against the same `operation_id`
   - no need to restart capture for a different analysis type
+
+## Spectrum Analyzer
+
+The `Spectrum Analyzer` tab is now a top-level workflow area separate from the
+general `Operations` menu.
+
+Current spectrum analyzer workflows:
+
+- `Friendly`
+- `Full Band`
+- `OFDM`
+- `SCQAM`
+
+Spectrum Analyzer pages expose the same request-panel online gating and
+execution behavior as other capture-driven pages.
 
 Advanced RxMER analysis types:
 

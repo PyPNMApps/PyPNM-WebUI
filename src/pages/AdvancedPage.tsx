@@ -8,7 +8,11 @@ import { PageHeader } from "@/components/common/PageHeader";
 import { Panel } from "@/components/common/Panel";
 import { ThinkingIndicator } from "@/components/common/ThinkingIndicator";
 import type { CaptureConnectivityInputs, CaptureConnectivityStatus } from "@/features/operations/captureConnectivity";
-import { hasCompleteCaptureConnectivityInputs, isCaptureConnectivityOnline } from "@/features/operations/captureConnectivity";
+import {
+  buildCaptureConnectivityInputsFromInstance,
+  hasCompleteCaptureConnectivityInputs,
+  isCaptureConnectivityOnline,
+} from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import { useCommonRequestFormDefaults } from "@/features/operations/useRequestFormDefaults";
 import { useAdvancedOperationMachine } from "@/features/advanced/useAdvancedOperationMachine";
@@ -404,16 +408,20 @@ function AdvancedRxMerWorkbench() {
   const [captureConnectivityStatus, setCaptureConnectivityStatus] = useState<CaptureConnectivityStatus>("unknown");
   const connectivityCheckSequenceRef = useRef(0);
   const connectivityHasCheckedInitialRef = useRef(false);
+  const defaultConnectivityInputs = useMemo(
+    () => buildCaptureConnectivityInputsFromInstance(selectedInstance),
+    [selectedInstance],
+  );
   const watchedMacAddress = useWatch({ control: requestForm.control, name: "macAddress" });
   const watchedIpAddress = useWatch({ control: requestForm.control, name: "ipAddress" });
   const watchedCommunity = useWatch({ control: requestForm.control, name: "community" });
   const captureConnectivityInputs = useMemo<CaptureConnectivityInputs>(
     () => ({
-      macAddress: watchedMacAddress?.trim() ?? "",
-      ipAddress: watchedIpAddress?.trim() ?? "",
-      community: watchedCommunity?.trim() ?? "",
+      macAddress: watchedMacAddress?.trim() || defaultConnectivityInputs?.macAddress || "",
+      ipAddress: watchedIpAddress?.trim() || defaultConnectivityInputs?.ipAddress || "",
+      community: watchedCommunity?.trim() || defaultConnectivityInputs?.community || "",
     }),
-    [watchedMacAddress, watchedIpAddress, watchedCommunity],
+    [defaultConnectivityInputs, watchedMacAddress, watchedIpAddress, watchedCommunity],
   );
   const requestTitle = useMemo(() => buildRequestTitle(captureConnectivityStatus), [captureConnectivityStatus]);
 
@@ -810,16 +818,20 @@ function AdvancedChannelEstimationWorkbench() {
   const [captureConnectivityStatus, setCaptureConnectivityStatus] = useState<CaptureConnectivityStatus>("unknown");
   const connectivityCheckSequenceRef = useRef(0);
   const connectivityHasCheckedInitialRef = useRef(false);
+  const defaultConnectivityInputs = useMemo(
+    () => buildCaptureConnectivityInputsFromInstance(selectedInstance),
+    [selectedInstance],
+  );
   const watchedMacAddress = useWatch({ control: requestForm.control, name: "macAddress" });
   const watchedIpAddress = useWatch({ control: requestForm.control, name: "ipAddress" });
   const watchedCommunity = useWatch({ control: requestForm.control, name: "community" });
   const captureConnectivityInputs = useMemo<CaptureConnectivityInputs>(
     () => ({
-      macAddress: watchedMacAddress?.trim() ?? "",
-      ipAddress: watchedIpAddress?.trim() ?? "",
-      community: watchedCommunity?.trim() ?? "",
+      macAddress: watchedMacAddress?.trim() || defaultConnectivityInputs?.macAddress || "",
+      ipAddress: watchedIpAddress?.trim() || defaultConnectivityInputs?.ipAddress || "",
+      community: watchedCommunity?.trim() || defaultConnectivityInputs?.community || "",
     }),
-    [watchedMacAddress, watchedIpAddress, watchedCommunity],
+    [defaultConnectivityInputs, watchedMacAddress, watchedIpAddress, watchedCommunity],
   );
   const requestTitle = useMemo(() => buildRequestTitle(captureConnectivityStatus), [captureConnectivityStatus]);
 
@@ -1207,16 +1219,20 @@ function AdvancedOfdmaPreEqWorkbench() {
   const [captureConnectivityStatus, setCaptureConnectivityStatus] = useState<CaptureConnectivityStatus>("unknown");
   const connectivityCheckSequenceRef = useRef(0);
   const connectivityHasCheckedInitialRef = useRef(false);
+  const defaultConnectivityInputs = useMemo(
+    () => buildCaptureConnectivityInputsFromInstance(selectedInstance),
+    [selectedInstance],
+  );
   const watchedMacAddress = useWatch({ control: requestForm.control, name: "macAddress" });
   const watchedIpAddress = useWatch({ control: requestForm.control, name: "ipAddress" });
   const watchedCommunity = useWatch({ control: requestForm.control, name: "community" });
   const captureConnectivityInputs = useMemo<CaptureConnectivityInputs>(
     () => ({
-      macAddress: watchedMacAddress?.trim() ?? "",
-      ipAddress: watchedIpAddress?.trim() ?? "",
-      community: watchedCommunity?.trim() ?? "",
+      macAddress: watchedMacAddress?.trim() || defaultConnectivityInputs?.macAddress || "",
+      ipAddress: watchedIpAddress?.trim() || defaultConnectivityInputs?.ipAddress || "",
+      community: watchedCommunity?.trim() || defaultConnectivityInputs?.community || "",
     }),
-    [watchedMacAddress, watchedIpAddress, watchedCommunity],
+    [defaultConnectivityInputs, watchedMacAddress, watchedIpAddress, watchedCommunity],
   );
   const requestTitle = useMemo(() => buildRequestTitle(captureConnectivityStatus), [captureConnectivityStatus]);
 
