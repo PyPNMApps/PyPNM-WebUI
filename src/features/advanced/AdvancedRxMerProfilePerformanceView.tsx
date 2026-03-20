@@ -1,6 +1,9 @@
+import { useState } from "react";
+
 import { ExportActions } from "@/components/common/ExportActions";
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { Panel } from "@/components/common/Panel";
+import { SeriesVisibilityChips } from "@/components/common/SeriesVisibilityChips";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import { downloadCsv } from "@/lib/export/csv";
 import { buildExportBaseName } from "@/lib/export/naming";
@@ -59,102 +62,137 @@ export function AdvancedRxMerProfilePerformanceView({ response }: { response: Ad
       {channels.map(([channelId, channel]) => {
         const profiles = channel.profiles ?? [];
         return (
-          <Panel key={channelId} title={`Channel ${channelId} · OFDM Profile Performance 1`}>
-            <LineAnalysisChart
-              title={`Avg MER vs Profiles · Channel ${channelId}`}
-              subtitle={`Profiles: ${profiles.length}`}
-              yLabel="MER (dB)"
-              series={buildChannelSeries(channel)}
-              exportBaseName={buildExportBaseName(
-                macAddress,
-                Number((profiles[0] as { capture_time?: number } | undefined)?.capture_time),
-                `advanced-rxmer-profile-performance-channel-${channelId}`,
-              )}
-            />
-            <div className="operations-visual-actions">
-              <ExportActions
-                onCsv={() => downloadCsv(
-                  buildExportBaseName(
-                    macAddress,
-                    Number((profiles[0] as { capture_time?: number } | undefined)?.capture_time),
-                    `advanced-rxmer-profile-performance-channel-${channelId}-table`,
-                  ),
-                  profiles.map((profile, index) => {
-                    const entry = profile as {
-                      capture_time?: number;
-                      profile_id?: number;
-                      capacity_delta?: number[];
-                      fec_summary?: {
-                        summary?: Array<{ summary?: { total_codewords?: number; corrected?: number; uncorrectable?: number } }>;
-                        total_codewords?: number;
-                        corrected?: number;
-                        uncorrectable?: number;
-                      };
-                    };
-                    const capacity = entry.capacity_delta ?? [];
-                    const summary = entry.fec_summary?.summary?.[0]?.summary ?? entry.fec_summary;
-                    return {
-                      profile_id: entry.profile_id ?? index,
-                      capture_time_utc: formatCaptureTime(entry.capture_time),
-                      capacity_delta_min: capacity.length ? Math.min(...capacity).toFixed(2) : "n/a",
-                      capacity_delta_avg: capacity.length ? (capacity.reduce((sum, value) => sum + value, 0) / capacity.length).toFixed(2) : "n/a",
-                      capacity_delta_max: capacity.length ? Math.max(...capacity).toFixed(2) : "n/a",
-                      total_codewords: summary?.total_codewords ?? "n/a",
-                      corrected: summary?.corrected ?? "n/a",
-                      uncorrectable: summary?.uncorrectable ?? "n/a",
-                    };
-                  }),
-                )}
-              />
-            </div>
-            <div className="table-scroll">
-              <table className="channel-metrics-table">
-                <thead>
-                  <tr>
-                    <th>Profile</th>
-                    <th>Capture Time</th>
-                    <th>Capacity Δ Min</th>
-                    <th>Capacity Δ Avg</th>
-                    <th>Capacity Δ Max</th>
-                    <th>Total CW</th>
-                    <th>Corrected</th>
-                    <th>Uncorrectable</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {profiles.map((profile, index) => {
-                    const entry = profile as {
-                      capture_time?: number;
-                      profile_id?: number;
-                      capacity_delta?: number[];
-                      fec_summary?: {
-                        summary?: Array<{ summary?: { total_codewords?: number; corrected?: number; uncorrectable?: number } }>;
-                        total_codewords?: number;
-                        corrected?: number;
-                        uncorrectable?: number;
-                      };
-                    };
-                    const capacity = entry.capacity_delta ?? [];
-                    const summary = entry.fec_summary?.summary?.[0]?.summary ?? entry.fec_summary;
-                    return (
-                      <tr key={index}>
-                        <td className="mono">{entry.profile_id ?? index}</td>
-                        <td className="mono">{formatCaptureTime(entry.capture_time)}</td>
-                        <td className="mono">{capacity.length ? Math.min(...capacity).toFixed(2) : "n/a"}</td>
-                        <td className="mono">{capacity.length ? (capacity.reduce((sum, value) => sum + value, 0) / capacity.length).toFixed(2) : "n/a"}</td>
-                        <td className="mono">{capacity.length ? Math.max(...capacity).toFixed(2) : "n/a"}</td>
-                        <td className="mono">{summary?.total_codewords?.toLocaleString?.() ?? summary?.total_codewords ?? "n/a"}</td>
-                        <td className="mono">{summary?.corrected?.toLocaleString?.() ?? summary?.corrected ?? "n/a"}</td>
-                        <td className="mono">{summary?.uncorrectable?.toLocaleString?.() ?? summary?.uncorrectable ?? "n/a"}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </Panel>
+          <ProfilePerformanceChannelPanel
+            key={channelId}
+            channelId={channelId}
+            channel={channel}
+            profiles={profiles}
+            macAddress={macAddress}
+          />
         );
       })}
     </div>
+  );
+}
+
+function ProfilePerformanceChannelPanel({
+  channelId,
+  channel,
+  profiles,
+  macAddress,
+}: {
+  channelId: string;
+  channel: AdvancedMultiRxMerOfdmProfileChannel;
+  profiles: Array<Record<string, unknown>>;
+  macAddress: string | undefined;
+}) {
+  const [seriesVisibility, setSeriesVisibility] = useState<Record<string, boolean>>({});
+  const allSeries = buildChannelSeries(channel);
+  const visibleSeries = allSeries.filter((item) => seriesVisibility[item.label] !== false);
+  const captureTime = Number((profiles[0] as { capture_time?: number } | undefined)?.capture_time);
+
+  return (
+    <Panel title={`Channel ${channelId} · OFDM Profile Performance 1`}>
+      <SeriesVisibilityChips
+        series={allSeries}
+        visibility={seriesVisibility}
+        onToggle={(label) => {
+          setSeriesVisibility((current) => ({ ...current, [label]: current[label] === false }));
+        }}
+      />
+      <LineAnalysisChart
+        title={`Avg MER vs Profiles · Channel ${channelId}`}
+        subtitle={`Profiles: ${profiles.length}`}
+        yLabel="MER (dB)"
+        series={visibleSeries}
+        showLegend={false}
+        exportBaseName={buildExportBaseName(
+          macAddress,
+          captureTime,
+          `advanced-rxmer-profile-performance-channel-${channelId}`,
+        )}
+      />
+      <div className="operations-visual-actions">
+        <ExportActions
+          onCsv={() => downloadCsv(
+            buildExportBaseName(
+              macAddress,
+              captureTime,
+              `advanced-rxmer-profile-performance-channel-${channelId}-table`,
+            ),
+            profiles.map((profile, index) => {
+              const entry = profile as {
+                capture_time?: number;
+                profile_id?: number;
+                capacity_delta?: number[];
+                fec_summary?: {
+                  summary?: Array<{ summary?: { total_codewords?: number; corrected?: number; uncorrectable?: number } }>;
+                  total_codewords?: number;
+                  corrected?: number;
+                  uncorrectable?: number;
+                };
+              };
+              const capacity = entry.capacity_delta ?? [];
+              const summary = entry.fec_summary?.summary?.[0]?.summary ?? entry.fec_summary;
+              return {
+                profile_id: entry.profile_id ?? index,
+                capture_time_utc: formatCaptureTime(entry.capture_time),
+                capacity_delta_min: capacity.length ? Math.min(...capacity).toFixed(2) : "n/a",
+                capacity_delta_avg: capacity.length ? (capacity.reduce((sum, value) => sum + value, 0) / capacity.length).toFixed(2) : "n/a",
+                capacity_delta_max: capacity.length ? Math.max(...capacity).toFixed(2) : "n/a",
+                total_codewords: summary?.total_codewords ?? "n/a",
+                corrected: summary?.corrected ?? "n/a",
+                uncorrectable: summary?.uncorrectable ?? "n/a",
+              };
+            }),
+          )}
+        />
+      </div>
+      <div className="table-scroll">
+        <table className="channel-metrics-table">
+          <thead>
+            <tr>
+              <th>Profile</th>
+              <th>Capture Time</th>
+              <th>Capacity Δ Min</th>
+              <th>Capacity Δ Avg</th>
+              <th>Capacity Δ Max</th>
+              <th>Total CW</th>
+              <th>Corrected</th>
+              <th>Uncorrectable</th>
+            </tr>
+          </thead>
+          <tbody>
+            {profiles.map((profile, index) => {
+              const entry = profile as {
+                capture_time?: number;
+                profile_id?: number;
+                capacity_delta?: number[];
+                fec_summary?: {
+                  summary?: Array<{ summary?: { total_codewords?: number; corrected?: number; uncorrectable?: number } }>;
+                  total_codewords?: number;
+                  corrected?: number;
+                  uncorrectable?: number;
+                };
+              };
+              const capacity = entry.capacity_delta ?? [];
+              const summary = entry.fec_summary?.summary?.[0]?.summary ?? entry.fec_summary;
+              return (
+                <tr key={index}>
+                  <td className="mono">{entry.profile_id ?? index}</td>
+                  <td className="mono">{formatCaptureTime(entry.capture_time)}</td>
+                  <td className="mono">{capacity.length ? Math.min(...capacity).toFixed(2) : "n/a"}</td>
+                  <td className="mono">{capacity.length ? (capacity.reduce((sum, value) => sum + value, 0) / capacity.length).toFixed(2) : "n/a"}</td>
+                  <td className="mono">{capacity.length ? Math.max(...capacity).toFixed(2) : "n/a"}</td>
+                  <td className="mono">{summary?.total_codewords?.toLocaleString?.() ?? summary?.total_codewords ?? "n/a"}</td>
+                  <td className="mono">{summary?.corrected?.toLocaleString?.() ?? summary?.corrected ?? "n/a"}</td>
+                  <td className="mono">{summary?.uncorrectable?.toLocaleString?.() ?? summary?.uncorrectable ?? "n/a"}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </Panel>
   );
 }
