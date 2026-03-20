@@ -16,6 +16,7 @@ import {
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import { useCommonRequestFormDefaults } from "@/features/operations/useRequestFormDefaults";
 import { useAdvancedOperationMachine } from "@/features/advanced/useAdvancedOperationMachine";
+import { AdvancedRxMerMinAvgMaxView } from "@/features/advanced/AdvancedRxMerMinAvgMaxView";
 import { AdvancedRxMerEchoDetectionView } from "@/features/advanced/AdvancedRxMerEchoDetectionView";
 import { AdvancedRxMerHeatMapView } from "@/features/advanced/AdvancedRxMerHeatMapView";
 import { AdvancedRxMerProfilePerformanceView } from "@/features/advanced/AdvancedRxMerProfilePerformanceView";
@@ -27,7 +28,6 @@ import { AdvancedOfdmaPreEqMinAvgMaxView } from "@/features/advanced/AdvancedOfd
 import { AdvancedOfdmaPreEqGroupDelayView } from "@/features/advanced/AdvancedOfdmaPreEqGroupDelayView";
 import { AdvancedOfdmaPreEqEchoDetectionView } from "@/features/advanced/AdvancedOfdmaPreEqEchoDetectionView";
 import { parseChannelIds } from "@/lib/channelIds";
-import { buildExportBaseName } from "@/lib/export/naming";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import { checkCaptureInputsOnline } from "@/services/captureConnectivityService";
 import { CONNECTIVITY_STATUS_DEBOUNCE_MS } from "@/lib/constants";
@@ -70,8 +70,6 @@ import type {
   AdvancedMultiUsOfdmaPreEqStatusResponse,
 } from "@/types/api";
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
-import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
-import type { ChartSeries } from "@/features/analysis/types";
 
 const advancedRoutes = [
   { to: "/advanced/rxmer", label: "RxMER" },
@@ -287,32 +285,6 @@ function buildRequestTitle(status: CaptureConnectivityStatus) {
   );
 }
 
-function buildMinAvgMaxSeries(channel: {
-  frequency: number[];
-  min: number[];
-  avg: number[];
-  max: number[];
-}): ChartSeries[] {
-  const frequencies = channel.frequency ?? [];
-  return [
-    {
-      label: "Min",
-      color: "#ef4444",
-      points: frequencies.slice(0, channel.min.length).map((frequency, index) => ({ x: frequency / 1_000_000, y: channel.min[index] ?? 0 })),
-    },
-    {
-      label: "Avg",
-      color: "#79a9ff",
-      points: frequencies.slice(0, channel.avg.length).map((frequency, index) => ({ x: frequency / 1_000_000, y: channel.avg[index] ?? 0 })),
-    },
-    {
-      label: "Max",
-      color: "#58d0a7",
-      points: frequencies.slice(0, channel.max.length).map((frequency, index) => ({ x: frequency / 1_000_000, y: channel.max[index] ?? 0 })),
-    },
-  ];
-}
-
 function AdvancedRxMerAnalysisView({
   analysisType,
   response,
@@ -333,31 +305,7 @@ function AdvancedRxMerAnalysisView({
         <span className="analysis-chip"><b>Channels</b> {channels.length}</span>
       </div>
       {analysisType === "min-avg-max" ? (
-        <>
-          <DeviceInfoTable
-            deviceInfo={toDeviceInfo(
-              response.device?.system_description ?? response.system_description,
-              response.device?.mac_address ?? response.mac_address,
-            )}
-          />
-          <div className="if31-ds-ofdm-channel-grid">
-            {channels.map(([channelId, channel]) => (
-              <Panel key={channelId} title={`Channel ${channelId}`}>
-                <LineAnalysisChart
-                  title={`Min / Avg / Max · Channel ${channelId}`}
-                  subtitle="Per-subcarrier RxMER summary"
-                  yLabel="dB"
-                  series={buildMinAvgMaxSeries(channel as { frequency: number[]; min: number[]; avg: number[]; max: number[] })}
-                  exportBaseName={buildExportBaseName(
-                    response.device?.mac_address ?? response.mac_address,
-                    undefined,
-                    `advanced-rxmer-min-avg-max-channel-${channelId}`,
-                  )}
-                />
-              </Panel>
-            ))}
-          </div>
-        </>
+        <AdvancedRxMerMinAvgMaxView response={response} />
       ) : analysisType === "rxmer-heat-map" ? (
         <AdvancedRxMerHeatMapView response={response} />
       ) : analysisType === "echo-reflection-1" ? (
@@ -706,7 +654,7 @@ function AdvancedRxMerWorkbench() {
             />
           </div>
           <div className="actions advanced-run-actions">
-            {resultsZipUrl ? <a className="button-link" href={resultsZipUrl} target="_blank" rel="noreferrer">Download Results ZIP</a> : null}
+            {resultsZipUrl ? <a className="button-link" href={resultsZipUrl} target="_blank" rel="noreferrer">ZIP</a> : null}
           </div>
         </div>
       </Panel>
@@ -733,10 +681,10 @@ function AdvancedRxMerWorkbench() {
                 disabled={machine.lifecycleState !== "completed" && machine.lifecycleState !== "stopped"}
                 onClick={() => downloadJson(buildAdvancedJsonFilename(analysisType, effectiveOperationId || "operation"), analysisResponse)}
               >
-                Download JSON
+                JSON
               </button>
             ) : (
-              <button type="button" disabled>Download JSON</button>
+              <button type="button" disabled>JSON</button>
             )}
           </div>
         </form>
@@ -1109,7 +1057,7 @@ function AdvancedChannelEstimationWorkbench() {
             />
           </div>
           <div className="actions advanced-run-actions">
-            {resultsZipUrl ? <a className="button-link" href={resultsZipUrl} target="_blank" rel="noreferrer">Download Results ZIP</a> : null}
+            {resultsZipUrl ? <a className="button-link" href={resultsZipUrl} target="_blank" rel="noreferrer">ZIP</a> : null}
           </div>
         </div>
       </Panel>
@@ -1136,10 +1084,10 @@ function AdvancedChannelEstimationWorkbench() {
                 disabled={machine.lifecycleState !== "completed" && machine.lifecycleState !== "stopped"}
                 onClick={() => downloadJson(`advanced-channel-estimation-${analysisType}-${effectiveOperationId || "operation"}.json`, analysisResponse)}
               >
-                Download JSON
+                JSON
               </button>
             ) : (
-              <button type="button" disabled>Download JSON</button>
+              <button type="button" disabled>JSON</button>
             )}
           </div>
         </form>
@@ -1510,7 +1458,7 @@ function AdvancedOfdmaPreEqWorkbench() {
             />
           </div>
           <div className="actions advanced-run-actions">
-            {resultsZipUrl ? <a className="button-link" href={resultsZipUrl} target="_blank" rel="noreferrer">Download Results ZIP</a> : null}
+            {resultsZipUrl ? <a className="button-link" href={resultsZipUrl} target="_blank" rel="noreferrer">ZIP</a> : null}
           </div>
         </div>
       </Panel>
@@ -1537,10 +1485,10 @@ function AdvancedOfdmaPreEqWorkbench() {
                 disabled={machine.lifecycleState !== "completed" && machine.lifecycleState !== "stopped"}
                 onClick={() => downloadJson(`advanced-ofdma-pre-eq-${analysisType}-${effectiveOperationId || "operation"}.json`, analysisResponse)}
               >
-                Download JSON
+                JSON
               </button>
             ) : (
-              <button type="button" disabled>Download JSON</button>
+              <button type="button" disabled>JSON</button>
             )}
           </div>
         </form>
