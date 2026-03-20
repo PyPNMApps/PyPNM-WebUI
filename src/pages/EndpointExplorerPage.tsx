@@ -12,8 +12,8 @@ import { HistogramCaptureRequestForm } from "@/features/operations/HistogramCapt
 import { FecSummaryCaptureRequestForm } from "@/features/operations/FecSummaryCaptureRequestForm";
 import { ScqamCodewordErrorRateRequestForm } from "@/features/operations/ScqamCodewordErrorRateRequestForm";
 import { SingleCaptureRequestForm } from "@/features/operations/SingleCaptureRequestForm";
-import type { CaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
-import { hasCompleteCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
+import type { CaptureConnectivityInputs, CaptureConnectivityStatus } from "@/features/operations/captureConnectivity";
+import { hasCompleteCaptureConnectivityInputs, isCaptureConnectivityOnline } from "@/features/operations/captureConnectivity";
 import { SingleSpectrumOfdmCaptureView } from "@/features/operations/SingleSpectrumOfdmCaptureView";
 import { SingleSpectrumScqamCaptureView } from "@/features/operations/SingleSpectrumScqamCaptureView";
 import { SpectrumFullBandCaptureRequestForm } from "@/features/operations/SpectrumFullBandCaptureRequestForm";
@@ -110,8 +110,6 @@ import type {
   SystemUpTimeResponse,
 } from "@/types/api";
 
-type CaptureConnectivityStatus = "unknown" | "checking" | "online" | "offline";
-
 function downloadJson(filename: string, payload: unknown) {
   const blob = new Blob([`${JSON.stringify(payload, null, 2)}\n`], { type: "application/json" });
   const url = URL.createObjectURL(blob);
@@ -162,6 +160,7 @@ export function EndpointExplorerPage() {
   const [spectrumOfdmResponse, setSpectrumOfdmResponse] = useState<SingleSpectrumOfdmCaptureResponse>(singleSpectrumOfdmCaptureFixture);
   const [spectrumScqamResponse, setSpectrumScqamResponse] = useState<SingleSpectrumScqamCaptureResponse>(singleSpectrumScqamCaptureFixture);
   const selectedOperation = getOperationByRoutePath(location.pathname);
+  const canExecuteOperation = Boolean(selectedInstance) && isCaptureConnectivityOnline(captureConnectivityStatus);
   const captureInputsTitle = useMemo(() => {
     const label = captureConnectivityStatus === "online"
       ? "Online"
@@ -487,7 +486,7 @@ export function EndpointExplorerPage() {
         {selectedOperation.id === "docs-if30-ds-scqam-chan-codeworderrorrate" ? (
           <ScqamCodewordErrorRateRequestForm
             isPending={mutation.isPending}
-            canRun={Boolean(selectedInstance)}
+            canRun={canExecuteOperation}
             submitLabel={`Run ${selectedOperation.label}`}
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
@@ -498,7 +497,7 @@ export function EndpointExplorerPage() {
         ) : selectedOperation.id === "docs-dev-eventlog" || selectedOperation.id === "system-uptime" || selectedOperation.id === "docs-pnm-interface-stats" || selectedOperation.id === "docs-if30-us-atdma-chan-stats" || selectedOperation.id === "docs-if30-us-atdma-chan-preequalization" || selectedOperation.id === "docs-if30-ds-scqam-chan-stats" || selectedOperation.id === "docs-fdd-diplexer-bandedgecapability" || selectedOperation.id === "docs-fdd-system-diplexer-configuration" || selectedOperation.id === "docs-if31-us-ofdma-channel-stats" || selectedOperation.id === "docs-if31-system-diplexer" || selectedOperation.id === "docs-if31-ds-ofdm-profile-stats" || selectedOperation.id === "docs-if31-ds-ofdm-chan-stats" || selectedOperation.id === "docs-if31-docsis-basecapability" ? (
           <DeviceConnectRequestForm
             isPending={mutation.isPending}
-            canRun={Boolean(selectedInstance)}
+            canRun={canExecuteOperation}
             submitLabel={`Run ${selectedOperation.label}`}
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
@@ -509,7 +508,7 @@ export function EndpointExplorerPage() {
         ) : selectedOperation.id === "docs-pnm-ds-histogram-getcapture" ? (
           <HistogramCaptureRequestForm
             isPending={mutation.isPending}
-            canRun={Boolean(selectedInstance)}
+            canRun={canExecuteOperation}
             submitLabel={`Run ${selectedOperation.label}`}
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
@@ -520,7 +519,7 @@ export function EndpointExplorerPage() {
         ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-friendly" ? (
           <SpectrumFriendlyCaptureRequestForm
             isPending={mutation.isPending}
-            canRun={Boolean(selectedInstance)}
+            canRun={canExecuteOperation}
             submitLabel={`Run ${selectedOperation.label}`}
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
@@ -531,7 +530,7 @@ export function EndpointExplorerPage() {
         ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-fullbandcapture" ? (
           <SpectrumFullBandCaptureRequestForm
             isPending={mutation.isPending}
-            canRun={Boolean(selectedInstance)}
+            canRun={canExecuteOperation}
             submitLabel={`Run ${selectedOperation.label}`}
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
@@ -542,7 +541,7 @@ export function EndpointExplorerPage() {
         ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-ofdm" || selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-scqam" ? (
           <SpectrumOfdmCaptureRequestForm
             isPending={mutation.isPending}
-            canRun={Boolean(selectedInstance)}
+            canRun={canExecuteOperation}
             submitLabel={`Run ${selectedOperation.label}`}
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
@@ -553,7 +552,7 @@ export function EndpointExplorerPage() {
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-constellationdisplay-getcapture" ? (
           <ConstellationDisplayCaptureRequestForm
             isPending={mutation.isPending}
-            canRun={Boolean(selectedInstance)}
+            canRun={canExecuteOperation}
             submitLabel={`Run ${selectedOperation.label}`}
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
@@ -564,7 +563,7 @@ export function EndpointExplorerPage() {
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-fecsummary-getcapture" ? (
           <FecSummaryCaptureRequestForm
             isPending={mutation.isPending}
-            canRun={Boolean(selectedInstance)}
+            canRun={canExecuteOperation}
             submitLabel={`Run ${selectedOperation.label}`}
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
@@ -575,7 +574,7 @@ export function EndpointExplorerPage() {
         ) : (
           <SingleCaptureRequestForm
             isPending={mutation.isPending}
-            canRun={Boolean(selectedInstance)}
+            canRun={canExecuteOperation}
             submitLabel={`Run ${selectedOperation.label}`}
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
             onConnectivityInputsChange={setCaptureConnectivityInputs}

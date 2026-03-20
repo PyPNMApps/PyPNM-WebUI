@@ -7,8 +7,8 @@ import { FieldLabel } from "@/components/common/FieldLabel";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Panel } from "@/components/common/Panel";
 import { ThinkingIndicator } from "@/components/common/ThinkingIndicator";
-import type { CaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
-import { hasCompleteCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
+import type { CaptureConnectivityInputs, CaptureConnectivityStatus } from "@/features/operations/captureConnectivity";
+import { hasCompleteCaptureConnectivityInputs, isCaptureConnectivityOnline } from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
 import { useCommonRequestFormDefaults } from "@/features/operations/useRequestFormDefaults";
 import { useAdvancedOperationMachine } from "@/features/advanced/useAdvancedOperationMachine";
@@ -157,8 +157,6 @@ interface AdvancedOperationHistoryEntry {
 }
 
 type AdvancedOperationHistorySort = "latest" | "model";
-type CaptureConnectivityStatus = "unknown" | "checking" | "online" | "offline";
-
 function downloadJson(filename: string, payload: unknown) {
   const blob = new Blob([`${JSON.stringify(payload, null, 2)}\n`], { type: "application/json" });
   const url = URL.createObjectURL(blob);
@@ -540,6 +538,7 @@ function AdvancedRxMerWorkbench() {
 
   const effectiveOperationId = machine.hasOperation ? machine.operationId ?? "" : manualOperationId.trim();
   const visibleOperationHistory = sortOperationHistory(operationHistory, operationHistorySort);
+  const canExecuteCapture = Boolean(selectedInstance) && isCaptureConnectivityOnline(captureConnectivityStatus);
 
   const runAnalysis = async () => {
     if (!effectiveOperationId || !selectedInstance?.baseUrl) return;
@@ -617,7 +616,7 @@ function AdvancedRxMerWorkbench() {
             </div>
           </div>
           <div className="actions">
-            <button type="submit" className="primary" disabled={!selectedInstance || !machine.canStart}>
+            <button type="submit" className="primary" disabled={!canExecuteCapture || !machine.canStart}>
               {machine.lifecycleState === "starting" ? "Starting..." : "Start Capture"}
             </button>
           </div>
@@ -945,6 +944,7 @@ function AdvancedChannelEstimationWorkbench() {
 
   const effectiveOperationId = machine.hasOperation ? machine.operationId ?? "" : manualOperationId.trim();
   const visibleOperationHistory = sortOperationHistory(operationHistory, operationHistorySort);
+  const canExecuteCapture = Boolean(selectedInstance) && isCaptureConnectivityOnline(captureConnectivityStatus);
 
   const runAnalysis = async () => {
     if (!effectiveOperationId || !selectedInstance?.baseUrl) return;
@@ -1015,7 +1015,7 @@ function AdvancedChannelEstimationWorkbench() {
             </div>
           </div>
           <div className="actions">
-            <button type="submit" className="primary" disabled={!selectedInstance || !machine.canStart}>
+            <button type="submit" className="primary" disabled={!canExecuteCapture || !machine.canStart}>
               {machine.lifecycleState === "starting" ? "Starting..." : "Start Capture"}
             </button>
           </div>
@@ -1341,6 +1341,7 @@ function AdvancedOfdmaPreEqWorkbench() {
 
   const effectiveOperationId = machine.hasOperation ? machine.operationId ?? "" : manualOperationId.trim();
   const visibleOperationHistory = sortOperationHistory(operationHistory, operationHistorySort);
+  const canExecuteCapture = Boolean(selectedInstance) && isCaptureConnectivityOnline(captureConnectivityStatus);
 
   const runAnalysis = async () => {
     if (!effectiveOperationId || !selectedInstance?.baseUrl) return;
@@ -1411,7 +1412,7 @@ function AdvancedOfdmaPreEqWorkbench() {
             </div>
           </div>
           <div className="actions">
-            <button type="submit" className="primary" disabled={!selectedInstance || !machine.canStart}>
+            <button type="submit" className="primary" disabled={!canExecuteCapture || !machine.canStart}>
               {machine.lifecycleState === "starting" ? "Starting..." : "Start Capture"}
             </button>
           </div>

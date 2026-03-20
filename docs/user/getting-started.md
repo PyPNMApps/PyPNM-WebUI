@@ -49,6 +49,8 @@ Open:
 - Open `Single Capture` and confirm the PNM capture pages are using the selected
   instance defaults.
 - Confirm the `Capture Inputs` chip turns green when the current MAC, IP, and SNMP community can be verified through `/system/sysDescr`.
+- Confirm the execution button stays grayed out until that chip reports
+  `Online`.
 - Open `About` and confirm the loaded WebUI version.
 
 ## 5. Common first workflows

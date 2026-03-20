@@ -15,6 +15,13 @@ The `Health` page includes per-agent `Reload` buttons and a `Reload All Web
 Services` action. These send `GET /pypnm/system/webService/reload` to one or
 all configured agents and then refresh the health table.
 
+Single-capture and advanced capture execution buttons stay disabled until the
+request panel reports the cable modem as `Online`.
+
+When execution is blocked, the action button remains grayed out and does not
+show a click-style pointer on hover. This is intentional and indicates that the
+current MAC, IP, and SNMP RW community have not yet passed the online check.
+
 The top bar also includes the `PyPNM Agent` dropdown sourced from:
 
 - `public/config/pypnm-instances.yaml`
@@ -47,6 +54,7 @@ Each Single Capture page includes:
 - request form
 - `Capture Inputs` online/offline chip driven by `/system/sysDescr`
 - immediate status check on page load, then a 3 second debounce after MAC, IP, or SNMP community changes
+- execution button stays disabled until the modem reports `Online`
 - visible waiting indicator while data is being collected
 - right-aligned `Download JSON` action for the current response
 - bound visual below the form
@@ -77,6 +85,7 @@ All operation pages currently expose:
 - request form
 - `Capture Inputs` online/offline chip driven by `/system/sysDescr`
 - immediate status check on page load, then a 3 second debounce after MAC, IP, or SNMP community changes
+- execution button stays disabled until the modem reports `Online`
 - visible waiting indicator while data is being collected
 - right-aligned `Download JSON` action for the current response
 - bound visual below the form
@@ -95,6 +104,7 @@ Each Advanced workbench includes:
 
 - `Request`
   - start a multi-capture operation
+  - `Start Capture` remains disabled until the modem reports `Online`
 - `Run`
   - live status polling
   - collected count

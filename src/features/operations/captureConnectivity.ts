@@ -6,6 +6,8 @@ export interface CaptureConnectivityInputs {
   community: string;
 }
 
+export type CaptureConnectivityStatus = "unknown" | "checking" | "online" | "offline";
+
 export function normalizeCaptureConnectivityInputs(inputs: CaptureConnectivityInputs): CaptureConnectivityInputs {
   return {
     macAddress: inputs.macAddress.trim(),
@@ -16,6 +18,10 @@ export function normalizeCaptureConnectivityInputs(inputs: CaptureConnectivityIn
 
 export function hasCompleteCaptureConnectivityInputs(inputs: CaptureConnectivityInputs | null): inputs is CaptureConnectivityInputs {
   return Boolean(inputs?.macAddress && inputs.ipAddress && inputs.community);
+}
+
+export function isCaptureConnectivityOnline(status: CaptureConnectivityStatus): boolean {
+  return status === "online";
 }
 
 export function useReportCaptureConnectivityInputs(

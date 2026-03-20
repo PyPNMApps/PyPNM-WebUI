@@ -70,6 +70,10 @@
   `MAC-HHMM-YYYYMMDD`
 - For that modem-specific filename suffix, remove MAC delimiters so the MAC is
   filename-safe and stable across export types.
+- Disabled buttons and other disabled action controls must appear visually
+  grayed out.
+- Hovering disabled action controls must not imply clickability; keep the
+  cursor non-pointer for disabled states.
 
 ## Environment And Configuration (Required)
 

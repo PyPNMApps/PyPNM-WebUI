@@ -382,6 +382,7 @@ button {
   padding: 10px 14px;
   cursor: pointer;
   color: var(--ink);
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease, opacity 120ms ease;
 }
 
 button.primary {
@@ -482,6 +483,37 @@ button.secondary,
 .button-link:focus-visible {
   border-color: rgba(121, 169, 255, 0.42);
   background: rgba(121, 169, 255, 0.08);
+}
+
+button:disabled,
+button[aria-disabled="true"],
+.button-link[aria-disabled="true"] {
+  cursor: default;
+  opacity: 0.45;
+  color: var(--muted);
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: none;
+}
+
+button.primary:disabled,
+button.primary[aria-disabled="true"] {
+  background: rgba(121, 169, 255, 0.24);
+  border-color: rgba(121, 169, 255, 0.24);
+  color: rgba(7, 16, 26, 0.72);
+}
+
+button:disabled:hover,
+button:disabled:focus-visible,
+button[aria-disabled="true"]:hover,
+button[aria-disabled="true"]:focus-visible,
+.button-link[aria-disabled="true"]:hover,
+.button-link[aria-disabled="true"]:focus-visible {
+  cursor: default;
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--muted);
+  outline: none;
 }
 
 .mono {
