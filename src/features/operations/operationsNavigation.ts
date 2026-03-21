@@ -148,7 +148,7 @@ export const operationNavigationItems: OperationNavigationItem[] = [
   },
   {
     id: "docs-pnm-ds-ofdm-channelestcoeff-getcapture",
-    label: "Channel Est Coeff",
+    label: "Channel Estimation",
     routePath: "/single-capture/channel-est-coeff",
     endpointPath: "/docs/pnm/ds/ofdm/channelEstCoeff/getCapture",
     description: "Single downstream OFDM channel estimation coefficient capture visual.",

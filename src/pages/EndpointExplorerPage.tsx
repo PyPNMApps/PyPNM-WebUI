@@ -527,7 +527,7 @@ export function EndpointExplorerPage() {
           <HistogramCaptureRequestForm
             isPending={mutation.isPending}
             canRun={canExecuteOperation}
-            submitLabel={`Run ${selectedOperation.label}`}
+            submitLabel="Get Capture"
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
@@ -538,7 +538,7 @@ export function EndpointExplorerPage() {
           <SpectrumFriendlyCaptureRequestForm
             isPending={mutation.isPending}
             canRun={canExecuteOperation}
-            submitLabel={`Run ${selectedOperation.label}`}
+            submitLabel="Get Capture"
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
@@ -549,7 +549,7 @@ export function EndpointExplorerPage() {
           <SpectrumFullBandCaptureRequestForm
             isPending={mutation.isPending}
             canRun={canExecuteOperation}
-            submitLabel={`Run ${selectedOperation.label}`}
+            submitLabel="Get Capture"
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
@@ -560,7 +560,7 @@ export function EndpointExplorerPage() {
           <SpectrumOfdmCaptureRequestForm
             isPending={mutation.isPending}
             canRun={canExecuteOperation}
-            submitLabel={`Run ${selectedOperation.label}`}
+            submitLabel="Get Capture"
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
@@ -571,7 +571,7 @@ export function EndpointExplorerPage() {
           <ConstellationDisplayCaptureRequestForm
             isPending={mutation.isPending}
             canRun={canExecuteOperation}
-            submitLabel={`Run ${selectedOperation.label}`}
+            submitLabel="Get Capture"
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
@@ -582,7 +582,7 @@ export function EndpointExplorerPage() {
           <FecSummaryCaptureRequestForm
             isPending={mutation.isPending}
             canRun={canExecuteOperation}
-            submitLabel={`Run ${selectedOperation.label}`}
+            submitLabel="Get Capture"
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
@@ -593,7 +593,7 @@ export function EndpointExplorerPage() {
           <SingleCaptureRequestForm
             isPending={mutation.isPending}
             canRun={canExecuteOperation}
-            submitLabel={`Run ${selectedOperation.label}`}
+            submitLabel="Get Capture"
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {

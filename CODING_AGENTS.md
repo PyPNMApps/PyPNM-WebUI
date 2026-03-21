@@ -83,6 +83,10 @@
 - Sensitive editable request inputs such as `SNMP RW Community` should be
   masked by default and revealed through a shared trailing-eye control rather
   than shown inline by default.
+- Use action labels that match the workflow type. Capture-driven request
+  panels should prefer a generic label such as `Get Capture` instead of
+  repetitive `Run <endpoint>` phrasing when the action is simply collecting
+  one capture.
 
 ## Environment And Configuration (Required)
 

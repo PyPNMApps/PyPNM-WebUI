@@ -43,7 +43,7 @@ The `Single Capture` tab is the dedicated one-shot PNM capture area.
 Current workflows:
 
 - `RxMER`
-- `Channel Est Coeff`
+- `Channel Estimation`
 - `Histogram`
 - `FEC Summary`
 - `Constellation Display`
