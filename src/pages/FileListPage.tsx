@@ -209,7 +209,7 @@ export function FileListPage() {
           {selectedInstance ? (
             <div className="files-summary-row">
               <span className="analysis-chip"><b>Target</b> {selectedInstance.label}</span>
-              <span className="analysis-chip"><b>Selected MAC</b> {effectiveMacAddress || "n/a"}</span>
+              <span className="analysis-chip"><b>MAC:</b> {effectiveMacAddress || "n/a"}</span>
               <span className="analysis-chip"><b>File Count</b> {fileCount}</span>
             </div>
           ) : (
@@ -338,14 +338,17 @@ export function FileListPage() {
         </Panel>
       </div>
 
-      <Panel title="Files For Selected MAC">
-        {effectiveMacAddress !== "" ? (
-          <p className="panel-copy">
-            Selected MAC: <span className="mono">{effectiveMacAddress}</span>
-          </p>
-        ) : (
+        <Panel
+          title={(
+            <div className="panel-title-inline">
+              <h2 className="panel-title-heading">Files For Selected MAC</h2>
+              <span className="analysis-chip"><b>MAC:</b> {effectiveMacAddress || "n/a"}</span>
+            </div>
+          )}
+        >
+        {effectiveMacAddress === "" ? (
           <p className="panel-copy">Select or search for a MAC address to load file entries.</p>
-        )}
+        ) : null}
         {fileSearchQuery.isLoading ? <ThinkingIndicator label="Collecting file entries..." /> : null}
         {fileSearchQuery.isError ? <p className="panel-copy files-error">{(fileSearchQuery.error as Error).message}</p> : null}
         {!fileSearchQuery.isLoading && !fileSearchQuery.isError && effectiveMacAddress !== "" ? (
