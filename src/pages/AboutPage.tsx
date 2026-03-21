@@ -3,13 +3,19 @@ import { useQuery } from "@tanstack/react-query";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Panel } from "@/components/common/Panel";
 import { ThinkingIndicator } from "@/components/common/ThinkingIndicator";
-import { REPO_URL, fetchLatestGitHubTag } from "@/services/repoMetadataService";
+import { REPO_URL, fetchCurrentLocalVersion, fetchLatestGitHubTag } from "@/services/repoMetadataService";
 
 function VersionValue({ value }: { value: string }) {
   return <span className="mono">{value}</span>;
 }
 
 export function AboutPage() {
+  const currentVersionQuery = useQuery({
+    queryKey: ["app", "current-local-version"],
+    queryFn: fetchCurrentLocalVersion,
+    staleTime: 15 * 1000,
+    retry: false,
+  });
   const latestVersionQuery = useQuery({
     queryKey: ["github", "latest-tag"],
     queryFn: fetchLatestGitHubTag,
@@ -39,8 +45,10 @@ export function AboutPage() {
               <div><VersionValue value={__APP_LICENSE__} /></div>
             </div>
             <div className="settings-definition-row">
-              <div className="settings-definition-key">Current Version</div>
-              <div><VersionValue value={__APP_VERSION__} /></div>
+              <div className="settings-definition-key">Current Local Version</div>
+              <div>
+                <VersionValue value={currentVersionQuery.data ?? __APP_VERSION__} />
+              </div>
             </div>
             <div className="settings-definition-row">
               <div className="settings-definition-key">Latest GitHub Repo Version</div>

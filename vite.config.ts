@@ -5,8 +5,10 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vitest/config";
 
 const srcPath = path.resolve(__dirname, "src");
-const appVersion = fs.readFileSync(path.resolve(__dirname, "VERSION"), "utf8").trim();
+const versionFilePath = path.resolve(__dirname, "VERSION");
+const appVersion = fs.readFileSync(versionFilePath, "utf8").trim();
 const appLicense = "Apache-2.0";
+const appVersionAssetPath = "/app-version.json";
 
 function clientLogPlugin() {
   return {
@@ -54,8 +56,30 @@ function clientLogPlugin() {
   };
 }
 
+function runtimeVersionPlugin() {
+  return {
+    name: "pypnm-webui-runtime-version",
+    configureServer(server: import("vite").ViteDevServer) {
+      server.middlewares.use(appVersionAssetPath, (_req, res) => {
+        const version = fs.readFileSync(versionFilePath, "utf8").trim();
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
+        res.setHeader("Cache-Control", "no-store");
+        res.end(JSON.stringify({ version }));
+      });
+    },
+    generateBundle() {
+      const version = fs.readFileSync(versionFilePath, "utf8").trim();
+      this.emitFile({
+        type: "asset",
+        fileName: "app-version.json",
+        source: `${JSON.stringify({ version }, null, 2)}\n`,
+      });
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), clientLogPlugin()],
+  plugins: [react(), clientLogPlugin(), runtimeVersionPlugin()],
   resolve: {
     alias: {
       "@": srcPath,

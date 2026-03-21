@@ -8,11 +8,12 @@ import { AboutPage } from "@/pages/AboutPage";
 
 vi.mock("@/services/repoMetadataService", () => ({
   REPO_URL: "https://github.com/PyPNMApps/PyPNM-WebUI",
+  fetchCurrentLocalVersion: vi.fn().mockResolvedValue("0.2.15.9"),
   fetchLatestGitHubTag: vi.fn().mockResolvedValue("v0.2.12"),
 }));
 
 describe("AboutPage", () => {
-  it("shows the current four-part repo version", async () => {
+  it("shows the current local four-part repo version", async () => {
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: {
@@ -27,7 +28,7 @@ describe("AboutPage", () => {
       </QueryClientProvider>,
     );
 
-    expect(screen.getByText("Current Version")).toBeTruthy();
-    expect(screen.getByText(__APP_VERSION__)).toBeTruthy();
+    expect(screen.getByText("Current Local Version")).toBeTruthy();
+    expect(await screen.findByText("0.2.15.9")).toBeTruthy();
   });
 });
