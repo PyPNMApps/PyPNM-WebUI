@@ -5,12 +5,12 @@ import { InstanceSelector } from "@/components/layout/InstanceSelector";
 import { OperationsMenu } from "@/features/operations/components/OperationsMenu";
 
 const links = [
-  ["/settings", "Settings"],
+  ["/files", "Files"],
   ["/spectrum-analyzer", "Spectrum Analyzer"],
   ["/single-capture", "Single Capture"],
   ["/advanced", "Advanced"],
-  ["/files", "Files"],
   ["/health", "Health"],
+  ["/settings", "Settings"],
   ["/about", "About"],
 ] as const;
 

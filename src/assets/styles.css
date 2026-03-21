@@ -1388,6 +1388,12 @@ pre {
   gap: 10px;
 }
 
+.constellation-modulation-label {
+  font-size: 1.3rem;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
 .mod-profile-controls {
   display: grid;
   gap: 12px;

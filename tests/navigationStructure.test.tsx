@@ -20,7 +20,7 @@ vi.mock("@/features/operations/components/OperationsMenu", () => ({
 }));
 
 describe("navigation structure", () => {
-  it("renders Operations before Spectrum Analyzer before Single Capture", () => {
+  it("renders Files first and Settings just before About", () => {
     render(
       <ThemeProvider>
         <MemoryRouter>
@@ -29,7 +29,7 @@ describe("navigation structure", () => {
       </ThemeProvider>,
     );
 
-    const nav = screen.getByRole("navigation");
+    const nav = screen.getAllByRole("navigation")[0];
     const navLabels = Array.from(nav.children)
       .map((element) => {
         if (!(element instanceof HTMLElement)) {
@@ -39,9 +39,31 @@ describe("navigation structure", () => {
         return interactive?.textContent?.trim() ?? element.textContent?.trim() ?? null;
       })
       .filter(Boolean);
-    expect(navLabels.indexOf("Operations")).toBeGreaterThan(-1);
-    expect(navLabels.indexOf("Spectrum Analyzer")).toBeGreaterThan(-1);
-    expect(navLabels.indexOf("Single Capture")).toBeGreaterThan(-1);
+    expect(navLabels[0]).toBe("Files");
+    expect(navLabels.indexOf("Settings")).toBeGreaterThan(-1);
+    expect(navLabels.indexOf("About")).toBeGreaterThan(-1);
+    expect(navLabels.indexOf("Settings")).toBe(navLabels.indexOf("About") - 1);
+  });
+
+  it("renders Operations before Spectrum Analyzer before Single Capture", () => {
+    render(
+      <ThemeProvider>
+        <MemoryRouter>
+          <AppTopNav />
+        </MemoryRouter>
+      </ThemeProvider>,
+    );
+
+    const nav = screen.getAllByRole("navigation")[0];
+    const navLabels = Array.from(nav.children)
+      .map((element) => {
+        if (!(element instanceof HTMLElement)) {
+          return null;
+        }
+        const interactive = within(element).queryByRole("link") ?? within(element).queryByRole("button");
+        return interactive?.textContent?.trim() ?? element.textContent?.trim() ?? null;
+      })
+      .filter(Boolean);
     expect(navLabels.indexOf("Operations")).toBeLessThan(navLabels.indexOf("Spectrum Analyzer"));
     expect(navLabels.indexOf("Spectrum Analyzer")).toBeLessThan(navLabels.indexOf("Single Capture"));
   });

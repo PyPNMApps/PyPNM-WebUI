@@ -60,7 +60,7 @@ export function ConstellationGridChart({ channels, exportBaseName }: Constellati
         <div key={channel.channel_id ?? index} className="constellation-tile">
           <div className="analysis-channel-meta-line analysis-channel-meta-line-header">
             <h3 className="analysis-channel-title">Channel {channel.channel_id ?? "n/a"}</h3>
-            <span>QAM {channel.modulation_order ?? "n/a"}</span>
+            <span className="constellation-modulation-label">QAM {channel.modulation_order ?? "n/a"}</span>
             <span>Sample Symbols: {channel.num_sample_symbols ?? "n/a"}</span>
           </div>
           {exportBaseName ? (
