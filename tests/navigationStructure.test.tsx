@@ -4,6 +4,7 @@ import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
 
+import { ThemeProvider } from "@/app/ThemeProvider";
 import { AppTopNav } from "@/components/layout/AppTopNav";
 import {
   operationsMenuNavigationItems,
@@ -21,9 +22,11 @@ vi.mock("@/features/operations/components/OperationsMenu", () => ({
 describe("navigation structure", () => {
   it("renders Operations before Spectrum Analyzer before Single Capture", () => {
     render(
-      <MemoryRouter>
-        <AppTopNav />
-      </MemoryRouter>,
+      <ThemeProvider>
+        <MemoryRouter>
+          <AppTopNav />
+        </MemoryRouter>
+      </ThemeProvider>,
     );
 
     const nav = screen.getByRole("navigation");

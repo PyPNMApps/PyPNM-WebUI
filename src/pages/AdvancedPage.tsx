@@ -3,6 +3,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import { useInstanceConfig } from "@/app/useInstanceConfig";
+import {
+  CaptureCommunityField,
+  CaptureIpAddressField,
+  CaptureMacAddressField,
+} from "@/components/common/CaptureInputFields";
 import { FieldLabel } from "@/components/common/FieldLabel";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Panel } from "@/components/common/Panel";
@@ -279,7 +284,7 @@ function buildRequestTitle(status: CaptureConnectivityStatus) {
 
   return (
     <div className="panel-title-inline">
-      <h2 className="panel-title-heading">Request</h2>
+      <h2 className="panel-title-heading">Capture Inputs</h2>
       <span className={`capture-status-chip ${stateClass}`}>{label}</span>
     </div>
   );
@@ -529,14 +534,8 @@ function AdvancedRxMerWorkbench() {
       <Panel title={requestTitle}>
         <form className="grid" onSubmit={requestForm.handleSubmit(() => void machine.start())}>
           <div className="grid two request-input-grid six-up">
-            <div className="field">
-              <FieldLabel htmlFor="advancedRxmerMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
-              <input id="advancedRxmerMacAddress" {...requestForm.register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
-            </div>
-            <div className="field">
-              <FieldLabel htmlFor="advancedRxmerIpAddress" hint={requestFieldHints.ip_address}>IP Address</FieldLabel>
-              <input id="advancedRxmerIpAddress" {...requestForm.register("ipAddress")} placeholder="192.168.100.10" />
-            </div>
+            <CaptureMacAddressField id="advancedRxmerMacAddress" {...requestForm.register("macAddress")} />
+            <CaptureIpAddressField id="advancedRxmerIpAddress" {...requestForm.register("ipAddress")} />
             <div className="field">
               <FieldLabel htmlFor="advancedRxmerTftpIpv4" hint={requestFieldHints.tftp_ipv4}>TFTP IPv4</FieldLabel>
               <input id="advancedRxmerTftpIpv4" {...requestForm.register("tftpIpv4")} placeholder="192.168.100.2" />
@@ -549,10 +548,7 @@ function AdvancedRxMerWorkbench() {
               <FieldLabel htmlFor="advancedRxmerChannelIds" hint={requestFieldHints.channel_ids}>Channel IDs</FieldLabel>
               <input id="advancedRxmerChannelIds" {...requestForm.register("channelIds")} placeholder="0" />
             </div>
-            <div className="field">
-              <FieldLabel htmlFor="advancedRxmerCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
-              <input id="advancedRxmerCommunity" {...requestForm.register("community")} placeholder="private" />
-            </div>
+            <CaptureCommunityField id="advancedRxmerCommunity" {...requestForm.register("community")} />
           </div>
           <div className="grid two request-input-grid">
             <div className="field">
@@ -939,14 +935,8 @@ function AdvancedChannelEstimationWorkbench() {
       <Panel title={requestTitle}>
         <form className="grid" onSubmit={requestForm.handleSubmit(() => void machine.start())}>
           <div className="grid two request-input-grid six-up">
-            <div className="field">
-              <FieldLabel htmlFor="advancedChanEstMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
-              <input id="advancedChanEstMacAddress" {...requestForm.register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
-            </div>
-            <div className="field">
-              <FieldLabel htmlFor="advancedChanEstIpAddress" hint={requestFieldHints.ip_address}>IP Address</FieldLabel>
-              <input id="advancedChanEstIpAddress" {...requestForm.register("ipAddress")} placeholder="192.168.100.10" />
-            </div>
+            <CaptureMacAddressField id="advancedChanEstMacAddress" {...requestForm.register("macAddress")} />
+            <CaptureIpAddressField id="advancedChanEstIpAddress" {...requestForm.register("ipAddress")} />
             <div className="field">
               <FieldLabel htmlFor="advancedChanEstTftpIpv4" hint={requestFieldHints.tftp_ipv4}>TFTP IPv4</FieldLabel>
               <input id="advancedChanEstTftpIpv4" {...requestForm.register("tftpIpv4")} placeholder="192.168.100.2" />
@@ -959,10 +949,7 @@ function AdvancedChannelEstimationWorkbench() {
               <FieldLabel htmlFor="advancedChanEstChannelIds" hint={requestFieldHints.channel_ids}>Channel IDs</FieldLabel>
               <input id="advancedChanEstChannelIds" {...requestForm.register("channelIds")} placeholder="0" />
             </div>
-            <div className="field">
-              <FieldLabel htmlFor="advancedChanEstCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
-              <input id="advancedChanEstCommunity" {...requestForm.register("community")} placeholder="private" />
-            </div>
+            <CaptureCommunityField id="advancedChanEstCommunity" {...requestForm.register("community")} />
           </div>
           <div className="grid two request-input-grid">
             <div className="field">
@@ -1340,14 +1327,8 @@ function AdvancedOfdmaPreEqWorkbench() {
       <Panel title={requestTitle}>
         <form className="grid" onSubmit={requestForm.handleSubmit(() => void machine.start())}>
           <div className="grid two request-input-grid six-up">
-            <div className="field">
-              <FieldLabel htmlFor="advancedOfdmaPreEqMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
-              <input id="advancedOfdmaPreEqMacAddress" {...requestForm.register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
-            </div>
-            <div className="field">
-              <FieldLabel htmlFor="advancedOfdmaPreEqIpAddress" hint={requestFieldHints.ip_address}>IP Address</FieldLabel>
-              <input id="advancedOfdmaPreEqIpAddress" {...requestForm.register("ipAddress")} placeholder="192.168.100.10" />
-            </div>
+            <CaptureMacAddressField id="advancedOfdmaPreEqMacAddress" {...requestForm.register("macAddress")} />
+            <CaptureIpAddressField id="advancedOfdmaPreEqIpAddress" {...requestForm.register("ipAddress")} />
             <div className="field">
               <FieldLabel htmlFor="advancedOfdmaPreEqTftpIpv4" hint={requestFieldHints.tftp_ipv4}>TFTP IPv4</FieldLabel>
               <input id="advancedOfdmaPreEqTftpIpv4" {...requestForm.register("tftpIpv4")} placeholder="192.168.100.2" />
@@ -1360,10 +1341,7 @@ function AdvancedOfdmaPreEqWorkbench() {
               <FieldLabel htmlFor="advancedOfdmaPreEqChannelIds" hint={requestFieldHints.channel_ids}>Channel IDs</FieldLabel>
               <input id="advancedOfdmaPreEqChannelIds" {...requestForm.register("channelIds")} placeholder="0" />
             </div>
-            <div className="field">
-              <FieldLabel htmlFor="advancedOfdmaPreEqCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
-              <input id="advancedOfdmaPreEqCommunity" {...requestForm.register("community")} placeholder="private" />
-            </div>
+            <CaptureCommunityField id="advancedOfdmaPreEqCommunity" {...requestForm.register("community")} />
           </div>
           <div className="grid two request-input-grid">
             <div className="field">

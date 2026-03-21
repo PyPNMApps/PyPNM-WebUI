@@ -50,6 +50,10 @@
 - For request forms that accept `channel_ids`, document the default black value as indicating all channels.
 - Render shared request-form hover hints through a reusable field-label component so the displayed help text and the editable source stay aligned.
 - Any non-error instructional/help text for a user should be delivered as a shared hover tip, not as inline helper copy on the form or panel.
+- Treat repeated capture-identity request inputs such as `MAC Address`,
+  `IP Address`, and `SNMP RW Community` as shared form primitives. Do not
+  duplicate their labels, autocomplete behavior, masking, or reveal controls
+  inline across request forms.
 
 ## UX/Engineering Dashboard Rules (Required)
 
@@ -74,6 +78,11 @@
   grayed out.
 - Hovering disabled action controls must not imply clickability; keep the
   cursor non-pointer for disabled states.
+- Capture-input fields should preserve stable browser autocomplete behavior on
+  the same machine when that improves operator workflows.
+- Sensitive editable request inputs such as `SNMP RW Community` should be
+  masked by default and revealed through a shared trailing-eye control rather
+  than shown inline by default.
 
 ## Environment And Configuration (Required)
 

@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
+import { SecretTextInput } from "@/components/common/SecretTextInput";
+import { captureInputAutocomplete } from "@/features/operations/captureInputAutocomplete";
 import type { CaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { useReportCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
@@ -133,11 +135,21 @@ export function SpectrumFullBandCaptureRequestForm({
       <div className="grid two">
         <div className="field">
           <FieldLabel htmlFor="spectrumFullBandMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
-          <input id="spectrumFullBandMacAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
+          <input
+            id="spectrumFullBandMacAddress"
+            autoComplete={captureInputAutocomplete.macAddress}
+            {...register("macAddress")}
+            placeholder="aa:bb:cc:dd:ee:ff"
+          />
         </div>
         <div className="field">
           <FieldLabel htmlFor="spectrumFullBandIpAddress" hint={requestFieldHints.ip_address}>IP Address</FieldLabel>
-          <input id="spectrumFullBandIpAddress" {...register("ipAddress")} placeholder="192.168.100.10" />
+          <input
+            id="spectrumFullBandIpAddress"
+            autoComplete={captureInputAutocomplete.ipAddress}
+            {...register("ipAddress")}
+            placeholder="192.168.100.10"
+          />
         </div>
         <div className="field">
           <FieldLabel htmlFor="spectrumFullBandTftpIpv4" hint={requestFieldHints.tftp_ipv4}>TFTP IPv4</FieldLabel>
@@ -149,7 +161,12 @@ export function SpectrumFullBandCaptureRequestForm({
         </div>
         <div className="field">
           <FieldLabel htmlFor="spectrumFullBandCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
-          <input id="spectrumFullBandCommunity" {...register("community")} placeholder="private" />
+          <SecretTextInput
+            id="spectrumFullBandCommunity"
+            autoComplete={captureInputAutocomplete.community}
+            {...register("community")}
+            placeholder="private"
+          />
         </div>
         <div className="field">
           <FieldLabel htmlFor="spectrumFullBandMovingAveragePoints" hint={requestFieldHints.moving_average_points}>Moving Average Points</FieldLabel>

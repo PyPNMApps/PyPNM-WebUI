@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
+import { SecretTextInput } from "@/components/common/SecretTextInput";
+import { captureInputAutocomplete } from "@/features/operations/captureInputAutocomplete";
 import type { CaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { useReportCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
@@ -108,11 +110,21 @@ export function ConstellationDisplayCaptureRequestForm({
       <div className="grid two request-input-grid six-up">
         <div className="field">
           <FieldLabel htmlFor="constMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
-          <input id="constMacAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
+          <input
+            id="constMacAddress"
+            autoComplete={captureInputAutocomplete.macAddress}
+            {...register("macAddress")}
+            placeholder="aa:bb:cc:dd:ee:ff"
+          />
         </div>
         <div className="field">
           <FieldLabel htmlFor="constIpAddress" hint={requestFieldHints.ip_address}>IP Address</FieldLabel>
-          <input id="constIpAddress" {...register("ipAddress")} placeholder="192.168.100.10" />
+          <input
+            id="constIpAddress"
+            autoComplete={captureInputAutocomplete.ipAddress}
+            {...register("ipAddress")}
+            placeholder="192.168.100.10"
+          />
         </div>
         <div className="field">
           <FieldLabel htmlFor="constTftpIpv4" hint={requestFieldHints.tftp_ipv4}>TFTP IPv4</FieldLabel>
@@ -130,7 +142,12 @@ export function ConstellationDisplayCaptureRequestForm({
         </div>
         <div className="field">
           <FieldLabel htmlFor="constCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
-          <input id="constCommunity" {...register("community")} placeholder="private" />
+          <SecretTextInput
+            id="constCommunity"
+            autoComplete={captureInputAutocomplete.community}
+            {...register("community")}
+            placeholder="private"
+          />
         </div>
       </div>
       <div className="grid two request-input-grid">

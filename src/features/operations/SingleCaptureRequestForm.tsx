@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
+import { SecretTextInput } from "@/components/common/SecretTextInput";
+import { captureInputAutocomplete } from "@/features/operations/captureInputAutocomplete";
 import type { CaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { useReportCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
@@ -81,11 +83,21 @@ export function SingleCaptureRequestForm({
       <div className="grid two request-input-grid six-up">
         <div className="field">
           <FieldLabel htmlFor="macAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
-          <input id="macAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
+          <input
+            id="macAddress"
+            autoComplete={captureInputAutocomplete.macAddress}
+            {...register("macAddress")}
+            placeholder="aa:bb:cc:dd:ee:ff"
+          />
         </div>
         <div className="field">
           <FieldLabel htmlFor="ipAddress" hint={requestFieldHints.ip_address}>IP Address</FieldLabel>
-          <input id="ipAddress" {...register("ipAddress")} placeholder="192.168.100.10" />
+          <input
+            id="ipAddress"
+            autoComplete={captureInputAutocomplete.ipAddress}
+            {...register("ipAddress")}
+            placeholder="192.168.100.10"
+          />
         </div>
         <div className="field">
           <FieldLabel htmlFor="tftpIpv4" hint={requestFieldHints.tftp_ipv4}>TFTP IPv4</FieldLabel>
@@ -103,7 +115,12 @@ export function SingleCaptureRequestForm({
         </div>
         <div className="field">
           <FieldLabel htmlFor="community" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
-          <input id="community" {...register("community")} placeholder="private" />
+          <SecretTextInput
+            id="community"
+            autoComplete={captureInputAutocomplete.community}
+            {...register("community")}
+            placeholder="private"
+          />
         </div>
       </div>
       <div className="actions">

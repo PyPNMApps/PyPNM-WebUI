@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
+import { SecretTextInput } from "@/components/common/SecretTextInput";
+import { captureInputAutocomplete } from "@/features/operations/captureInputAutocomplete";
 import type { CaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { useReportCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
@@ -95,11 +97,21 @@ export function HistogramCaptureRequestForm({
       <div className="grid two request-input-grid">
         <div className="field">
           <FieldLabel htmlFor="histMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
-          <input id="histMacAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
+          <input
+            id="histMacAddress"
+            autoComplete={captureInputAutocomplete.macAddress}
+            {...register("macAddress")}
+            placeholder="aa:bb:cc:dd:ee:ff"
+          />
         </div>
         <div className="field">
           <FieldLabel htmlFor="histIpAddress" hint={requestFieldHints.ip_address}>IP Address</FieldLabel>
-          <input id="histIpAddress" {...register("ipAddress")} placeholder="192.168.100.10" />
+          <input
+            id="histIpAddress"
+            autoComplete={captureInputAutocomplete.ipAddress}
+            {...register("ipAddress")}
+            placeholder="192.168.100.10"
+          />
         </div>
         <div className="field">
           <FieldLabel htmlFor="histTftpIpv4" hint={requestFieldHints.tftp_ipv4}>TFTP IPv4</FieldLabel>
@@ -111,7 +123,12 @@ export function HistogramCaptureRequestForm({
         </div>
         <div className="field">
           <FieldLabel htmlFor="histCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
-          <input id="histCommunity" {...register("community")} placeholder="private" />
+          <SecretTextInput
+            id="histCommunity"
+            autoComplete={captureInputAutocomplete.community}
+            {...register("community")}
+            placeholder="private"
+          />
         </div>
         <div className="field">
           <FieldLabel htmlFor="sampleDuration" hint={requestFieldHints.sample_duration}>Sample Duration</FieldLabel>

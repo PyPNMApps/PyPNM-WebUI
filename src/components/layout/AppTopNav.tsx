@@ -1,3 +1,4 @@
+import { useTheme } from "@/app/useTheme";
 import { NavLink } from "react-router-dom";
 
 import { InstanceSelector } from "@/components/layout/InstanceSelector";
@@ -18,6 +19,8 @@ function PyPnmWebUiIcon() {
 }
 
 export function AppTopNav() {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <header className="top-nav">
       <NavLink to="/" end className="top-nav-brand" aria-label="PyPNM WebUI home">
@@ -42,6 +45,15 @@ export function AppTopNav() {
         ))}
       </nav>
       <div className="top-nav-instance">
+        <button
+          type="button"
+          className="theme-toggle"
+          onClick={toggleTheme}
+          aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+          title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+        >
+          {theme === "dark" ? "Light Mode" : "Dark Mode"}
+        </button>
         <InstanceSelector />
       </div>
     </header>

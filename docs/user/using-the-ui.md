@@ -59,6 +59,10 @@ Each Single Capture page includes:
 - visible waiting indicator while data is being collected
 - right-aligned `Download JSON` action for the current response
 - bound visual below the form
+- browser autocomplete is enabled for `MAC Address`, `IP Address`, and
+  `SNMP RW Community` so this machine can suggest prior capture entries
+- `SNMP RW Community` is masked by default and can be revealed with the
+  eye button inside the field
 
 ## Operations Menu
 
@@ -83,6 +87,10 @@ All operation pages currently expose:
 - visible waiting indicator while data is being collected
 - right-aligned `Download JSON` action for the current response
 - bound visual below the form
+- browser autocomplete is enabled for `MAC Address`, `IP Address`, and
+  `SNMP RW Community` so this machine can suggest prior capture entries
+- `SNMP RW Community` is masked by default and can be revealed with the
+  eye button inside the field
 
 ## Advanced
 
@@ -96,9 +104,11 @@ Current workflows:
 
 Each Advanced workbench includes:
 
-- `Request`
+- `Capture Inputs`
   - start a multi-capture operation
   - `Start Capture` remains disabled until the modem reports `Online`
+  - `SNMP RW Community` is masked by default and can be revealed with the
+    eye button inside the field
 - `Run`
   - live status polling
   - collected count

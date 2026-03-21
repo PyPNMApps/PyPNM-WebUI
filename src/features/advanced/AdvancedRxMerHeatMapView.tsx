@@ -44,26 +44,70 @@ function findValueRange(rows: number[][]): { min: number; max: number } {
   return { min, max: min === max ? max + 1 : max };
 }
 
+function buildFrequencyTicks(frequency: number[]): Array<{ key: string; label: string }> {
+  if (!frequency.length) {
+    return [];
+  }
+
+  const tickIndexes = Array.from(new Set([
+    0,
+    Math.floor((frequency.length - 1) * 0.25),
+    Math.floor((frequency.length - 1) * 0.5),
+    Math.floor((frequency.length - 1) * 0.75),
+    frequency.length - 1,
+  ]));
+
+  return tickIndexes.map((index) => ({
+    key: `${index}-${frequency[index]}`,
+    label: `${(frequency[index] / 1_000_000).toFixed(1)} MHz`,
+  }));
+}
+
 function HeatMapGrid({ channel }: { channel: AdvancedMultiRxMerHeatMapChannel }) {
   const frequency = Array.isArray(channel.frequency) ? channel.frequency : [];
   const rows = Array.isArray(channel.values) ? channel.values.filter(Array.isArray) : [];
-  const renderedColumns = Math.min(frequency.length, 120);
+  const renderedColumns = frequency.length;
   const { min, max } = findValueRange(rows);
+  const mid = min + (max - min) / 2;
+  const frequencyTicks = buildFrequencyTicks(frequency);
 
   return (
     <div className="advanced-heatmap-shell">
-      <div className="advanced-heatmap-grid" style={{ gridTemplateColumns: `repeat(${Math.max(renderedColumns, 1)}, minmax(0, 1fr))` }}>
-        {rows.flatMap((row, rowIndex) =>
-          row.slice(0, renderedColumns).map((value, columnIndex) => (
-            <span
-              key={`${rowIndex}-${columnIndex}`}
-              className="advanced-heatmap-cell"
-              style={{ background: colorForValue(Number(value), min, max) }}
-              title={`Capture ${rowIndex + 1} · Bin ${columnIndex + 1} · ${Number(value).toFixed(2)} dB`}
-            />
-          )),
-        )}
+      <div className="advanced-heatmap-frame">
+        <div className="advanced-heatmap-scale" data-testid="advanced-rxmer-heatmap-scale">
+          <div className="advanced-heatmap-scale-title">MER</div>
+          <div className="advanced-heatmap-scale-bar" />
+          <div className="advanced-heatmap-scale-label advanced-heatmap-scale-label-top">{max.toFixed(1)} dB</div>
+          <div className="advanced-heatmap-scale-label advanced-heatmap-scale-label-middle">{mid.toFixed(1)}</div>
+          <div className="advanced-heatmap-scale-label advanced-heatmap-scale-label-bottom">{min.toFixed(1)} dB</div>
+        </div>
+        <div
+          className="advanced-heatmap-grid"
+          data-testid="advanced-rxmer-heatmap-grid"
+          style={{ gridTemplateColumns: `repeat(${Math.max(renderedColumns, 1)}, 1px)` }}
+        >
+          {rows.flatMap((row, rowIndex) =>
+            row.slice(0, renderedColumns).map((value, columnIndex) => (
+              <span
+                key={`${rowIndex}-${columnIndex}`}
+                className="advanced-heatmap-cell"
+                style={{ background: colorForValue(Number(value), min, max) }}
+                title={`Capture ${rowIndex + 1} · Bin ${columnIndex + 1} · ${Number(value).toFixed(2)} dB`}
+              />
+            )),
+          )}
+        </div>
       </div>
+      {frequencyTicks.length ? (
+        <div className="advanced-heatmap-axis-row">
+          <div className="advanced-heatmap-axis-spacer" />
+          <div className="advanced-heatmap-axis" data-testid="advanced-rxmer-heatmap-axis">
+            {frequencyTicks.map((tick) => (
+              <span key={tick.key} className="advanced-heatmap-axis-label">{tick.label}</span>
+            ))}
+          </div>
+        </div>
+      ) : null}
       <div className="status-chip-row">
         <span className="analysis-chip"><b>Captures</b> {rows.length}</span>
         <span className="analysis-chip"><b>Subcarriers</b> {frequency.length}</span>

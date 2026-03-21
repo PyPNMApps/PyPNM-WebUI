@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
+import { SecretTextInput } from "@/components/common/SecretTextInput";
+import { captureInputAutocomplete } from "@/features/operations/captureInputAutocomplete";
 import type { CaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { useReportCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
@@ -102,11 +104,21 @@ export function SpectrumOfdmCaptureRequestForm({ isPending, canRun, submitLabel,
       <div className="grid two">
         <div className="field">
           <FieldLabel htmlFor="spectrumOfdmMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
-          <input id="spectrumOfdmMacAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
+          <input
+            id="spectrumOfdmMacAddress"
+            autoComplete={captureInputAutocomplete.macAddress}
+            {...register("macAddress")}
+            placeholder="aa:bb:cc:dd:ee:ff"
+          />
         </div>
         <div className="field">
           <FieldLabel htmlFor="spectrumOfdmIpAddress" hint={requestFieldHints.ip_address}>IP Address</FieldLabel>
-          <input id="spectrumOfdmIpAddress" {...register("ipAddress")} placeholder="192.168.100.10" />
+          <input
+            id="spectrumOfdmIpAddress"
+            autoComplete={captureInputAutocomplete.ipAddress}
+            {...register("ipAddress")}
+            placeholder="192.168.100.10"
+          />
         </div>
         <div className="field">
           <FieldLabel htmlFor="spectrumOfdmTftpIpv4" hint={requestFieldHints.tftp_ipv4}>TFTP IPv4</FieldLabel>
@@ -122,7 +134,12 @@ export function SpectrumOfdmCaptureRequestForm({ isPending, canRun, submitLabel,
         </div>
         <div className="field">
           <FieldLabel htmlFor="spectrumOfdmCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
-          <input id="spectrumOfdmCommunity" {...register("community")} placeholder="private" />
+          <SecretTextInput
+            id="spectrumOfdmCommunity"
+            autoComplete={captureInputAutocomplete.community}
+            {...register("community")}
+            placeholder="private"
+          />
         </div>
         <div className="field">
           <FieldLabel htmlFor="spectrumOfdmMovingAveragePoints" hint={requestFieldHints.moving_average_points}>Moving Average Points</FieldLabel>

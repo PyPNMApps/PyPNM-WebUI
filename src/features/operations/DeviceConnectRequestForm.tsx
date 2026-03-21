@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
+import { SecretTextInput } from "@/components/common/SecretTextInput";
+import { captureInputAutocomplete } from "@/features/operations/captureInputAutocomplete";
 import type { CaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { useReportCaptureConnectivityInputs } from "@/features/operations/captureConnectivity";
 import { requestFieldHints } from "@/features/operations/requestFieldHints";
@@ -63,15 +65,30 @@ export function DeviceConnectRequestForm({
       <div className="grid two request-input-grid">
         <div className="field">
           <FieldLabel htmlFor="deviceConnectMacAddress" hint={requestFieldHints.mac_address}>MAC Address</FieldLabel>
-          <input id="deviceConnectMacAddress" {...register("macAddress")} placeholder="aa:bb:cc:dd:ee:ff" />
+          <input
+            id="deviceConnectMacAddress"
+            autoComplete={captureInputAutocomplete.macAddress}
+            {...register("macAddress")}
+            placeholder="aa:bb:cc:dd:ee:ff"
+          />
         </div>
         <div className="field">
           <FieldLabel htmlFor="deviceConnectIpAddress" hint={requestFieldHints.ip_address}>IP Address</FieldLabel>
-          <input id="deviceConnectIpAddress" {...register("ipAddress")} placeholder="192.168.100.10" />
+          <input
+            id="deviceConnectIpAddress"
+            autoComplete={captureInputAutocomplete.ipAddress}
+            {...register("ipAddress")}
+            placeholder="192.168.100.10"
+          />
         </div>
         <div className="field">
           <FieldLabel htmlFor="deviceConnectCommunity" hint={requestFieldHints.snmp_rw_community}>SNMP RW Community</FieldLabel>
-          <input id="deviceConnectCommunity" {...register("community")} placeholder="private" />
+          <SecretTextInput
+            id="deviceConnectCommunity"
+            autoComplete={captureInputAutocomplete.community}
+            {...register("community")}
+            placeholder="private"
+          />
         </div>
       </div>
       <div className="actions">
