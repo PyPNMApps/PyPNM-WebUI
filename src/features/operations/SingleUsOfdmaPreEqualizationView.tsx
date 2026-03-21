@@ -153,26 +153,38 @@ export function SingleUsOfdmaPreEqualizationView({ response }: { response: Singl
               </div>
 
               <Panel title="Series Summary">
-                <div className="grid two us-ofdma-preeq-series-grid">
-                  {entries.map((entry, index) => {
-                    const stats = entry.signal_statistics;
-                    const echoes = entry.echo?.report?.echoes ?? [];
-                    return (
-                      <div key={`${channelId}-${entry.pnm_header?.file_type_version ?? index}`} className="settings-definition-card">
-                        <div className="settings-definition-title">{buildSeriesVersionLabel(entry.pnm_header?.file_type_version)}</div>
-                        <div className="settings-definition-list">
-                          <div className="settings-definition-row"><div className="settings-definition-key">Mean</div><div className="mono">{fmt(asNumber(stats?.mean), 3, " dB")}</div></div>
-                          <div className="settings-definition-row"><div className="settings-definition-key">Median</div><div className="mono">{fmt(asNumber(stats?.median), 3, " dB")}</div></div>
-                          <div className="settings-definition-row"><div className="settings-definition-key">Std Dev</div><div className="mono">{fmt(asNumber(stats?.std), 3)}</div></div>
-                          <div className="settings-definition-row"><div className="settings-definition-key">Power</div><div className="mono">{fmt(asNumber(stats?.power), 3)}</div></div>
-                          <div className="settings-definition-row"><div className="settings-definition-key">Peak-to-Peak</div><div className="mono">{fmt(asNumber(stats?.peak_to_peak), 3)}</div></div>
-                          <div className="settings-definition-row"><div className="settings-definition-key">Crest Factor</div><div className="mono">{fmt(asNumber(stats?.crest_factor), 3)}</div></div>
-                          <div className="settings-definition-row"><div className="settings-definition-key">Echoes</div><div className="mono">{echoes.length}</div></div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                <table className="channel-metrics-table us-ofdma-preeq-summary-table">
+                  <thead>
+                    <tr>
+                      <th>Series</th>
+                      <th>Mean</th>
+                      <th>Median</th>
+                      <th>Std Dev</th>
+                      <th>Power</th>
+                      <th>Peak-to-Peak</th>
+                      <th>Crest Factor</th>
+                      <th>Echoes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {entries.map((entry, index) => {
+                      const stats = entry.signal_statistics;
+                      const echoes = entry.echo?.report?.echoes ?? [];
+                      return (
+                        <tr key={`${channelId}-${entry.pnm_header?.file_type_version ?? index}`}>
+                          <td>{buildSeriesVersionLabel(entry.pnm_header?.file_type_version)}</td>
+                          <td className="mono">{fmt(asNumber(stats?.mean), 3, " dB")}</td>
+                          <td className="mono">{fmt(asNumber(stats?.median), 3, " dB")}</td>
+                          <td className="mono">{fmt(asNumber(stats?.std), 3)}</td>
+                          <td className="mono">{fmt(asNumber(stats?.power), 3)}</td>
+                          <td className="mono">{fmt(asNumber(stats?.peak_to_peak), 3)}</td>
+                          <td className="mono">{fmt(asNumber(stats?.crest_factor), 3)}</td>
+                          <td className="mono">{echoes.length}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </Panel>
 
               <Panel title="Frequency Response">

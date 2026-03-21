@@ -451,6 +451,15 @@ a {
   color: var(--ink);
 }
 
+.us-ofdma-preeq-summary-table {
+  table-layout: auto;
+}
+
+.us-ofdma-preeq-summary-table th,
+.us-ofdma-preeq-summary-table td {
+  white-space: nowrap;
+}
+
 .actions {
   display: flex;
   gap: 10px;
