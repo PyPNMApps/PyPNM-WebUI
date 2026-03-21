@@ -43,6 +43,7 @@ export function SingleModulationProfileCaptureView({ response }: { response: Sin
   const [visibleChannelKeys, setVisibleChannelKeys] = useState<string[]>(channelKeys);
   const [visibleProfileKeys, setVisibleProfileKeys] = useState<string[]>(profileKeys.includes("0") ? ["0"] : profileKeys.slice(0, 1));
   const [combinedSeriesVisibility, setCombinedSeriesVisibility] = useState<Record<string, boolean>>({});
+  const [channelSeriesVisibility, setChannelSeriesVisibility] = useState<Record<string, Record<string, boolean>>>({});
 
   useEffect(() => {
     setVisibleChannelKeys(channelKeys);
@@ -172,32 +173,53 @@ export function SingleModulationProfileCaptureView({ response }: { response: Sin
       </div>
 
       <div className="analysis-channels-grid">
-        {channels.map((channel) => (
-          <article key={channel.channel_id ?? Math.random()} className="analysis-channel-card">
-            <div className="analysis-channel-top">
-              <div className="analysis-channel-meta-line analysis-channel-meta-line-header">
-                <h3 className="analysis-channel-title">Channel {channel.channel_id ?? "n/a"}</h3>
+        {channels.map((channel, channelIndex) => {
+          const channelKey = String(channel.channel_id ?? "n/a");
+          const perChannelSeries = (channel.profiles ?? []).map((profile, index) =>
+            toSeries(
+              profile.profile_id,
+              profile.carrier_values.modulation,
+              profile.carrier_values.frequency,
+              profile.carrier_values.shannon_min_mer,
+              profileColors[(profile.profile_id ?? index) % profileColors.length],
+            ),
+          );
+          const visiblePerChannelSeries = perChannelSeries.filter(
+            (series) => (channelSeriesVisibility[channelKey] ?? {})[series.label] !== false,
+          );
+
+          return (
+            <article key={channel.channel_id ?? channelIndex} className="analysis-channel-card">
+              <div className="analysis-channel-top">
+                <div className="analysis-channel-meta-line analysis-channel-meta-line-header">
+                  <h3 className="analysis-channel-title">Channel {channel.channel_id ?? "n/a"}</h3>
+                </div>
               </div>
-            </div>
-            <div className="analysis-channel-body">
-              <LineAnalysisChart
-                title={`Channel ${channel.channel_id ?? "n/a"}`}
-                subtitle=""
-                yLabel="Shannon Min MER (dB)"
-                series={(channel.profiles ?? []).map((profile, index) =>
-                  toSeries(
-                    profile.profile_id,
-                    profile.carrier_values.modulation,
-                    profile.carrier_values.frequency,
-                    profile.carrier_values.shannon_min_mer,
-                    profileColors[(profile.profile_id ?? index) % profileColors.length],
-                  ),
-                )}
-                exportBaseName={`single-modulation-profile-channel-${channel.channel_id ?? "n/a"}`}
-              />
-            </div>
-          </article>
-        ))}
+              <div className="analysis-channel-body">
+                <SeriesVisibilityChips
+                  series={perChannelSeries}
+                  visibility={channelSeriesVisibility[channelKey] ?? {}}
+                  onToggle={(label) =>
+                    setChannelSeriesVisibility((current) => ({
+                      ...current,
+                      [channelKey]: {
+                        ...(current[channelKey] ?? {}),
+                        [label]: (current[channelKey]?.[label] ?? true) === false,
+                      },
+                    }))
+                  }
+                />
+                <LineAnalysisChart
+                  title=""
+                  subtitle=""
+                  yLabel="Shannon Min MER (dB)"
+                  series={visiblePerChannelSeries}
+                  exportBaseName={`single-modulation-profile-channel-${channel.channel_id ?? "n/a"}`}
+                />
+              </div>
+            </article>
+          );
+        })}
       </div>
     </div>
   );

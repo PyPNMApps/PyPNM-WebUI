@@ -249,8 +249,16 @@ a {
 }
 
 .theme-toggle {
-  width: 100%;
+  width: 42px;
   justify-content: center;
+  min-height: 42px;
+  justify-self: end;
+  padding: 0;
+}
+
+.theme-toggle-icon {
+  width: 18px;
+  height: 18px;
 }
 
 .nav-link.active {

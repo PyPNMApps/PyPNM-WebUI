@@ -29,12 +29,12 @@ describe("theme toggle", () => {
 
     expect(document.documentElement.dataset.theme).toBe("dark");
     const toggle = screen.getByRole("button", { name: /Switch to light mode/i });
-    expect(toggle.textContent).toBe("Light Mode");
+    expect(toggle.querySelector("svg")).toBeTruthy();
 
     fireEvent.click(toggle);
 
     expect(document.documentElement.dataset.theme).toBe("light");
     expect(window.localStorage.getItem("pypnm-webui:theme")).toBe("light");
-    expect(screen.getByRole("button", { name: /Switch to dark mode/i }).textContent).toBe("Dark Mode");
+    expect(screen.getByRole("button", { name: /Switch to dark mode/i }).querySelector("svg")).toBeTruthy();
   });
 });
