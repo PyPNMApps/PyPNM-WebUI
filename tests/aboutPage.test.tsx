@@ -4,7 +4,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import packageJson from "../package.json";
 import { AboutPage } from "@/pages/AboutPage";
 
 vi.mock("@/services/repoMetadataService", () => ({
@@ -13,7 +12,7 @@ vi.mock("@/services/repoMetadataService", () => ({
 }));
 
 describe("AboutPage", () => {
-  it("shows the loaded package version", async () => {
+  it("shows the current four-part repo version", async () => {
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: {
@@ -28,8 +27,7 @@ describe("AboutPage", () => {
       </QueryClientProvider>,
     );
 
-    expect(screen.getByText("Current Loaded Version")).toBeTruthy();
-    expect(screen.getByText(packageJson.version)).toBeTruthy();
-    expect(screen.getByText("Build Version Notation")).toBeTruthy();
+    expect(screen.getByText("Current Version")).toBeTruthy();
+    expect(screen.getByText(__APP_VERSION__)).toBeTruthy();
   });
 });
