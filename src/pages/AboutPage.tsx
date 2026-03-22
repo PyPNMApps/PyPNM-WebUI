@@ -5,6 +5,8 @@ import { Panel } from "@/components/common/Panel";
 import { ThinkingIndicator } from "@/components/common/ThinkingIndicator";
 import { REPO_URL, fetchCurrentLocalVersion, fetchLatestGitHubTag } from "@/services/repoMetadataService";
 
+const DOCS_URL = "https://pypnmapps.github.io/PyPNM-WebUI/";
+
 function VersionValue({ value }: { value: string }) {
   return <span className="mono">{value}</span>;
 }
@@ -34,9 +36,14 @@ export function AboutPage() {
             Use PyPNM WebUI to connect to one or more PyPNM agents, run supported operations, inspect stored PNM files,
             and render capture data with purpose-built visuals.
           </p>
-          <a className="button-link" href={REPO_URL} target="_blank" rel="noreferrer">
-            Open Repository
-          </a>
+          <div className="settings-action-list">
+            <a className="button-link" href={REPO_URL} target="_blank" rel="noreferrer">
+              Open Repository
+            </a>
+            <a className="button-link" href={DOCS_URL} target="_blank" rel="noreferrer">
+              Open User Docs
+            </a>
+          </div>
         </Panel>
         <Panel title="Version">
           <div className="settings-definition-list">

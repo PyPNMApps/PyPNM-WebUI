@@ -230,6 +230,7 @@ capture visuals where available.
 
 - a brief product description
 - the repository link
+- the published user docs link: `https://pypnmapps.github.io/PyPNM-WebUI/`
 - the current loaded WebUI version
 - the latest GitHub tag discovered from the remote repository
 

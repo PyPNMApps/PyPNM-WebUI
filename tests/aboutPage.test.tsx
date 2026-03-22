@@ -30,5 +30,8 @@ describe("AboutPage", () => {
 
     expect(screen.getByText("Current Local Version")).toBeTruthy();
     expect(await screen.findByText("0.2.15.9")).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Open User Docs" }).getAttribute("href")).toBe(
+      "https://pypnmapps.github.io/PyPNM-WebUI/",
+    );
   });
 });
