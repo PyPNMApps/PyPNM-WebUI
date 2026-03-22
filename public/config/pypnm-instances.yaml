@@ -7,9 +7,9 @@ defaults:
   logging:
     level: INFO
 instances:
-  - id: local-pypnm-agent
-    label: Local PyPNM Agent
-    base_url: http://127.0.0.1:8000
+  - id: lab-local
+    label: Lab Local
+    base_url: http://172.19.8.28:8000
     enabled: true
     tags:
       - lab
@@ -23,10 +23,10 @@ instances:
       interval_ms: 5000
     request_defaults:
       cable_modem:
-        mac_address: 00:00:00:0B:1B:E0
-        ip_address: 10.0.0.1
+        mac_address: FC:77:7B:0B:1B:E0
+        ip_address: 172.19.32.53
       tftp:
-        ipv4: 127.0.0.1
+        ipv4: 172.19.8.28
         ipv6: ::1
       capture:
         channel_ids: []
