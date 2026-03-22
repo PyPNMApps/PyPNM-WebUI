@@ -24,7 +24,7 @@ export function buildExportBaseName(
   suffix: string,
 ): string {
   const timestamp = toExportDate(epochSeconds);
-  const hhmm = `${padTwoDigits(timestamp.getHours())}${padTwoDigits(timestamp.getMinutes())}`;
-  const yyyymmdd = `${timestamp.getFullYear()}${padTwoDigits(timestamp.getMonth() + 1)}${padTwoDigits(timestamp.getDate())}`;
+  const hhmm = `${padTwoDigits(timestamp.getUTCHours())}${padTwoDigits(timestamp.getUTCMinutes())}`;
+  const yyyymmdd = `${timestamp.getUTCFullYear()}${padTwoDigits(timestamp.getUTCMonth() + 1)}${padTwoDigits(timestamp.getUTCDate())}`;
   return sanitizeExportBaseName(`${suffix}-${normalizeMacAddress(macAddress)}-${hhmm}-${yyyymmdd}`);
 }
