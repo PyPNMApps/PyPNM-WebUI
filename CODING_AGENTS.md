@@ -87,6 +87,10 @@
   panels should prefer a generic label such as `Get Capture` instead of
   repetitive `Run <endpoint>` phrasing when the action is simply collecting
   one capture.
+- All docs surfaces and all UI visuals must support both light mode and dark
+  mode under explicit user selection.
+- Do not ship docs themes, charts, panels, or visual encodings that only work
+  in one theme; verify contrast, legibility, and affordances in both modes.
 
 ## Environment And Configuration (Required)
 
