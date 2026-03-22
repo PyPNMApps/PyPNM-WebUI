@@ -4,7 +4,13 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { normalizeConfig, normalizeChannelIds, promptSelectedInstance, saveConfig } from "../tools/config-menu/config_menu.js";
+import {
+  ensureLocalRuntimeConfig,
+  normalizeConfig,
+  normalizeChannelIds,
+  promptSelectedInstance,
+  saveConfig,
+} from "../tools/config-menu/config_menu.js";
 
 describe("config_menu normalization", () => {
   it("keeps per-instance request defaults and selected_instance", () => {
@@ -147,5 +153,34 @@ describe("config_menu normalization", () => {
 
     expect(backupFiles).toHaveLength(1);
     expect(fs.readFileSync(path.join(tempDir, backupFiles[0]), "utf8")).toContain("selected_instance: lab-local");
+  });
+
+  it("auto generates a local runtime yaml when none exists", () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "pypnm-webui-runtime-config-"));
+    const localConfigPath = path.join(tempDir, "pypnm-instances.local.yaml");
+    const templateConfigPath = path.join(tempDir, "pypnm-instances.yaml");
+
+    fs.writeFileSync(
+      templateConfigPath,
+      [
+        "version: 1",
+        "defaults:",
+        "  selected_instance: lab-local",
+        "instances:",
+        "  - id: lab-local",
+        "    label: Lab Local",
+        "    base_url: http://127.0.0.1:8000",
+        "",
+      ].join("\n"),
+      "utf8",
+    );
+
+    const generated = ensureLocalRuntimeConfig(localConfigPath, templateConfigPath);
+
+    expect(fs.existsSync(localConfigPath)).toBe(true);
+    expect(generated.generated).toBe(true);
+    expect(generated.config.defaults.selected_instance).toBe("lab-local");
+    expect(fs.readFileSync(localConfigPath, "utf8")).toContain("selected_instance: lab-local");
+    expect(fs.readFileSync(localConfigPath, "utf8")).toContain("label: Lab Local");
   });
 });

@@ -83,7 +83,8 @@ When `--update-webui` is used:
 Runtime config model:
 
 - `public/config/pypnm-instances.yaml` is the version-controlled template
-- `public/config/pypnm-instances.local.yaml` is the machine-local active override
+- `public/config/pypnm-instances.local.yaml` is the machine-local runtime file
+- runtime config is merged by instance `id`; `.local` is not a full-file replacement
 
 ## After install
 

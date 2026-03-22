@@ -11,6 +11,44 @@ function cloneValue(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
+function dedupeInstances(instances, sourceLabel) {
+  const nextInstances = Array.isArray(instances) ? instances : [];
+  const seenIds = new Set();
+  const duplicateIds = new Set();
+  const deduped = [];
+
+  for (const instance of nextInstances) {
+    const instanceId = typeof instance?.id === "string" ? instance.id.trim() : "";
+    if (instanceId === "") {
+      deduped.push(instance);
+      continue;
+    }
+
+    if (seenIds.has(instanceId)) {
+      duplicateIds.add(instanceId);
+      continue;
+    }
+
+    seenIds.add(instanceId);
+    deduped.push(instance);
+  }
+
+  if (duplicateIds.size > 0) {
+    console.warn(
+      `Duplicate PyPNM agent ids found in ${sourceLabel}: ${Array.from(duplicateIds).join(", ")}. Keeping first occurrence only.`,
+    );
+  }
+
+  return deduped;
+}
+
+function sanitizeConfig(config, sourceLabel) {
+  return {
+    ...(config ?? {}),
+    instances: dedupeInstances(config?.instances, sourceLabel),
+  };
+}
+
 function deepMerge(templateValue, sourceValue) {
   if (Array.isArray(templateValue)) {
     return Array.isArray(sourceValue) ? cloneValue(sourceValue) : cloneValue(templateValue);
@@ -41,9 +79,11 @@ function deepMerge(templateValue, sourceValue) {
 }
 
 export function mergeRuntimeConfig(templateConfig, sourceConfig) {
-  const merged = deepMerge(templateConfig, sourceConfig);
-  const templateInstances = Array.isArray(templateConfig?.instances) ? templateConfig.instances : [];
-  const sourceInstances = Array.isArray(sourceConfig?.instances) ? sourceConfig.instances : [];
+  const sanitizedTemplateConfig = sanitizeConfig(templateConfig, "template runtime config");
+  const sanitizedSourceConfig = sanitizeConfig(sourceConfig, "local runtime config");
+  const merged = deepMerge(sanitizedTemplateConfig, sanitizedSourceConfig);
+  const templateInstances = Array.isArray(sanitizedTemplateConfig?.instances) ? sanitizedTemplateConfig.instances : [];
+  const sourceInstances = Array.isArray(sanitizedSourceConfig?.instances) ? sanitizedSourceConfig.instances : [];
 
   const mergedInstances = [];
 
@@ -59,8 +99,8 @@ export function mergeRuntimeConfig(templateConfig, sourceConfig) {
   }
 
   merged.instances = mergedInstances;
-  if (templateConfig?.version !== undefined) {
-    merged.version = cloneValue(templateConfig.version);
+  if (sanitizedTemplateConfig?.version !== undefined) {
+    merged.version = cloneValue(sanitizedTemplateConfig.version);
   }
 
   const mergedSelectedInstance = merged?.defaults?.selected_instance;
@@ -88,8 +128,10 @@ function writeWithBackup(outputPath, content) {
 }
 
 export function mergeRuntimeConfigFiles({ templatePath, sourcePath, outputPath }) {
-  const templateConfig = parse(fs.readFileSync(templatePath, "utf8")) ?? {};
-  const sourceConfig = fs.existsSync(sourcePath) ? (parse(fs.readFileSync(sourcePath, "utf8")) ?? {}) : {};
+  const templateConfig = sanitizeConfig(parse(fs.readFileSync(templatePath, "utf8")) ?? {}, templatePath);
+  const sourceConfig = fs.existsSync(sourcePath)
+    ? sanitizeConfig(parse(fs.readFileSync(sourcePath, "utf8")) ?? {}, sourcePath)
+    : {};
   const merged = mergeRuntimeConfig(templateConfig, sourceConfig);
   writeWithBackup(outputPath, stringify(merged, { indent: 2 }));
   return merged;

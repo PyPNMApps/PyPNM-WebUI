@@ -5,7 +5,12 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 
 import packageJson from "../../package.json" with { type: "json" };
-import { runConfigMenu } from "../config-menu/config_menu.js";
+import {
+  configPathFromRepoRoot,
+  ensureLocalRuntimeConfig,
+  runConfigMenu,
+  templateConfigPathFromRepoRoot,
+} from "../config-menu/config_menu.js";
 
 const SUCCESS_EXIT_CODE = 0;
 const EXIT_CODE_USAGE = 2;
@@ -224,6 +229,15 @@ function buildViteServeArgs(options) {
 
 function runServe(options, metaUrl) {
   const repoRoot = repoRootFromModule(metaUrl);
+  const runtimeConfigResult = ensureLocalRuntimeConfig(
+    configPathFromRepoRoot(repoRoot),
+    templateConfigPathFromRepoRoot(repoRoot),
+  );
+  if (runtimeConfigResult.generated) {
+    process.stdout.write(
+      "INFO: No runtime YAML config file was found. Generated public/config/pypnm-instances.local.yaml\n",
+    );
+  }
   const viteBin = path.join(repoRoot, "node_modules", "vite", "bin", "vite.js");
   const viteArgs = buildViteServeArgs(options);
   const child = spawn(process.execPath, [viteBin, ...viteArgs], {

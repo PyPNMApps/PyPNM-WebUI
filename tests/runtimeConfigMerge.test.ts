@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { mergeRuntimeConfig } from "../tools/config-menu/runtime_config_merge.js";
 
@@ -95,5 +95,68 @@ describe("mergeRuntimeConfig", () => {
       id: "rack-2",
       label: "Rack 2",
     });
+  });
+
+  it("logs duplicate ids within a file and keeps the first occurrence", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    const merged = mergeRuntimeConfig(
+      {
+        version: 1,
+        defaults: {
+          selected_instance: "lab-local",
+        },
+        instances: [
+          {
+            id: "lab-local",
+            label: "Lab Local A",
+            base_url: "http://127.0.0.1:8000",
+          },
+          {
+            id: "lab-local",
+            label: "Lab Local B",
+            base_url: "http://127.0.0.2:8000",
+          },
+        ],
+      },
+      {
+        version: 1,
+        defaults: {
+          selected_instance: "rack-2",
+        },
+        instances: [
+          {
+            id: "rack-2",
+            label: "Rack 2 A",
+            base_url: "http://10.0.0.5:8000",
+          },
+          {
+            id: "rack-2",
+            label: "Rack 2 B",
+            base_url: "http://10.0.0.6:8000",
+          },
+        ],
+      },
+    ) as {
+      instances: Array<Record<string, unknown>>;
+    };
+
+    expect(merged.instances).toHaveLength(2);
+    expect(merged.instances[0]).toMatchObject({
+      id: "lab-local",
+      label: "Lab Local A",
+    });
+    expect(merged.instances[1]).toMatchObject({
+      id: "rack-2",
+      label: "Rack 2 A",
+    });
+    expect(warnSpy).toHaveBeenCalledWith(
+      "Duplicate PyPNM agent ids found in template runtime config: lab-local. Keeping first occurrence only.",
+    );
+    expect(warnSpy).toHaveBeenCalledWith(
+      "Duplicate PyPNM agent ids found in local runtime config: rack-2. Keeping first occurrence only.",
+    );
+
+    warnSpy.mockRestore();
   });
 });

@@ -8,12 +8,15 @@
 
 ## Runtime Instance Config
 - Path: `public/config/pypnm-instances.yaml`
-- Override Path: `public/config/pypnm-instances.local.yaml`
+- Local Path: `public/config/pypnm-instances.local.yaml`
 - Purpose: define multiple PyPNM instances for the UI dropdown
 - Behavior:
-  - `public/config/pypnm-instances.local.yaml` is loaded first when present
+  - the UI loads both runtime YAML files when present
+  - the two files are merged by instance `id`
+  - unmatched instances from both files remain in the dropdown
   - selected instance base URL overrides `VITE_PYPNM_API_BASE_URL`
-  - if the YAML file is missing or invalid, the UI falls back to `.env`
+  - if both runtime YAML files are missing or invalid, the UI falls back to
+    `.env` through an in-memory default config
 
 ## YAML Shape
 ```yaml

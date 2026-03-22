@@ -37,7 +37,10 @@
 
 ## Instance Target Selection
 - `public/config/pypnm-instances.yaml` is the version-controlled runtime template.
-- `public/config/pypnm-instances.local.yaml` is the machine-local runtime override when present.
+- `public/config/pypnm-instances.local.yaml` is the machine-local runtime config
+  file when present.
+- The runtime loader merges both files by instance `id` instead of treating
+  `.local` as a full-file replacement.
 - Each instance can also carry `request_defaults` used to prefill capture and
   device request forms for that specific PyPNM agent.
 - `src/app/InstanceConfigProvider.tsx` loads the YAML, normalizes it, and persists the selected instance in local storage.

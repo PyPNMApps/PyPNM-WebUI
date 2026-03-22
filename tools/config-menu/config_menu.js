@@ -77,16 +77,54 @@ function repoRootFromModule(metaUrl) {
   return path.resolve(path.dirname(fileURLToPath(metaUrl)), "../..");
 }
 
-function configPathFromRepoRoot(repoRoot) {
+export function configPathFromRepoRoot(repoRoot) {
   return path.join(repoRoot, "public", "config", "pypnm-instances.local.yaml");
 }
 
-function templateConfigPathFromRepoRoot(repoRoot) {
+export function templateConfigPathFromRepoRoot(repoRoot) {
   return path.join(repoRoot, "public", "config", "pypnm-instances.yaml");
 }
 
 function cloneValue(value) {
   return JSON.parse(JSON.stringify(value));
+}
+
+function dedupeInstances(instances, sourceLabel) {
+  const nextInstances = Array.isArray(instances) ? instances : [];
+  const seenIds = new Set();
+  const duplicateIds = new Set();
+  const deduped = [];
+
+  for (const instance of nextInstances) {
+    const instanceId = typeof instance?.id === "string" ? instance.id.trim() : "";
+    if (instanceId === "") {
+      deduped.push(instance);
+      continue;
+    }
+
+    if (seenIds.has(instanceId)) {
+      duplicateIds.add(instanceId);
+      continue;
+    }
+
+    seenIds.add(instanceId);
+    deduped.push(instance);
+  }
+
+  if (duplicateIds.size > 0) {
+    console.warn(
+      `Duplicate PyPNM agent ids found in ${sourceLabel}: ${Array.from(duplicateIds).join(", ")}. Keeping first occurrence only.`,
+    );
+  }
+
+  return deduped;
+}
+
+function sanitizeConfig(raw, sourceLabel) {
+  return {
+    ...(raw ?? {}),
+    instances: dedupeInstances(raw?.instances, sourceLabel),
+  };
 }
 
 export function normalizeChannelIds(value) {
@@ -191,12 +229,12 @@ export function normalizeConfig(raw) {
 function loadConfig(configPath, fallbackPath) {
   if (!fs.existsSync(configPath)) {
     if (fallbackPath && fs.existsSync(fallbackPath)) {
-      const fallbackRaw = parse(fs.readFileSync(fallbackPath, "utf8")) ?? {};
+      const fallbackRaw = sanitizeConfig(parse(fs.readFileSync(fallbackPath, "utf8")) ?? {}, fallbackPath);
       return normalizeConfig(fallbackRaw);
     }
     return cloneValue(DEFAULT_CONFIG);
   }
-  const raw = parse(fs.readFileSync(configPath, "utf8")) ?? {};
+  const raw = sanitizeConfig(parse(fs.readFileSync(configPath, "utf8")) ?? {}, configPath);
   return normalizeConfig(raw);
 }
 
@@ -215,6 +253,22 @@ export function saveConfig(configPath, config) {
     }
   }
   fs.writeFileSync(configPath, nextContent, "utf8");
+}
+
+export function ensureLocalRuntimeConfig(configPath, fallbackPath) {
+  if (fs.existsSync(configPath)) {
+    return {
+      config: loadConfig(configPath, fallbackPath),
+      generated: false,
+    };
+  }
+
+  const config = loadConfig(configPath, fallbackPath);
+  saveConfig(configPath, config);
+  return {
+    config,
+    generated: true,
+  };
 }
 
 function printConfig(configPath, config) {

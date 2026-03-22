@@ -48,6 +48,8 @@ interface RawInstanceConfig {
   }>;
 }
 
+type RawInstanceEntry = NonNullable<RawInstanceConfig["instances"]>[number];
+
 function normalizeLogLevel(value: unknown): PypnmLogLevel {
   switch (typeof value === "string" ? value.trim().toUpperCase() : "") {
     case "DEBUG":
@@ -88,6 +90,47 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 
 function cloneValue<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
+}
+
+function dedupeRawInstances(
+  instances: RawInstanceEntry[] | undefined,
+  sourceLabel: string,
+): RawInstanceEntry[] {
+  const nextInstances = Array.isArray(instances) ? instances : [];
+  const seenIds = new Set<string>();
+  const duplicateIds = new Set<string>();
+  const deduped: RawInstanceEntry[] = [];
+
+  for (const instance of nextInstances) {
+    const instanceId = typeof instance?.id === "string" ? instance.id.trim() : "";
+    if (instanceId === "") {
+      deduped.push(instance);
+      continue;
+    }
+
+    if (seenIds.has(instanceId)) {
+      duplicateIds.add(instanceId);
+      continue;
+    }
+
+    seenIds.add(instanceId);
+    deduped.push(instance);
+  }
+
+  if (duplicateIds.size > 0) {
+    console.warn(
+      `Duplicate PyPNM agent ids found in ${sourceLabel}: ${Array.from(duplicateIds).join(", ")}. Keeping first occurrence only.`,
+    );
+  }
+
+  return deduped;
+}
+
+function sanitizeRawConfig(raw: RawInstanceConfig, sourceLabel: string): RawInstanceConfig {
+  return {
+    ...raw,
+    instances: dedupeRawInstances(raw.instances, sourceLabel),
+  };
 }
 
 function deepMerge(templateValue: unknown, sourceValue: unknown): unknown {
@@ -256,7 +299,7 @@ export async function loadInstanceConfig(): Promise<PypnmInstanceConfig> {
   try {
     const response = await fetch(TEMPLATE_CONFIG_URL, { cache: "no-store" });
     if (response.ok) {
-      templateConfig = (parse(await response.text()) as RawInstanceConfig) ?? {};
+      templateConfig = sanitizeRawConfig(((parse(await response.text()) as RawInstanceConfig) ?? {}), TEMPLATE_CONFIG_URL);
     }
   } catch {
     templateConfig = null;
@@ -265,7 +308,7 @@ export async function loadInstanceConfig(): Promise<PypnmInstanceConfig> {
   try {
     const response = await fetch(LOCAL_OVERRIDE_CONFIG_URL, { cache: "no-store" });
     if (response.ok) {
-      localOverrideConfig = (parse(await response.text()) as RawInstanceConfig) ?? {};
+      localOverrideConfig = sanitizeRawConfig(((parse(await response.text()) as RawInstanceConfig) ?? {}), LOCAL_OVERRIDE_CONFIG_URL);
     }
   } catch {
     localOverrideConfig = null;
@@ -303,3 +346,4 @@ export function storeSelectedInstanceId(instanceId: string): void {
 }
 
 export { mergeRawConfig };
+export { sanitizeRawConfig };
