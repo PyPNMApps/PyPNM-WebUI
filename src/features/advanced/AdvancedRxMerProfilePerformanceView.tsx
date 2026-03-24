@@ -4,10 +4,12 @@ import { ExportActions } from "@/components/common/ExportActions";
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { Panel } from "@/components/common/Panel";
 import { SeriesVisibilityChips } from "@/components/common/SeriesVisibilityChips";
+import { SpectrumSelectionSummary } from "@/components/common/SpectrumSelectionSummary";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import { downloadCsv } from "@/lib/export/csv";
 import { buildExportBaseName } from "@/lib/export/naming";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
+import { normalizeSpectrumSelection, type SpectrumSelectionRange } from "@/lib/spectrumPower";
 import type { ChartSeries } from "@/features/analysis/types";
 import type { AdvancedMultiRxMerAnalysisResponse, AdvancedMultiRxMerOfdmProfileChannel } from "@/types/api";
 
@@ -87,9 +89,12 @@ function ProfilePerformanceChannelPanel({
   macAddress: string | undefined;
 }) {
   const [seriesVisibility, setSeriesVisibility] = useState<Record<string, boolean>>({});
+  const [selection, setSelection] = useState<SpectrumSelectionRange | null>(null);
+  const [zoomDomain, setZoomDomain] = useState<[number, number] | undefined>(undefined);
   const allSeries = buildChannelSeries(channel);
   const visibleSeries = allSeries.filter((item) => seriesVisibility[item.label] !== false);
   const captureTime = Number((profiles[0] as { capture_time?: number } | undefined)?.capture_time);
+  const normalizedSelection = normalizeSpectrumSelection(selection);
 
   return (
     <Panel title={`Channel ${channelId} · OFDM Profile Performance 1`}>
@@ -106,6 +111,10 @@ function ProfilePerformanceChannelPanel({
         yLabel="MER (dB)"
         series={visibleSeries}
         showLegend={false}
+        enableRangeSelection
+        selection={selection}
+        onSelectionChange={setSelection}
+        xDomain={zoomDomain}
         exportBaseName={buildExportBaseName(
           macAddress,
           captureTime,
@@ -113,6 +122,29 @@ function ProfilePerformanceChannelPanel({
         )}
       />
       <div className="operations-visual-actions">
+        <button
+          type="button"
+          disabled={!normalizedSelection}
+          onClick={() => {
+            if (!normalizedSelection) {
+              return;
+            }
+            setZoomDomain([normalizedSelection.startX, normalizedSelection.endX]);
+            setSelection(null);
+          }}
+        >
+          Zoom Selection
+        </button>
+        <button
+          type="button"
+          disabled={!zoomDomain}
+          onClick={() => {
+            setZoomDomain(undefined);
+            setSelection(null);
+          }}
+        >
+          Reset Zoom
+        </button>
         <ExportActions
           onCsv={() => downloadCsv(
             buildExportBaseName(
@@ -148,6 +180,11 @@ function ProfilePerformanceChannelPanel({
           )}
         />
       </div>
+      <SpectrumSelectionSummary
+        selection={selection}
+        integratedPower={[]}
+        emptyMessage="Drag across the profile chart to select a frequency range for zoom."
+      />
       <div className="table-scroll">
         <table className="channel-metrics-table">
           <thead>

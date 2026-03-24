@@ -1634,6 +1634,8 @@ pre {
 .operations-visual-actions {
   display: flex;
   justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
   margin-bottom: 10px;
 }
 

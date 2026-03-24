@@ -11,12 +11,14 @@ function formatDbmv(value: number | null): string {
 export function SpectrumSelectionSummary({
   selection,
   integratedPower,
+  emptyMessage = "Drag across the graph to select a frequency range.",
 }: {
   selection: SpectrumSelectionRange | null;
   integratedPower: SpectrumIntegratedPower[];
+  emptyMessage?: string;
 }) {
   if (!selection) {
-    return <p className="panel-copy">Drag across the graph to select a frequency range and calculate selected power in dBmV.</p>;
+    return <p className="panel-copy">{emptyMessage}</p>;
   }
 
   return (
