@@ -1,31 +1,53 @@
-# Documentation Index
+# PyPNM-WebUI Documentation
 
-## User Documentation
+Use the left navigation as the primary entrypoint. The documentation is organized by workflow instead of by file name.
 
-- [Getting Started](user/getting-started.md)
-- [Install And Bootstrap](user/install-and-bootstrap.md)
-- [Runtime Configuration](user/runtime-configuration.md)
-- [Using The UI](user/using-the-ui.md)
+## Start Here
+
+For a new local setup:
+
+1. [Getting Started](user/getting-started.md)
+2. [Install And Bootstrap](user/install-and-bootstrap.md)
+3. [Runtime Configuration](user/runtime-configuration.md)
+
+## Day-To-Day Use
+
+For running the UI and using the main surfaces:
+
+- [UI Overview](user/using-the-ui.md)
+- [Navigation And Agent Selection](user/ui-navigation.md)
+- [Single Capture](user/single-capture.md)
+- [Operations And Spectrum Analyzer](user/operations-and-spectrum.md)
+- [Advanced Analysis](user/advanced-workflows.md)
+- [Files, Health, Settings, And About](user/supporting-pages.md)
+- [Input Validation](user/input-validation.md)
 - [Troubleshooting](user/troubleshooting.md)
+
+Covered user-facing workflows include:
+
+- runtime agent selection and `config-menu` usage
+- single-capture and spectrum-analyzer capture flows
+- advanced multi-capture and reusable analysis workflows
+- file browsing, hexdump, JSON inspection, and file analysis
+- health, settings, and about pages
+
+## Release And Versioning
+
+For release behavior and version-control helpers:
+
 - [Release Helpers](user/release-helpers.md)
 - [Release Workflow](user/release-workflow.md)
 
-Current user-facing areas documented there include:
+## Development
 
-- runtime target selection and config-menu usage
-- advanced multi-capture workflow navigation and RxMER operation lifecycle
-- operations and spectrum-analyzer workflows
-- Files browsing, hexdump, JSON, and analysis flows
-- health, settings, and about pages
+For maintainers and contributors:
 
-## Development Documentation
-
-- [Development Workflow](development/workflow.md)
-- [Development Logging](development/logging.md)
-- [Development Field Hints](development/field-hints.md)
+- [Workflow](development/workflow.md)
 - [Git Helpers](development/git-helpers.md)
+- [Logging](development/logging.md)
+- [Field Hints](development/field-hints.md)
 
-## Reference Documentation
+## Reference
 
 - [Architecture](architecture.md)
 - [API Integration](api-integration.md)

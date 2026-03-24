@@ -79,7 +79,12 @@ npm run docs:serve
 - [Install And Bootstrap](docs/user/install-and-bootstrap.md)
 - [Release Helpers](docs/user/release-helpers.md)
 - [Runtime Configuration](docs/user/runtime-configuration.md)
-- [Using The UI](docs/user/using-the-ui.md)
+- [UI Overview](docs/user/using-the-ui.md)
+- [Navigation And Agent Selection](docs/user/ui-navigation.md)
+- [Single Capture](docs/user/single-capture.md)
+- [Operations And Spectrum Analyzer](docs/user/operations-and-spectrum.md)
+- [Advanced Analysis](docs/user/advanced-workflows.md)
+- [Files, Health, Settings, And About](docs/user/supporting-pages.md)
 - [Troubleshooting](docs/user/troubleshooting.md)
 - [Release Workflow](docs/user/release-workflow.md)
 

@@ -22,6 +22,7 @@ theme:
   features:
     - navigation.instant
     - navigation.sections
+    - navigation.expand
     - content.code.copy
 markdown_extensions:
   - admonition
@@ -31,23 +32,34 @@ markdown_extensions:
       permalink: true
 nav:
   - Home: index.md
-  - User:
-      - Getting Started: user/getting-started.md
-      - Install And Bootstrap: user/install-and-bootstrap.md
-      - Runtime Configuration: user/runtime-configuration.md
-      - Using The UI: user/using-the-ui.md
-      - Troubleshooting: user/troubleshooting.md
-      - Release Helpers: user/release-helpers.md
-      - Release Workflow: user/release-workflow.md
+  - User Guide:
+      - Start Here:
+          - Getting Started: user/getting-started.md
+          - Install And Bootstrap: user/install-and-bootstrap.md
+          - Runtime Configuration: user/runtime-configuration.md
+      - Using The UI:
+          - UI Overview: user/using-the-ui.md
+          - Navigation And Agent Selection: user/ui-navigation.md
+          - Single Capture: user/single-capture.md
+          - Operations And Spectrum Analyzer: user/operations-and-spectrum.md
+          - Advanced Analysis: user/advanced-workflows.md
+          - Files, Health, Settings, And About: user/supporting-pages.md
+          - Input Validation: user/input-validation.md
+          - Troubleshooting: user/troubleshooting.md
+      - Release And Versioning:
+          - Release Helpers: user/release-helpers.md
+          - Release Workflow: user/release-workflow.md
   - Development:
-      - Workflow: development/workflow.md
-      - Logging: development/logging.md
-      - Git Helpers: development/git-helpers.md
-      - Field Hints: development/field-hints.md
+      - Daily Workflow:
+          - Workflow: development/workflow.md
+          - Git Helpers: development/git-helpers.md
+          - Logging: development/logging.md
+          - Field Hints: development/field-hints.md
   - Reference:
-      - Architecture: architecture.md
-      - API Integration: api-integration.md
-      - Environment: env.md
-      - Roadmap: roadmap.md
+      - System Reference:
+          - Architecture: architecture.md
+          - API Integration: api-integration.md
+          - Environment: env.md
+          - Roadmap: roadmap.md
   - Planning:
       - Repository Plan: planning/pypnm-webui-repo-plan.md
