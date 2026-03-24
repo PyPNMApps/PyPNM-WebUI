@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
@@ -35,6 +36,7 @@ interface ConstellationDisplayCaptureRequestFormProps {
   onSubmit: (payload: SingleConstellationDisplayCaptureRequest) => void;
   onConnectivityInputsChange?: (inputs: CaptureConnectivityInputs) => void;
   errorMessage?: string;
+  extraActions?: ReactNode;
 }
 
 export function ConstellationDisplayCaptureRequestForm({
@@ -44,6 +46,7 @@ export function ConstellationDisplayCaptureRequestForm({
   onSubmit,
   onConnectivityInputsChange,
   errorMessage,
+  extraActions,
 }: ConstellationDisplayCaptureRequestFormProps) {
   const requestDefaults = useCommonRequestFormDefaults();
   const { register, handleSubmit, reset, watch } = useForm<ConstellationDisplayFormValues>({
@@ -171,6 +174,7 @@ export function ConstellationDisplayCaptureRequestForm({
         <button type="submit" className="primary" disabled={isPending || !canRun}>
           {isPending ? "Running..." : submitLabel}
         </button>
+        {extraActions}
       </div>
       {errorMessage ? <p>{errorMessage}</p> : null}
     </form>

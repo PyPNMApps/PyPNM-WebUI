@@ -763,6 +763,12 @@ button[aria-disabled="true"]:focus-visible,
   flex-wrap: wrap;
 }
 
+.request-panel-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
 .analysis-chip {
   display: inline-flex;
   align-items: center;

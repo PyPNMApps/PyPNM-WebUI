@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
@@ -39,9 +40,18 @@ interface SpectrumOfdmCaptureRequestFormProps {
   onSubmit: (payload: SingleSpectrumOfdmCaptureRequest) => void;
   onConnectivityInputsChange?: (inputs: CaptureConnectivityInputs) => void;
   errorMessage?: string;
+  extraActions?: ReactNode;
 }
 
-export function SpectrumOfdmCaptureRequestForm({ isPending, canRun, submitLabel, onSubmit, onConnectivityInputsChange, errorMessage }: SpectrumOfdmCaptureRequestFormProps) {
+export function SpectrumOfdmCaptureRequestForm({
+  isPending,
+  canRun,
+  submitLabel,
+  onSubmit,
+  onConnectivityInputsChange,
+  errorMessage,
+  extraActions,
+}: SpectrumOfdmCaptureRequestFormProps) {
   const requestDefaults = useCommonRequestFormDefaults();
   const { register, handleSubmit, reset, watch } = useForm<SpectrumOfdmFormValues>({
     defaultValues: {
@@ -166,6 +176,7 @@ export function SpectrumOfdmCaptureRequestForm({ isPending, canRun, submitLabel,
         <button type="submit" className="primary" disabled={isPending || !canRun}>
           {isPending ? "Running..." : submitLabel}
         </button>
+        {extraActions}
       </div>
       {errorMessage ? <p>{errorMessage}</p> : null}
     </form>

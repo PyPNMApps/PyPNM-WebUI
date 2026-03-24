@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useInstanceConfig } from "@/app/useInstanceConfig";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Panel } from "@/components/common/Panel";
+import { RequestJsonAction } from "@/components/common/RequestJsonAction";
 import { ThinkingIndicator } from "@/components/common/ThinkingIndicator";
 import { ConstellationDisplayCaptureRequestForm } from "@/features/operations/ConstellationDisplayCaptureRequestForm";
 import { DeviceConnectRequestForm } from "@/features/operations/DeviceConnectRequestForm";
@@ -479,6 +480,20 @@ export function EndpointExplorerPage() {
                       : selectedOperation.id === "docs-pnm-ds-histogram-getcapture"
                         ? histogramResponse
                         : channelEstResponse;
+  const hasCompletedSelectedOperation = mutation.isSuccess && mutation.variables?.endpointPath === selectedOperation.endpointPath;
+  const requestJsonAction = (
+    <RequestJsonAction
+      disabled={!hasCompletedSelectedOperation}
+      onClick={() => {
+        if (!hasCompletedSelectedOperation) {
+          return;
+        }
+        downloadJson(buildJsonFilename(selectedOperation.label), selectedResponse);
+      }}
+    >
+      Download JSON
+    </RequestJsonAction>
+  );
 
   return (
     <>
@@ -529,6 +544,7 @@ export function EndpointExplorerPage() {
             canRun={canExecuteOperation}
             submitLabel="Get Capture"
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            extraActions={requestJsonAction}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
               mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
@@ -540,6 +556,7 @@ export function EndpointExplorerPage() {
             canRun={canExecuteOperation}
             submitLabel="Get Capture"
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            extraActions={requestJsonAction}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
               mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
@@ -551,6 +568,7 @@ export function EndpointExplorerPage() {
             canRun={canExecuteOperation}
             submitLabel="Get Capture"
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            extraActions={requestJsonAction}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
               mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
@@ -562,6 +580,7 @@ export function EndpointExplorerPage() {
             canRun={canExecuteOperation}
             submitLabel="Get Capture"
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            extraActions={requestJsonAction}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
               mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
@@ -573,6 +592,7 @@ export function EndpointExplorerPage() {
             canRun={canExecuteOperation}
             submitLabel="Get Capture"
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            extraActions={requestJsonAction}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
               mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
@@ -584,6 +604,7 @@ export function EndpointExplorerPage() {
             canRun={canExecuteOperation}
             submitLabel="Get Capture"
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            extraActions={requestJsonAction}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
               mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
@@ -595,6 +616,7 @@ export function EndpointExplorerPage() {
             canRun={canExecuteOperation}
             submitLabel="Get Capture"
             errorMessage={mutation.isError ? (mutation.error as Error).message : undefined}
+            extraActions={requestJsonAction}
             onConnectivityInputsChange={setCaptureConnectivityInputs}
             onSubmit={(payload) => {
               mutation.mutate({ endpointPath: selectedOperation.endpointPath, payload });
@@ -608,18 +630,6 @@ export function EndpointExplorerPage() {
           <ThinkingIndicator label={`Collecting ${selectedOperation.label} data...`} />
         </Panel>
       ) : null}
-
-      <div className="operations-visual-actions">
-        <button
-          type="button"
-          className="operations-json-download"
-          onClick={() => {
-            downloadJson(buildJsonFilename(selectedOperation.label), selectedResponse);
-          }}
-        >
-          Download JSON
-        </button>
-      </div>
 
       <Panel>
         {selectedOperation.id === "docs-if31-docsis-basecapability" ? (

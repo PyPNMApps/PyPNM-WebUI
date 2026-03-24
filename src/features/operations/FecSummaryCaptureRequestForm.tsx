@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
@@ -28,6 +29,7 @@ interface FecSummaryCaptureRequestFormProps {
   onSubmit: (payload: SingleFecSummaryCaptureRequest) => void;
   onConnectivityInputsChange?: (inputs: CaptureConnectivityInputs) => void;
   errorMessage?: string;
+  extraActions?: ReactNode;
 }
 
 export function FecSummaryCaptureRequestForm({
@@ -37,6 +39,7 @@ export function FecSummaryCaptureRequestForm({
   onSubmit,
   onConnectivityInputsChange,
   errorMessage,
+  extraActions,
 }: FecSummaryCaptureRequestFormProps) {
   const requestDefaults = useCommonRequestFormDefaults();
   const { register, handleSubmit, reset, watch } = useForm<FecSummaryCaptureFormValues>({
@@ -146,6 +149,7 @@ export function FecSummaryCaptureRequestForm({
         <button type="submit" className="primary" disabled={isPending || !canRun}>
           {isPending ? "Running..." : submitLabel}
         </button>
+        {extraActions}
       </div>
       {errorMessage ? <p>{errorMessage}</p> : null}
     </form>

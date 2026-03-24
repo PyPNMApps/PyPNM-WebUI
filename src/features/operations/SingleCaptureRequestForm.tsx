@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
@@ -27,6 +28,7 @@ interface SingleCaptureRequestFormProps {
   onSubmit: (payload: SingleRxMerCaptureRequest) => void;
   onConnectivityInputsChange?: (inputs: CaptureConnectivityInputs) => void;
   errorMessage?: string;
+  extraActions?: ReactNode;
 }
 
 export function SingleCaptureRequestForm({
@@ -36,6 +38,7 @@ export function SingleCaptureRequestForm({
   onSubmit,
   onConnectivityInputsChange,
   errorMessage,
+  extraActions,
 }: SingleCaptureRequestFormProps) {
   const requestDefaults = useCommonRequestFormDefaults();
   const { register, handleSubmit, reset, watch } = useForm<SingleCaptureFormValues>({
@@ -127,6 +130,7 @@ export function SingleCaptureRequestForm({
         <button type="submit" className="primary" disabled={isPending || !canRun}>
           {isPending ? "Running..." : submitLabel}
         </button>
+        {extraActions}
       </div>
       {errorMessage ? <p>{errorMessage}</p> : null}
     </form>

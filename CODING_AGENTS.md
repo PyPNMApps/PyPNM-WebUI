@@ -62,7 +62,12 @@
 - Provide both interpreted and raw JSON views for technical results.
 - Include explicit loading, error, and empty states for every data panel.
 - For any user-visible fetch or mutation that collects backend data, render a shared thinking/loading indicator with an icon rather than plain loading text.
-- Every operation visual must provide a visible JSON download action near the visual header so the current payload can be inspected outside the UI.
+- Every operation workflow must provide a visible JSON download path so the
+  current payload can be inspected outside the UI.
+- Generic raw-response JSON download actions belong in the `Capture Inputs`
+  card as shared request-panel controls, not as floating mid-page actions.
+- Shared request-panel JSON controls must remain visually muted and disabled
+  until the current operation completes successfully for that workflow.
 - Support copy-to-clipboard for identifiers and payloads where useful.
 - Default graph lines to thin strokes unless a thicker treatment is required for legibility or a specific visual convention.
 - When a graph renders multiple data series, provide user controls to show or hide individual series so the chart can be isolated without removing the others.

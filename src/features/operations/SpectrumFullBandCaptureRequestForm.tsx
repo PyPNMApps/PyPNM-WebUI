@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 
 import { FieldLabel } from "@/components/common/FieldLabel";
@@ -47,6 +48,7 @@ interface SpectrumFullBandCaptureRequestFormProps {
   onSubmit: (payload: SingleSpectrumFullBandCaptureRequest) => void;
   onConnectivityInputsChange?: (inputs: CaptureConnectivityInputs) => void;
   errorMessage?: string;
+  extraActions?: ReactNode;
 }
 
 export function SpectrumFullBandCaptureRequestForm({
@@ -56,6 +58,7 @@ export function SpectrumFullBandCaptureRequestForm({
   onSubmit,
   onConnectivityInputsChange,
   errorMessage,
+  extraActions,
 }: SpectrumFullBandCaptureRequestFormProps) {
   const requestDefaults = useCommonRequestFormDefaults();
   const { register, handleSubmit, reset, watch } = useForm<SpectrumFullBandFormValues>({
@@ -217,6 +220,7 @@ export function SpectrumFullBandCaptureRequestForm({
         <button type="submit" className="primary" disabled={isPending || !canRun}>
           {isPending ? "Running..." : submitLabel}
         </button>
+        {extraActions}
       </div>
       {errorMessage ? <p>{errorMessage}</p> : null}
     </form>

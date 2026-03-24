@@ -56,8 +56,9 @@ Each Single Capture page includes:
 - `Capture Inputs` online/offline chip driven by `/system/sysDescr`
 - immediate status check on page load, then a 3 second debounce after MAC, IP, or SNMP community changes
 - execution button stays disabled until the modem reports `Online`
+- `JSON` stays inside the `Capture Inputs` card and remains disabled until the
+  current operation completes successfully
 - visible waiting indicator while data is being collected
-- right-aligned `Download JSON` action for the current response
 - bound visual below the form
 - browser autocomplete is enabled for `MAC Address`, `IP Address`, and
   `SNMP RW Community` so this machine can suggest prior capture entries
@@ -84,8 +85,9 @@ All operation pages currently expose:
 - `Capture Inputs` online/offline chip driven by `/system/sysDescr`
 - immediate status check on page load, then a 3 second debounce after MAC, IP, or SNMP community changes
 - execution button stays disabled until the modem reports `Online`
+- `JSON` stays inside the `Capture Inputs` card and remains disabled until the
+  current operation completes successfully
 - visible waiting indicator while data is being collected
-- right-aligned `Download JSON` action for the current response
 - bound visual below the form
 - browser autocomplete is enabled for `MAC Address`, `IP Address`, and
   `SNMP RW Community` so this machine can suggest prior capture entries
