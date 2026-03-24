@@ -474,6 +474,7 @@ a {
 .actions {
   display: flex;
   gap: 10px;
+  margin-bottom: 12px;
 }
 
 button {
@@ -1222,6 +1223,13 @@ pre {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.files-summary-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
 }
 
 .files-error {

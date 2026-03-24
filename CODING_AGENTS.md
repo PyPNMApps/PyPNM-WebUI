@@ -92,6 +92,10 @@
   panels should prefer a generic label such as `Get Capture` instead of
   repetitive `Run <endpoint>` phrasing when the action is simply collecting
   one capture.
+- Keep action rows visually separated from status chips, summaries, and result
+  metadata; do not crowd primary buttons directly against chip rows.
+- Prefer explicit download labels such as `Download JSON` over short labels
+  like `JSON` when the action meaning is not already obvious from placement.
 - All docs surfaces and all UI visuals must support both light mode and dark
   mode under explicit user selection.
 - Do not ship docs themes, charts, panels, or visual encodings that only work

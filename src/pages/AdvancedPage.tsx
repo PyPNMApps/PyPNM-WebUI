@@ -677,10 +677,10 @@ function AdvancedRxMerWorkbench() {
                 disabled={machine.lifecycleState !== "completed" && machine.lifecycleState !== "stopped"}
                 onClick={() => downloadJson(buildAdvancedJsonFilename(analysisType, effectiveOperationId || "operation"), analysisResponse)}
               >
-                JSON
+                Download JSON
               </button>
             ) : (
-              <button type="button" disabled>JSON</button>
+              <button type="button" disabled>Download JSON</button>
             )}
           </div>
         </form>
@@ -1071,10 +1071,10 @@ function AdvancedChannelEstimationWorkbench() {
                 disabled={machine.lifecycleState !== "completed" && machine.lifecycleState !== "stopped"}
                 onClick={() => downloadJson(`advanced-channel-estimation-${analysisType}-${effectiveOperationId || "operation"}.json`, analysisResponse)}
               >
-                JSON
+                Download JSON
               </button>
             ) : (
-              <button type="button" disabled>JSON</button>
+              <button type="button" disabled>Download JSON</button>
             )}
           </div>
         </form>
@@ -1463,10 +1463,10 @@ function AdvancedOfdmaPreEqWorkbench() {
                 disabled={machine.lifecycleState !== "completed" && machine.lifecycleState !== "stopped"}
                 onClick={() => downloadJson(`advanced-ofdma-pre-eq-${analysisType}-${effectiveOperationId || "operation"}.json`, analysisResponse)}
               >
-                JSON
+                Download JSON
               </button>
             ) : (
-              <button type="button" disabled>JSON</button>
+              <button type="button" disabled>Download JSON</button>
             )}
           </div>
         </form>

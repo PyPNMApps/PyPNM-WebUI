@@ -41,9 +41,9 @@ function buildPath(
   yMin: number,
   yMax: number,
 ): string {
-  const usableWidth = width - 64;
+  const usableWidth = width - 90;
   const usableHeight = height - 44;
-  const left = 44;
+  const left = 70;
   const top = 16;
 
   return points
@@ -102,8 +102,8 @@ export function LineAnalysisChart({
   const yMax = yDomain?.[1] ?? (Math.max(...yValues) + yPadding);
   const yTicks = axisLabels(yMin, yMax, 4);
   const xTicks = axisLabels(xMin, xMax, 6);
-  const usableWidth = width - 64;
-  const left = 44;
+  const usableWidth = width - 90;
+  const left = 70;
 
   function eventToDataX(clientX: number, svg: SVGSVGElement): number {
     const rect = svg.getBoundingClientRect();
@@ -149,36 +149,36 @@ export function LineAnalysisChart({
             x={left + ((normalizedSelection.startX - xMin) / (xMax - xMin || 1)) * usableWidth}
             y="16"
             width={Math.max(((normalizedSelection.endX - normalizedSelection.startX) / (xMax - xMin || 1)) * usableWidth, 0)}
-            height={height - 44}
+            height={height - 48}
             fill="rgba(121, 169, 255, 0.10)"
             stroke="rgba(121, 169, 255, 0.38)"
             strokeWidth="1"
           />
         ) : null}
         {yTicks.map((value) => {
-          const y = 16 + (height - 44) - ((value - yMin) / (yMax - yMin || 1)) * (height - 44);
+          const y = 16 + (height - 48) - ((value - yMin) / (yMax - yMin || 1)) * (height - 48);
           return (
             <g key={`y-${value}`}>
-              <line x1="44" y1={y} x2={width - 20} y2={y} stroke="rgba(255,255,255,0.10)" />
-              <text x="8" y={y + 4} fill="#9eb0c9" fontSize="11">
+              <line x1={left} y1={y} x2={width - 20} y2={y} stroke="rgba(255,255,255,0.10)" />
+              <text x={left - 6} y={y + 4} fill="#9eb0c9" fontSize="11" textAnchor="end">
                 {value.toFixed(1)}
               </text>
             </g>
           );
         })}
         {xTicks.map((value) => {
-          const x = 44 + ((value - xMin) / (xMax - xMin || 1)) * (width - 64);
+          const x = left + ((value - xMin) / (xMax - xMin || 1)) * usableWidth;
           return (
             <g key={`x-${value}`}>
-              <line x1={x} y1="16" x2={x} y2={height - 28} stroke="rgba(255,255,255,0.07)" />
-              <text x={x - 10} y={height - 8} fill="#9eb0c9" fontSize="11">
+              <line x1={x} y1="16" x2={x} y2={height - 32} stroke="rgba(255,255,255,0.07)" />
+              <text x={x} y={height - 13} fill="#9eb0c9" fontSize="11" textAnchor="middle">
                 {Math.round(value)}
               </text>
             </g>
           );
         })}
-        <line x1="44" y1={height - 28} x2={width - 20} y2={height - 28} stroke="rgba(255,255,255,0.20)" />
-        <line x1="44" y1="16" x2="44" y2={height - 28} stroke="rgba(255,255,255,0.20)" />
+        <line x1={left} y1={height - 32} x2={width - 20} y2={height - 32} stroke="rgba(255,255,255,0.20)" />
+        <line x1={left} y1="16" x2={left} y2={height - 32} stroke="rgba(255,255,255,0.20)" />
         {series.map((item) => (
           <path
             key={item.label}
@@ -190,18 +190,26 @@ export function LineAnalysisChart({
             strokeLinejoin="round"
           />
         ))}
-        <text x={width / 2 - 18} y={height - 2} fill="#9eb0c9" fontSize="11">
+        <text x={width / 2 - 18} y={height - 1} fill="#9eb0c9" fontSize="11">
           MHz
         </text>
-        <text x="10" y="12" fill="#9eb0c9" fontSize="11">
+        <text
+          x="18"
+          y={height / 2}
+          fill="#9eb0c9"
+          fontSize="11"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          transform={`rotate(-90 18 ${height / 2})`}
+        >
           {yLabel}
         </text>
         {enableRangeSelection ? (
           <rect
-            x="44"
+            x={left}
             y="16"
-            width={width - 64}
-            height={height - 44}
+            width={usableWidth}
+            height={height - 48}
             fill="transparent"
             style={{ cursor: "crosshair" }}
             onMouseDown={(event) => {

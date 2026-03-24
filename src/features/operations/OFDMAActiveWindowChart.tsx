@@ -82,11 +82,14 @@ export function OFDMAActiveWindowChart({ title, values, exportBaseName }: OFDMAA
         </text>
         <g transform={`translate(${width - 230}, ${height - 34})`}>
           <rect x="0" y="-14" width="210" height="24" rx="8" fill="rgba(10,20,32,0.78)" stroke="rgba(255,255,255,0.08)" />
-          <line x1="12" y1="-2" x2="12" y2="10" stroke="rgba(255, 214, 10, 0.95)" strokeWidth="1.5" strokeDasharray="3 2" />
-          <text x="22" y="7" fill="#9eb0c9" fontSize="10">
+          <line x1="18" y1="-2" x2="18" y2="10" stroke="rgba(255, 214, 10, 0.95)" strokeWidth="1.5" strokeDasharray="3 2" />
+          <text x="116" y="7" fill="#9eb0c9" fontSize="10" textAnchor="middle">
             Zero = subcarrier zero frequency
           </text>
         </g>
+        <text x={width - 125} y={height - 6} fill="#9eb0c9" fontSize="11" textAnchor="middle">
+          {values[0].zeroMhz.toFixed(3)} MHz
+        </text>
       </svg>
     </div>
   );
