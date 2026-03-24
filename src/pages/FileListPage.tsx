@@ -22,6 +22,7 @@ import {
   uploadPnmFile,
 } from "@/services/pnmFilesService";
 import type { PnmFileAnalysisResponse, PnmFileEntry } from "@/types/api";
+import { PnmFileType, parsePnmFileType } from "@/types/pnmFileType";
 
 type InspectorState =
   | {
@@ -47,6 +48,21 @@ function summarizeSystemDescription(systemDescription: Record<string, string | n
 
 function getFileCount(files: Record<string, PnmFileEntry[]> | undefined): number {
   return Object.values(files ?? {}).reduce((total, entries) => total + entries.length, 0);
+}
+
+const pnmFileTypeSortOrder = Object.values(PnmFileType);
+
+function comparePnmTestTypes(left: string, right: string): number {
+  const leftType = parsePnmFileType(left);
+  const rightType = parsePnmFileType(right);
+  const leftIndex = leftType ? pnmFileTypeSortOrder.indexOf(leftType) : Number.MAX_SAFE_INTEGER;
+  const rightIndex = rightType ? pnmFileTypeSortOrder.indexOf(rightType) : Number.MAX_SAFE_INTEGER;
+
+  if (leftIndex !== rightIndex) {
+    return leftIndex - rightIndex;
+  }
+
+  return left.localeCompare(right);
 }
 
 export function FileListPage() {
@@ -92,6 +108,27 @@ export function FileListPage() {
     () => fileSearchQuery.data?.files?.[effectiveMacAddress] ?? [],
     [effectiveMacAddress, fileSearchQuery.data],
   );
+
+  const groupedSelectedFiles = useMemo(() => {
+    const filesByType = new Map<string, PnmFileEntry[]>();
+
+    for (const entry of selectedFiles) {
+      const key = entry.pnm_test_type?.trim() || "UNKNOWN";
+      const existingEntries = filesByType.get(key);
+      if (existingEntries) {
+        existingEntries.push(entry);
+      } else {
+        filesByType.set(key, [entry]);
+      }
+    }
+
+    return Array.from(filesByType.entries())
+      .sort(([leftType], [rightType]) => comparePnmTestTypes(leftType, rightType))
+      .map(([pnmTestType, entries]) => ({
+        pnmTestType,
+        entries: [...entries].sort((left, right) => right.timestamp - left.timestamp),
+      }));
+  }, [selectedFiles]);
 
   function focusInspector() {
     inspectorPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -353,80 +390,93 @@ export function FileListPage() {
         {fileSearchQuery.isError ? <p className="panel-copy files-error">{(fileSearchQuery.error as Error).message}</p> : null}
         {!fileSearchQuery.isLoading && !fileSearchQuery.isError && effectiveMacAddress !== "" ? (
           selectedFiles.length > 0 ? (
-            <div className="table-wrap">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>Transaction ID</th>
-                    <th>Filename</th>
-                    <th>PNM Test Type</th>
-                    <th>Timestamp</th>
-                    <th>System Description</th>
-                    <th />
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedFiles.map((entry) => {
-                    const isSelected = entry.transaction_id === selectedTransactionId;
-                    return (
-                      <tr key={entry.transaction_id} className={isSelected ? "is-selected" : undefined}>
-                        <td className="mono">{entry.transaction_id}</td>
-                        <td className="mono files-filename">{entry.filename}</td>
-                        <td>{entry.pnm_test_type}</td>
-                        <td>{formatEpochSecondsUtc(entry.timestamp) ?? "n/a"}</td>
-                        <td>{summarizeSystemDescription(entry.system_description)}</td>
-                        <td className="files-actions-cell">
-                          <div className="files-row-actions">
-                            {selectedInstance ? (
-                              <a
-                                className="secondary button-link"
-                                href={getPnmFileTransactionDownloadUrl(selectedInstance.baseUrl, entry.transaction_id)}
-                              >
-                                Download
-                              </a>
-                            ) : null}
-                            <button
-                              type="button"
-                              className="secondary"
-                              disabled={!selectedInstance || hexdumpMutation.isPending}
-                              onClick={() => {
-                                pendingHexdumpWindowRef.current = window.open("about:blank", "_blank");
-                                setSelectedTransactionId(entry.transaction_id);
-                                hexdumpMutation.mutate(entry.transaction_id);
-                              }}
-                            >
-                              Hexdump
-                            </button>
-                            <button
-                              type="button"
-                              className="secondary"
-                              disabled={!selectedInstance || analysisMutation.isPending}
-                              onClick={() => {
-                                startInspectorAction(entry.transaction_id);
-                                analysisMutation.mutate(entry.transaction_id);
-                              }}
-                            >
-                              JSON
-                            </button>
-                            <button
-                              type="button"
-                              className="secondary"
-                              disabled={!selectedInstance || analyzeVisualMutation.isPending}
-                              onClick={() => {
-                                pendingAnalyzeWindowRef.current = window.open("about:blank", "_blank");
-                                startInspectorAction(entry.transaction_id);
-                                analyzeVisualMutation.mutate(entry.transaction_id);
-                              }}
-                            >
-                              Analyze
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+            <div className="files-type-groups">
+              {groupedSelectedFiles.map(({ pnmTestType, entries }) => (
+                <details key={pnmTestType} className="files-type-card">
+                  <summary className="files-type-summary">
+                    <div className="files-type-summary-main">
+                      <span className="files-type-label">{pnmTestType}</span>
+                      <span className="analysis-chip"><b>Files</b> {entries.length}</span>
+                    </div>
+                    <span className="files-type-chevron" aria-hidden="true" />
+                  </summary>
+                  <div className="table-wrap">
+                    <table className="data-table">
+                      <thead>
+                        <tr>
+                          <th>Transaction ID</th>
+                          <th>Filename</th>
+                          <th>PNM Test Type</th>
+                          <th>Timestamp</th>
+                          <th>System Description</th>
+                          <th />
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {entries.map((entry) => {
+                          const isSelected = entry.transaction_id === selectedTransactionId;
+                          return (
+                            <tr key={entry.transaction_id} className={isSelected ? "is-selected" : undefined}>
+                              <td className="mono">{entry.transaction_id}</td>
+                              <td className="mono files-filename">{entry.filename}</td>
+                              <td>{entry.pnm_test_type}</td>
+                              <td>{formatEpochSecondsUtc(entry.timestamp) ?? "n/a"}</td>
+                              <td>{summarizeSystemDescription(entry.system_description)}</td>
+                              <td className="files-actions-cell">
+                                <div className="files-row-actions">
+                                  {selectedInstance ? (
+                                    <a
+                                      className="secondary button-link"
+                                      href={getPnmFileTransactionDownloadUrl(selectedInstance.baseUrl, entry.transaction_id)}
+                                    >
+                                      Download
+                                    </a>
+                                  ) : null}
+                                  <button
+                                    type="button"
+                                    className="secondary"
+                                    disabled={!selectedInstance || hexdumpMutation.isPending}
+                                    onClick={() => {
+                                      pendingHexdumpWindowRef.current = window.open("about:blank", "_blank");
+                                      setSelectedTransactionId(entry.transaction_id);
+                                      hexdumpMutation.mutate(entry.transaction_id);
+                                    }}
+                                  >
+                                    Hexdump
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="secondary"
+                                    disabled={!selectedInstance || analysisMutation.isPending}
+                                    onClick={() => {
+                                      startInspectorAction(entry.transaction_id);
+                                      analysisMutation.mutate(entry.transaction_id);
+                                    }}
+                                  >
+                                    JSON
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="secondary"
+                                    disabled={!selectedInstance || analyzeVisualMutation.isPending}
+                                    onClick={() => {
+                                      pendingAnalyzeWindowRef.current = window.open("about:blank", "_blank");
+                                      startInspectorAction(entry.transaction_id);
+                                      analyzeVisualMutation.mutate(entry.transaction_id);
+                                    }}
+                                  >
+                                    Analyze
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </details>
+              ))}
             </div>
           ) : (
             <p className="panel-copy">No stored files found for that MAC address.</p>

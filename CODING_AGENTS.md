@@ -66,6 +66,9 @@
 - For any user-visible fetch or mutation that collects backend data, render a shared thinking/loading indicator with an icon rather than plain loading text.
 - Every operation workflow must provide a visible JSON download path so the
   current payload can be inspected outside the UI.
+- When presenting dense grouped result sets, prefer collapsible cards or
+  sections per group and default them to collapsed unless the workflow has a
+  clear reason to expand them on first render.
 - Multi-series line graphs must provide shared mute/show controls for
   individual series instead of forcing all lines to remain visible.
 - Generic raw-response JSON download actions belong in the `Capture Inputs`

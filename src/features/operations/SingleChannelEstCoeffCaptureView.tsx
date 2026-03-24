@@ -99,8 +99,8 @@ export function SingleChannelEstCoeffCaptureView({ response }: { response: Singl
               <div className="analysis-channel-top">
                 <div className="analysis-channel-meta-line analysis-channel-meta-line-header">
                   <h3 className="analysis-channel-title">Channel {channel.channel_id ?? "n/a"}</h3>
-                  <span>{formatFrequencyRangeMhz(channel.carrier_values.frequency)}</span>
-                  <span>{formatEpochSecondsUtc(channel.pnm_header?.capture_time ?? fallbackChannelCaptureTime)}</span>
+                  <span className="analysis-channel-header-value">{formatFrequencyRangeMhz(channel.carrier_values.frequency)}</span>
+                  <span className="analysis-channel-header-value">{formatEpochSecondsUtc(channel.pnm_header?.capture_time ?? fallbackChannelCaptureTime)}</span>
                 </div>
               </div>
 

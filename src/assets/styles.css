@@ -926,6 +926,12 @@ th {
   font-size: 1.3rem;
 }
 
+.analysis-channel-header-value {
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
 .analysis-channel-range {
   margin-top: 5px;
   color: var(--muted);
@@ -1284,6 +1290,64 @@ pre {
 .files-direct-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: end;
+}
+
+.files-type-groups {
+  display: grid;
+  gap: 12px;
+}
+
+.files-type-card {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.025);
+  overflow: hidden;
+}
+
+.files-type-summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+}
+
+.files-type-summary::-webkit-details-marker {
+  display: none;
+}
+
+.files-type-summary-main {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.files-type-label {
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.files-type-chevron {
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg);
+  transition: transform 140ms ease;
+  flex: 0 0 auto;
+  margin-right: 4px;
+}
+
+.files-type-card[open] .files-type-chevron {
+  transform: rotate(225deg);
+}
+
+.files-type-card .table-wrap {
+  border-top: 1px solid var(--line);
 }
 
 .files-bytes-field {

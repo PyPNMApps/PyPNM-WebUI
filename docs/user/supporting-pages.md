@@ -8,6 +8,8 @@ Current behavior:
 
 - browse registered MAC addresses with stored PNM files
 - search file entries by MAC address
+- group file results for the selected MAC by `PNM Test Type`
+- show each file-type group as a collapsible card, collapsed by default
 - download a stored file by transaction ID
 - download by selected MAC archive, stored filename, or operation ID
 - upload a raw PNM file into the PyPNM file ledger
