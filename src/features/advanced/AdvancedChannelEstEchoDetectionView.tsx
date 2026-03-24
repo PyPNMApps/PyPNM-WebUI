@@ -35,8 +35,8 @@ export function AdvancedChannelEstEchoDetectionView({ response }: { response: Ad
                       type: "Direct",
                       rank: 0,
                       delay_us: typeof channel.direct_path?.time_s === "number" ? (channel.direct_path.time_s * 1_000_000).toFixed(3) : "n/a",
-                      distance_m: typeof channel.direct_path?.distance_m === "number" ? channel.direct_path.distance_m.toFixed(2) : "0.00",
-                      distance_ft: typeof channel.direct_path?.distance_ft === "number" ? channel.direct_path.distance_ft.toFixed(2) : "0.00",
+                      distance_m: typeof channel.direct_path?.distance_m === "number" ? channel.direct_path.distance_m.toFixed(2) : "n/a",
+                      distance_ft: typeof channel.direct_path?.distance_ft === "number" ? channel.direct_path.distance_ft.toFixed(2) : "n/a",
                       amplitude: typeof channel.direct_path?.amplitude === "number" ? channel.direct_path.amplitude.toFixed(3) : "n/a",
                     },
                     ...(channel.echoes ?? []).map((echo, index) => ({
@@ -68,8 +68,8 @@ export function AdvancedChannelEstEchoDetectionView({ response }: { response: Ad
                     <td>Direct</td>
                     <td className="mono">0</td>
                     <td className="mono">{typeof channel.direct_path?.time_s === "number" ? (channel.direct_path.time_s * 1_000_000).toFixed(3) : "n/a"}</td>
-                    <td className="mono">{typeof channel.direct_path?.distance_m === "number" ? channel.direct_path.distance_m.toFixed(2) : "0.00"}</td>
-                    <td className="mono">{typeof channel.direct_path?.distance_ft === "number" ? channel.direct_path.distance_ft.toFixed(2) : "0.00"}</td>
+                    <td className="mono">{typeof channel.direct_path?.distance_m === "number" ? channel.direct_path.distance_m.toFixed(2) : "n/a"}</td>
+                    <td className="mono">{typeof channel.direct_path?.distance_ft === "number" ? channel.direct_path.distance_ft.toFixed(2) : "n/a"}</td>
                     <td className="mono">{typeof channel.direct_path?.amplitude === "number" ? channel.direct_path.amplitude.toFixed(3) : "n/a"}</td>
                   </tr>
                   {(channel.echoes ?? []).length ? (channel.echoes ?? []).map((echo, index) => (

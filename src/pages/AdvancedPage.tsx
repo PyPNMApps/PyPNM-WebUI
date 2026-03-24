@@ -692,7 +692,7 @@ function AdvancedRxMerWorkbench() {
   );
 }
 
-function AdvancedChannelEstimationAnalysisView({
+export function AdvancedChannelEstimationAnalysisView({
   analysisType,
   response,
 }: {
@@ -702,7 +702,22 @@ function AdvancedChannelEstimationAnalysisView({
   const results = response.data?.results ?? [];
 
   if (!results.length) {
-    return <p className="panel-copy">No analysis data available yet.</p>;
+    return (
+      <div className="details-table-wrap">
+        <table className="details-table">
+          <tbody>
+            <tr>
+              <th>State</th>
+              <td>N/A</td>
+            </tr>
+            <tr>
+              <th>Result</th>
+              <td>No analysis results yet. Run analysis to populate this panel.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    );
   }
 
   return (
@@ -720,17 +735,12 @@ function AdvancedChannelEstimationAnalysisView({
       ) : analysisType === "echo-detection-ifft" ? (
         <AdvancedChannelEstEchoDetectionView response={response} />
       ) : (
-        <>
-          <DeviceInfoTable
-            deviceInfo={toDeviceInfo(
-              response.device?.system_description ?? response.system_description,
-              response.device?.mac_address ?? response.mac_address,
-            )}
-          />
-          <Panel title="Analysis JSON">
-            <pre className="advanced-json-block">{JSON.stringify(response.data, null, 2)}</pre>
-          </Panel>
-        </>
+        <DeviceInfoTable
+          deviceInfo={toDeviceInfo(
+            response.device?.system_description ?? response.system_description,
+            response.device?.mac_address ?? response.mac_address,
+          )}
+        />
       )}
     </div>
   );
@@ -1068,7 +1078,6 @@ function AdvancedChannelEstimationWorkbench() {
             {analysisResponse ? (
               <button
                 type="button"
-                disabled={machine.lifecycleState !== "completed" && machine.lifecycleState !== "stopped"}
                 onClick={() => downloadJson(`advanced-channel-estimation-${analysisType}-${effectiveOperationId || "operation"}.json`, analysisResponse)}
               >
                 Download JSON

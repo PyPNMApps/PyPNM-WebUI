@@ -1,6 +1,7 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { ExportActions } from "@/components/common/ExportActions";
+import { SeriesVisibilityChips } from "@/components/common/SeriesVisibilityChips";
 import type { ChartPoint, ChartSeries } from "@/features/analysis/types";
 import { downloadCsv, seriesToCsvRows } from "@/lib/export/csv";
 import { downloadSvgAsPng } from "@/lib/export/png";
@@ -72,7 +73,27 @@ export function LineAnalysisChart({
   const width = 1100;
   const height = 320;
   const [dragStartX, setDragStartX] = useState<number | null>(null);
+  const [seriesVisibility, setSeriesVisibility] = useState<Record<string, boolean>>({});
   const svgRef = useRef<SVGSVGElement | null>(null);
+  useEffect(() => {
+    setSeriesVisibility((current) => {
+      const next: Record<string, boolean> = {};
+      let changed = false;
+
+      for (const item of series) {
+        next[item.label] = current[item.label] ?? true;
+        if (next[item.label] !== current[item.label]) {
+          changed = true;
+        }
+      }
+
+      if (Object.keys(current).length !== Object.keys(next).length) {
+        changed = true;
+      }
+
+      return changed ? next : current;
+    });
+  }, [series]);
   const normalizedSelection = useMemo(() => {
     if (!selection) return null;
     return {
@@ -80,8 +101,11 @@ export function LineAnalysisChart({
       endX: Math.max(selection.startX, selection.endX),
     };
   }, [selection]);
-  const allPoints = series.flatMap((item) => item.points);
-  if (!allPoints.length) {
+  const visibleSeries = series.filter((item) => seriesVisibility[item.label] !== false);
+  const allPoints = visibleSeries.flatMap((item) => item.points);
+  const hasSeriesData = series.some((item) => item.points.length > 0);
+
+  if (!hasSeriesData) {
     return (
       <div className="chart-frame">
         <div className="chart-header">
@@ -94,8 +118,9 @@ export function LineAnalysisChart({
       </div>
     );
   }
-  const xValues = allPoints.map((point) => point.x);
-  const yValues = allPoints.map((point) => point.y);
+  const domainPoints = allPoints.length ? allPoints : series.flatMap((item) => item.points);
+  const xValues = domainPoints.map((point) => point.x);
+  const yValues = domainPoints.map((point) => point.y);
   const xMin = xDomain?.[0] ?? Math.min(...xValues);
   const xMax = xDomain?.[1] ?? Math.max(...xValues);
   const yMin = yDomain?.[0] ?? (Math.min(...yValues) - yPadding);
@@ -112,6 +137,8 @@ export function LineAnalysisChart({
     return xMin + ((viewBoxX - left) / (usableWidth || 1)) * (xMax - xMin || 1);
   }
 
+  const canMuteSeries = showLegend && series.length > 1;
+
   return (
     <div className="chart-frame">
       <div className="chart-header">
@@ -120,9 +147,20 @@ export function LineAnalysisChart({
           <div className="chart-meta">{subtitle}</div>
         </div>
         <div className="chart-header-actions">
-          {showLegend ? (
+          {canMuteSeries ? (
+            <SeriesVisibilityChips
+              series={series}
+              visibility={seriesVisibility}
+              onToggle={(label) => {
+                setSeriesVisibility((current) => ({
+                  ...current,
+                  [label]: current[label] === false,
+                }));
+              }}
+            />
+          ) : showLegend ? (
             <div className="status-chip-row">
-              {series.map((item) => (
+              {visibleSeries.map((item) => (
                 <span key={item.label} className="analysis-chip">
                   <span className="analysis-swatch" style={{ backgroundColor: item.color }} />
                   {item.label}
@@ -138,7 +176,7 @@ export function LineAnalysisChart({
                 }
                 return downloadSvgAsPng(exportBaseName, svgRef.current);
               }}
-              onCsv={() => downloadCsv(exportBaseName, seriesToCsvRows(series), ["x", ...series.map((item) => item.label)])}
+              onCsv={() => downloadCsv(exportBaseName, seriesToCsvRows(visibleSeries), ["x", ...visibleSeries.map((item) => item.label)])}
             />
           ) : null}
         </div>
@@ -179,7 +217,7 @@ export function LineAnalysisChart({
         })}
         <line x1={left} y1={height - 32} x2={width - 20} y2={height - 32} stroke="rgba(255,255,255,0.20)" />
         <line x1={left} y1="16" x2={left} y2={height - 32} stroke="rgba(255,255,255,0.20)" />
-        {series.map((item) => (
+        {visibleSeries.map((item) => (
           <path
             key={item.label}
             d={buildPath(item.points, width, height, xMin, xMax, yMin, yMax)}

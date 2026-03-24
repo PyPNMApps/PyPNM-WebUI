@@ -63,7 +63,7 @@ export function AdvancedChannelEstMinAvgMaxView({ response }: { response: Advanc
         {results.map((channel) => (
           <Panel key={channel.channel_id} title={`Channel ${channel.channel_id}`}>
             <LineAnalysisChart
-              title={`Min / Avg / Max · Channel ${channel.channel_id}`}
+              title="Min / Avg / Max"
               subtitle="Per-subcarrier Channel Estimation summary"
               yLabel="dB"
               series={buildMinAvgMaxSeries(channel)}

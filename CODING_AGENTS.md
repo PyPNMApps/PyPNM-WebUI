@@ -59,11 +59,15 @@
 
 - Prioritize clarity and traceability over decorative UI.
 - Always show request context and backend response metadata (`status`, `message`, `timestamp` when available).
-- Provide both interpreted and raw JSON views for technical results.
+- Provide interpreted technical results in the UI and a visible JSON download
+  path for the current payload. Do not print large raw JSON blocks inline
+  unless the user explicitly asks for an in-page raw JSON view.
 - Include explicit loading, error, and empty states for every data panel.
 - For any user-visible fetch or mutation that collects backend data, render a shared thinking/loading indicator with an icon rather than plain loading text.
 - Every operation workflow must provide a visible JSON download path so the
   current payload can be inspected outside the UI.
+- Multi-series line graphs must provide shared mute/show controls for
+  individual series instead of forcing all lines to remain visible.
 - Generic raw-response JSON download actions belong in the `Capture Inputs`
   card as shared request-panel controls, not as floating mid-page actions.
 - Shared request-panel JSON controls must remain visually muted and disabled

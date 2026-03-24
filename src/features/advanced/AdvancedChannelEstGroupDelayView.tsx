@@ -55,7 +55,7 @@ export function AdvancedChannelEstGroupDelayView({ response }: { response: Advan
         {results.map((channel) => (
           <Panel key={channel.channel_id} title={`Channel ${channel.channel_id}`}>
             <LineAnalysisChart
-              title={`Group Delay · Channel ${channel.channel_id}`}
+              title="Group Delay"
               subtitle="Per-subcarrier group delay"
               yLabel="Group Delay (us)"
               series={buildSeries(channel)}
