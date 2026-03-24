@@ -22,6 +22,11 @@ interface FecSummaryCaptureFormValues {
   fecSummaryType: number;
 }
 
+export const FEC_SUMMARY_TYPE_OPTIONS = [
+  { value: 3, label: "24 Hours" },
+  { value: 2, label: "10 Min" },
+] as const;
+
 interface FecSummaryCaptureRequestFormProps {
   isPending: boolean;
   canRun: boolean;
@@ -140,8 +145,9 @@ export function FecSummaryCaptureRequestForm({
         <div className="field">
           <FieldLabel htmlFor="fecSummaryType" hint={requestFieldHints.fec_summary_type}>FEC Summary Type</FieldLabel>
           <select id="fecSummaryType" {...register("fecSummaryType", { valueAsNumber: true })}>
-            <option value={1}>24Hours</option>
-            <option value={2}>10Min</option>
+            {FEC_SUMMARY_TYPE_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
           </select>
         </div>
       </div>

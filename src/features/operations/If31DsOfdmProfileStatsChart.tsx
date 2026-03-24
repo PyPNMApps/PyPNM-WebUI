@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import { ExportActions } from "@/components/common/ExportActions";
 import { downloadCsv } from "@/lib/export/csv";
@@ -38,10 +38,6 @@ export function If31DsOfdmProfileStatsChart({
   exportBaseName,
 }: If31DsOfdmProfileStatsChartProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
-  if (!values.length) {
-    return <p className="panel-copy">No OFDM profile stats data available.</p>;
-  }
-
   const width = 1100;
   const height = 340;
   const left = 58;
@@ -50,31 +46,40 @@ export function If31DsOfdmProfileStatsChart({
   const right = 20;
   const usableWidth = width - left - right;
   const usableHeight = height - top - bottom;
-  const series =
-    mode === "codewords"
-      ? [
-          { key: "total", label: "Total", color: "#79a9ff" },
-          { key: "corrected", label: "Corrected", color: "#58d0a7" },
-          { key: "uncorrectable", label: "Uncorrectable", color: "#ff6f91" },
-        ]
-      : mode === "octets"
+  const series = useMemo(
+    () =>
+      mode === "codewords"
         ? [
-            { key: "inOctets", label: "In Octets", color: "#79a9ff" },
-            { key: "unicastOctets", label: "Unicast Octets", color: "#58d0a7" },
-            { key: "multicastOctets", label: "Multicast Octets", color: "#f1c40f" },
+            { key: "total", label: "Total", color: "#79a9ff" },
+            { key: "corrected", label: "Corrected", color: "#58d0a7" },
+            { key: "uncorrectable", label: "Uncorrectable", color: "#ff6f91" },
           ]
-        : [
-            { key: "unicastOctets", label: "Unicast Octets", color: "#58d0a7" },
-            { key: "multicastOctets", label: "Multicast Octets", color: "#f1c40f" },
-          ];
+        : mode === "octets"
+          ? [
+              { key: "inOctets", label: "In Octets", color: "#79a9ff" },
+              { key: "unicastOctets", label: "Unicast Octets", color: "#58d0a7" },
+              { key: "multicastOctets", label: "Multicast Octets", color: "#f1c40f" },
+            ]
+          : [
+              { key: "unicastOctets", label: "Unicast Octets", color: "#58d0a7" },
+              { key: "multicastOctets", label: "Multicast Octets", color: "#f1c40f" },
+            ],
+    [mode],
+  );
+  const defaultVisibleSeries = useMemo(() => series.map((seriesItem) => seriesItem.key), [series]);
+  const [visibleSeriesKeys, setVisibleSeriesKeys] = useState<string[]>(defaultVisibleSeries);
+  const visibleSeries = series.filter((seriesItem) => visibleSeriesKeys.includes(seriesItem.key));
+  if (!values.length) {
+    return <p className="panel-copy">No OFDM profile stats data available.</p>;
+  }
   const yMax = Math.max(
     1,
     ...values.flatMap((value) =>
-      series.map((seriesItem) => Number(value[seriesItem.key as keyof If31DsOfdmProfileStatsChartDatum] ?? 0)),
+      visibleSeries.map((seriesItem) => Number(value[seriesItem.key as keyof If31DsOfdmProfileStatsChartDatum] ?? 0)),
     ),
   );
   const groupWidth = usableWidth / values.length;
-  const seriesCount = series.length;
+  const seriesCount = Math.max(visibleSeries.length, 1);
   const barWidth = Math.max(8, Math.min(24, (groupWidth - 14) / Math.max(seriesCount, 1)));
 
   return (
@@ -84,12 +89,25 @@ export function If31DsOfdmProfileStatsChart({
           <div className="chart-title">{title}</div>
           <div className="chart-meta">{subtitle}</div>
         </div>
-        <div className="status-chip-row">
+        <div className="status-chip-row profile-stats-chart-controls">
           {series.map((seriesItem) => (
-            <span key={seriesItem.key} className="analysis-chip">
+            <button
+              key={seriesItem.key}
+              type="button"
+              className={visibleSeriesKeys.includes(seriesItem.key) ? "analysis-chip fec-toggle-chip active" : "analysis-chip fec-toggle-chip"}
+              aria-pressed={visibleSeriesKeys.includes(seriesItem.key)}
+              onClick={() => {
+                setVisibleSeriesKeys((current) => {
+                  if (current.includes(seriesItem.key)) {
+                    return current.length === 1 ? current : current.filter((entry) => entry !== seriesItem.key);
+                  }
+                  return [...current, seriesItem.key];
+                });
+              }}
+            >
               <span className="analysis-swatch" style={{ backgroundColor: seriesItem.color }} />
               {seriesItem.label}
-            </span>
+            </button>
           ))}
         </div>
         {exportBaseName ? (
@@ -124,7 +142,7 @@ export function If31DsOfdmProfileStatsChart({
 
           return (
             <g key={`profile-${value.label}`}>
-              {series.map((seriesItem, seriesIndex) => {
+              {visibleSeries.map((seriesItem, seriesIndex) => {
                 const raw = Number(value[seriesItem.key as keyof If31DsOfdmProfileStatsChartDatum] ?? 0);
                 const barHeight = (raw / yMax) * usableHeight;
                 return (

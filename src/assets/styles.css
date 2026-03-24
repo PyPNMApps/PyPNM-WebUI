@@ -1389,6 +1389,10 @@ pre {
   margin-bottom: 10px;
 }
 
+.profile-stats-chart-controls {
+  margin-top: 12px;
+}
+
 .fec-toggle-chip {
   font: inherit;
 }
@@ -1760,6 +1764,10 @@ pre {
   display: grid;
   gap: 14px;
   margin-top: 14px;
+}
+
+.chart-frame > .status-chip-row:last-child {
+  margin-top: 18px;
 }
 
 .scqam-codeword-value {

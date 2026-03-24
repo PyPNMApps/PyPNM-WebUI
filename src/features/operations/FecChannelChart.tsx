@@ -36,6 +36,7 @@ export function FecChannelChart({ title, profiles, exportBaseName }: FecChannelC
     return String((profileZero ?? profiles[0])?.profile ?? "");
   }, [profiles]);
   const [visibleProfileKeys, setVisibleProfileKeys] = useState<string[]>(defaultProfileKey ? [defaultProfileKey] : []);
+  const [visibleMetricKeys, setVisibleMetricKeys] = useState<string[]>(["total", "corrected", "uncorrected"]);
   const visibleProfiles = profiles.filter((profile) => visibleProfileKeys.includes(String(profile.profile)));
   const timestamps = visibleProfiles[0]?.codewords.timestamps ?? profiles[0]?.codewords.timestamps ?? [];
   const width = 980;
@@ -131,9 +132,15 @@ export function FecChannelChart({ title, profiles, exportBaseName }: FecChannelC
         <line x1={left} y1={top} x2={left} y2={height - 38} stroke="rgba(255,255,255,0.20)" />
         {visibleProfiles.map((profile, index) => (
           <g key={`profile-${profile.profile}`}>
-            <path d={buildPath(profile.codewords.total_codewords, totalMax)} fill="none" stroke={totalPalette[index % totalPalette.length]} strokeWidth="1.2" />
-            <path d={buildPath(profile.codewords.corrected, errorMax)} fill="none" stroke={correctedPalette[index % correctedPalette.length]} strokeWidth="1.2" strokeDasharray="4 3" />
-            <path d={buildPath(profile.codewords.uncorrected, errorMax)} fill="none" stroke={uncorrectedPalette[index % uncorrectedPalette.length]} strokeWidth="1.2" strokeDasharray="2 3" />
+            {visibleMetricKeys.includes("total") ? (
+              <path d={buildPath(profile.codewords.total_codewords, totalMax)} fill="none" stroke={totalPalette[index % totalPalette.length]} strokeWidth="1.2" />
+            ) : null}
+            {visibleMetricKeys.includes("corrected") ? (
+              <path d={buildPath(profile.codewords.corrected, errorMax)} fill="none" stroke={correctedPalette[index % correctedPalette.length]} strokeWidth="1.2" strokeDasharray="4 3" />
+            ) : null}
+            {visibleMetricKeys.includes("uncorrected") ? (
+              <path d={buildPath(profile.codewords.uncorrected, errorMax)} fill="none" stroke={uncorrectedPalette[index % uncorrectedPalette.length]} strokeWidth="1.2" strokeDasharray="2 3" />
+            ) : null}
           </g>
         ))}
         {timestamps.map((timestamp, index) => {
@@ -157,10 +164,55 @@ export function FecChannelChart({ title, profiles, exportBaseName }: FecChannelC
           );
         })}
       </svg>
-      <div className="status-chip-row">
-        <span className="analysis-chip"><span className="analysis-swatch" style={{ backgroundColor: totalPalette[0] }} />Solid: Total Codewords</span>
-        <span className="analysis-chip"><span className="analysis-swatch" style={{ backgroundColor: correctedPalette[0] }} />Dashed: Corrected</span>
-        <span className="analysis-chip"><span className="analysis-swatch" style={{ backgroundColor: uncorrectedPalette[0] }} />Dotted: Uncorrected</span>
+      <div className="status-chip-row fec-series-toggle-row">
+        <button
+          type="button"
+          className={visibleMetricKeys.includes("total") ? "analysis-chip fec-toggle-chip active" : "analysis-chip fec-toggle-chip"}
+          aria-pressed={visibleMetricKeys.includes("total")}
+          onClick={() => {
+            setVisibleMetricKeys((current) => {
+              if (current.includes("total")) {
+                return current.length === 1 ? current : current.filter((entry) => entry !== "total");
+              }
+              return [...current, "total"];
+            });
+          }}
+        >
+          <span className="analysis-swatch" style={{ backgroundColor: totalPalette[0] }} />
+          Solid: Total Codewords
+        </button>
+        <button
+          type="button"
+          className={visibleMetricKeys.includes("corrected") ? "analysis-chip fec-toggle-chip active" : "analysis-chip fec-toggle-chip"}
+          aria-pressed={visibleMetricKeys.includes("corrected")}
+          onClick={() => {
+            setVisibleMetricKeys((current) => {
+              if (current.includes("corrected")) {
+                return current.length === 1 ? current : current.filter((entry) => entry !== "corrected");
+              }
+              return [...current, "corrected"];
+            });
+          }}
+        >
+          <span className="analysis-swatch" style={{ backgroundColor: correctedPalette[0] }} />
+          Dashed: Corrected
+        </button>
+        <button
+          type="button"
+          className={visibleMetricKeys.includes("uncorrected") ? "analysis-chip fec-toggle-chip active" : "analysis-chip fec-toggle-chip"}
+          aria-pressed={visibleMetricKeys.includes("uncorrected")}
+          onClick={() => {
+            setVisibleMetricKeys((current) => {
+              if (current.includes("uncorrected")) {
+                return current.length === 1 ? current : current.filter((entry) => entry !== "uncorrected");
+              }
+              return [...current, "uncorrected"];
+            });
+          }}
+        >
+          <span className="analysis-swatch" style={{ backgroundColor: uncorrectedPalette[0] }} />
+          Dotted: Uncorrected
+        </button>
       </div>
     </div>
   );
