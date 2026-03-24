@@ -52,31 +52,6 @@ import { SingleModulationProfileCaptureView } from "@/features/operations/Single
 import { SingleUsOfdmaPreEqualizationView } from "@/features/operations/SingleUsOfdmaPreEqualizationView";
 import { SingleRxMerCaptureView } from "@/features/operations/SingleRxMerCaptureView";
 import { SingleSystemUpTimeView } from "@/features/operations/SingleSystemUpTimeView";
-import { singleAtdmaChannelStatsFixture } from "@/features/operations/singleAtdmaChannelStatsFixture";
-import { singleDsScqamCodewordErrorRateFixture } from "@/features/operations/singleDsScqamCodewordErrorRateFixture";
-import { singleDsScqamChannelStatsFixture } from "@/features/operations/singleDsScqamChannelStatsFixture";
-import { singleAtdmaPreEqualizationFixture } from "@/features/operations/singleAtdmaPreEqualizationFixture";
-import { singleChannelEstCoeffFixture } from "@/features/operations/singleChannelEstCoeffFixture";
-import { singleConstellationDisplayFixture } from "@/features/operations/singleConstellationDisplayFixture";
-import { singleDeviceEventLogFixture } from "@/features/operations/singleDeviceEventLogFixture";
-import { singleFecSummaryFixture } from "@/features/operations/singleFecSummaryFixture";
-import { singleFddDiplexerBandEdgeCapabilityFixture } from "@/features/operations/singleFddDiplexerBandEdgeCapabilityFixture";
-import { singleFddSystemDiplexerConfigurationFixture } from "@/features/operations/singleFddSystemDiplexerConfigurationFixture";
-import { singleIf31DocsisBaseCapabilityFixture } from "@/features/operations/singleIf31DocsisBaseCapabilityFixture";
-import { singleIf31DsOfdmChannelStatsFixture } from "@/features/operations/singleIf31DsOfdmChannelStatsFixture";
-import { singleHistogramFixture } from "@/features/operations/singleHistogramFixture";
-import { singleIf31UsOfdmaChannelStatsFixture } from "@/features/operations/singleIf31UsOfdmaChannelStatsFixture";
-import { singleIf31DsOfdmProfileStatsFixture } from "@/features/operations/singleIf31DsOfdmProfileStatsFixture";
-import { singleIf31SystemDiplexerFixture } from "@/features/operations/singleIf31SystemDiplexerFixture";
-import { singleInterfaceStatsFixture } from "@/features/operations/singleInterfaceStatsFixture";
-import { singleModulationProfileFixture } from "@/features/operations/singleModulationProfileFixture";
-import { singleUsOfdmaPreEqualizationFixture } from "@/features/operations/singleUsOfdmaPreEqualizationFixture";
-import { singleRxMerFixture } from "@/features/operations/singleRxMerFixture";
-import { singleSpectrumFullBandCaptureFixture } from "@/features/operations/singleSpectrumFullBandCaptureFixture";
-import { singleSpectrumOfdmCaptureFixture } from "@/features/operations/singleSpectrumOfdmCaptureFixture";
-import { singleSpectrumScqamCaptureFixture } from "@/features/operations/singleSpectrumScqamCaptureFixture";
-import { singleSpectrumFriendlyCaptureFixture } from "@/features/operations/singleSpectrumFriendlyCaptureFixture";
-import { singleSystemUpTimeFixture } from "@/features/operations/singleSystemUpTimeFixture";
 import { checkCaptureInputsOnline } from "@/services/captureConnectivityService";
 import { CONNECTIVITY_STATUS_DEBOUNCE_MS } from "@/lib/constants";
 import { runSingleCaptureEndpoint } from "@/services/singleCaptureService";
@@ -145,31 +120,31 @@ export function EndpointExplorerPage() {
   const [captureConnectivityStatus, setCaptureConnectivityStatus] = useState<CaptureConnectivityStatus>("unknown");
   const connectivityCheckSequenceRef = useRef(0);
   const connectivityHasCheckedInitialRef = useRef(false);
-  const [atdmaChannelStatsResponse, setAtdmaChannelStatsResponse] = useState<AtdmaChannelStatsResponse>(singleAtdmaChannelStatsFixture);
-  const [fddDiplexerBandEdgeCapabilityResponse, setFddDiplexerBandEdgeCapabilityResponse] = useState<FddDiplexerBandEdgeCapabilityResponse>(singleFddDiplexerBandEdgeCapabilityFixture);
-  const [fddSystemDiplexerConfigurationResponse, setFddSystemDiplexerConfigurationResponse] = useState<FddSystemDiplexerConfigurationResponse>(singleFddSystemDiplexerConfigurationFixture);
-  const [if31DocsisBaseCapabilityResponse, setIf31DocsisBaseCapabilityResponse] = useState<If31DocsisBaseCapabilityResponse>(singleIf31DocsisBaseCapabilityFixture);
-  const [if31DsOfdmChannelStatsResponse, setIf31DsOfdmChannelStatsResponse] = useState<If31DsOfdmChannelStatsResponse>(singleIf31DsOfdmChannelStatsFixture);
-  const [if31DsOfdmProfileStatsResponse, setIf31DsOfdmProfileStatsResponse] = useState<If31DsOfdmProfileStatsResponse>(singleIf31DsOfdmProfileStatsFixture);
-  const [if31UsOfdmaChannelStatsResponse, setIf31UsOfdmaChannelStatsResponse] = useState<If31UsOfdmaChannelStatsResponse>(singleIf31UsOfdmaChannelStatsFixture);
-  const [if31SystemDiplexerResponse, setIf31SystemDiplexerResponse] = useState<If31SystemDiplexerResponse>(singleIf31SystemDiplexerFixture);
-  const [dsScqamCodewordErrorRateResponse, setDsScqamCodewordErrorRateResponse] = useState<DsScqamCodewordErrorRateResponse>(singleDsScqamCodewordErrorRateFixture);
-  const [dsScqamChannelStatsResponse, setDsScqamChannelStatsResponse] = useState<DsScqamChannelStatsResponse>(singleDsScqamChannelStatsFixture);
-  const [atdmaPreEqualizationResponse, setAtdmaPreEqualizationResponse] = useState<AtdmaPreEqualizationResponse>(singleAtdmaPreEqualizationFixture);
-  const [rxMerResponse, setRxMerResponse] = useState<SingleRxMerCaptureResponse>(singleRxMerFixture);
-  const [channelEstResponse, setChannelEstResponse] = useState<SingleChannelEstCoeffCaptureResponse>(singleChannelEstCoeffFixture);
-  const [constellationResponse, setConstellationResponse] = useState<SingleConstellationDisplayCaptureResponse>(singleConstellationDisplayFixture);
-  const [eventLogResponse, setEventLogResponse] = useState<DeviceEventLogResponse>(singleDeviceEventLogFixture);
-  const [fecSummaryResponse, setFecSummaryResponse] = useState<SingleFecSummaryCaptureResponse>(singleFecSummaryFixture);
-  const [histogramResponse, setHistogramResponse] = useState<SingleHistogramCaptureResponse>(singleHistogramFixture);
-  const [interfaceStatsResponse, setInterfaceStatsResponse] = useState<InterfaceStatsResponse>(singleInterfaceStatsFixture);
-  const [modulationProfileResponse, setModulationProfileResponse] = useState<SingleModulationProfileCaptureResponse>(singleModulationProfileFixture);
-  const [usOfdmaPreEqualizationResponse, setUsOfdmaPreEqualizationResponse] = useState<SingleUsOfdmaPreEqualizationCaptureResponse>(singleUsOfdmaPreEqualizationFixture);
-  const [systemUpTimeResponse, setSystemUpTimeResponse] = useState<SystemUpTimeResponse>(singleSystemUpTimeFixture);
-  const [spectrumFriendlyResponse, setSpectrumFriendlyResponse] = useState<SingleSpectrumFriendlyCaptureResponse>(singleSpectrumFriendlyCaptureFixture);
-  const [spectrumFullBandResponse, setSpectrumFullBandResponse] = useState<SingleSpectrumFriendlyCaptureResponse>(singleSpectrumFullBandCaptureFixture);
-  const [spectrumOfdmResponse, setSpectrumOfdmResponse] = useState<SingleSpectrumOfdmCaptureResponse>(singleSpectrumOfdmCaptureFixture);
-  const [spectrumScqamResponse, setSpectrumScqamResponse] = useState<SingleSpectrumScqamCaptureResponse>(singleSpectrumScqamCaptureFixture);
+  const [atdmaChannelStatsResponse, setAtdmaChannelStatsResponse] = useState<AtdmaChannelStatsResponse | null>(null);
+  const [fddDiplexerBandEdgeCapabilityResponse, setFddDiplexerBandEdgeCapabilityResponse] = useState<FddDiplexerBandEdgeCapabilityResponse | null>(null);
+  const [fddSystemDiplexerConfigurationResponse, setFddSystemDiplexerConfigurationResponse] = useState<FddSystemDiplexerConfigurationResponse | null>(null);
+  const [if31DocsisBaseCapabilityResponse, setIf31DocsisBaseCapabilityResponse] = useState<If31DocsisBaseCapabilityResponse | null>(null);
+  const [if31DsOfdmChannelStatsResponse, setIf31DsOfdmChannelStatsResponse] = useState<If31DsOfdmChannelStatsResponse | null>(null);
+  const [if31DsOfdmProfileStatsResponse, setIf31DsOfdmProfileStatsResponse] = useState<If31DsOfdmProfileStatsResponse | null>(null);
+  const [if31UsOfdmaChannelStatsResponse, setIf31UsOfdmaChannelStatsResponse] = useState<If31UsOfdmaChannelStatsResponse | null>(null);
+  const [if31SystemDiplexerResponse, setIf31SystemDiplexerResponse] = useState<If31SystemDiplexerResponse | null>(null);
+  const [dsScqamCodewordErrorRateResponse, setDsScqamCodewordErrorRateResponse] = useState<DsScqamCodewordErrorRateResponse | null>(null);
+  const [dsScqamChannelStatsResponse, setDsScqamChannelStatsResponse] = useState<DsScqamChannelStatsResponse | null>(null);
+  const [atdmaPreEqualizationResponse, setAtdmaPreEqualizationResponse] = useState<AtdmaPreEqualizationResponse | null>(null);
+  const [rxMerResponse, setRxMerResponse] = useState<SingleRxMerCaptureResponse | null>(null);
+  const [channelEstResponse, setChannelEstResponse] = useState<SingleChannelEstCoeffCaptureResponse | null>(null);
+  const [constellationResponse, setConstellationResponse] = useState<SingleConstellationDisplayCaptureResponse | null>(null);
+  const [eventLogResponse, setEventLogResponse] = useState<DeviceEventLogResponse | null>(null);
+  const [fecSummaryResponse, setFecSummaryResponse] = useState<SingleFecSummaryCaptureResponse | null>(null);
+  const [histogramResponse, setHistogramResponse] = useState<SingleHistogramCaptureResponse | null>(null);
+  const [interfaceStatsResponse, setInterfaceStatsResponse] = useState<InterfaceStatsResponse | null>(null);
+  const [modulationProfileResponse, setModulationProfileResponse] = useState<SingleModulationProfileCaptureResponse | null>(null);
+  const [usOfdmaPreEqualizationResponse, setUsOfdmaPreEqualizationResponse] = useState<SingleUsOfdmaPreEqualizationCaptureResponse | null>(null);
+  const [systemUpTimeResponse, setSystemUpTimeResponse] = useState<SystemUpTimeResponse | null>(null);
+  const [spectrumFriendlyResponse, setSpectrumFriendlyResponse] = useState<SingleSpectrumFriendlyCaptureResponse | null>(null);
+  const [spectrumFullBandResponse, setSpectrumFullBandResponse] = useState<SingleSpectrumFriendlyCaptureResponse | null>(null);
+  const [spectrumOfdmResponse, setSpectrumOfdmResponse] = useState<SingleSpectrumOfdmCaptureResponse | null>(null);
+  const [spectrumScqamResponse, setSpectrumScqamResponse] = useState<SingleSpectrumScqamCaptureResponse | null>(null);
   const selectedOperation = getOperationByRoutePath(location.pathname);
   const canExecuteOperation = Boolean(selectedInstance) && isCaptureConnectivityOnline(captureConnectivityStatus);
   const captureInputsTitle = useMemo(() => {
@@ -494,6 +469,7 @@ export function EndpointExplorerPage() {
       Download JSON
     </RequestJsonAction>
   );
+  const hasSelectedResponse = selectedResponse !== null;
 
   return (
     <>
@@ -631,57 +607,72 @@ export function EndpointExplorerPage() {
         </Panel>
       ) : null}
 
-      <Panel>
-        {selectedOperation.id === "docs-if31-docsis-basecapability" ? (
-          <SingleIf31DocsisBaseCapabilityView response={if31DocsisBaseCapabilityResponse} />
+      <Panel title="Results">
+        {!hasSelectedResponse ? (
+          <div className="details-table-wrap">
+            <table className="details-table">
+              <tbody>
+                <tr>
+                  <th>State</th>
+                  <td>N/A</td>
+                </tr>
+                <tr>
+                  <th>Result</th>
+                  <td>No capture results yet. Run the operation to populate this panel.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        ) : selectedOperation.id === "docs-if31-docsis-basecapability" ? (
+          <SingleIf31DocsisBaseCapabilityView response={if31DocsisBaseCapabilityResponse as If31DocsisBaseCapabilityResponse} />
         ) : selectedOperation.id === "docs-if31-ds-ofdm-chan-stats" ? (
-          <SingleIf31DsOfdmChannelStatsView response={if31DsOfdmChannelStatsResponse} />
+          <SingleIf31DsOfdmChannelStatsView response={if31DsOfdmChannelStatsResponse as If31DsOfdmChannelStatsResponse} />
         ) : selectedOperation.id === "docs-if31-ds-ofdm-profile-stats" ? (
-          <SingleIf31DsOfdmProfileStatsView response={if31DsOfdmProfileStatsResponse} />
+          <SingleIf31DsOfdmProfileStatsView response={if31DsOfdmProfileStatsResponse as If31DsOfdmProfileStatsResponse} />
         ) : selectedOperation.id === "docs-if31-system-diplexer" ? (
-          <SingleIf31SystemDiplexerView response={if31SystemDiplexerResponse} />
+          <SingleIf31SystemDiplexerView response={if31SystemDiplexerResponse as If31SystemDiplexerResponse} />
         ) : selectedOperation.id === "docs-if31-us-ofdma-channel-stats" ? (
-          <SingleIf31UsOfdmaChannelStatsView response={if31UsOfdmaChannelStatsResponse} />
+          <SingleIf31UsOfdmaChannelStatsView response={if31UsOfdmaChannelStatsResponse as If31UsOfdmaChannelStatsResponse} />
         ) : selectedOperation.id === "docs-fdd-system-diplexer-configuration" ? (
-          <SingleFddSystemDiplexerConfigurationView response={fddSystemDiplexerConfigurationResponse} />
+          <SingleFddSystemDiplexerConfigurationView response={fddSystemDiplexerConfigurationResponse as FddSystemDiplexerConfigurationResponse} />
         ) : selectedOperation.id === "docs-fdd-diplexer-bandedgecapability" ? (
-          <SingleFddDiplexerBandEdgeCapabilityView response={fddDiplexerBandEdgeCapabilityResponse} />
+          <SingleFddDiplexerBandEdgeCapabilityView response={fddDiplexerBandEdgeCapabilityResponse as FddDiplexerBandEdgeCapabilityResponse} />
         ) : selectedOperation.id === "docs-if30-ds-scqam-chan-codeworderrorrate" ? (
-          <SingleDsScqamCodewordErrorRateView response={dsScqamCodewordErrorRateResponse} />
+          <SingleDsScqamCodewordErrorRateView response={dsScqamCodewordErrorRateResponse as DsScqamCodewordErrorRateResponse} />
         ) : selectedOperation.id === "docs-if30-ds-scqam-chan-stats" ? (
-          <SingleDsScqamChannelStatsView response={dsScqamChannelStatsResponse} />
+          <SingleDsScqamChannelStatsView response={dsScqamChannelStatsResponse as DsScqamChannelStatsResponse} />
         ) : selectedOperation.id === "docs-if30-us-atdma-chan-preequalization" ? (
-          <SingleAtdmaPreEqualizationView response={atdmaPreEqualizationResponse} />
+          <SingleAtdmaPreEqualizationView response={atdmaPreEqualizationResponse as AtdmaPreEqualizationResponse} />
         ) : selectedOperation.id === "docs-if30-us-atdma-chan-stats" ? (
-          <SingleAtdmaChannelStatsView response={atdmaChannelStatsResponse} />
+          <SingleAtdmaChannelStatsView response={atdmaChannelStatsResponse as AtdmaChannelStatsResponse} />
         ) : selectedOperation.id === "system-uptime" ? (
-          <SingleSystemUpTimeView response={systemUpTimeResponse} />
+          <SingleSystemUpTimeView response={systemUpTimeResponse as SystemUpTimeResponse} />
         ) : selectedOperation.id === "docs-pnm-interface-stats" ? (
-          <SingleInterfaceStatsView response={interfaceStatsResponse} />
+          <SingleInterfaceStatsView response={interfaceStatsResponse as InterfaceStatsResponse} />
         ) : selectedOperation.id === "docs-dev-eventlog" ? (
-          <SingleDeviceEventLogView response={eventLogResponse} />
+          <SingleDeviceEventLogView response={eventLogResponse as DeviceEventLogResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-rxmer-getcapture" ? (
-          <SingleRxMerCaptureView response={rxMerResponse} />
+          <SingleRxMerCaptureView response={rxMerResponse as SingleRxMerCaptureResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-friendly" ? (
-          <SingleSpectrumFriendlyCaptureView response={spectrumFriendlyResponse} exportVariant="friendly" />
+          <SingleSpectrumFriendlyCaptureView response={spectrumFriendlyResponse as SingleSpectrumFriendlyCaptureResponse} exportVariant="friendly" />
         ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-fullbandcapture" ? (
-          <SingleSpectrumFriendlyCaptureView response={spectrumFullBandResponse} exportVariant="full-band" />
+          <SingleSpectrumFriendlyCaptureView response={spectrumFullBandResponse as SingleSpectrumFriendlyCaptureResponse} exportVariant="full-band" />
         ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-ofdm" ? (
-          <SingleSpectrumOfdmCaptureView response={spectrumOfdmResponse} />
+          <SingleSpectrumOfdmCaptureView response={spectrumOfdmResponse as SingleSpectrumOfdmCaptureResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-spectrumanalyzer-getcapture-scqam" ? (
-          <SingleSpectrumScqamCaptureView response={spectrumScqamResponse} />
+          <SingleSpectrumScqamCaptureView response={spectrumScqamResponse as SingleSpectrumScqamCaptureResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-modulationprofile-getcapture" ? (
-          <SingleModulationProfileCaptureView response={modulationProfileResponse} />
+          <SingleModulationProfileCaptureView response={modulationProfileResponse as SingleModulationProfileCaptureResponse} />
         ) : selectedOperation.id === "docs-pnm-us-ofdma-preequalization-getcapture" ? (
-          <SingleUsOfdmaPreEqualizationView response={usOfdmaPreEqualizationResponse} />
+          <SingleUsOfdmaPreEqualizationView response={usOfdmaPreEqualizationResponse as SingleUsOfdmaPreEqualizationCaptureResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-constellationdisplay-getcapture" ? (
-          <SingleConstellationDisplayCaptureView response={constellationResponse} />
+          <SingleConstellationDisplayCaptureView response={constellationResponse as SingleConstellationDisplayCaptureResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-ofdm-fecsummary-getcapture" ? (
-          <SingleFecSummaryCaptureView response={fecSummaryResponse} />
+          <SingleFecSummaryCaptureView response={fecSummaryResponse as SingleFecSummaryCaptureResponse} />
         ) : selectedOperation.id === "docs-pnm-ds-histogram-getcapture" ? (
-          <SingleHistogramCaptureView response={histogramResponse} />
+          <SingleHistogramCaptureView response={histogramResponse as SingleHistogramCaptureResponse} />
         ) : (
-          <SingleChannelEstCoeffCaptureView response={channelEstResponse} />
+          <SingleChannelEstCoeffCaptureView response={channelEstResponse as SingleChannelEstCoeffCaptureResponse} />
         )}
       </Panel>
     </>
