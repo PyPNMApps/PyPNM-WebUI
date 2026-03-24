@@ -7,28 +7,46 @@ import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import type { ChartSeries } from "@/features/analysis/types";
 import type { AdvancedMultiChanEstAnalysisResponse, AdvancedMultiChanEstGroupDelayResult } from "@/types/api";
 
+export function normalizeGroupDelayUs(values: number[]): number[] {
+  const numericValues = values
+    .map((value) => Number(value))
+    .filter((value) => Number.isFinite(value));
+
+  const maxAbs = numericValues.reduce((currentMax, value) => Math.max(currentMax, Math.abs(value)), 0);
+  const scale = maxAbs > 0 && maxAbs < 1e-3 ? 1_000_000 : 1;
+
+  return values.map((value) => {
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) ? numericValue * scale : 0;
+  });
+}
+
 function buildSeries(channel: AdvancedMultiChanEstGroupDelayResult): ChartSeries[] {
+  const normalizedGroupDelay = normalizeGroupDelayUs(channel.group_delay_us ?? []);
   return [
     {
       label: `Channel ${channel.channel_id}`,
       color: "#79a9ff",
-      points: (channel.frequency ?? []).slice(0, (channel.group_delay_us ?? []).length).map((value, index) => ({
+      points: (channel.frequency ?? []).slice(0, normalizedGroupDelay.length).map((value, index) => ({
         x: value / 1_000_000,
-        y: channel.group_delay_us[index] ?? 0,
+        y: normalizedGroupDelay[index] ?? 0,
       })),
     },
   ];
 }
 
 function buildAlignedSeries(results: AdvancedMultiChanEstGroupDelayResult[]): ChartSeries[] {
-  return results.map((channel, index) => ({
-    label: `Channel ${channel.channel_id ?? index}`,
-    color: CHART_SERIES_PALETTE[index % CHART_SERIES_PALETTE_SIZE],
-    points: (channel.frequency ?? []).slice(0, (channel.group_delay_us ?? []).length).map((value, pointIndex) => ({
-      x: value / 1_000_000,
-      y: channel.group_delay_us[pointIndex] ?? 0,
-    })),
-  }));
+  return results.map((channel, index) => {
+    const normalizedGroupDelay = normalizeGroupDelayUs(channel.group_delay_us ?? []);
+    return {
+      label: `Channel ${channel.channel_id ?? index}`,
+      color: CHART_SERIES_PALETTE[index % CHART_SERIES_PALETTE_SIZE],
+      points: (channel.frequency ?? []).slice(0, normalizedGroupDelay.length).map((value, pointIndex) => ({
+        x: value / 1_000_000,
+        y: normalizedGroupDelay[pointIndex] ?? 0,
+      })),
+    };
+  });
 }
 
 export function AdvancedChannelEstGroupDelayView({ response }: { response: AdvancedMultiChanEstAnalysisResponse }) {
