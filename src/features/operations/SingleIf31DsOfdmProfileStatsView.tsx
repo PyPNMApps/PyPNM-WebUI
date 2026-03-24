@@ -46,6 +46,11 @@ function fmtPercent(value: number): string {
   return `${(value * 100).toFixed(4)}%`;
 }
 
+function isReservedProfileLabel(label: string): boolean {
+  const normalized = String(label).trim().toUpperCase();
+  return normalized === "255" || normalized === "NCP";
+}
+
 function toProfiles(profiles: Record<string, If31DsOfdmProfileStat> | undefined): ProfileSeriesViewModel[] {
   return Object.entries(profiles ?? {})
     .sort((left, right) => Number(left[0]) - Number(right[0]))
@@ -101,7 +106,9 @@ export function SingleIf31DsOfdmProfileStatsView({
 
   for (const channel of channels) {
     for (const profile of channel.profiles) {
-      dominantProfileMap.set(profile.label, (dominantProfileMap.get(profile.label) ?? 0) + profile.total);
+      if (!isReservedProfileLabel(profile.label)) {
+        dominantProfileMap.set(profile.label, (dominantProfileMap.get(profile.label) ?? 0) + profile.total);
+      }
       if (profile.total > 0) {
         const rate = profile.corrected / profile.total;
         if (!worst || rate > worst.rate) {
