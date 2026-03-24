@@ -71,9 +71,9 @@ function buildButterworthCurves(
 }
 
 function buildPath(points: ResponsePoint[], width: number, height: number, xMin: number, xMax: number, yMin: number, yMax: number) {
-  const left = 56;
+  const left = 70;
   const top = 16;
-  const usableWidth = width - 84;
+  const usableWidth = width - 98;
   const usableHeight = height - 56;
 
   return points
@@ -86,8 +86,8 @@ function buildPath(points: ResponsePoint[], width: number, height: number, xMin:
 }
 
 function markerX(valueMhz: number, width: number, xMin: number, xMax: number) {
-  const left = 56;
-  const usableWidth = width - 84;
+  const left = 70;
+  const usableWidth = width - 98;
   return left + ((valueMhz - xMin) / (xMax - xMin || 1)) * usableWidth;
 }
 
@@ -134,8 +134,8 @@ function DiplexerResponseChart({
           const y = 16 + (height - 56) - ((value - yMin) / (yMax - yMin || 1)) * (height - 56);
           return (
             <g key={`dip-y-${value}`}>
-              <line x1="56" y1={y} x2={width - 28} y2={y} stroke="rgba(255,255,255,0.10)" />
-              <text x="10" y={y + 4} fill="#9eb0c9" fontSize="11">{value}</text>
+              <line x1="70" y1={y} x2={width - 28} y2={y} stroke="rgba(255,255,255,0.10)" />
+              <text x="62" y={y + 4} fill="#9eb0c9" fontSize="11" textAnchor="end">{value}</text>
             </g>
           );
         })}
@@ -183,10 +183,20 @@ function DiplexerResponseChart({
         ) : null}
         <path d={buildPath(upstream, width, height, xMin, xMax, yMin, yMax)} fill="none" stroke="#ff6b6b" strokeWidth="2" />
         <path d={buildPath(downstream, width, height, xMin, xMax, yMin, yMax)} fill="none" stroke="#4dabf7" strokeWidth="2" />
-        <line x1="56" y1={height - 40} x2={width - 28} y2={height - 40} stroke="rgba(255,255,255,0.20)" />
-        <line x1="56" y1="16" x2="56" y2={height - 40} stroke="rgba(255,255,255,0.20)" />
+        <line x1="70" y1={height - 40} x2={width - 28} y2={height - 40} stroke="rgba(255,255,255,0.20)" />
+        <line x1="70" y1="16" x2="70" y2={height - 40} stroke="rgba(255,255,255,0.20)" />
         <text x={width / 2 - 42} y={height - 4} fill="#9eb0c9" fontSize="11">Frequency (MHz)</text>
-        <text x="8" y="12" fill="#9eb0c9" fontSize="11">Magnitude (dB)</text>
+        <text
+          x="20"
+          y={height / 2}
+          fill="#9eb0c9"
+          fontSize="11"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          transform={`rotate(-90 20 ${height / 2})`}
+        >
+          Magnitude (dB)
+        </text>
       </svg>
     </div>
   );

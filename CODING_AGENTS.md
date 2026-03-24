@@ -76,6 +76,8 @@
 - Default graph lines to thin strokes unless a thicker treatment is required for legibility or a specific visual convention.
 - When a graph renders multiple data series, provide user controls to show or hide individual series so the chart can be isolated without removing the others.
 - When x-axis labels are large numeric values and horizontal rendering hurts readability, angle the labels so they remain visible and readable.
+- Render custom chart y-axis labels as vertical axis text with clear spacing
+  from tick labels; do not fall back to top-left caption-style y labels.
 - Prefer lazy-loading at route or page boundaries when it reduces initial bundle cost.
 - Do not micro-chunk small shared UI pieces; keep lazy-loading focused on meaningful page-level splits.
 - For generated modem-specific download artifacts, place the modem identity and
