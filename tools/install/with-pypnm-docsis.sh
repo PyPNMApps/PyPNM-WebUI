@@ -128,12 +128,12 @@ read_existing_local_host() {
     existing_path="${ROOT_DIR}/${RUNTIME_LOCAL_PATH}"
   fi
 
-  node --input-type=module <<EOF
+  CONFIG_PATH="${existing_path}" node --input-type=module <<EOF
 import fs from "node:fs";
 import { parse } from "yaml";
 import { readConfiguredLocalPyPnmHost } from "${ROOT_DIR}/tools/install/local_pypnm_docsis.js";
 
-const configPath = ${existing_path@Q};
+const configPath = process.env.CONFIG_PATH ?? "";
 if (!configPath || !fs.existsSync(configPath)) {
   process.stdout.write("");
   process.exit(0);
@@ -158,13 +158,13 @@ resolve_local_api_host() {
   detection_output="$(detect_ipv4_candidates || true)"
 
   local decision_json
-  decision_json="$(node --input-type=module <<EOF
+  decision_json="$(EXPLICIT_HOST="${explicit_host}" EXISTING_HOST="${existing_host}" RAW_CANDIDATES="${detection_output}" IS_INTERACTIVE="${interactive}" node --input-type=module <<EOF
 import { choosePreferredLocalHost, parseIpv4Candidates } from "${ROOT_DIR}/tools/install/local_pypnm_docsis.js";
 
-const explicitHost = ${explicit_host@Q};
-const existingHost = ${existing_host@Q};
-const rawCandidates = ${detection_output@Q};
-const isInteractive = ${interactive};
+const explicitHost = process.env.EXPLICIT_HOST ?? "";
+const existingHost = process.env.EXISTING_HOST ?? "";
+const rawCandidates = process.env.RAW_CANDIDATES ?? "";
+const isInteractive = (process.env.IS_INTERACTIVE ?? "false") === "true";
 
 process.stdout.write(JSON.stringify(
   choosePreferredLocalHost({
@@ -178,23 +178,23 @@ EOF
 )"
 
   local needs_prompt
-  needs_prompt="$(node --input-type=module <<EOF
-const decision = JSON.parse(${decision_json@Q});
+  needs_prompt="$(DECISION_JSON="${decision_json}" node --input-type=module <<EOF
+const decision = JSON.parse(process.env.DECISION_JSON ?? "{}");
 process.stdout.write(decision.needsPrompt ? "1" : "0");
 EOF
 )"
 
   if [ "${needs_prompt}" != "1" ]; then
-    node --input-type=module <<EOF
-const decision = JSON.parse(${decision_json@Q});
+    DECISION_JSON="${decision_json}" node --input-type=module <<EOF
+const decision = JSON.parse(process.env.DECISION_JSON ?? "{}");
 process.stdout.write(decision.host);
 EOF
     return
   fi
 
   local choice_lines
-  choice_lines="$(node --input-type=module <<EOF
-const decision = JSON.parse(${decision_json@Q});
+  choice_lines="$(DECISION_JSON="${decision_json}" node --input-type=module <<EOF
+const decision = JSON.parse(process.env.DECISION_JSON ?? "{}");
 for (let index = 0; index < decision.choices.length; index += 1) {
   const choice = decision.choices[index];
   process.stdout.write(\`\${index + 1}|\\\${choice.host}|\\\${choice.label}|\\\${choice.detail}\\n\`);
@@ -236,7 +236,7 @@ write_local_runtime_config() {
   local selected_host="$1"
 
   log "Updating local runtime config for Local PyPNM Agent (${selected_host}:8000)"
-  node --input-type=module <<EOF
+  SELECTED_HOST="${selected_host}" node --input-type=module <<EOF
 import fs from "node:fs";
 import path from "node:path";
 import { parse, stringify } from "yaml";
@@ -247,7 +247,7 @@ const outputPath = "${ROOT_DIR}/${RUNTIME_LOCAL_PATH}";
 const localPath = fs.existsSync(outputPath) ? outputPath : "";
 const templateConfig = parse(fs.readFileSync(templatePath, "utf8")) ?? {};
 const localConfig = localPath ? (parse(fs.readFileSync(localPath, "utf8")) ?? {}) : {};
-const merged = applyLocalPyPnmAgentConfig(templateConfig, localConfig, ${selected_host@Q});
+const merged = applyLocalPyPnmAgentConfig(templateConfig, localConfig, process.env.SELECTED_HOST ?? "");
 const nextContent = stringify(merged, { indent: 2 });
 
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
