@@ -14,6 +14,7 @@ This mode aims to be close to zero-touch:
 - configure the WebUI `Local PyPNM Agent`
 - make that local agent the selected default
 - give you one command to start both services
+- give you a direct backend CLI command (`pypnm-docsis`)
 
 ## One-command install
 
@@ -28,8 +29,8 @@ From the repo root:
 When `--with-pypnm-docsis` is used, the installer:
 
 - keeps the normal WebUI bootstrap behavior
-- creates a backend virtual environment at `.pypnm-venv`
-- installs `pypnm-docsis` into that environment
+- uses the same `.venv` managed by WebUI install
+- installs `pypnm-docsis` into that shared environment
 - detects local IPv4 addresses on the machine
 - chooses a local API host for WebUI runtime config
 - writes or updates `public/config/pypnm-instances.local.yaml`
@@ -157,8 +158,10 @@ This workflow adds or updates:
 
 - WebUI frontend env:
   - `.venv`
-- local backend env:
-  - `.pypnm-venv`
+- shared runtime environment:
+  - `.venv`
+- backend CLI shim:
+  - `~/.local/bin/pypnm-docsis`
 - machine-local runtime config:
   - `public/config/pypnm-instances.local.yaml`
 
@@ -172,9 +175,15 @@ pypnm-webui start-local-stack
 
 Behavior:
 
-- starts `pypnm-docsis` from `.pypnm-venv`
+- starts `pypnm-docsis` from `.venv`
 - starts WebUI on port `4173`
 - stops the backend process when the WebUI process exits
+
+Start only the backend service:
+
+```bash
+pypnm-docsis serve --host 127.0.0.1 --port 8000
+```
 
 ## Verify the setup
 
@@ -229,7 +238,7 @@ or specify it directly:
 Check:
 
 ```bash
-.pypnm-venv/bin/pypnm --version
+.venv/bin/pypnm --version
 ```
 
 If that fails, rerun the combined install.

@@ -142,11 +142,25 @@ Or set the host directly:
 Verify the backend virtual environment:
 
 ```bash
-.pypnm-venv/bin/pypnm --version
+.venv/bin/pypnm --version
 ```
 
 If that fails, rerun:
 
 ```bash
 ./install.sh --with-pypnm-docsis
+```
+
+## `pypnm-docsis: command not found` after combined install
+
+Reload your shell so `~/.local/bin` is on `PATH`:
+
+```bash
+source ~/.bashrc
+```
+
+Then verify:
+
+```bash
+pypnm-docsis --version
 ```

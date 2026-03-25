@@ -76,8 +76,9 @@ sudo apt-get install -y git
 
 When `--with-pypnm-docsis` is used, it also:
 
-- creates `.pypnm-venv`
-- installs `pypnm-docsis` into that backend virtual environment
+- uses the same `.venv` created by WebUI install
+- installs `pypnm-docsis` into that shared virtual environment
+- installs `~/.local/bin/pypnm-docsis` as a shim to that backend CLI
 - chooses a local API host automatically or with one prompt
 - configures `Local PyPNM Agent` in `public/config/pypnm-instances.local.yaml`
 - sets `local-pypnm-agent` as the selected runtime instance
@@ -136,6 +137,12 @@ Start the same-machine backend + frontend stack with:
 
 ```bash
 pypnm-webui start-local-stack
+```
+
+Start only the backend FastAPI service with:
+
+```bash
+pypnm-docsis serve --host 127.0.0.1 --port 8000
 ```
 
 If you need to inspect or stop local WebUI dev servers:

@@ -7,7 +7,7 @@ PYPNM_DOCSIS_PATH=""
 PYPNM_DOCSIS_VERSION=""
 LOCAL_API_HOST=""
 RECONFIGURE_LOCAL_AGENT=0
-BACKEND_VENV_PATH=".pypnm-venv"
+BACKEND_VENV_PATH=".venv"
 RUNTIME_TEMPLATE_PATH="public/config/pypnm-instances.yaml"
 RUNTIME_LOCAL_PATH="public/config/pypnm-instances.local.yaml"
 
@@ -273,6 +273,20 @@ install_local_stack_shim() {
   log "Installed local-stack helper at ${shim_path}"
 }
 
+install_backend_cli_shim() {
+  local user_bin_dir="${HOME}/.local/bin"
+  local shim_path="${user_bin_dir}/pypnm-docsis"
+  local backend_cli="${ROOT_DIR}/${BACKEND_VENV_PATH}/bin/pypnm"
+
+  [ -x "${backend_cli}" ] || fail "Backend CLI missing after install: ${backend_cli}"
+
+  mkdir -p "${user_bin_dir}"
+  printf '%s\n' "#!/usr/bin/env bash" >"${shim_path}"
+  printf '%s\n' "exec \"${backend_cli}\" \"\$@\"" >>"${shim_path}"
+  chmod +x "${shim_path}"
+  log "Installed backend CLI shim at ${shim_path}"
+}
+
 main() {
   parse_args "$@"
 
@@ -285,10 +299,12 @@ main() {
   local selected_host
   selected_host="$(resolve_local_api_host)"
   write_local_runtime_config "${selected_host}"
+  install_backend_cli_shim
   install_local_stack_shim
 
   log "Combined local install complete"
   log "Local PyPNM API URL: http://${selected_host}:8000"
+  log "Run backend directly with: pypnm-docsis serve --host 127.0.0.1 --port 8000"
   log "Start both services with: pypnm-webui start-local-stack"
 }
 

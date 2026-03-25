@@ -101,12 +101,12 @@ main() {
     --local-api-host 127.0.0.1
 
   log "Checking installed backend CLI"
-  ./.pypnm-venv/bin/pypnm --version
+  ./.venv/bin/pypnm --version
 
   verify_runtime_config
 
   log "Starting combined local stack"
-  ./tools/install/start-local-stack.sh --api-host 127.0.0.1 --webui-host 127.0.0.1 > /tmp/pypnm-webui-stack.log 2>&1 &
+  ./tools/install/start-local-stack.sh --api-host 127.0.0.1 > /tmp/pypnm-webui-stack.log 2>&1 &
   local stack_pid=$!
 
   cleanup() {

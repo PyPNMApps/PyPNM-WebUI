@@ -4,7 +4,6 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 API_HOST="0.0.0.0"
 API_PORT="8000"
-WEBUI_HOST="0.0.0.0"
 WEBUI_PORT="4173"
 API_RELOAD=0
 
@@ -14,9 +13,9 @@ Usage:
   ./tools/install/start-local-stack.sh [options]
 
 Options:
-  --api-host <host>     Backend bind host (default: 0.0.0.0)
+  --api-host <host>     Bind host for both backend and WebUI (default: 0.0.0.0)
   --api-port <port>     Backend bind port (default: 8000)
-  --webui-host <host>   WebUI bind host (default: 0.0.0.0)
+  --webui-host <host>   Deprecated alias for --api-host (kept for compatibility)
   --webui-port <port>   WebUI bind port (default: 4173)
   --reload-api          Enable PyPNM auto-reload.
   -h, --help            Show this help.
@@ -36,7 +35,7 @@ parse_args() {
         ;;
       --webui-host)
         shift
-        WEBUI_HOST="${1:-}"
+        API_HOST="${1:-}"
         ;;
       --webui-port)
         shift
@@ -61,9 +60,13 @@ parse_args() {
 main() {
   parse_args "$@"
 
-  local backend_cli="${ROOT_DIR}/.pypnm-venv/bin/pypnm"
+  local backend_cli="${ROOT_DIR}/.venv/bin/pypnm"
+  if [ ! -x "${backend_cli}" ] && [ -x "${ROOT_DIR}/.pypnm-venv/bin/pypnm" ]; then
+    # Backward-compatible fallback for older combined installs.
+    backend_cli="${ROOT_DIR}/.pypnm-venv/bin/pypnm"
+  fi
   if [ ! -x "${backend_cli}" ]; then
-    printf 'ERROR: %s not found. Run ./install.sh --with-pypnm-docsis first.\n' "${backend_cli}" >&2
+    printf 'ERROR: backend CLI not found in .venv or .pypnm-venv. Run ./install.sh --with-pypnm-docsis first.\n' >&2
     exit 1
   fi
 
@@ -85,7 +88,7 @@ main() {
 
   trap cleanup EXIT INT TERM
 
-  exec "${ROOT_DIR}/tools/cli/pypnm-webui.js" serve --host "${WEBUI_HOST}" --port "${WEBUI_PORT}"
+  exec "${ROOT_DIR}/tools/cli/pypnm-webui.js" serve --host "${API_HOST}" --port "${WEBUI_PORT}"
 }
 
 main "$@"
