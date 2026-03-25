@@ -8,6 +8,12 @@ From the repo root:
 ./install.sh
 ```
 
+Install WebUI plus a same-machine `pypnm-docsis` backend:
+
+```bash
+./install.sh --with-pypnm-docsis
+```
+
 Update an existing install to the latest tagged release:
 
 ```bash
@@ -68,6 +74,15 @@ sudo apt-get install -y git
 - refreshes `public/config/pypnm-instances.local.yaml` from the version-controlled
   template while preserving local values
 
+When `--with-pypnm-docsis` is used, it also:
+
+- creates `.pypnm-venv`
+- installs `pypnm-docsis` into that backend virtual environment
+- chooses a local API host automatically or with one prompt
+- configures `Local PyPNM Agent` in `public/config/pypnm-instances.local.yaml`
+- sets `local-pypnm-agent` as the selected runtime instance
+- installs local-stack helpers for same-machine backend + frontend startup
+
 ## Update behavior
 
 When `--update-webui` is used:
@@ -86,12 +101,41 @@ Runtime config model:
 - `public/config/pypnm-instances.local.yaml` is the machine-local runtime file
 - runtime config is merged by instance `id`; `.local` is not a full-file replacement
 
+## Combined local install
+
+Use this when `pypnm-docsis` and WebUI run on the same machine and you want the
+installer to configure the WebUI local agent automatically.
+
+Primary command:
+
+```bash
+./install.sh --with-pypnm-docsis
+```
+
+Useful variants:
+
+```bash
+./install.sh --with-pypnm-docsis --local-api-host 127.0.0.1
+./install.sh --with-pypnm-docsis --pypnm-docsis-path ../PyPNM
+./install.sh --with-pypnm-docsis --reconfigure-local-agent
+```
+
+Full instructions:
+
+- [Local Combined Install](local-combined-install.md)
+
 ## After install
 
 Start the UI with:
 
 ```bash
 pypnm-webui serve
+```
+
+Start the same-machine backend + frontend stack with:
+
+```bash
+pypnm-webui start-local-stack
 ```
 
 If you need to inspect or stop local WebUI dev servers:

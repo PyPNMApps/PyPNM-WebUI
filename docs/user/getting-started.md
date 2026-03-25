@@ -10,8 +10,19 @@ From the repo root:
 
 Details:
 - [Install And Bootstrap](install-and-bootstrap.md)
+- [Local Combined Install](local-combined-install.md)
 
 ## 2. Configure API endpoint
+
+If `pypnm-docsis` and WebUI are on the same machine and you want the installer
+to configure the local backend automatically, use:
+
+```bash
+./install.sh --with-pypnm-docsis
+```
+
+Combined local-stack details:
+- [Local Combined Install](local-combined-install.md)
 
 Edit `.env` if your PyPNM API is not local default:
 

@@ -63,6 +63,7 @@ So today:
 If you want a real file on disk, use one of these:
 
 - run `./install.sh`
+- run `./install.sh --with-pypnm-docsis`
 - run `pypnm-webui config-menu`
 - create the YAML file manually
 
@@ -160,6 +161,28 @@ Use no runtime YAML when:
 
 In that case the UI uses its in-memory fallback instance and points it at
 `VITE_PYPNM_API_BASE_URL`.
+
+## Combined local install behavior
+
+If you run:
+
+```bash
+./install.sh --with-pypnm-docsis
+```
+
+the installer writes or refreshes a machine-local `Local PyPNM Agent` entry in:
+
+- `public/config/pypnm-instances.local.yaml`
+
+That entry:
+
+- points to the selected same-machine PyPNM host on port `8000`
+- is set as `defaults.selected_instance`
+- preserves unrelated local runtime agents in the same file
+
+See:
+
+- [Local Combined Install](local-combined-install.md)
 
 ## Master example
 
