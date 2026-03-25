@@ -8,7 +8,8 @@ For a new local setup:
 
 1. [Getting Started](user/getting-started.md)
 2. [Install And Bootstrap](user/install-and-bootstrap.md)
-3. [Runtime Configuration](user/runtime-configuration.md)
+3. [Local Combined Install](user/local-combined-install.md)
+4. [Runtime Configuration](user/runtime-configuration.md)
 
 ## Day-To-Day Use
 

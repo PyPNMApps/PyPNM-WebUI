@@ -49,6 +49,7 @@ function printRootHelp() {
       "Commands:",
       "  serve        Start the Vite development server.",
       "  config-menu  Launch the interactive pypnm-instances.yaml editor.",
+      "  start-local-stack  Start local pypnm-docsis and WebUI together.",
       "  kill-pypnm-webui  List or stop running local PyPNM-WebUI processes.",
       "",
       "Options:",
@@ -60,6 +61,7 @@ function printRootHelp() {
       "  pypnm-webui serve --host 0.0.0.0 --port 4173",
       "  pypnm-webui serve --open",
       "  pypnm-webui config-menu",
+      "  pypnm-webui start-local-stack",
       "",
       'Use "pypnm-webui <command> --help" for command-specific options.',
       "",
@@ -108,6 +110,25 @@ function printConfigMenuHelp() {
       "  - edits per-agent request defaults like MAC, IP, TFTP, and SNMP RW community",
       "  - saves after each edit",
       "  - creates a timestamped backup before overwriting prior config content",
+      "",
+    ].join("\n"),
+  );
+}
+
+function printStartLocalStackHelp() {
+  process.stdout.write(
+    [
+      "Start local pypnm-docsis and PyPNM-WebUI together.",
+      "",
+      "Usage:",
+      "  pypnm-webui start-local-stack [options]",
+      "",
+      "Options:",
+      "  --api-host <host>     Backend bind host (default: 0.0.0.0)",
+      "  --api-port <port>     Backend bind port (default: 8000)",
+      "  --webui-host <host>   WebUI bind host (default: 0.0.0.0)",
+      "  --webui-port <port>   WebUI bind port (default: 4173)",
+      "  --reload-api          Enable PyPNM auto-reload.",
       "",
     ].join("\n"),
   );
@@ -324,6 +345,15 @@ export async function runCli(args, metaUrl) {
       return SUCCESS_EXIT_CODE;
     }
     runMaintenanceScript(metaUrl, "tools/maintenance/kill-pypnm-webui.sh", commandArgs);
+    return null;
+  }
+
+  if (command === "start-local-stack") {
+    if (commandArgs.includes("-h") || commandArgs.includes("--help")) {
+      printStartLocalStackHelp();
+      return SUCCESS_EXIT_CODE;
+    }
+    runMaintenanceScript(metaUrl, "tools/install/start-local-stack.sh", commandArgs);
     return null;
   }
 

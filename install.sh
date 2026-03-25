@@ -8,6 +8,11 @@ PYTHON_BIN="${PYTHON_BIN:-python3}"
 UPDATE_WEBUI=0
 UPDATE_TAG=""
 UPDATE_BRANCH_PREFIX="webui-"
+WITH_PYPNM_DOCSIS=0
+PYPNM_DOCSIS_PATH=""
+PYPNM_DOCSIS_VERSION=""
+LOCAL_API_HOST=""
+RECONFIGURE_LOCAL_AGENT=0
 RUNTIME_TEMPLATE_PATH="public/config/pypnm-instances.yaml"
 RUNTIME_LOCAL_PATH="public/config/pypnm-instances.local.yaml"
 
@@ -196,11 +201,19 @@ print_help() {
 Usage:
   ./install.sh
   ./install.sh --update-webui [tag]
+  ./install.sh --with-pypnm-docsis [options]
 
 Options:
   --update-webui [tag]  Update this existing checkout to the latest tag or the
                         provided tag, then reinstall dependencies and refresh
                         the local runtime config override.
+  --with-pypnm-docsis   Install a local pypnm-docsis backend alongside WebUI.
+  --pypnm-docsis-path   Install pypnm-docsis from a local PyPNM checkout.
+  --pypnm-docsis-version
+                        Install a specific pypnm-docsis version from pip.
+  --local-api-host      Preselect the local API host without prompting.
+  --reconfigure-local-agent
+                        Ignore any previously configured Local PyPNM Agent host.
   -h, --help            Show this help.
 EOF
 }
@@ -214,6 +227,24 @@ parse_args() {
           UPDATE_TAG="$2"
           shift
         fi
+        ;;
+      --with-pypnm-docsis)
+        WITH_PYPNM_DOCSIS=1
+        ;;
+      --pypnm-docsis-path)
+        shift
+        PYPNM_DOCSIS_PATH="${1:-}"
+        ;;
+      --pypnm-docsis-version)
+        shift
+        PYPNM_DOCSIS_VERSION="${1:-}"
+        ;;
+      --local-api-host)
+        shift
+        LOCAL_API_HOST="${1:-}"
+        ;;
+      --reconfigure-local-agent)
+        RECONFIGURE_LOCAL_AGENT=1
         ;;
       -h|--help)
         print_help
@@ -382,6 +413,31 @@ run_update_checkout() {
   git checkout -B "$target_branch" "$target_ref"
 }
 
+run_with_pypnm_docsis_helper() {
+  local helper_path="${ROOT_DIR}/tools/install/with-pypnm-docsis.sh"
+  [ -x "${helper_path}" ] || fail "Combined install helper is not executable: ${helper_path}"
+
+  local helper_args=(
+    --root-dir "${ROOT_DIR}"
+    --python-bin "${PYTHON_BIN}"
+  )
+
+  if [ -n "${PYPNM_DOCSIS_PATH}" ]; then
+    helper_args+=(--pypnm-docsis-path "${PYPNM_DOCSIS_PATH}")
+  fi
+  if [ -n "${PYPNM_DOCSIS_VERSION}" ]; then
+    helper_args+=(--pypnm-docsis-version "${PYPNM_DOCSIS_VERSION}")
+  fi
+  if [ -n "${LOCAL_API_HOST}" ]; then
+    helper_args+=(--local-api-host "${LOCAL_API_HOST}")
+  fi
+  if [ "${RECONFIGURE_LOCAL_AGENT}" -eq 1 ]; then
+    helper_args+=(--reconfigure-local-agent)
+  fi
+
+  "${helper_path}" "${helper_args[@]}"
+}
+
 main() {
   parse_args "$@"
   ensure_base_prerequisites
@@ -409,6 +465,10 @@ main() {
   ensure_python_venv
   merge_runtime_config_override
 
+  if [ "${WITH_PYPNM_DOCSIS}" -eq 1 ]; then
+    run_with_pypnm_docsis_helper
+  fi
+
   log "Install complete"
   if [ "$UPDATE_WEBUI" -eq 1 ]; then
     log "Update complete"
@@ -417,6 +477,9 @@ main() {
     log "If About still shows the prior version, hard refresh the browser"
   fi
   log "Start dev server with: pypnm-webui serve"
+  if [ "${WITH_PYPNM_DOCSIS}" -eq 1 ]; then
+    log "Start local backend + WebUI with: pypnm-webui start-local-stack"
+  fi
   log "Edit runtime config with: pypnm-webui config-menu"
   log "Run release workflow with: .venv/bin/python ./tools/release/release.py --help"
 }

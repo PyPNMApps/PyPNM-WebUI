@@ -50,10 +50,22 @@ cd PyPNM-WebUI
 ./install.sh
 ```
 
+Same-machine WebUI + `pypnm-docsis` install:
+
+```bash
+./install.sh --with-pypnm-docsis
+```
+
 ## Run locally
 
 ```bash
 pypnm-webui serve
+```
+
+Start the same-machine backend + frontend stack:
+
+```bash
+pypnm-webui start-local-stack
 ```
 
 Default local URL:
@@ -86,6 +98,7 @@ npm run docs:serve
 - [Documentation Index](docs/index.md)
 - [Getting Started](docs/user/getting-started.md)
 - [Install And Bootstrap](docs/user/install-and-bootstrap.md)
+- [Local Combined Install](docs/user/local-combined-install.md)
 - [Release Helpers](docs/user/release-helpers.md)
 - [Runtime Configuration](docs/user/runtime-configuration.md)
 - [UI Overview](docs/user/using-the-ui.md)
