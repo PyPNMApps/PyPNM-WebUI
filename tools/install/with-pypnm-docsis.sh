@@ -255,7 +255,7 @@ if (fs.existsSync(outputPath)) {
   const existingContent = fs.readFileSync(outputPath, "utf8");
   if (existingContent !== nextContent) {
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-    fs.copyFileSync(outputPath, `${outputPath}.${timestamp}.bak`);
+    fs.copyFileSync(outputPath, outputPath + "." + timestamp + ".bak");
   }
 }
 fs.writeFileSync(outputPath, nextContent, "utf8");
