@@ -20,6 +20,66 @@ fail() {
   exit 1
 }
 
+prompt_existing_state_choice() {
+  local has_existing_venv="0"
+  local has_existing_local_config="0"
+  local existing_host=""
+
+  [ -d "${ROOT_DIR}/${BACKEND_VENV_PATH}" ] && has_existing_venv="1"
+  [ -f "${ROOT_DIR}/${RUNTIME_LOCAL_PATH}" ] && has_existing_local_config="1"
+
+  if [ "${has_existing_venv}" = "0" ] && [ "${has_existing_local_config}" = "0" ]; then
+    return
+  fi
+
+  if [ -n "${LOCAL_API_HOST}" ] || [ "${RECONFIGURE_LOCAL_AGENT}" -eq 1 ]; then
+    return
+  fi
+
+  if [ ! -t 0 ]; then
+    return
+  fi
+
+  existing_host="$(read_existing_local_host || true)"
+
+  printf '\n' >&2
+  log "Detected previous local combined-install state:" >&2
+  if [ "${has_existing_venv}" = "1" ]; then
+    printf '  - existing backend environment: %s\n' "${BACKEND_VENV_PATH}" >&2
+  fi
+  if [ "${has_existing_local_config}" = "1" ]; then
+    if [ -n "${existing_host}" ]; then
+      printf '  - existing Local PyPNM Agent host: %s\n' "${existing_host}" >&2
+    else
+      printf '  - existing local runtime config file: %s\n' "${RUNTIME_LOCAL_PATH}" >&2
+    fi
+  fi
+  printf '\n' >&2
+  printf '  1) Continue with existing install/configuration\n' >&2
+  printf '  2) Continue and reconfigure Local PyPNM Agent host\n' >&2
+  printf '  3) Cancel install\n' >&2
+  printf '\n' >&2
+
+  local selection="1"
+  read -r -p "Selection [1]: " selection || true
+  selection="$(trim_value "${selection:-1}")"
+  selection="${selection:-1}"
+
+  case "${selection}" in
+    1)
+      ;;
+    2)
+      RECONFIGURE_LOCAL_AGENT=1
+      ;;
+    3)
+      fail "Install cancelled by user."
+      ;;
+    *)
+      fail "Invalid selection: ${selection}"
+      ;;
+  esac
+}
+
 trim_value() {
   local value="${1:-}"
   printf '%s' "${value}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
@@ -320,6 +380,7 @@ main() {
 
   [ -n "${ROOT_DIR}" ] || fail "--root-dir is required."
   cd "${ROOT_DIR}"
+  prompt_existing_state_choice
 
   ensure_backend_venv
   install_pypnm_docsis
