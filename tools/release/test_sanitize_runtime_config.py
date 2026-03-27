@@ -7,7 +7,7 @@ from tools.release.sanitize_runtime_config import sanitize_runtime_config
 
 
 class SanitizeRuntimeConfigTests(unittest.TestCase):
-    def test_sanitize_runtime_config_keeps_structure_and_replaces_sensitive_values(self) -> None:
+    def test_sanitize_runtime_config_keeps_template_structure_and_clears_instances(self) -> None:
         sanitized = sanitize_runtime_config(
             {
                 "version": 1,
@@ -16,6 +16,9 @@ class SanitizeRuntimeConfigTests(unittest.TestCase):
                     "poll_interval_ms": 4000,
                     "request_timeout_ms": 45000,
                     "health_path": "/health",
+                    "logging": {
+                        "level": "debug",
+                    },
                 },
                 "instances": [
                     {
@@ -42,13 +45,13 @@ class SanitizeRuntimeConfigTests(unittest.TestCase):
             }
         )
 
-        self.assertEqual(sanitized["defaults"]["selected_instance"], "rack-2")
-        self.assertEqual(sanitized["instances"][0]["base_url"], "http://127.0.0.1:8080")
-        self.assertEqual(sanitized["instances"][1]["base_url"], "http://192.0.2.11:8080")
-        self.assertEqual(sanitized["instances"][0]["request_defaults"]["cable_modem"]["mac_address"], "aa:bb:cc:dd:ee:01")
-        self.assertEqual(sanitized["instances"][0]["request_defaults"]["cable_modem"]["ip_address"], "192.168.100.10")
-        self.assertEqual(sanitized["instances"][0]["request_defaults"]["snmp"]["rw_community"], "private")
-        self.assertEqual(sanitized["instances"][0]["request_defaults"]["capture"]["channel_ids"], [])
+        self.assertEqual(sanitized["version"], 1)
+        self.assertEqual(sanitized["defaults"]["selected_instance"], "default")
+        self.assertEqual(sanitized["defaults"]["poll_interval_ms"], 4000)
+        self.assertEqual(sanitized["defaults"]["request_timeout_ms"], 45000)
+        self.assertEqual(sanitized["defaults"]["health_path"], "/health")
+        self.assertEqual(sanitized["defaults"]["logging"]["level"], "DEBUG")
+        self.assertEqual(sanitized["instances"], [])
 
 
 if __name__ == "__main__":

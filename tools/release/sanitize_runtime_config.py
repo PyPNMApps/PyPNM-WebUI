@@ -12,91 +12,42 @@ OUTPUT_DIR = Path("release-reports/runtime-config")
 OUTPUT_PATH = OUTPUT_DIR / "pypnm-instances.sanitized.yaml"
 
 
-def _example_agent_url(index: int) -> str:
-    if index == 0:
-        return "http://127.0.0.1:8080"
-    return f"http://192.0.2.{10 + index}:8080"
-
-
-def _example_mac(index: int) -> str:
-    return f"aa:bb:cc:dd:ee:{index + 1:02x}"
-
-
-def _example_cm_ip(index: int) -> str:
-    return f"192.168.100.{10 + index}"
-
-
-def _example_tftp_ip(index: int) -> str:
-    return f"192.168.100.{2 + index}"
-
-
 def sanitize_runtime_config(raw: dict[str, Any]) -> dict[str, Any]:
+    raw_defaults = raw.get("defaults", {}) if isinstance(raw.get("defaults", {}), dict) else {}
     sanitized = {
         "version": int(raw.get("version", 1) or 1),
         "defaults": {
-            "selected_instance": str(raw.get("defaults", {}).get("selected_instance", "default") or "default"),
-            "poll_interval_ms": int(raw.get("defaults", {}).get("poll_interval_ms", 5000) or 5000),
-            "request_timeout_ms": int(raw.get("defaults", {}).get("request_timeout_ms", 30000) or 30000),
-            "health_path": str(raw.get("defaults", {}).get("health_path", "/health") or "/health"),
+            "selected_instance": "default",
+            "poll_interval_ms": int(raw_defaults.get("poll_interval_ms", 5000) or 5000),
+            "request_timeout_ms": int(raw_defaults.get("request_timeout_ms", 30000) or 30000),
+            "health_path": str(raw_defaults.get("health_path", "/health") or "/health"),
+            "logging": {
+                "level": str(
+                    (
+                        raw_defaults.get("logging", {}).get("level", "INFO")
+                        if isinstance(raw_defaults.get("logging", {}), dict)
+                        else "INFO"
+                    )
+                    or "INFO"
+                ).upper()
+            },
         },
         "instances": [],
     }
-
-    instances = raw.get("instances", [])
-    if not isinstance(instances, list):
-        return sanitized
-
-    for index, instance in enumerate(instances):
-        if not isinstance(instance, dict):
-            continue
-
-        sanitized["instances"].append(
-            {
-                "id": str(instance.get("id", f"agent-{index + 1}") or f"agent-{index + 1}"),
-                "label": str(instance.get("label", f"PyPNM Agent {index + 1}") or f"PyPNM Agent {index + 1}"),
-                "base_url": _example_agent_url(index),
-                "enabled": bool(instance.get("enabled", True)),
-                "tags": list(instance.get("tags", [])) if isinstance(instance.get("tags", []), list) else [],
-                "capabilities": list(instance.get("capabilities", []))
-                if isinstance(instance.get("capabilities", []), list)
-                else [],
-                "polling": {
-                    "enabled": bool(instance.get("polling", {}).get("enabled", True)),
-                    "interval_ms": int(instance.get("polling", {}).get("interval_ms", sanitized["defaults"]["poll_interval_ms"])),
-                },
-                "request_defaults": {
-                    "cable_modem": {
-                        "mac_address": _example_mac(index),
-                        "ip_address": _example_cm_ip(index),
-                    },
-                    "tftp": {
-                        "ipv4": _example_tftp_ip(index),
-                        "ipv6": "::1",
-                    },
-                    "capture": {
-                        "channel_ids": [],
-                    },
-                    "snmp": {
-                        "rw_community": "private",
-                    },
-                },
-            }
-        )
-
-    if sanitized["instances"] and not any(
-        instance["id"] == sanitized["defaults"]["selected_instance"] for instance in sanitized["instances"]
-    ):
-        sanitized["defaults"]["selected_instance"] = sanitized["instances"][0]["id"]
-
     return sanitized
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Generate a sanitized release copy of public/config/pypnm-instances.yaml without modifying the live file."
+        description="Sanitize public/config/pypnm-instances.yaml into a release-safe template."
     )
     parser.add_argument("--input", default=str(INPUT_PATH), help=f"Input runtime config (default: {INPUT_PATH})")
     parser.add_argument("--output", default=str(OUTPUT_PATH), help=f"Sanitized output path (default: {OUTPUT_PATH})")
+    parser.add_argument(
+        "--rewrite-input",
+        action="store_true",
+        help="Rewrite --input in-place with the sanitized template (instances removed).",
+    )
     args = parser.parse_args()
 
     input_path = Path(args.input)
@@ -114,6 +65,11 @@ def main() -> int:
         return 2
 
     sanitized = sanitize_runtime_config(raw)
+    if args.rewrite_input:
+        with input_path.open("w", encoding="utf-8") as handle:
+            yaml.safe_dump(sanitized, handle, sort_keys=False)
+        print(f"Sanitized runtime config written to input: {input_path}")
+
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("w", encoding="utf-8") as handle:
         yaml.safe_dump(sanitized, handle, sort_keys=False)

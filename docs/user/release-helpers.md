@@ -86,8 +86,9 @@ Show release runner help:
 
 Default behavior:
 - running `release.py` with no `--next` performs a maintenance bump automatically
-- running `release.py` generates a sanitized release copy of
-  `public/config/pypnm-instances.yaml` under `release-reports/runtime-config/`
-  without modifying the live runtime config file
+- running `release.py` sanitizes `public/config/pypnm-instances.yaml` in place
+  to a clean template with no tracked instance entries
+- running `release.py` also writes a sanitized runtime-config artifact under
+  `release-reports/runtime-config/`
 
 For the full release sequence and branch rules, use [Release Workflow](release-workflow.md).

@@ -74,16 +74,18 @@ Default release flow (checks + commit + tag + push):
 
 When `--next` is omitted, `release.py` performs an implicit `maintenance` bump before validation, commit, tag, and push.
 
-As part of the release flow, `release.py` also generates a sanitized copy of:
+As part of the release flow, `release.py` also sanitizes:
 
 - `public/config/pypnm-instances.yaml`
 
-The sanitized copy is written under:
+Release sanitization behavior:
+
+- rewrites `public/config/pypnm-instances.yaml` to a clean template
+- clears all `instances` entries from that tracked template file
+- keeps only safe default fields
+- writes a sanitized runtime-config artifact under:
 
 - `release-reports/runtime-config/pypnm-instances.sanitized.yaml`
-
-This preserves the working runtime config file while producing a release-safe
-copy with generic placeholder values.
 
 Release with automatic version bump:
 

@@ -1,34 +1,9 @@
 version: 1
 defaults:
-  selected_instance: local-pypnm-agent
+  selected_instance: default
   poll_interval_ms: 5000
   request_timeout_ms: 30000
   health_path: /health
   logging:
     level: INFO
-instances:
-  - id: lab-local
-    label: Lab Local
-    base_url: http://172.19.8.28:8000
-    enabled: true
-    tags:
-      - lab
-      - local
-    capabilities:
-      - health
-      - analysis
-      - files
-    polling:
-      enabled: true
-      interval_ms: 5000
-    request_defaults:
-      cable_modem:
-        mac_address: FC:77:7B:0B:1B:E0
-        ip_address: 172.19.32.53
-      tftp:
-        ipv4: 172.19.8.28
-        ipv6: ::1
-      capture:
-        channel_ids: []
-      snmp:
-        rw_community: private
+instances: []

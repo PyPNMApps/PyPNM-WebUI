@@ -181,7 +181,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--skip-sanitize-runtime-config",
         action="store_true",
-        help="Skip generating the sanitized release copy of public/config/pypnm-instances.yaml",
+        help="Skip sanitizing public/config/pypnm-instances.yaml and generating the release runtime-config artifact",
     )
     parser.add_argument("--no-tag", action="store_true", help="Do not create or push a git tag")
     parser.add_argument("--no-push", action="store_true", help="Do not push branch/tag to origin")
@@ -220,7 +220,7 @@ def main() -> None:
     _run_step("npm-build", _npm_cmd("build"), enabled=not args.skip_build)
     _run_step(
         "sanitize-runtime-config",
-        [sys.executable, str(SANITIZE_RUNTIME_CONFIG_SCRIPT)],
+        [sys.executable, str(SANITIZE_RUNTIME_CONFIG_SCRIPT), "--rewrite-input"],
         enabled=not args.skip_sanitize_runtime_config,
     )
 
