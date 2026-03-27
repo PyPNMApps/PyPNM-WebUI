@@ -567,6 +567,12 @@ button.secondary,
   align-items: start;
 }
 
+.settings-action-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .button-link {
   display: inline-flex;
   align-items: center;
