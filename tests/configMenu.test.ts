@@ -6,6 +6,8 @@ import { describe, expect, it } from "vitest";
 
 import {
   ensureLocalRuntimeConfig,
+  hasReservedLocalAgent,
+  isReservedLocalAgentInstance,
   normalizeConfig,
   normalizeChannelIds,
   promptSelectedInstance,
@@ -182,5 +184,28 @@ describe("config_menu normalization", () => {
     expect(generated.config.defaults.selected_instance).toBe("lab-local");
     expect(fs.readFileSync(localConfigPath, "utf8")).toContain("selected_instance: lab-local");
     expect(fs.readFileSync(localConfigPath, "utf8")).toContain("label: Lab Local");
+  });
+
+  it("detects reserved local-pypnm-agent entries only when combined-install tagged", () => {
+    expect(
+      isReservedLocalAgentInstance({
+        id: "local-pypnm-agent",
+        tags: ["local", "combined-install"],
+      }),
+    ).toBe(true);
+    expect(
+      isReservedLocalAgentInstance({
+        id: "local-pypnm-agent",
+        tags: ["local"],
+      }),
+    ).toBe(false);
+    expect(
+      hasReservedLocalAgent({
+        instances: [
+          { id: "lab-local", tags: ["lab"] },
+          { id: "local-pypnm-agent", tags: ["combined-install"] },
+        ],
+      }),
+    ).toBe(true);
   });
 });

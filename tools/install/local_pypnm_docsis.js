@@ -28,16 +28,17 @@ function normalizeBaseUrl(value) {
   }
 }
 
-export function buildLocalPyPnmInstance(apiHost) {
+export function buildLocalPyPnmInstance(apiHost, apiPort = PYPNM_DEFAULT_PORT) {
   const normalizedHost = normalizeHostChoice(apiHost);
   if (normalizedHost === "") {
     throw new Error("Local PyPNM host is required.");
   }
+  const normalizedPort = Number.isInteger(apiPort) && apiPort >= 1 && apiPort <= 65535 ? apiPort : PYPNM_DEFAULT_PORT;
 
   return {
     id: LOCAL_PYPNM_INSTANCE_ID,
     label: LOCAL_PYPNM_INSTANCE_LABEL,
-    base_url: `http://${normalizedHost}:${PYPNM_DEFAULT_PORT}`,
+    base_url: `http://${normalizedHost}:${normalizedPort}`,
     enabled: true,
     tags: ["local", "combined-install"],
     capabilities: ["health", "analysis", "files"],
@@ -64,12 +65,12 @@ export function buildLocalPyPnmInstance(apiHost) {
   };
 }
 
-export function applyLocalPyPnmAgentConfig(templateConfig, localConfig, apiHost) {
+export function applyLocalPyPnmAgentConfig(templateConfig, localConfig, apiHost, apiPort = PYPNM_DEFAULT_PORT) {
   const nextLocalConfig = cloneValue(localConfig ?? {});
   const existingInstances = Array.isArray(nextLocalConfig.instances) ? nextLocalConfig.instances : [];
   const preservedInstances = existingInstances.filter((instance) => instance?.id !== LOCAL_PYPNM_INSTANCE_ID);
   const existingLocalInstance = existingInstances.find((instance) => instance?.id === LOCAL_PYPNM_INSTANCE_ID);
-  const generatedLocalInstance = buildLocalPyPnmInstance(apiHost);
+  const generatedLocalInstance = buildLocalPyPnmInstance(apiHost, apiPort);
   const nextLocalInstance = existingLocalInstance
     ? mergeRuntimeConfig(
         {
@@ -119,6 +120,27 @@ export function readConfiguredLocalPyPnmHost(config) {
     return new URL(baseUrl).hostname;
   } catch {
     return "";
+  }
+}
+
+export function readConfiguredLocalPyPnmPort(config) {
+  const instances = Array.isArray(config?.instances) ? config.instances : [];
+  const localInstance = instances.find((instance) => instance?.id === LOCAL_PYPNM_INSTANCE_ID);
+  const baseUrl = typeof localInstance?.base_url === "string" ? localInstance.base_url.trim() : "";
+
+  if (baseUrl === "") {
+    return PYPNM_DEFAULT_PORT;
+  }
+
+  try {
+    const parsed = new URL(baseUrl);
+    if (parsed.port === "") {
+      return parsed.protocol === "https:" ? 443 : 80;
+    }
+    const parsedPort = Number.parseInt(parsed.port, 10);
+    return Number.isInteger(parsedPort) ? parsedPort : PYPNM_DEFAULT_PORT;
+  } catch {
+    return PYPNM_DEFAULT_PORT;
   }
 }
 

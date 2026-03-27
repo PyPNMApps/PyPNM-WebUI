@@ -1,4 +1,6 @@
 export function normalizeChannelIds(value: unknown): number[];
+export function isReservedLocalAgentInstance(instance: unknown): boolean;
+export function hasReservedLocalAgent(config: unknown): boolean;
 
 export function configPathFromRepoRoot(repoRoot: string): string;
 

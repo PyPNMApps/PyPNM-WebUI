@@ -6,6 +6,7 @@ PYTHON_BIN="python3"
 PYPNM_DOCSIS_PATH=""
 PYPNM_DOCSIS_VERSION=""
 LOCAL_API_HOST=""
+LOCAL_API_PORT=""
 RECONFIGURE_LOCAL_AGENT=0
 BACKEND_VENV_PATH=".venv"
 RUNTIME_TEMPLATE_PATH="public/config/pypnm-instances.yaml"
@@ -25,6 +26,7 @@ prompt_existing_state_choice() {
   local has_existing_venv="0"
   local has_existing_local_config="0"
   local existing_host=""
+  local existing_port="${PYPNM_DEFAULT_PORT}"
 
   [ -d "${ROOT_DIR}/${BACKEND_VENV_PATH}" ] && has_existing_venv="1"
   [ -f "${ROOT_DIR}/${RUNTIME_LOCAL_PATH}" ] && has_existing_local_config="1"
@@ -33,7 +35,7 @@ prompt_existing_state_choice() {
     return
   fi
 
-  if [ -n "${LOCAL_API_HOST}" ] || [ "${RECONFIGURE_LOCAL_AGENT}" -eq 1 ]; then
+  if [ -n "${LOCAL_API_HOST}" ] || [ -n "${LOCAL_API_PORT}" ] || [ "${RECONFIGURE_LOCAL_AGENT}" -eq 1 ]; then
     return
   fi
 
@@ -42,6 +44,10 @@ prompt_existing_state_choice() {
   fi
 
   existing_host="$(read_existing_local_host || true)"
+  existing_port="$(read_existing_local_port || true)"
+  if [ -z "${existing_port}" ]; then
+    existing_port="${PYPNM_DEFAULT_PORT}"
+  fi
 
   printf '\n' >&2
   log "Detected previous local combined-install state:" >&2
@@ -50,7 +56,7 @@ prompt_existing_state_choice() {
   fi
   if [ "${has_existing_local_config}" = "1" ]; then
     if [ -n "${existing_host}" ]; then
-      printf '  - existing Local PyPNM Agent endpoint: %s:%s\n' "${existing_host}" "${PYPNM_DEFAULT_PORT}" >&2
+      printf '  - existing Local PyPNM Agent endpoint: %s:%s\n' "${existing_host}" "${existing_port}" >&2
     else
       printf '  - existing local runtime config file: %s\n' "${RUNTIME_LOCAL_PATH}" >&2
     fi
@@ -112,6 +118,7 @@ Options:
   --pypnm-docsis-path <path>     Install from a local PyPNM checkout.
   --pypnm-docsis-version <ver>   Install a specific pypnm-docsis version from pip.
   --local-api-host <host>        Preselect the local API host without prompting.
+  --local-api-port <port>        Set the local API port in runtime config.
   --reconfigure-local-agent      Ignore any previously configured local API host.
   -h, --help                     Show this help.
 EOF
@@ -139,6 +146,10 @@ parse_args() {
       --local-api-host)
         shift
         LOCAL_API_HOST="${1:-}"
+        ;;
+      --local-api-port)
+        shift
+        LOCAL_API_PORT="${1:-}"
         ;;
       --reconfigure-local-agent)
         RECONFIGURE_LOCAL_AGENT=1
@@ -224,6 +235,73 @@ const raw = fs.readFileSync(configPath, "utf8");
 const config = parse(raw) ?? {};
 process.stdout.write(readConfiguredLocalPyPnmHost(config));
 EOF
+}
+
+read_existing_local_port() {
+  local existing_path=""
+  if [ "${RECONFIGURE_LOCAL_AGENT}" -eq 0 ] && [ -f "${ROOT_DIR}/${RUNTIME_LOCAL_PATH}" ]; then
+    existing_path="${ROOT_DIR}/${RUNTIME_LOCAL_PATH}"
+  fi
+
+  CONFIG_PATH="${existing_path}" node --input-type=module <<EOF
+import fs from "node:fs";
+import { parse } from "yaml";
+import { readConfiguredLocalPyPnmPort } from "${ROOT_DIR}/tools/install/local_pypnm_docsis.js";
+
+const configPath = process.env.CONFIG_PATH ?? "";
+if (!configPath || !fs.existsSync(configPath)) {
+  process.stdout.write("");
+  process.exit(0);
+}
+
+const raw = fs.readFileSync(configPath, "utf8");
+const config = parse(raw) ?? {};
+process.stdout.write(String(readConfiguredLocalPyPnmPort(config)));
+EOF
+}
+
+validate_local_port() {
+  local port="${1:-}"
+  if ! [[ "${port}" =~ ^[0-9]+$ ]]; then
+    fail "Local API port must be numeric: ${port}"
+  fi
+  if [ "${port}" -lt 1 ] || [ "${port}" -gt 65535 ]; then
+    fail "Local API port out of range (1-65535): ${port}"
+  fi
+  printf '%s' "${port}"
+}
+
+resolve_local_api_port() {
+  local explicit_port
+  explicit_port="$(trim_value "${LOCAL_API_PORT}")"
+  if [ -n "${explicit_port}" ]; then
+    validate_local_port "${explicit_port}"
+    return
+  fi
+
+  local existing_port
+  existing_port="$(trim_value "$(read_existing_local_port || true)")"
+  local default_port="${existing_port:-${PYPNM_DEFAULT_PORT}}"
+
+  if [ ! -t 0 ]; then
+    printf '%s' "${default_port}"
+    return
+  fi
+
+  printf '\n' >&2
+  log "Select the local PyPNM API port for WebUI runtime config:" >&2
+  printf '\n' >&2
+  printf '  Press Enter to use default %s\n' "${default_port}" >&2
+  printf '\n' >&2
+
+  local selection=""
+  read -r -p "Port [${default_port}]: " selection || true
+  selection="$(trim_value "${selection}")"
+  if [ -z "${selection}" ]; then
+    selection="${default_port}"
+  fi
+
+  validate_local_port "${selection}"
 }
 
 resolve_local_api_host() {
@@ -323,9 +401,10 @@ EOF
 
 write_local_runtime_config() {
   local selected_host="$1"
+  local selected_port="$2"
 
-  log "Updating local runtime config for Local PyPNM Agent (${selected_host}:8000)"
-  SELECTED_HOST="${selected_host}" node --input-type=module <<EOF
+  log "Updating local runtime config for Local PyPNM Agent (${selected_host}:${selected_port})"
+  SELECTED_HOST="${selected_host}" SELECTED_PORT="${selected_port}" node --input-type=module <<EOF
 import fs from "node:fs";
 import path from "node:path";
 import { parse, stringify } from "yaml";
@@ -336,7 +415,8 @@ const outputPath = "${ROOT_DIR}/${RUNTIME_LOCAL_PATH}";
 const localPath = fs.existsSync(outputPath) ? outputPath : "";
 const templateConfig = parse(fs.readFileSync(templatePath, "utf8")) ?? {};
 const localConfig = localPath ? (parse(fs.readFileSync(localPath, "utf8")) ?? {}) : {};
-const merged = applyLocalPyPnmAgentConfig(templateConfig, localConfig, process.env.SELECTED_HOST ?? "");
+const selectedPort = Number.parseInt(process.env.SELECTED_PORT ?? "", 10);
+const merged = applyLocalPyPnmAgentConfig(templateConfig, localConfig, process.env.SELECTED_HOST ?? "", selectedPort);
 const nextContent = stringify(merged, { indent: 2 });
 
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
@@ -387,14 +467,16 @@ main() {
   install_pypnm_docsis
 
   local selected_host
+  local selected_port
   selected_host="$(resolve_local_api_host)"
-  write_local_runtime_config "${selected_host}"
+  selected_port="$(resolve_local_api_port)"
+  write_local_runtime_config "${selected_host}" "${selected_port}"
   install_backend_cli_shim
   install_local_stack_shim
 
   log "Combined local install complete"
-  log "Local PyPNM API URL: http://${selected_host}:8000"
-  log "Run backend directly with: pypnm-docsis serve --host 127.0.0.1 --port 8000"
+  log "Local PyPNM API URL: http://${selected_host}:${selected_port}"
+  log "Run backend directly with: pypnm-docsis serve --host 127.0.0.1 --port ${selected_port}"
   log "Start both services with: pypnm-webui start-local-stack"
 }
 

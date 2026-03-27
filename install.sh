@@ -12,6 +12,7 @@ WITH_PYPNM_DOCSIS=0
 PYPNM_DOCSIS_PATH=""
 PYPNM_DOCSIS_VERSION=""
 LOCAL_API_HOST=""
+LOCAL_API_PORT=""
 RECONFIGURE_LOCAL_AGENT=0
 DEVELOPMENT_MODE=0
 RUNTIME_TEMPLATE_PATH="public/config/pypnm-instances.yaml"
@@ -72,6 +73,7 @@ Options:
   --pypnm-docsis-version
                         Install a specific pypnm-docsis version from pip.
   --local-api-host      Preselect the local API host without prompting.
+  --local-api-port      Set the local API port for generated runtime config.
   --reconfigure-local-agent
                         Ignore any previously configured Local PyPNM Agent host.
   -h, --help            Show this help.
@@ -105,6 +107,10 @@ parse_args() {
       --local-api-host)
         shift
         LOCAL_API_HOST="${1:-}"
+        ;;
+      --local-api-port)
+        shift
+        LOCAL_API_PORT="${1:-}"
         ;;
       --reconfigure-local-agent)
         RECONFIGURE_LOCAL_AGENT=1
@@ -292,6 +298,9 @@ run_with_pypnm_docsis_helper() {
   fi
   if [ -n "${LOCAL_API_HOST}" ]; then
     helper_args+=(--local-api-host "${LOCAL_API_HOST}")
+  fi
+  if [ -n "${LOCAL_API_PORT}" ]; then
+    helper_args+=(--local-api-port "${LOCAL_API_PORT}")
   fi
   if [ "${RECONFIGURE_LOCAL_AGENT}" -eq 1 ]; then
     helper_args+=(--reconfigure-local-agent)

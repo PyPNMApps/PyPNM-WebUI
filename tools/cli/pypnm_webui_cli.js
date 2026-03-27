@@ -18,6 +18,9 @@ const DEFAULT_HOST = "127.0.0.1";
 const DEFAULT_PORT = 4173;
 const DEFAULT_LOG_LEVEL = "info";
 const VALID_LOG_LEVELS = new Set(["silent", "error", "warn", "info"]);
+const RESERVED_LOCAL_AGENT_ID = "local-pypnm-agent";
+const RESERVED_LOCAL_AGENT_TAG = "combined-install";
+const LOCAL_AGENT_PRECHECK_TIMEOUT_MS = 3000;
 
 function repoRootFromModule(metaUrl) {
   const cliDir = path.dirname(fileURLToPath(metaUrl));
@@ -248,8 +251,14 @@ function buildViteServeArgs(options) {
   return args;
 }
 
-function runServe(options, metaUrl) {
-  const repoRoot = repoRootFromModule(metaUrl);
+function isReservedLocalAgentInstance(instance) {
+  if (!instance || instance.id !== RESERVED_LOCAL_AGENT_ID) {
+    return false;
+  }
+  return Array.isArray(instance.tags) && instance.tags.includes(RESERVED_LOCAL_AGENT_TAG);
+}
+
+async function preflightLocalAgent(repoRoot) {
   const runtimeConfigResult = ensureLocalRuntimeConfig(
     configPathFromRepoRoot(repoRoot),
     templateConfigPathFromRepoRoot(repoRoot),
@@ -259,6 +268,71 @@ function runServe(options, metaUrl) {
       "INFO: No runtime YAML config file was found. Generated public/config/pypnm-instances.local.yaml\n",
     );
   }
+
+  const config = runtimeConfigResult.config;
+  const selectedInstanceId = config?.defaults?.selected_instance ?? "";
+  const instances = Array.isArray(config?.instances) ? config.instances : [];
+  const localAgent = instances.find((instance) => isReservedLocalAgentInstance(instance));
+
+  if (!localAgent || selectedInstanceId !== RESERVED_LOCAL_AGENT_ID) {
+    return;
+  }
+
+  const baseUrl = String(localAgent.base_url ?? "").trim();
+  if (baseUrl === "") {
+    process.stderr.write(
+      "WARN: local-pypnm-agent is selected but has no base_url. Re-run ./install.sh --with-pypnm-docsis --reconfigure-local-agent\n",
+    );
+    return;
+  }
+  const healthPath = String(config?.defaults?.health_path ?? "/health").trim() || "/health";
+  const timeoutMs = Math.max(
+    1000,
+    Math.min(
+      Number.isInteger(config?.defaults?.request_timeout_ms) ? config.defaults.request_timeout_ms : LOCAL_AGENT_PRECHECK_TIMEOUT_MS,
+      LOCAL_AGENT_PRECHECK_TIMEOUT_MS,
+    ),
+  );
+
+  let healthUrl = "";
+  try {
+    healthUrl = new URL(healthPath, baseUrl).toString();
+  } catch {
+    process.stderr.write(
+      `WARN: local-pypnm-agent base_url is invalid: ${baseUrl}\n`,
+    );
+    return;
+  }
+
+  const controller = new AbortController();
+  const timeoutHandle = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(healthUrl, {
+      method: "GET",
+      signal: controller.signal,
+      headers: {
+        Accept: "application/json",
+      },
+    });
+    if (!response.ok) {
+      process.stderr.write(
+        `WARN: local-pypnm-agent health check failed (${response.status}) at ${healthUrl}\n`,
+      );
+      process.stderr.write("WARN: Start backend with pypnm-webui start-local-stack\n");
+    }
+  } catch {
+    process.stderr.write(
+      `WARN: local-pypnm-agent is selected but pypnm-docsis is not reachable at ${healthUrl}\n`,
+    );
+    process.stderr.write("WARN: Start backend with pypnm-webui start-local-stack\n");
+  } finally {
+    clearTimeout(timeoutHandle);
+  }
+}
+
+async function runServe(options, metaUrl) {
+  const repoRoot = repoRootFromModule(metaUrl);
+  await preflightLocalAgent(repoRoot);
   const viteBin = path.join(repoRoot, "node_modules", "vite", "bin", "vite.js");
   const viteArgs = buildViteServeArgs(options);
   const child = spawn(process.execPath, [viteBin, ...viteArgs], {
@@ -327,7 +401,7 @@ export async function runCli(args, metaUrl) {
     if ("exitCode" in parsed) {
       return parsed.exitCode;
     }
-    runServe(parsed.options, metaUrl);
+    await runServe(parsed.options, metaUrl);
     return null;
   }
 

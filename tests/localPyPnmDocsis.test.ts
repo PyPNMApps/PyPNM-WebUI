@@ -7,6 +7,7 @@ import {
   choosePreferredLocalHost,
   parseIpv4Candidates,
   readConfiguredLocalPyPnmHost,
+  readConfiguredLocalPyPnmPort,
 } from "../tools/install/local_pypnm_docsis.js";
 
 describe("local_pypnm_docsis", () => {
@@ -21,6 +22,17 @@ describe("local_pypnm_docsis", () => {
         tftp: {
           ipv4: "172.19.8.28",
           ipv6: "::1",
+        },
+      },
+    });
+  });
+
+  it("builds a local PyPNM agent entry with an explicit API port", () => {
+    expect(buildLocalPyPnmInstance("172.19.8.28", 8081)).toMatchObject({
+      base_url: "http://172.19.8.28:8081",
+      request_defaults: {
+        tftp: {
+          ipv4: "172.19.8.28",
         },
       },
     });
@@ -111,6 +123,19 @@ describe("local_pypnm_docsis", () => {
         ],
       }),
     ).toBe("172.19.8.28");
+  });
+
+  it("reads the configured local port from the generated instance", () => {
+    expect(
+      readConfiguredLocalPyPnmPort({
+        instances: [
+          {
+            id: LOCAL_PYPNM_INSTANCE_ID,
+            base_url: "http://172.19.8.28:8081",
+          },
+        ],
+      }),
+    ).toBe(8081);
   });
 
   it("parses unique IPv4 candidates from shell output", () => {
@@ -215,6 +240,46 @@ describe("local_pypnm_docsis", () => {
     expect(merged.instances).toHaveLength(1);
     expect(merged.instances[0]).toMatchObject({
       id: LOCAL_PYPNM_INSTANCE_ID,
+      base_url: "http://172.19.8.28:8000",
+    });
+  });
+
+  it("keeps preserved instances when only host matches but port differs", () => {
+    const merged = applyLocalPyPnmAgentConfig(
+      {
+        version: 1,
+        defaults: {
+          selected_instance: "lab-local",
+        },
+        instances: [],
+      },
+      {
+        version: 1,
+        defaults: {
+          selected_instance: "lab-local",
+        },
+        instances: [
+          {
+            id: "lab-local",
+            label: "Lab Local",
+            base_url: "http://172.19.8.28:8000",
+            enabled: true,
+          },
+        ],
+      },
+      "172.19.8.28",
+      8081,
+    ) as {
+      instances: Array<Record<string, unknown>>;
+    };
+
+    expect(merged.instances).toHaveLength(2);
+    expect(merged.instances[0]).toMatchObject({
+      id: LOCAL_PYPNM_INSTANCE_ID,
+      base_url: "http://172.19.8.28:8081",
+    });
+    expect(merged.instances[1]).toMatchObject({
+      id: "lab-local",
       base_url: "http://172.19.8.28:8000",
     });
   });

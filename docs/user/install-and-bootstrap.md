@@ -92,6 +92,7 @@ When `--with-pypnm-docsis` is used, it also:
 - installs `pypnm-docsis` into that shared virtual environment
 - installs `~/.local/bin/pypnm-docsis` as a shim to that backend CLI
 - chooses a local API host automatically or with one prompt
+- prompts for local API port in interactive installs unless overridden
 - configures `Local PyPNM Agent` in `public/config/pypnm-instances.local.yaml`
 - sets `local-pypnm-agent` as the selected runtime instance
 - installs local-stack helpers for same-machine backend + frontend startup
@@ -129,6 +130,7 @@ Useful variants:
 
 ```bash
 ./install.sh --with-pypnm-docsis --local-api-host 127.0.0.1
+./install.sh --with-pypnm-docsis --local-api-port 8081
 ./install.sh --with-pypnm-docsis --pypnm-docsis-path ../PyPNM
 ./install.sh --with-pypnm-docsis --reconfigure-local-agent
 ./install.sh --development --with-pypnm-docsis
@@ -145,6 +147,10 @@ Start the UI with:
 ```bash
 pypnm-webui serve
 ```
+
+If `local-pypnm-agent` is selected, `pypnm-webui serve` performs a startup
+reachability check against that backend and warns when `pypnm-docsis` is not
+running.
 
 Start the same-machine backend + frontend stack with:
 

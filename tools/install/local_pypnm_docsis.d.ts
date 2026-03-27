@@ -21,13 +21,15 @@ export interface LocalHostDecision {
   choices: LocalHostChoice[];
 }
 
-export function buildLocalPyPnmInstance(apiHost: string): Record<string, unknown>;
+export function buildLocalPyPnmInstance(apiHost: string, apiPort?: number): Record<string, unknown>;
 export function applyLocalPyPnmAgentConfig(
   templateConfig: Record<string, unknown>,
   localConfig: Record<string, unknown>,
   apiHost: string,
+  apiPort?: number,
 ): Record<string, unknown>;
 export function readConfiguredLocalPyPnmHost(config: Record<string, unknown>): string;
+export function readConfiguredLocalPyPnmPort(config: Record<string, unknown>): number;
 export function parseIpv4Candidates(rawOutput: string): LocalIpv4Candidate[];
 export function choosePreferredLocalHost(args?: {
   explicitHost?: string;

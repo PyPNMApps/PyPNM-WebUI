@@ -48,6 +48,8 @@ const DEFAULT_CONFIG = {
     },
   ],
 };
+const RESERVED_LOCAL_AGENT_ID = "local-pypnm-agent";
+const RESERVED_LOCAL_AGENT_TAG = "combined-install";
 
 function normalizeLogLevel(value) {
   switch (typeof value === "string" ? value.trim().toUpperCase() : "") {
@@ -64,6 +66,18 @@ function normalizeLogLevel(value) {
     default:
       return "INFO";
   }
+}
+
+export function isReservedLocalAgentInstance(instance) {
+  if (!instance || instance.id !== RESERVED_LOCAL_AGENT_ID) {
+    return false;
+  }
+  return Array.isArray(instance.tags) && instance.tags.includes(RESERVED_LOCAL_AGENT_TAG);
+}
+
+export function hasReservedLocalAgent(config) {
+  const instances = Array.isArray(config?.instances) ? config.instances : [];
+  return instances.some((instance) => isReservedLocalAgentInstance(instance));
 }
 
 function interactiveAllowed() {
@@ -393,6 +407,12 @@ async function addAgent(rl, config) {
   const snmpRwCommunity = await promptLine(rl, "Default SNMP RW community", "private");
 
   const existingIndex = config.instances.findIndex((instance) => instance.id === id);
+  if (hasReservedLocalAgent(config) && id === RESERVED_LOCAL_AGENT_ID) {
+    process.stdout.write(
+      "The agent id local-pypnm-agent is reserved for combined install. Use a different id.\n",
+    );
+    return;
+  }
   const agent = {
     id,
     label: label || id,
@@ -453,8 +473,23 @@ async function editAgent(rl, config) {
 
   const instance = config.instances[index];
   const priorId = instance.id;
+  const reservedActive = hasReservedLocalAgent(config);
+  const editingReservedInstance = isReservedLocalAgentInstance(instance);
   instance.label = await promptLine(rl, "Agent label", instance.label);
-  instance.id = await promptLine(rl, "Agent id", instance.id);
+  if (editingReservedInstance) {
+    process.stdout.write(
+      "Agent id local-pypnm-agent is reserved for combined install and cannot be changed.\n",
+    );
+  } else {
+    const nextId = await promptLine(rl, "Agent id", instance.id);
+    if (reservedActive && nextId === RESERVED_LOCAL_AGENT_ID) {
+      process.stdout.write(
+        "The agent id local-pypnm-agent is reserved for combined install. Use a different id.\n",
+      );
+      return;
+    }
+    instance.id = nextId;
+  }
   instance.base_url = await promptLine(rl, "Base URL", instance.base_url);
   instance.enabled = await promptBoolean(rl, "Enabled", instance.enabled);
   instance.tags = await promptCsv(rl, "Tags (comma-separated)", instance.tags);
@@ -513,6 +548,12 @@ async function deleteAgent(rl, config) {
   const index = Number.parseInt(answer, 10) - 1;
   if (!Number.isInteger(index) || index < 0 || index >= config.instances.length) {
     process.stdout.write("Invalid selection.\n");
+    return;
+  }
+  if (isReservedLocalAgentInstance(config.instances[index])) {
+    process.stdout.write(
+      "The local-pypnm-agent entry is reserved for combined install and cannot be deleted.\n",
+    );
     return;
   }
 

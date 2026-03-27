@@ -35,6 +35,7 @@ When `--with-pypnm-docsis` is used, the installer:
 - chooses a local API host for WebUI runtime config
 - writes or updates `public/config/pypnm-instances.local.yaml`
 - creates a `Local PyPNM Agent` runtime entry
+- reserves the runtime id `local-pypnm-agent` for that combined-install entry
 - sets `defaults.selected_instance` to `local-pypnm-agent`
 - installs a local helper command path:
   - `pypnm-webui start-local-stack`
@@ -65,10 +66,13 @@ Possible outcomes:
 Current behavior:
 
 - if `--local-api-host` is supplied, the installer uses it without prompting
+- if `--local-api-port` is supplied, the installer uses that port in
+  `Local PyPNM Agent` `base_url`
 - if a Local PyPNM Agent is already configured, the installer reuses that host
   unless `--reconfigure-local-agent` is passed
 - if the install is non-interactive, it defaults to `127.0.0.1`
-- if interactive and a host decision is needed, the installer prompts once
+- if interactive, the installer prompts for host and port when those values are
+  not provided by CLI overrides
 
 ## Recommended install patterns
 
@@ -82,6 +86,12 @@ Current behavior:
 
 ```bash
 ./install.sh --with-pypnm-docsis --local-api-host 127.0.0.1
+```
+
+### Use a non-default local API port
+
+```bash
+./install.sh --with-pypnm-docsis --local-api-host 172.19.8.28 --local-api-port 8081
 ```
 
 ### Force a known interface IP
@@ -146,7 +156,8 @@ instances:
 
 Notes:
 
-- the exact `base_url` and `tftp.ipv4` follow the selected local API host
+- the exact `base_url` follows the selected local API host and port
+- `tftp.ipv4` follows the selected local API host
 - the installer writes to `public/config/pypnm-instances.local.yaml`
 - the installer preserves other instance entries in that file
 - rerunning the installer refreshes the Local PyPNM Agent entry without wiping

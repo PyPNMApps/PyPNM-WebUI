@@ -119,6 +119,11 @@
 - When config fields are edited interactively, route that behavior through `pypnm-webui config-menu` instead of inventing parallel config entry points.
 - Treat runtime YAML config as startup state, not hot-reload state. If behavior changes there, document that a page reload is required.
 - Use `public/config/pypnm-instances.yaml` as the version-controlled template and `public/config/pypnm-instances.local.yaml` as the preserved machine-local override.
+- For installer UX, prefer interactive prompts for runtime instance host/port
+  configuration and keep CLI flags as optional overrides so default installs
+  stay near zero-touch.
+- Treat `local-pypnm-agent` as a reserved runtime agent id only when combined
+  install (`--with-pypnm-docsis`) provisions that entry.
 
 ## Security And Data Hygiene (Required)
 
