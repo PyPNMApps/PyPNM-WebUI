@@ -143,8 +143,29 @@ prepare_nvm() {
 
   export NVM_DIR="$HOME/.nvm"
   if [ -s "$NVM_DIR/nvm.sh" ]; then
+    log "Loading nvm from ${NVM_DIR}/nvm.sh"
+    # nvm.sh is not strict-mode safe under set -u in all environments.
+    local had_errexit=0
+    local had_nounset=0
+    case "$-" in
+      *e*) had_errexit=1 ;;
+    esac
+    case "$-" in
+      *u*) had_nounset=1 ;;
+    esac
+    set +e +u
     # shellcheck source=/dev/null
     . "$NVM_DIR/nvm.sh"
+    local nvm_source_status=$?
+    if [ "${had_errexit}" -eq 1 ]; then
+      set -e
+    fi
+    if [ "${had_nounset}" -eq 1 ]; then
+      set -u
+    fi
+    if [ "${nvm_source_status}" -ne 0 ]; then
+      fail "Failed to initialize nvm from ${NVM_DIR}/nvm.sh"
+    fi
   else
     fail "nvm init script not found at $NVM_DIR/nvm.sh"
   fi
