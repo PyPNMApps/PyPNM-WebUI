@@ -4,11 +4,13 @@ import { selectionToZoomDomain } from "@/lib/spectrumZoom";
 export function SpectrumSelectionActions({
   selection,
   hasZoomDomain,
+  showIntegratedPower = true,
   onApplyZoom,
   onResetZoom,
 }: {
   selection: SpectrumSelectionRange | null;
   hasZoomDomain: boolean;
+  showIntegratedPower?: boolean;
   onApplyZoom: (domain: [number, number]) => void;
   onResetZoom: () => void;
 }) {
@@ -16,9 +18,11 @@ export function SpectrumSelectionActions({
 
   return (
     <div className="status-chip-row">
-      <button type="button" className="analysis-chip-button" disabled={!normalizedSelection}>
-        Integrated Power
-      </button>
+      {showIntegratedPower ? (
+        <button type="button" className="analysis-chip-button" disabled={!normalizedSelection}>
+          Integrated Power
+        </button>
+      ) : null}
       <button
         type="button"
         className="analysis-chip-button"
