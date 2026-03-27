@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { Panel } from "@/components/common/Panel";
+import { SpectrumSelectionActions } from "@/components/common/SpectrumSelectionActions";
 import { SpectrumSelectionSummary } from "@/components/common/SpectrumSelectionSummary";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import type { ChartSeries } from "@/features/analysis/types";
@@ -30,6 +31,7 @@ export function SingleSpectrumFriendlyCaptureView({
 }) {
   const [mode, setMode] = useState<SpectrumMode>("actual");
   const [selection, setSelection] = useState<SpectrumSelectionRange | null>(null);
+  const [zoomDomain, setZoomDomain] = useState<[number, number] | null>(null);
   const firstAnalysis = response.data?.analysis?.[0];
 
   const deviceInfo = toDeviceInfo(
@@ -122,9 +124,18 @@ export function SingleSpectrumFriendlyCaptureView({
           subtitle={formatRangeMhz(captureParameters?.first_segment_center_freq, captureParameters?.last_segment_center_freq)}
           yLabel="dBmV"
           series={series}
+          xDomain={zoomDomain ?? undefined}
           enableRangeSelection
           selection={selection}
           onSelectionChange={setSelection}
+          selectionActions={(
+            <SpectrumSelectionActions
+              selection={selection}
+              hasZoomDomain={zoomDomain !== null}
+              onApplyZoom={(domain) => setZoomDomain(domain)}
+              onResetZoom={() => setZoomDomain(null)}
+            />
+          )}
           exportBaseName={buildExportBaseName(
             response.mac_address,
             undefined,

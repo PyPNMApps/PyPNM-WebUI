@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { SeriesVisibilityChips } from "@/components/common/SeriesVisibilityChips";
+import { SpectrumSelectionActions } from "@/components/common/SpectrumSelectionActions";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import { ModulationCountsChart } from "@/features/operations/ModulationCountsChart";
 import type { ChartSeries } from "@/features/analysis/types";
 import { formatEpochSecondsUtc } from "@/lib/formatters/dateTime";
 import { formatFrequencyRangeMhz } from "@/lib/formatters/frequency";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
+import type { SpectrumSelectionRange } from "@/lib/spectrumPower";
 import { average, summarize } from "@/lib/stats";
 import type { SingleRxMerAnalysisEntry, SingleRxMerCaptureResponse } from "@/types/api";
 
@@ -33,7 +35,11 @@ const palette = ["#79a9ff", "#58d0a7", "#ff7a6b", "#f1c75b"] as const;
 export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCaptureResponse }) {
   const analysis = response.data?.analysis ?? [];
   const [combinedVisibility, setCombinedVisibility] = useState<Record<string, boolean>>({});
+  const [combinedSelection, setCombinedSelection] = useState<SpectrumSelectionRange | null>(null);
+  const [combinedZoomDomain, setCombinedZoomDomain] = useState<[number, number] | null>(null);
   const [channelVisibility, setChannelVisibility] = useState<Record<number, Record<string, boolean>>>({});
+  const [channelSelection, setChannelSelection] = useState<Record<number, SpectrumSelectionRange | null>>({});
+  const [channelZoomDomain, setChannelZoomDomain] = useState<Record<number, [number, number] | null>>({});
 
   if (!analysis.length) {
     return <p className="panel-copy">No RxMER capture data available yet.</p>;
@@ -68,6 +74,19 @@ export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCapt
         yLabel="RxMER (dB)"
         showLegend={false}
         series={visibleCombinedSeries}
+        xDomain={combinedZoomDomain ?? undefined}
+        enableRangeSelection
+        selection={combinedSelection}
+        onSelectionChange={setCombinedSelection}
+        selectionActions={(
+          <SpectrumSelectionActions
+            selection={combinedSelection}
+            hasZoomDomain={combinedZoomDomain !== null}
+            showIntegratedPower={false}
+            onApplyZoom={(domain) => setCombinedZoomDomain(domain)}
+            onResetZoom={() => setCombinedZoomDomain(null)}
+          />
+        )}
         exportBaseName="single-rxmer-all-channels"
       />
 
@@ -89,6 +108,9 @@ export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCapt
           ];
           const perChannelVisibility = channelVisibility[channel.channel_id ?? index] ?? {};
           const visibleChannelSeries = channelSeries.filter((series) => perChannelVisibility[series.label] !== false);
+          const channelKey = channel.channel_id ?? index;
+          const selection = channelSelection[channelKey] ?? null;
+          const zoomDomain = channelZoomDomain[channelKey] ?? null;
 
           return (
             <article key={channel.channel_id ?? index} className="analysis-channel-card">
@@ -135,6 +157,28 @@ export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCapt
                   yLabel="RxMER (dB)"
                   showLegend={false}
                   series={visibleChannelSeries}
+                  xDomain={zoomDomain ?? undefined}
+                  enableRangeSelection
+                  selection={selection}
+                  onSelectionChange={(nextSelection) => setChannelSelection((current) => ({
+                    ...current,
+                    [channelKey]: nextSelection,
+                  }))}
+                  selectionActions={(
+                    <SpectrumSelectionActions
+                      selection={selection}
+                      hasZoomDomain={zoomDomain !== null}
+                      showIntegratedPower={false}
+                      onApplyZoom={(domain) => setChannelZoomDomain((current) => ({
+                        ...current,
+                        [channelKey]: domain,
+                      }))}
+                      onResetZoom={() => setChannelZoomDomain((current) => ({
+                        ...current,
+                        [channelKey]: null,
+                      }))}
+                    />
+                  )}
                   exportBaseName={`single-rxmer-channel-${channel.channel_id ?? index}`}
                 />
 

@@ -2,12 +2,14 @@ import { ExportActions } from "@/components/common/ExportActions";
 import { useState } from "react";
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { SeriesVisibilityChips } from "@/components/common/SeriesVisibilityChips";
+import { SpectrumSelectionActions } from "@/components/common/SpectrumSelectionActions";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import type { ChartSeries } from "@/features/analysis/types";
 import { downloadCsv } from "@/lib/export/csv";
 import { formatEpochSecondsUtc } from "@/lib/formatters/dateTime";
 import { formatFrequencyRangeMhz } from "@/lib/formatters/frequency";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
+import type { SpectrumSelectionRange } from "@/lib/spectrumPower";
 import type {
   SingleChannelEstCoeffAnalysisEntry,
   SingleChannelEstCoeffCaptureResponse,
@@ -48,6 +50,12 @@ const palette = ["#79a9ff", "#58d0a7", "#ff7a6b", "#f1c75b"] as const;
 export function SingleChannelEstCoeffCaptureView({ response }: { response: SingleChannelEstCoeffCaptureResponse }) {
   const analysis = response.data?.analysis ?? [];
   const [combinedVisibility, setCombinedVisibility] = useState<Record<string, boolean>>({});
+  const [combinedSelection, setCombinedSelection] = useState<SpectrumSelectionRange | null>(null);
+  const [combinedZoomDomain, setCombinedZoomDomain] = useState<[number, number] | null>(null);
+  const [channelMagnitudeSelection, setChannelMagnitudeSelection] = useState<Record<number, SpectrumSelectionRange | null>>({});
+  const [channelMagnitudeZoomDomain, setChannelMagnitudeZoomDomain] = useState<Record<number, [number, number] | null>>({});
+  const [channelDelaySelection, setChannelDelaySelection] = useState<Record<number, SpectrumSelectionRange | null>>({});
+  const [channelDelayZoomDomain, setChannelDelayZoomDomain] = useState<Record<number, [number, number] | null>>({});
 
   if (!analysis.length) {
     return <p className="panel-copy">No channel-est capture data available yet.</p>;
@@ -86,6 +94,19 @@ export function SingleChannelEstCoeffCaptureView({ response }: { response: Singl
         yLabel="Magnitude (dB)"
         showLegend={false}
         series={visibleMagnitudeSeries}
+        xDomain={combinedZoomDomain ?? undefined}
+        enableRangeSelection
+        selection={combinedSelection}
+        onSelectionChange={setCombinedSelection}
+        selectionActions={(
+          <SpectrumSelectionActions
+            selection={combinedSelection}
+            hasZoomDomain={combinedZoomDomain !== null}
+            showIntegratedPower={false}
+            onApplyZoom={(domain) => setCombinedZoomDomain(domain)}
+            onResetZoom={() => setCombinedZoomDomain(null)}
+          />
+        )}
         exportBaseName="single-channel-estimation-all-channels"
       />
 
@@ -93,6 +114,11 @@ export function SingleChannelEstCoeffCaptureView({ response }: { response: Singl
         {analysis.map((channel, index) => {
           const primitive = findPrimitive(response.data?.primative, channel.channel_id);
           const echoes = channel.echo?.report?.echoes ?? [];
+          const channelKey = channel.channel_id ?? index;
+          const magnitudeSelection = channelMagnitudeSelection[channelKey] ?? null;
+          const magnitudeZoomDomain = channelMagnitudeZoomDomain[channelKey] ?? null;
+          const delaySelection = channelDelaySelection[channelKey] ?? null;
+          const delayZoomDomain = channelDelayZoomDomain[channelKey] ?? null;
 
           return (
             <article key={channel.channel_id ?? index} className="analysis-channel-card">
@@ -120,20 +146,46 @@ export function SingleChannelEstCoeffCaptureView({ response }: { response: Singl
                 </span>
               </div>
 
-              <div className="channel-est-grid">
-                <IqScatterChart
-                  title="I/Q Equalizer Scatter Plot"
-                  points={primitive?.values ?? []}
-                  exportBaseName={`single-channel-estimation-iq-scatter-channel-${channel.channel_id ?? index}`}
-                />
-                <div className="channel-est-graphs">
+              <div className="channel-est-stack">
+                <div className="channel-est-panel">
+                  <IqScatterChart
+                    title="I/Q Equalizer Scatter Plot"
+                    points={primitive?.values ?? []}
+                    exportBaseName={`single-channel-estimation-iq-scatter-channel-${channel.channel_id ?? index}`}
+                  />
+                </div>
+                <div className="channel-est-panel">
                   <LineAnalysisChart
                     title="Channel Estimation - Magnitude Response (dB)"
                     subtitle=""
                     yLabel="Magnitude (dB)"
                     series={[toSeries("Magnitude", palette[index % palette.length], channel.carrier_values.frequency, channel.carrier_values.magnitudes)]}
+                    xDomain={magnitudeZoomDomain ?? undefined}
+                    enableRangeSelection
+                    selection={magnitudeSelection}
+                    onSelectionChange={(nextSelection) => setChannelMagnitudeSelection((current) => ({
+                      ...current,
+                      [channelKey]: nextSelection,
+                    }))}
+                    selectionActions={(
+                      <SpectrumSelectionActions
+                        selection={magnitudeSelection}
+                        hasZoomDomain={magnitudeZoomDomain !== null}
+                        showIntegratedPower={false}
+                        onApplyZoom={(domain) => setChannelMagnitudeZoomDomain((current) => ({
+                          ...current,
+                          [channelKey]: domain,
+                        }))}
+                        onResetZoom={() => setChannelMagnitudeZoomDomain((current) => ({
+                          ...current,
+                          [channelKey]: null,
+                        }))}
+                      />
+                    )}
                     exportBaseName={`single-channel-estimation-magnitude-channel-${channel.channel_id ?? index}`}
                   />
+                </div>
+                <div className="channel-est-panel">
                   <LineAnalysisChart
                     title="Channel Estimation - Group Delay"
                     subtitle=""
@@ -141,6 +193,28 @@ export function SingleChannelEstCoeffCaptureView({ response }: { response: Singl
                     series={[
                       toSeries("Group Delay", "#58d0a7", channel.carrier_values.frequency, channel.carrier_values.group_delay?.magnitude ?? []),
                     ]}
+                    xDomain={delayZoomDomain ?? undefined}
+                    enableRangeSelection
+                    selection={delaySelection}
+                    onSelectionChange={(nextSelection) => setChannelDelaySelection((current) => ({
+                      ...current,
+                      [channelKey]: nextSelection,
+                    }))}
+                    selectionActions={(
+                      <SpectrumSelectionActions
+                        selection={delaySelection}
+                        hasZoomDomain={delayZoomDomain !== null}
+                        showIntegratedPower={false}
+                        onApplyZoom={(domain) => setChannelDelayZoomDomain((current) => ({
+                          ...current,
+                          [channelKey]: domain,
+                        }))}
+                        onResetZoom={() => setChannelDelayZoomDomain((current) => ({
+                          ...current,
+                          [channelKey]: null,
+                        }))}
+                      />
+                    )}
                     exportBaseName={`single-channel-estimation-group-delay-channel-${channel.channel_id ?? index}`}
                   />
                 </div>

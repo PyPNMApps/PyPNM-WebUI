@@ -1,9 +1,11 @@
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { Panel } from "@/components/common/Panel";
 import { SeriesVisibilityChips } from "@/components/common/SeriesVisibilityChips";
+import { SpectrumSelectionActions } from "@/components/common/SpectrumSelectionActions";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import type { ChartSeries } from "@/features/analysis/types";
+import type { SpectrumSelectionRange } from "@/lib/spectrumPower";
 import type { SingleUsOfdmaPreEqualizationAnalysisEntry, SingleUsOfdmaPreEqualizationCaptureResponse } from "@/types/api";
 import { useState } from "react";
 
@@ -93,6 +95,12 @@ export function SingleUsOfdmaPreEqualizationView({ response }: { response: Singl
   const [channelLineVisibility, setChannelLineVisibility] = useState<Record<number, { estimated: boolean; preEq: boolean }>>({});
   const [channelSeriesVisibility, setChannelSeriesVisibility] = useState<Record<number, Record<string, boolean>>>({});
   const [groupDelaySeriesVisibility, setGroupDelaySeriesVisibility] = useState<Record<number, Record<string, boolean>>>({});
+  const [combinedSelection, setCombinedSelection] = useState<SpectrumSelectionRange | null>(null);
+  const [combinedZoomDomain, setCombinedZoomDomain] = useState<[number, number] | null>(null);
+  const [frequencySelection, setFrequencySelection] = useState<Record<number, SpectrumSelectionRange | null>>({});
+  const [frequencyZoomDomain, setFrequencyZoomDomain] = useState<Record<number, [number, number] | null>>({});
+  const [groupDelaySelection, setGroupDelaySelection] = useState<Record<number, SpectrumSelectionRange | null>>({});
+  const [groupDelayZoomDomain, setGroupDelayZoomDomain] = useState<Record<number, [number, number] | null>>({});
 
   return (
     <div className="operations-visual-stack">
@@ -113,6 +121,19 @@ export function SingleUsOfdmaPreEqualizationView({ response }: { response: Singl
             subtitle="Primary OFDMA pre-equalization captures only"
             yLabel="dB"
             series={combinedMagnitudeSeries}
+            xDomain={combinedZoomDomain ?? undefined}
+            enableRangeSelection
+            selection={combinedSelection}
+            onSelectionChange={setCombinedSelection}
+            selectionActions={(
+              <SpectrumSelectionActions
+                selection={combinedSelection}
+                hasZoomDomain={combinedZoomDomain !== null}
+                showIntegratedPower={false}
+                onApplyZoom={(domain) => setCombinedZoomDomain(domain)}
+                onResetZoom={() => setCombinedZoomDomain(null)}
+              />
+            )}
             exportBaseName="single-us-ofdma-pre-eq-all-channels"
           />
         </Panel>
@@ -142,6 +163,10 @@ export function SingleUsOfdmaPreEqualizationView({ response }: { response: Singl
           const visibleChannelSeries = combinedChannelSeries.filter((series) => seriesVisibility[series.label] !== false);
           const groupDelaySeries = buildLineSeries(entries, (entry) => entry.carrier_values?.group_delay?.magnitude, ["#58d0a7", "#f59e0b"]);
           const visibleGroupDelay = groupDelaySeries.filter((series) => (groupDelaySeriesVisibility[channelId] ?? {})[series.label] !== false);
+          const selectedFrequencyRange = frequencySelection[channelId] ?? null;
+          const selectedFrequencyZoom = frequencyZoomDomain[channelId] ?? null;
+          const selectedGroupDelayRange = groupDelaySelection[channelId] ?? null;
+          const selectedGroupDelayZoom = groupDelayZoomDomain[channelId] ?? null;
 
           return (
             <Panel key={`us-ofdma-preeq-${channelId}`} title={`Channel ${channelId}`}>
@@ -246,6 +271,28 @@ export function SingleUsOfdmaPreEqualizationView({ response }: { response: Singl
                   yLabel="dB"
                   showLegend={false}
                   series={visibleChannelSeries}
+                  xDomain={selectedFrequencyZoom ?? undefined}
+                  enableRangeSelection
+                  selection={selectedFrequencyRange}
+                  onSelectionChange={(nextSelection) => setFrequencySelection((current) => ({
+                    ...current,
+                    [channelId]: nextSelection,
+                  }))}
+                  selectionActions={(
+                    <SpectrumSelectionActions
+                      selection={selectedFrequencyRange}
+                      hasZoomDomain={selectedFrequencyZoom !== null}
+                      showIntegratedPower={false}
+                      onApplyZoom={(domain) => setFrequencyZoomDomain((current) => ({
+                        ...current,
+                        [channelId]: domain,
+                      }))}
+                      onResetZoom={() => setFrequencyZoomDomain((current) => ({
+                        ...current,
+                        [channelId]: null,
+                      }))}
+                    />
+                  )}
                   exportBaseName={`single-us-ofdma-pre-eq-frequency-response-channel-${channelId}`}
                 />
               </Panel>
@@ -269,6 +316,28 @@ export function SingleUsOfdmaPreEqualizationView({ response }: { response: Singl
                   yPadding={0.05}
                   showLegend={false}
                   series={visibleGroupDelay}
+                  xDomain={selectedGroupDelayZoom ?? undefined}
+                  enableRangeSelection
+                  selection={selectedGroupDelayRange}
+                  onSelectionChange={(nextSelection) => setGroupDelaySelection((current) => ({
+                    ...current,
+                    [channelId]: nextSelection,
+                  }))}
+                  selectionActions={(
+                    <SpectrumSelectionActions
+                      selection={selectedGroupDelayRange}
+                      hasZoomDomain={selectedGroupDelayZoom !== null}
+                      showIntegratedPower={false}
+                      onApplyZoom={(domain) => setGroupDelayZoomDomain((current) => ({
+                        ...current,
+                        [channelId]: domain,
+                      }))}
+                      onResetZoom={() => setGroupDelayZoomDomain((current) => ({
+                        ...current,
+                        [channelId]: null,
+                      }))}
+                    />
+                  )}
                   exportBaseName={`single-us-ofdma-pre-eq-group-delay-channel-${channelId}`}
                 />
               </Panel>

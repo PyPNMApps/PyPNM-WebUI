@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { Panel } from "@/components/common/Panel";
 import { SeriesVisibilityChips } from "@/components/common/SeriesVisibilityChips";
+import { SpectrumSelectionActions } from "@/components/common/SpectrumSelectionActions";
 import { SpectrumSelectionSummary } from "@/components/common/SpectrumSelectionSummary";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import type { ChartSeries } from "@/features/analysis/types";
@@ -72,6 +73,7 @@ function SpectrumScqamChannelCard({
 }) {
   const [mode, setMode] = useState<SpectrumMode>("actual");
   const [selection, setSelection] = useState<SpectrumSelectionRange | null>(null);
+  const [zoomDomain, setZoomDomain] = useState<[number, number] | null>(null);
   const magnitudes = analysis.signal_analysis?.magnitudes ?? [];
   const averagePower = mean(magnitudes);
   const series = useMemo(() => channelSeries(mode, analysis), [mode, analysis]);
@@ -98,9 +100,18 @@ function SpectrumScqamChannelCard({
         subtitle={`${formatRangeMhz(analysis.capture_parameters?.first_segment_center_freq, analysis.capture_parameters?.last_segment_center_freq)} · Channel Power ${typeof analysis.signal_analysis?.channel_power_dbmv === "number" ? `${analysis.signal_analysis.channel_power_dbmv.toFixed(2)} dBmV` : "n/a"}`}
         yLabel="dB"
         series={series}
+        xDomain={zoomDomain ?? undefined}
         enableRangeSelection
         selection={selection}
         onSelectionChange={setSelection}
+        selectionActions={(
+          <SpectrumSelectionActions
+            selection={selection}
+            hasZoomDomain={zoomDomain !== null}
+            onApplyZoom={(domain) => setZoomDomain(domain)}
+            onResetZoom={() => setZoomDomain(null)}
+          />
+        )}
         exportBaseName={buildExportBaseName(
           analysis.mac_address,
           undefined,
@@ -144,6 +155,7 @@ function SpectrumScqamChannelCard({
 
 export function SingleSpectrumScqamCaptureView({ response }: { response: SingleSpectrumScqamCaptureResponse }) {
   const [combinedSelection, setCombinedSelection] = useState<SpectrumSelectionRange | null>(null);
+  const [combinedZoomDomain, setCombinedZoomDomain] = useState<[number, number] | null>(null);
   const [combinedVisibility, setCombinedVisibility] = useState<Record<string, boolean>>({});
   const analyses = response.data?.analyses ?? [];
   const measurementStats = response.data?.measurement_stats ?? [];
@@ -202,9 +214,18 @@ export function SingleSpectrumScqamCaptureView({ response }: { response: SingleS
           yLabel="dB"
           showLegend={false}
           series={visibleCombinedSeries}
+          xDomain={combinedZoomDomain ?? undefined}
           enableRangeSelection
           selection={combinedSelection}
           onSelectionChange={setCombinedSelection}
+          selectionActions={(
+            <SpectrumSelectionActions
+              selection={combinedSelection}
+              hasZoomDomain={combinedZoomDomain !== null}
+              onApplyZoom={(domain) => setCombinedZoomDomain(domain)}
+              onResetZoom={() => setCombinedZoomDomain(null)}
+            />
+          )}
           exportBaseName={buildExportBaseName(
             analyses[0]?.mac_address ?? response.mac_address,
             undefined,

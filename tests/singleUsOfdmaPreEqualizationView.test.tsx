@@ -21,4 +21,12 @@ describe("SingleUsOfdmaPreEqualizationView", () => {
     expect(within(table).getByText("Echoes")).toBeTruthy();
     expect(within(table).getByText("Upstream Pre-Equalizer Coefficients")).toBeTruthy();
   });
+
+  it("renders zoom-only controls for spectrum line charts", () => {
+    render(<SingleUsOfdmaPreEqualizationView response={singleUsOfdmaPreEqualizationFixture} />);
+
+    expect(screen.getAllByRole("button", { name: "Zoom" }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("button", { name: "Reset Zoom" }).length).toBeGreaterThan(0);
+    expect(screen.queryByRole("button", { name: "Integrated Power" })).toBeNull();
+  });
 });
