@@ -171,16 +171,32 @@ run_backend_python() {
 }
 
 ensure_python_venv_prereqs() {
-  if "${PYTHON_BIN}" -m venv --help >/dev/null 2>&1; then
-    if env -u PYTHONPATH -u PYTHONHOME "${PYTHON_BIN}" -I - <<'EOF' >/dev/null 2>&1
-import ensurepip
-EOF
-    then
-      return
-    fi
+  if ! "${PYTHON_BIN}" -m venv --help >/dev/null 2>&1; then
+    fail "Python venv support is required but unavailable for ${PYTHON_BIN}. Install Python venv support and re-run."
   fi
 
-  fail "Python venv support is required but unavailable for ${PYTHON_BIN}. Install Python venv support (Ubuntu: sudo apt-get install -y python3-venv python3-pip) and re-run."
+  local pyver
+  pyver="$(env -u PYTHONPATH -u PYTHONHOME "${PYTHON_BIN}" -I - <<'EOF'
+import sys
+print(f"{sys.version_info.major}.{sys.version_info.minor}")
+EOF
+)"
+  local tmp_dir
+  tmp_dir="$(mktemp -d)"
+  local venv_stderr
+  venv_stderr="${tmp_dir}/venv.stderr"
+  if env -u PYTHONPATH -u PYTHONHOME "${PYTHON_BIN}" -I -m venv "${tmp_dir}/check" 2>"${venv_stderr}"; then
+    rm -rf "${tmp_dir}"
+    return
+  fi
+
+  local first_error_line=""
+  if [ -s "${venv_stderr}" ]; then
+    first_error_line="$(head -n1 "${venv_stderr}" | tr -d '\r')"
+  fi
+  rm -rf "${tmp_dir}"
+
+  fail "Python venv creation failed for ${PYTHON_BIN} (${pyver}). Install Python venv tooling (Ubuntu: sudo apt-get install -y python${pyver}-venv python3-venv python3-pip) and re-run.${first_error_line:+ Error: ${first_error_line}}"
 }
 
 ensure_backend_venv() {
