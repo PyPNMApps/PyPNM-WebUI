@@ -77,16 +77,10 @@ Reset local install artifacts for a clean reinstall:
 pypnm-webui serve
 ```
 
-Start same-machine backend + frontend from the normal serve flow:
+Start same-machine backend (PyPNM) + frontend from the normal serve flow:
 
 ```bash
 pypnm-webui serve --start-local-pypnm-docsis
-```
-
-Same-machine backend + frontend is also available with:
-
-```bash
-pypnm-webui start-local-stack
 ```
 
 Default local URL:
@@ -99,19 +93,6 @@ pypnm-webui --help
 pypnm-webui serve --help
 pypnm-webui config-menu --help
 pypnm-webui kill-pypnm-webui --help
-```
-
-Common serve examples:
-
-```bash
-pypnm-webui serve
-pypnm-webui serve --host 0.0.0.0 --port 4173
-pypnm-webui serve --open
-pypnm-webui config-menu
-pypnm-webui kill-pypnm-webui --list
-./install.sh --update-webui
-npm run docs:build
-npm run docs:serve
 ```
 
 ## User docs
