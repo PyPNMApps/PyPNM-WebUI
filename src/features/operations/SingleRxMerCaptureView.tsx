@@ -12,6 +12,7 @@ import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import {
   buildRxMerSelectionInsights,
   collectSelectedRxMerValues,
+  collectSelectedRxMerValuesFromSeries,
   type RxMerSelectionInsights,
 } from "@/lib/rxMerSelectionInsights";
 import { normalizeSpectrumSelection, type SpectrumSelectionRange } from "@/lib/spectrumPower";
@@ -67,6 +68,7 @@ export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCapt
   );
   const combinedSeries = analysis.map((channel, index) => toSeries(channel, palette[index % palette.length]));
   const visibleCombinedSeries = combinedSeries.filter((series) => combinedVisibility[series.label] !== false);
+  const normalizedCombinedSelection = normalizeSpectrumSelection(combinedSelection);
   return (
     <div className="operations-visual-stack">
       <div className="status-chip-row">
@@ -96,7 +98,24 @@ export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCapt
           <SpectrumSelectionActions
             selection={combinedSelection}
             hasZoomDomain={combinedZoomDomain !== null}
-            showIntegratedPower={false}
+            showIntegratedPower
+            integratedPowerLabel="Selection Insights"
+            onIntegratedPowerClick={() => {
+              if (!normalizedCombinedSelection) {
+                return;
+              }
+              const selectedValues = collectSelectedRxMerValuesFromSeries(visibleCombinedSeries, normalizedCombinedSelection);
+              const insights = buildRxMerSelectionInsights(selectedValues);
+              if (!insights) {
+                return;
+              }
+              setSelectionInsightsModal({
+                channelId: "All Channels",
+                selectionStartMhz: normalizedCombinedSelection.startX,
+                selectionEndMhz: normalizedCombinedSelection.endX,
+                insights,
+              });
+            }}
             onApplyZoom={(domain) => setCombinedZoomDomain(domain)}
             onResetZoom={() => setCombinedZoomDomain(null)}
           />

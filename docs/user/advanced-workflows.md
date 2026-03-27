@@ -86,3 +86,6 @@ Note:
 
 - table-first analysis views (for example LTE/Echo tables) keep table export
   controls and do not render chart zoom controls.
+- RxMER `Selection Insights` math definitions are documented in
+  `User Guide -> Single Capture -> RxMER Selection Insights Math` and are shared
+  in common library code for reuse across RxMER views.

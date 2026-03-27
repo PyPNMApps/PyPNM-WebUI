@@ -1,5 +1,6 @@
 import { summarize } from "@/lib/stats";
 import { normalizeSpectrumSelection, type SpectrumSelectionRange } from "@/lib/spectrumPower";
+import type { ChartSeries } from "@/features/analysis/types";
 
 export interface RxMerDistributionBin {
   startMer: number;
@@ -40,6 +41,27 @@ export function collectSelectedRxMerValues(
       }
     }
   }
+
+  return selectedValues;
+}
+
+export function collectSelectedRxMerValuesFromSeries(
+  series: ChartSeries[],
+  selection: SpectrumSelectionRange | null,
+): number[] {
+  const normalized = normalizeSpectrumSelection(selection);
+  if (!normalized) {
+    return [];
+  }
+
+  const selectedValues: number[] = [];
+  series.forEach((entry) => {
+    entry.points.forEach((point) => {
+      if (point.x >= normalized.startX && point.x <= normalized.endX && Number.isFinite(point.y)) {
+        selectedValues.push(point.y);
+      }
+    });
+  });
 
   return selectedValues;
 }

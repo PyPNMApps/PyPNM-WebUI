@@ -4,6 +4,7 @@ import {
   buildRxMerDistributionBins,
   buildRxMerSelectionInsights,
   collectSelectedRxMerValues,
+  collectSelectedRxMerValuesFromSeries,
   estimateBitloadFromMerDb,
   inferErrorFreeQamFromMerDb,
 } from "@/lib/rxMerSelectionInsights";
@@ -17,6 +18,26 @@ describe("rxMerSelectionInsights", () => {
     );
 
     expect(selected).toEqual([36.2, 37.3]);
+  });
+
+  it("collects selected MER values from chart series for combined overlays", () => {
+    const selected = collectSelectedRxMerValuesFromSeries(
+      [
+        {
+          label: "Channel 1",
+          color: "#79a9ff",
+          points: [{ x: 100, y: 35 }, { x: 101, y: 36 }],
+        },
+        {
+          label: "Channel 2",
+          color: "#58d0a7",
+          points: [{ x: 100.5, y: 37 }, { x: 101.5, y: 38 }],
+        },
+      ],
+      { startX: 100.4, endX: 101.2 },
+    );
+
+    expect(selected).toEqual([36, 37]);
   });
 
   it("estimates bitload from MER and clamps to a practical range", () => {
