@@ -8,28 +8,45 @@ interface HistogramBarChartProps {
   title: string;
   values: number[];
   exportBaseName?: string;
+  xAxisLabel?: string;
+  yAxisLabel?: string;
+  xTickLabels?: Array<string | number>;
+  showAllXTickLabels?: boolean;
 }
 
-export function HistogramBarChart({ title, values, exportBaseName }: HistogramBarChartProps) {
+export function HistogramBarChart({
+  title,
+  values,
+  exportBaseName,
+  xAxisLabel = "Bin Index",
+  yAxisLabel = "Hit Count",
+  xTickLabels,
+  showAllXTickLabels = false,
+}: HistogramBarChartProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   if (!values.length) {
     return <p className="panel-copy">No histogram bins available.</p>;
   }
 
   const width = 1100;
-  const height = 340;
+  const height = 360;
   const left = 46;
   const top = 20;
+  const bottom = 68;
   const usableWidth = width - 68;
-  const usableHeight = height - 52;
+  const usableHeight = height - top - bottom;
   const yMax = Math.max(...values, 1);
   const barWidth = usableWidth / values.length;
   const tickCount = Math.min(10, values.length);
   const centerIndex = Math.floor((values.length - 1) / 2);
-  const tickIndexes = new Set<number>(
-    Array.from({ length: tickCount }, (_, index) => Math.round((index * Math.max(values.length - 1, 0)) / Math.max(tickCount - 1, 1))),
-  );
-  tickIndexes.add(centerIndex);
+  const tickIndexes = showAllXTickLabels
+    ? new Set<number>(Array.from({ length: values.length }, (_, index) => index))
+    : new Set<number>(
+      Array.from({ length: tickCount }, (_, index) => Math.round((index * Math.max(values.length - 1, 0)) / Math.max(tickCount - 1, 1))),
+    );
+  if (!showAllXTickLabels) {
+    tickIndexes.add(centerIndex);
+  }
 
   return (
     <div className="chart-frame">
@@ -58,8 +75,8 @@ export function HistogramBarChart({ title, values, exportBaseName }: HistogramBa
             </g>
           );
         })}
-        <line x1={left} y1={height - 32} x2={width - 20} y2={height - 32} stroke="rgba(255,255,255,0.20)" />
-        <line x1={left} y1={top} x2={left} y2={height - 32} stroke="rgba(255,255,255,0.20)" />
+        <line x1={left} y1={height - bottom} x2={width - 20} y2={height - bottom} stroke="rgba(255,255,255,0.20)" />
+        <line x1={left} y1={top} x2={left} y2={height - bottom} stroke="rgba(255,255,255,0.20)" />
         {values.map((value, index) => {
           const x = left + index * barWidth + 1;
           const labelX = x + Math.max(barWidth - 2, 1) / 2;
@@ -70,23 +87,23 @@ export function HistogramBarChart({ title, values, exportBaseName }: HistogramBa
               {tickIndexes.has(index) ? (
                 <text
                   x={labelX}
-                  y={height - 10}
+                  y={height - bottom + 22}
                   fill="#9eb0c9"
                   fontSize="10"
                   textAnchor="end"
-                  transform={`rotate(-35 ${labelX} ${height - 10})`}
+                  transform={`rotate(-35 ${labelX} ${height - bottom + 22})`}
                 >
-                  {index}
+                  {xTickLabels?.[index] ?? index}
                 </text>
               ) : null}
             </g>
           );
         })}
-        <text x={width / 2 - 22} y={height - 2} fill="#9eb0c9" fontSize="11">
-          Bin Index
+        <text x={width / 2 - 22} y={height - 8} fill="#9eb0c9" fontSize="11">
+          {xAxisLabel}
         </text>
         <text x="10" y="12" fill="#9eb0c9" fontSize="11">
-          Hit Count
+          {yAxisLabel}
         </text>
       </svg>
     </div>

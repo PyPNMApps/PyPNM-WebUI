@@ -21,6 +21,8 @@
 - Keep endpoint integrations isolated in service modules.
 - Use typed contracts for all request/response payloads.
 - Prefer reusable components over endpoint-specific one-offs.
+- Keep analysis math and derived calculations in shared `src/lib` helpers so
+  multiple RxMER/analysis views can reuse one implementation.
 
 ## Analysis Viewer Baseline
 - `src/features/analysis/types.ts` holds typed analysis contracts for the current fixture-backed view.

@@ -5,12 +5,16 @@ export function SpectrumSelectionActions({
   selection,
   hasZoomDomain,
   showIntegratedPower = true,
+  integratedPowerLabel = "Integrated Power",
+  onIntegratedPowerClick,
   onApplyZoom,
   onResetZoom,
 }: {
   selection: SpectrumSelectionRange | null;
   hasZoomDomain: boolean;
   showIntegratedPower?: boolean;
+  integratedPowerLabel?: string;
+  onIntegratedPowerClick?: () => void;
   onApplyZoom: (domain: [number, number]) => void;
   onResetZoom: () => void;
 }) {
@@ -19,8 +23,17 @@ export function SpectrumSelectionActions({
   return (
     <div className="status-chip-row">
       {showIntegratedPower ? (
-        <button type="button" className="analysis-chip-button" disabled={!normalizedSelection}>
-          Integrated Power
+        <button
+          type="button"
+          className="analysis-chip-button"
+          disabled={!normalizedSelection || !onIntegratedPowerClick}
+          onClick={() => {
+            if (normalizedSelection && onIntegratedPowerClick) {
+              onIntegratedPowerClick();
+            }
+          }}
+        >
+          {integratedPowerLabel}
         </button>
       ) : null}
       <button

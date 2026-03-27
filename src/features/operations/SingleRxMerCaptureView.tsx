@@ -3,12 +3,18 @@ import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { SeriesVisibilityChips } from "@/components/common/SeriesVisibilityChips";
 import { SpectrumSelectionActions } from "@/components/common/SpectrumSelectionActions";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
+import { HistogramBarChart } from "@/features/operations/HistogramBarChart";
 import { ModulationCountsChart } from "@/features/operations/ModulationCountsChart";
 import type { ChartSeries } from "@/features/analysis/types";
 import { formatEpochSecondsUtc } from "@/lib/formatters/dateTime";
 import { formatFrequencyRangeMhz } from "@/lib/formatters/frequency";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
-import type { SpectrumSelectionRange } from "@/lib/spectrumPower";
+import {
+  buildRxMerSelectionInsights,
+  collectSelectedRxMerValues,
+  type RxMerSelectionInsights,
+} from "@/lib/rxMerSelectionInsights";
+import { normalizeSpectrumSelection, type SpectrumSelectionRange } from "@/lib/spectrumPower";
 import { average, summarize } from "@/lib/stats";
 import type { SingleRxMerAnalysisEntry, SingleRxMerCaptureResponse } from "@/types/api";
 
@@ -32,6 +38,13 @@ function findFallbackCaptureTime(analysis: SingleRxMerAnalysisEntry[]): number |
 
 const palette = ["#79a9ff", "#58d0a7", "#ff7a6b", "#f1c75b"] as const;
 
+interface RxMerSelectionModalState {
+  channelId: string;
+  selectionStartMhz: number;
+  selectionEndMhz: number;
+  insights: RxMerSelectionInsights;
+}
+
 export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCaptureResponse }) {
   const analysis = response.data?.analysis ?? [];
   const [combinedVisibility, setCombinedVisibility] = useState<Record<string, boolean>>({});
@@ -40,6 +53,7 @@ export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCapt
   const [channelVisibility, setChannelVisibility] = useState<Record<number, Record<string, boolean>>>({});
   const [channelSelection, setChannelSelection] = useState<Record<number, SpectrumSelectionRange | null>>({});
   const [channelZoomDomain, setChannelZoomDomain] = useState<Record<number, [number, number] | null>>({});
+  const [selectionInsightsModal, setSelectionInsightsModal] = useState<RxMerSelectionModalState | null>(null);
 
   if (!analysis.length) {
     return <p className="panel-copy">No RxMER capture data available yet.</p>;
@@ -111,6 +125,7 @@ export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCapt
           const channelKey = channel.channel_id ?? index;
           const selection = channelSelection[channelKey] ?? null;
           const zoomDomain = channelZoomDomain[channelKey] ?? null;
+          const normalizedSelection = normalizeSpectrumSelection(selection);
 
           return (
             <article key={channel.channel_id ?? index} className="analysis-channel-card">
@@ -168,7 +183,28 @@ export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCapt
                     <SpectrumSelectionActions
                       selection={selection}
                       hasZoomDomain={zoomDomain !== null}
-                      showIntegratedPower={false}
+                      showIntegratedPower
+                      integratedPowerLabel="Selection Insights"
+                      onIntegratedPowerClick={() => {
+                        if (!normalizedSelection) {
+                          return;
+                        }
+                        const selectedValues = collectSelectedRxMerValues(
+                          channel.carrier_values?.frequency,
+                          channel.carrier_values?.magnitude,
+                          normalizedSelection,
+                        );
+                        const insights = buildRxMerSelectionInsights(selectedValues);
+                        if (!insights) {
+                          return;
+                        }
+                        setSelectionInsightsModal({
+                          channelId: String(channel.channel_id ?? "n/a"),
+                          selectionStartMhz: normalizedSelection.startX,
+                          selectionEndMhz: normalizedSelection.endX,
+                          insights,
+                        });
+                      }}
                       onApplyZoom={(domain) => setChannelZoomDomain((current) => ({
                         ...current,
                         [channelKey]: domain,
@@ -192,6 +228,78 @@ export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCapt
           );
         })}
       </div>
+
+      {selectionInsightsModal ? (
+        <div
+          className="selection-insights-modal-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Selected RxMER Region Insights"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) {
+              setSelectionInsightsModal(null);
+            }
+          }}
+        >
+          <div className="selection-insights-modal-card">
+            <div className="selection-insights-modal-header">
+              <h3 className="selection-insights-modal-title">Selected RxMER Region Insights</h3>
+              <button
+                type="button"
+                className="analysis-chip-button"
+                onClick={() => setSelectionInsightsModal(null)}
+              >
+                Close
+              </button>
+            </div>
+            <div className="status-chip-row">
+              <span className="analysis-chip"><b>Channel</b> {selectionInsightsModal.channelId}</span>
+              <span className="analysis-chip">
+                <b>Range</b> {selectionInsightsModal.selectionStartMhz.toFixed(3)} - {selectionInsightsModal.selectionEndMhz.toFixed(3)} MHz
+              </span>
+              <span className="analysis-chip"><b>Points</b> {selectionInsightsModal.insights.pointCount}</span>
+            </div>
+            <div className="selection-insights-metrics-grid">
+              <div className="analysis-small-metric">
+                <div className="analysis-small-k">Avg MER</div>
+                <div className="analysis-small-v">{selectionInsightsModal.insights.avgMerDb.toFixed(2)} dB</div>
+              </div>
+              <div className="analysis-small-metric">
+                <div className="analysis-small-k">Estimated Bitload</div>
+                <div className="analysis-small-v">{selectionInsightsModal.insights.estimatedBitloadBitsPerSymbol.toFixed(2)} bits/sym</div>
+              </div>
+              <div className="analysis-small-metric">
+                <div className="analysis-small-k">
+                  <span>Error-Free QAM</span>
+                  <span
+                    className="field-hint"
+                    title="QAM modulation level expected to run without FEC codeword correction in the selected region."
+                    aria-label="QAM modulation level expected to run without FEC codeword correction in the selected region."
+                  >
+                    ?
+                  </span>
+                </div>
+                <div className="analysis-small-v">{selectionInsightsModal.insights.safeQamLabel}</div>
+              </div>
+              <div className="analysis-small-metric">
+                <div className="analysis-small-k">Min / Max MER</div>
+                <div className="analysis-small-v">
+                  {selectionInsightsModal.insights.minMerDb.toFixed(2)} / {selectionInsightsModal.insights.maxMerDb.toFixed(2)} dB
+                </div>
+              </div>
+            </div>
+            <HistogramBarChart
+              title="MER Distribution (Selected Region)"
+              values={selectionInsightsModal.insights.distributionBins.map((bin) => bin.count)}
+              xAxisLabel="RxMER (dB)"
+              yAxisLabel="Carrier Count"
+              xTickLabels={selectionInsightsModal.insights.distributionBins.map((bin) => ((bin.startMer + bin.endMer) / 2).toFixed(1))}
+              showAllXTickLabels
+              exportBaseName={`single-rxmer-selection-distribution-channel-${selectionInsightsModal.channelId}`}
+            />
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

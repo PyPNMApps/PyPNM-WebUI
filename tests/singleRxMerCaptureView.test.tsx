@@ -12,6 +12,6 @@ describe("SingleRxMerCaptureView", () => {
 
     expect(screen.getAllByRole("button", { name: "Zoom" }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole("button", { name: "Reset Zoom" }).length).toBeGreaterThan(0);
-    expect(screen.queryByRole("button", { name: "Integrated Power" })).toBeNull();
+    expect(screen.getAllByRole("button", { name: "Selection Insights" }).length).toBeGreaterThan(0);
   });
 });
