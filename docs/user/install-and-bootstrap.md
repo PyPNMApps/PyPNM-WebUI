@@ -50,7 +50,8 @@ test matrix.
 
 ## Minimum shell dependency
 
-`install.sh` now assumes required system tools are already installed.
+`install.sh` can bootstrap missing Python venv tooling on Ubuntu/Debian when
+`--development` or `--with-pypnm-docsis` is used.
 
 Required for all installs:
 
@@ -69,6 +70,11 @@ Example (Ubuntu) if your box is missing prerequisites:
 sudo apt-get update
 sudo apt-get install -y git curl python3 python3-venv
 ```
+
+Note:
+
+- on Ubuntu/Debian, installer will attempt `apt-get install` for missing
+  Python venv packages and may prompt for sudo
 
 ## What `install.sh` does
 

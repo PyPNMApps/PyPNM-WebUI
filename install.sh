@@ -49,31 +49,87 @@ ensure_base_prerequisites() {
 
 ensure_python_venv_support() {
   if ! "${PYTHON_BIN}" -m venv --help >/dev/null 2>&1; then
-    fail "Python venv support is required but unavailable for ${PYTHON_BIN}. Install Python venv support and re-run."
+    maybe_install_python_venv_packages
+    if ! "${PYTHON_BIN}" -m venv --help >/dev/null 2>&1; then
+      fail "Python venv support is required but unavailable for ${PYTHON_BIN}."
+    fi
+  fi
+
+  if smoke_test_python_venv_creation; then
+    return
+  fi
+
+  maybe_install_python_venv_packages
+  if smoke_test_python_venv_creation; then
+    return
   fi
 
   local pyver
-  pyver="$(env -u PYTHONPATH -u PYTHONHOME "${PYTHON_BIN}" -I - <<'EOF'
+  pyver="$(python_minor_version)"
+  fail "Python venv creation failed for ${PYTHON_BIN} (${pyver}). Install Python venv tooling (Ubuntu: sudo apt-get install -y python${pyver}-venv python3-venv python3-pip) and re-run."
+}
+
+python_minor_version() {
+  env -u PYTHONPATH -u PYTHONHOME "${PYTHON_BIN}" -I - <<'EOF'
 import sys
 print(f"{sys.version_info.major}.{sys.version_info.minor}")
 EOF
-)"
+}
+
+smoke_test_python_venv_creation() {
   local tmp_dir
   tmp_dir="$(mktemp -d)"
   local venv_stderr
   venv_stderr="${tmp_dir}/venv.stderr"
   if env -u PYTHONPATH -u PYTHONHOME "${PYTHON_BIN}" -I -m venv "${tmp_dir}/check" 2>"${venv_stderr}"; then
     rm -rf "${tmp_dir}"
+    return 0
+  fi
+
+  rm -rf "${tmp_dir}"
+  return 1
+}
+
+maybe_install_python_venv_packages() {
+  if ! command -v apt-get >/dev/null 2>&1; then
     return
   fi
 
-  local first_error_line=""
-  if [ -s "${venv_stderr}" ]; then
-    first_error_line="$(head -n1 "${venv_stderr}" | tr -d '\r')"
+  local distro_id=""
+  if [ -f /etc/os-release ]; then
+    # shellcheck disable=SC1091
+    . /etc/os-release
+    distro_id="${ID:-}"
   fi
-  rm -rf "${tmp_dir}"
+  case "${distro_id}" in
+    ubuntu|debian)
+      ;;
+    *)
+      return
+      ;;
+  esac
 
-  fail "Python venv creation failed for ${PYTHON_BIN} (${pyver}). Install Python venv tooling (Ubuntu: sudo apt-get install -y python${pyver}-venv python3-venv python3-pip) and re-run.${first_error_line:+ Error: ${first_error_line}}"
+  local pyver
+  pyver="$(python_minor_version)"
+  local packages=("python${pyver}-venv" "python3-venv" "python3-pip")
+  local apt_runner=()
+  if [ "${EUID}" -eq 0 ]; then
+    apt_runner=(apt-get)
+  else
+    if ! command -v sudo >/dev/null 2>&1; then
+      fail "Missing sudo. Install Python venv tooling manually: sudo apt-get install -y ${packages[*]}"
+    fi
+    apt_runner=(sudo apt-get)
+  fi
+
+  log "Installing missing Python venv tooling via apt (${packages[*]})"
+  # shellcheck disable=SC2145
+  "${apt_runner[@]}" update
+  if [ "${EUID}" -eq 0 ]; then
+    DEBIAN_FRONTEND=noninteractive apt-get install -y "${packages[@]}"
+  else
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y "${packages[@]}"
+  fi
 }
 
 print_help() {

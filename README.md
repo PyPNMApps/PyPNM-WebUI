@@ -62,6 +62,9 @@ Install Python development tooling (docs/release helpers) into `.venv`:
 ./install.sh --development
 ```
 
+On Ubuntu/Debian, `install.sh` may prompt for sudo to install missing Python
+venv packages required by `--development` or `--with-pypnm-docsis`.
+
 Reset local install artifacts for a clean reinstall:
 
 ```bash
