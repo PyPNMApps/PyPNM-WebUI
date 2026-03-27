@@ -87,6 +87,9 @@ Behavior:
 - the menu saves `public/config/pypnm-instances.local.yaml`
 - if the file already exists and the content changes, the menu creates a
   timestamped `.bak` backup beside it before overwrite
+- base URLs are validated as HTTP(S) URLs before save
+- if you enter a host/port without a scheme such as `172.19.8.28:8000`, the
+  menu auto-normalizes it to `http://172.19.8.28:8000`
 - changes to runtime YAML are not part of Vite hot reload
 - after editing runtime config, reload the browser page so the updated YAML is
   read

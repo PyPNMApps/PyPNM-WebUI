@@ -74,6 +74,12 @@ echo "$PYTHONHOME"
 - verify `.env` `VITE_PYPNM_API_BASE_URL` if YAML fallback is being used
 - check browser devtools network tab for failing request paths/statuses
 
+If `config-menu` was used recently:
+
+- `base_url` should be saved as a full HTTP(S) URL (for example `http://172.19.8.28:8000`)
+- entries such as `172.19.8.28:8000` are auto-normalized to `http://172.19.8.28:8000`
+- non-HTTP(S) values are rejected at prompt time and should be corrected
+
 ## Request form rejects MAC or IP input
 
 The UI now validates common network inputs before submit.
