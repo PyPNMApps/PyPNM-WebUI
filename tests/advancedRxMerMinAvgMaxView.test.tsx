@@ -35,8 +35,10 @@ describe("AdvancedRxMerMinAvgMaxView", () => {
   it("lets users mute min avg and max chart series", async () => {
     render(<AdvancedRxMerMinAvgMaxView response={responseFixture} />);
 
-    expect(screen.getByRole("button", { name: "PNG" })).toBeTruthy();
-    expect(screen.getByRole("button", { name: "CSV" })).toBeTruthy();
+    expect(screen.getAllByRole("button", { name: "PNG" }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("button", { name: "CSV" }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("button", { name: "Zoom" }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("button", { name: "Reset Zoom" }).length).toBeGreaterThan(0);
 
     const minButton = screen.getByRole("button", { name: /Min/ });
     const avgButton = screen.getByRole("button", { name: /Avg/ });

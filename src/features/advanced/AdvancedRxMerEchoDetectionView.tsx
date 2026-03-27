@@ -1,12 +1,15 @@
 import { ExportActions } from "@/components/common/ExportActions";
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { Panel } from "@/components/common/Panel";
+import { SpectrumSelectionActions } from "@/components/common/SpectrumSelectionActions";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
 import { downloadCsv } from "@/lib/export/csv";
 import { buildExportBaseName } from "@/lib/export/naming";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
 import type { ChartSeries } from "@/features/analysis/types";
+import type { SpectrumSelectionRange } from "@/lib/spectrumPower";
 import type { AdvancedMultiRxMerAnalysisResponse, AdvancedMultiRxMerEchoChannel } from "@/types/api";
+import { useState } from "react";
 
 function buildSeries(channel: AdvancedMultiRxMerEchoChannel): ChartSeries[] {
   const frequency = channel.rxmer?.frequency ?? [];
@@ -33,6 +36,8 @@ export function AdvancedRxMerEchoDetectionView({ response }: { response: Advance
     response.device?.system_description ?? response.system_description,
     response.device?.mac_address ?? response.mac_address,
   );
+  const [selectionByChannel, setSelectionByChannel] = useState<Record<string, SpectrumSelectionRange | null>>({});
+  const [zoomByChannel, setZoomByChannel] = useState<Record<string, [number, number] | null>>({});
 
   return (
     <div className="operations-visual-stack">
@@ -59,6 +64,28 @@ export function AdvancedRxMerEchoDetectionView({ response }: { response: Advance
               subtitle={echoes.length ? "Echo detected" : "No secondary echoes detected"}
               yLabel="dB"
               series={buildSeries(channel)}
+              xDomain={zoomByChannel[channelId] ?? undefined}
+              enableRangeSelection
+              selection={selectionByChannel[channelId] ?? null}
+              onSelectionChange={(nextSelection) => setSelectionByChannel((current) => ({
+                ...current,
+                [channelId]: nextSelection,
+              }))}
+              selectionActions={(
+                <SpectrumSelectionActions
+                  selection={selectionByChannel[channelId] ?? null}
+                  hasZoomDomain={(zoomByChannel[channelId] ?? null) !== null}
+                  showIntegratedPower={false}
+                  onApplyZoom={(domain) => setZoomByChannel((current) => ({
+                    ...current,
+                    [channelId]: domain,
+                  }))}
+                  onResetZoom={() => setZoomByChannel((current) => ({
+                    ...current,
+                    [channelId]: null,
+                  }))}
+                />
+              )}
               exportBaseName={buildExportBaseName(macAddress, undefined, `advanced-rxmer-echo-detection-channel-${channelId}`)}
             />
             <div className="operations-visual-actions">

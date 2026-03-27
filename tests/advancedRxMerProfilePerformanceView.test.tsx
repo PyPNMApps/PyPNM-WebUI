@@ -49,7 +49,7 @@ describe("AdvancedRxMerProfilePerformanceView", () => {
 
     expect(screen.getByRole("button", { name: "PNG" })).toBeTruthy();
     expect(screen.getAllByRole("button", { name: "CSV" }).length).toBeGreaterThan(0);
-    expect(screen.getByRole("button", { name: "Zoom Selection" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Zoom" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Reset Zoom" })).toBeTruthy();
     expect(screen.getByText("Drag across the profile chart to select a frequency range for zoom.")).toBeTruthy();
 
