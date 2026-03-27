@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ExportActions } from "@/components/common/ExportActions";
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
 import { Panel } from "@/components/common/Panel";
+import { RxMerSelectionInsightsModal, type RxMerSelectionModalState } from "@/components/common/RxMerSelectionInsightsModal";
 import { SeriesVisibilityChips } from "@/components/common/SeriesVisibilityChips";
 import { SpectrumSelectionActions } from "@/components/common/SpectrumSelectionActions";
 import { SpectrumSelectionSummary } from "@/components/common/SpectrumSelectionSummary";
@@ -10,7 +11,8 @@ import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisCh
 import { downloadCsv } from "@/lib/export/csv";
 import { buildExportBaseName } from "@/lib/export/naming";
 import { toDeviceInfo } from "@/lib/pypnm/deviceInfo";
-import type { SpectrumSelectionRange } from "@/lib/spectrumPower";
+import { buildRxMerSelectionInsights, collectSelectedRxMerValues } from "@/lib/rxMerSelectionInsights";
+import { normalizeSpectrumSelection, type SpectrumSelectionRange } from "@/lib/spectrumPower";
 import type { ChartSeries } from "@/features/analysis/types";
 import type { AdvancedMultiRxMerAnalysisResponse, AdvancedMultiRxMerOfdmProfileChannel } from "@/types/api";
 
@@ -92,9 +94,11 @@ function ProfilePerformanceChannelPanel({
   const [seriesVisibility, setSeriesVisibility] = useState<Record<string, boolean>>({});
   const [selection, setSelection] = useState<SpectrumSelectionRange | null>(null);
   const [zoomDomain, setZoomDomain] = useState<[number, number] | null>(null);
+  const [selectionInsightsModal, setSelectionInsightsModal] = useState<RxMerSelectionModalState | null>(null);
   const allSeries = buildChannelSeries(channel);
   const visibleSeries = allSeries.filter((item) => seriesVisibility[item.label] !== false);
   const captureTime = Number((profiles[0] as { capture_time?: number } | undefined)?.capture_time);
+  const normalizedSelection = normalizeSpectrumSelection(selection);
 
   return (
     <Panel title={`Channel ${channelId} · OFDM Profile Performance 1`}>
@@ -119,7 +123,28 @@ function ProfilePerformanceChannelPanel({
           <SpectrumSelectionActions
             selection={selection}
             hasZoomDomain={zoomDomain !== null}
-            showIntegratedPower={false}
+            showIntegratedPower
+            integratedPowerLabel="Selection Insights"
+            onIntegratedPowerClick={() => {
+              if (!normalizedSelection) {
+                return;
+              }
+              const selectedValues = collectSelectedRxMerValues(
+                channel.frequency,
+                channel.avg_mer,
+                normalizedSelection,
+              );
+              const insights = buildRxMerSelectionInsights(selectedValues);
+              if (!insights) {
+                return;
+              }
+              setSelectionInsightsModal({
+                channelId,
+                selectionStartMhz: normalizedSelection.startX,
+                selectionEndMhz: normalizedSelection.endX,
+                insights,
+              });
+            }}
             onApplyZoom={(domain) => {
               setZoomDomain(domain);
               setSelection(null);
@@ -176,6 +201,15 @@ function ProfilePerformanceChannelPanel({
         selection={selection}
         integratedPower={[]}
         emptyMessage="Drag across the profile chart to select a frequency range for zoom."
+      />
+      <RxMerSelectionInsightsModal
+        data={selectionInsightsModal}
+        exportBaseName={buildExportBaseName(
+          macAddress,
+          captureTime,
+          `advanced-rxmer-profile-performance-selection-distribution-channel-${channelId}`,
+        )}
+        onClose={() => setSelectionInsightsModal(null)}
       />
       <div className="table-scroll">
         <table className="channel-metrics-table">
