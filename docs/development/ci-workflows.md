@@ -11,7 +11,7 @@ integration validation, security analysis, and docs publishing.
 | `ubuntu-pypnm-integration.yml` | Live integration against a running local PyPNM backend | Ubuntu 22.04, 24.04 | Python 3.12, Node 22 |
 | `ubuntu-with-pypnm-docsis-install.yml` | Verifies `./install.sh --with-pypnm-docsis` end-to-end | Ubuntu 22.04, 24.04 | Python 3.10, 3.11, 3.12, 3.13 |
 | `codeql.yml` | Static security analysis for JavaScript/TypeScript | macOS latest | CodeQL JS/TS |
-| `publish-mkdocs.yml` | Builds and deploys docs site to GitHub Pages | Ubuntu latest | Python 3.12 |
+| `publish-mkdocs.yml` | Builds and deploys docs site to GitHub Pages | Ubuntu latest | Python 3.12, Node 22 |
 
 ## Current CI behavior
 
@@ -53,6 +53,10 @@ integration validation, security analysis, and docs publishing.
 ### Docs publish (`publish-mkdocs.yml`)
 
 - runs on `main` pushes
+- installs Node 22 and runs `npm ci`
+- runs frontend `npm run build`
+- installs Playwright Chromium
+- runs `npm run docs:capture-ui-previews` to generate UI preview screenshots
 - enforces `mkdocs build --strict`
 - deploys to GitHub Pages
 
