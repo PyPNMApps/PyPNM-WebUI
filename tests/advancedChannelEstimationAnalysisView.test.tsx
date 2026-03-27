@@ -52,6 +52,8 @@ describe("AdvancedChannelEstimationAnalysisView", () => {
     render(<AdvancedChannelEstimationAnalysisView analysisType="min-avg-max" response={response} />);
 
     expect(screen.getByText("All Channels · Avg Aligned by Frequency")).toBeTruthy();
+    expect(screen.getAllByRole("button", { name: "Zoom" }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("button", { name: "Reset Zoom" }).length).toBeGreaterThan(0);
     expect(screen.queryByText("Analysis JSON")).toBeNull();
   });
 });

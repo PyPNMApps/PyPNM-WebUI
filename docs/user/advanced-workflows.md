@@ -59,3 +59,30 @@ Each advanced workbench includes:
 - table CSV exports are derived from the typed rows used to render the table
 - RxMER heat-map analysis currently exposes `CSV` export for source values; PNG
   export is currently limited to SVG-backed charts
+
+## Chart Range Selection And Zoom
+
+Line-chart analysis views support selection-first zoom controls in the chart
+header:
+
+- drag to select a frequency region on the chart
+- use `Zoom` to focus into that selected region
+- use `Reset Zoom` to restore the full frequency domain
+
+Availability:
+
+- `Advanced -> RxMER`
+  - `Min / Avg / Max`
+  - `OFDM Profile Performance 1`
+  - `Echo Detection 1`
+- `Advanced -> Channel Estimation`
+  - `Min / Avg / Max`
+  - `Group Delay`
+- `Advanced -> OFDMA PreEq`
+  - `Min / Avg / Max`
+  - `Group Delay`
+
+Note:
+
+- table-first analysis views (for example LTE/Echo tables) keep table export
+  controls and do not render chart zoom controls.
