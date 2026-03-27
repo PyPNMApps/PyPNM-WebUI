@@ -18,6 +18,14 @@ Details:
 - [Install And Bootstrap](install-and-bootstrap.md)
 - [Local Combined Install](local-combined-install.md)
 
+Optional dependency security check:
+
+```bash
+npm audit
+```
+
+Expected output after a current install is `found 0 vulnerabilities`.
+
 ## 2. Configure API endpoint
 
 If `pypnm-docsis` and WebUI are on the same machine and you want the installer

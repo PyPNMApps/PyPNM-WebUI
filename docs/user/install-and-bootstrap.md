@@ -74,6 +74,13 @@ sudo apt-get install -y git curl python3 python3-venv
 - refreshes `public/config/pypnm-instances.local.yaml` from the version-controlled
   template while preserving local values
 
+Dependency security note:
+
+- `npm ci` installs exactly from `package-lock.json`
+- security patch updates are shipped through lockfile updates in this repo
+- if you pulled the latest code and ran `./install.sh`, you get those patched
+  dependency versions automatically
+
 When `--development` is used, it also:
 
 - creates `.venv` if missing
