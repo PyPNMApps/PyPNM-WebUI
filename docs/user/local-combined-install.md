@@ -156,10 +156,10 @@ Notes:
 
 This workflow adds or updates:
 
-- WebUI frontend env:
+- shared Python environment:
   - `.venv`
-- shared runtime environment:
-  - `.venv`
+- WebUI runtime variables:
+  - `.env`
 - backend CLI shim:
   - `~/.local/bin/pypnm-docsis`
 - machine-local runtime config:

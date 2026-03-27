@@ -14,6 +14,12 @@ Install WebUI plus a same-machine `pypnm-docsis` backend:
 ./install.sh --with-pypnm-docsis
 ```
 
+Install Python development tooling used by docs/release workflows:
+
+```bash
+./install.sh --development
+```
+
 Update an existing install to the latest tagged release:
 
 ```bash
@@ -36,43 +42,42 @@ Validated on:
 Other modern Linux distributions may work but are not yet part of the formal
 test matrix.
 
-The installer currently knows how to bootstrap prerequisites when one of these
-package managers is available:
-
-- `apt-get`
-- `dnf`
-- `yum`
-- `zypper`
-- `apk`
-- `brew`
-
 ## Minimum shell dependency
 
-From a fresh system, install Git first:
+`install.sh` now assumes required system tools are already installed.
+
+Required for all installs:
+
+- `git`
+- `curl`
+- `node`/`npm` via `nvm` (Node 22)
+
+Required only for `--development` and/or `--with-pypnm-docsis`:
+
+- Python 3 (`python3` or `PYTHON_BIN`)
+- Python venv support (`python -m venv`)
+
+Example (Ubuntu) if your box is missing prerequisites:
 
 ```bash
 sudo apt-get update
-sudo apt-get install -y git
+sudo apt-get install -y git curl python3 python3-venv
 ```
 
 ## What `install.sh` does
 
-- installs missing shell prerequisites when possible:
-  - `git`
-  - `curl`
-  - Python 3
-  - Python venv support
 - installs `nvm` if missing
 - installs and uses Node 22
 - sets Node 22 as the default
 - creates `.env` from `.env.example` if needed
 - runs `npm ci`
-- creates `.venv` and installs Python release-tool dependencies
-- installs Python dependencies in isolated mode so local `PYTHONPATH` or
-  `PYTHONHOME` values do not leak other project metadata into the WebUI
-  environment
 - refreshes `public/config/pypnm-instances.local.yaml` from the version-controlled
   template while preserving local values
+
+When `--development` is used, it also:
+
+- creates `.venv` if missing
+- installs Python tooling for release and docs workflows into `.venv`
 
 When `--with-pypnm-docsis` is used, it also:
 
@@ -119,6 +124,7 @@ Useful variants:
 ./install.sh --with-pypnm-docsis --local-api-host 127.0.0.1
 ./install.sh --with-pypnm-docsis --pypnm-docsis-path ../PyPNM
 ./install.sh --with-pypnm-docsis --reconfigure-local-agent
+./install.sh --development --with-pypnm-docsis
 ```
 
 Full instructions:

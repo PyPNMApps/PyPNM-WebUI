@@ -8,6 +8,12 @@ From the repo root:
 ./install.sh
 ```
 
+If you also want Python docs/release tooling installed into `.venv`:
+
+```bash
+./install.sh --development
+```
+
 Details:
 - [Install And Bootstrap](install-and-bootstrap.md)
 - [Local Combined Install](local-combined-install.md)

@@ -56,6 +56,12 @@ Same-machine WebUI + `pypnm-docsis` install:
 ./install.sh --with-pypnm-docsis
 ```
 
+Install Python development tooling (docs/release helpers) into `.venv`:
+
+```bash
+./install.sh --development
+```
+
 ## Run locally
 
 ```bash

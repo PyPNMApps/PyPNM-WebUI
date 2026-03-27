@@ -13,6 +13,7 @@ PYPNM_DOCSIS_PATH=""
 PYPNM_DOCSIS_VERSION=""
 LOCAL_API_HOST=""
 RECONFIGURE_LOCAL_AGENT=0
+DEVELOPMENT_MODE=0
 RUNTIME_TEMPLATE_PATH="public/config/pypnm-instances.yaml"
 RUNTIME_LOCAL_PATH="public/config/pypnm-instances.local.yaml"
 
@@ -25,185 +26,29 @@ fail() {
   exit 1
 }
 
-detect_package_manager() {
-  if command -v apt-get >/dev/null 2>&1; then
-    printf 'apt-get'
-    return
-  fi
-  if command -v dnf >/dev/null 2>&1; then
-    printf 'dnf'
-    return
-  fi
-  if command -v yum >/dev/null 2>&1; then
-    printf 'yum'
-    return
-  fi
-  if command -v zypper >/dev/null 2>&1; then
-    printf 'zypper'
-    return
-  fi
-  if command -v apk >/dev/null 2>&1; then
-    printf 'apk'
-    return
-  fi
-  if command -v brew >/dev/null 2>&1; then
-    printf 'brew'
-    return
-  fi
-  printf 'none'
-}
-
-PACKAGE_MANAGER="$(detect_package_manager)"
-
-update_package_index() {
-  case "$PACKAGE_MANAGER" in
-    apt-get)
-      sudo apt-get update
-      ;;
-    dnf)
-      sudo dnf makecache
-      ;;
-    yum)
-      sudo yum makecache
-      ;;
-    zypper)
-      sudo zypper refresh
-      ;;
-    apk)
-      sudo apk update
-      ;;
-    brew)
-      brew update
-      ;;
-    none)
-      ;;
-  esac
-}
-
-install_packages() {
-  if [ "$#" -eq 0 ]; then
-    return
-  fi
-
-  case "$PACKAGE_MANAGER" in
-    apt-get)
-      sudo apt-get install -y "$@"
-      ;;
-    dnf)
-      sudo dnf install -y "$@"
-      ;;
-    yum)
-      sudo yum install -y "$@"
-      ;;
-    zypper)
-      sudo zypper install -y "$@"
-      ;;
-    apk)
-      sudo apk add --no-cache "$@"
-      ;;
-    brew)
-      brew install "$@"
-      ;;
-    none)
-      fail "Missing required packages and no supported package manager was found."
-      ;;
-  esac
-}
-
 ensure_base_prerequisites() {
-  local need_update=0
-  local packages=()
-
-  if ! command -v git >/dev/null 2>&1; then
-    case "$PACKAGE_MANAGER" in
-      apt-get|dnf|yum|zypper|apk|brew)
-        packages+=("git")
-        need_update=1
-        ;;
-      none)
-        fail "git is required but not found. Install git and re-run."
-        ;;
-    esac
-  fi
-
-  if ! command -v curl >/dev/null 2>&1; then
-    case "$PACKAGE_MANAGER" in
-      apt-get|dnf|yum|zypper|apk|brew)
-        packages+=("curl")
-        need_update=1
-        ;;
-      none)
-        fail "curl is required but not found. Install curl and re-run."
-        ;;
-    esac
-  fi
-
-  if ! command -v "${PYTHON_BIN}" >/dev/null 2>&1; then
-    case "$PACKAGE_MANAGER" in
-      apt-get|apk)
-        packages+=("python3")
-        need_update=1
-        ;;
-      dnf|yum|zypper|brew)
-        packages+=("python3")
-        need_update=1
-        ;;
-      none)
-        fail "${PYTHON_BIN} is required but not found. Install Python 3 and re-run."
-        ;;
-    esac
-  fi
-
-  if [ "$need_update" -eq 1 ]; then
-    log "Installing base prerequisites via ${PACKAGE_MANAGER}"
-    update_package_index
-    install_packages "${packages[@]}"
-  fi
+  ensure_command git "git is required but not found. Install git and re-run."
+  ensure_command curl "curl is required but not found. Install curl and re-run."
 }
 
 ensure_python_venv_support() {
-  local packages=()
-
   if "${PYTHON_BIN}" -m venv --help >/dev/null 2>&1; then
     return
   fi
 
-  case "$PACKAGE_MANAGER" in
-    apt-get)
-      packages=("python3-venv")
-      ;;
-    dnf|yum)
-      packages=("python3")
-      ;;
-    zypper)
-      packages=("python3-virtualenv")
-      ;;
-    apk)
-      packages=("python3")
-      ;;
-    brew)
-      return
-      ;;
-    none)
-      fail "Python venv support is required but could not be auto-installed."
-      ;;
-  esac
-
-  if [ "${#packages[@]}" -gt 0 ]; then
-    log "Installing Python venv support via ${PACKAGE_MANAGER}"
-    update_package_index
-    install_packages "${packages[@]}"
-  fi
+  fail "Python venv support is required but unavailable for ${PYTHON_BIN}. Install Python venv support and re-run."
 }
 
 print_help() {
   cat <<'EOF'
 Usage:
   ./install.sh
+  ./install.sh --development
   ./install.sh --update-webui [tag]
   ./install.sh --with-pypnm-docsis [options]
 
 Options:
+  --development         Install Python development tooling into .venv.
   --update-webui [tag]  Update this existing checkout to the latest tag or the
                         provided tag, then reinstall dependencies and refresh
                         the local runtime config override.
@@ -230,6 +75,9 @@ parse_args() {
         ;;
       --with-pypnm-docsis)
         WITH_PYPNM_DOCSIS=1
+        ;;
+      --development)
+        DEVELOPMENT_MODE=1
         ;;
       --pypnm-docsis-path)
         shift
@@ -306,6 +154,20 @@ run_isolated_venv_python() {
   env -u PYTHONPATH -u PYTHONHOME .venv/bin/python -I "$@"
 }
 
+ensure_python_development_tooling() {
+  if [ ! -d .venv ]; then
+    log "Creating Python virtual environment (.venv)"
+    env -u PYTHONPATH -u PYTHONHOME "${PYTHON_BIN}" -I -m venv .venv
+  else
+    log "Keeping existing Python virtual environment (.venv)"
+  fi
+
+  log "Installing Python development tooling"
+  run_isolated_venv_python -m pip install --upgrade pip >/dev/null
+  run_isolated_venv_python -m pip install -r tools/release/requirements.txt >/dev/null
+  run_isolated_venv_python -m pip install -r requirements-docs.txt >/dev/null
+}
+
 ensure_cli_shim() {
   local user_bin_dir="$HOME/.local/bin"
   local shim_path="${user_bin_dir}/pypnm-webui"
@@ -338,21 +200,6 @@ EOF
       log "Run: source ~/.bashrc"
       ;;
   esac
-}
-
-ensure_python_venv() {
-  if [ ! -d .venv ]; then
-    log "Creating Python virtual environment (.venv)"
-    env -u PYTHONPATH -u PYTHONHOME "${PYTHON_BIN}" -I -m venv .venv
-  else
-    log "Keeping existing Python virtual environment (.venv)"
-  fi
-
-  log "Installing Python release-tool dependencies"
-  run_isolated_venv_python -m pip install --upgrade pip >/dev/null
-  run_isolated_venv_python -m pip install -r tools/release/requirements.txt >/dev/null
-  log "Installing Python documentation dependencies"
-  run_isolated_venv_python -m pip install -r requirements-docs.txt >/dev/null
 }
 
 merge_runtime_config_override() {
@@ -441,10 +288,6 @@ run_with_pypnm_docsis_helper() {
 main() {
   parse_args "$@"
   ensure_base_prerequisites
-  ensure_command git "git is required but not found. Install git and re-run."
-  ensure_command curl "curl is required but not found. Install curl and re-run."
-  ensure_command "${PYTHON_BIN}" "${PYTHON_BIN} is required but not found. Install Python 3 and re-run."
-  ensure_python_venv_support
 
   cd "$ROOT_DIR"
 
@@ -462,10 +305,17 @@ main() {
   npm link >/dev/null
   ensure_cli_shim
 
-  ensure_python_venv
   merge_runtime_config_override
 
+  if [ "${DEVELOPMENT_MODE}" -eq 1 ]; then
+    ensure_command "${PYTHON_BIN}" "${PYTHON_BIN} is required for --development. Install Python 3 and re-run."
+    ensure_python_venv_support
+    ensure_python_development_tooling
+  fi
+
   if [ "${WITH_PYPNM_DOCSIS}" -eq 1 ]; then
+    ensure_command "${PYTHON_BIN}" "${PYTHON_BIN} is required for --with-pypnm-docsis. Install Python 3 and re-run."
+    ensure_python_venv_support
     run_with_pypnm_docsis_helper
   fi
 
@@ -480,8 +330,10 @@ main() {
   if [ "${WITH_PYPNM_DOCSIS}" -eq 1 ]; then
     log "Start local backend + WebUI with: pypnm-webui start-local-stack"
   fi
+  if [ "${DEVELOPMENT_MODE}" -eq 1 ]; then
+    log "Run release workflow with: .venv/bin/python ./tools/release/release.py --help"
+  fi
   log "Edit runtime config with: pypnm-webui config-menu"
-  log "Run release workflow with: .venv/bin/python ./tools/release/release.py --help"
 }
 
 main "$@"
