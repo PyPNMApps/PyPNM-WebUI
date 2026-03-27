@@ -183,4 +183,39 @@ describe("local_pypnm_docsis", () => {
       },
     ]);
   });
+
+  it("dedupes preserved local instances that point to the same base_url as Local PyPNM Agent", () => {
+    const merged = applyLocalPyPnmAgentConfig(
+      {
+        version: 1,
+        defaults: {
+          selected_instance: "lab-local",
+        },
+        instances: [],
+      },
+      {
+        version: 1,
+        defaults: {
+          selected_instance: "lab-local",
+        },
+        instances: [
+          {
+            id: "lab-local",
+            label: "Lab Local",
+            base_url: "http://172.19.8.28:8000",
+            enabled: true,
+          },
+        ],
+      },
+      "172.19.8.28",
+    ) as {
+      instances: Array<Record<string, unknown>>;
+    };
+
+    expect(merged.instances).toHaveLength(1);
+    expect(merged.instances[0]).toMatchObject({
+      id: LOCAL_PYPNM_INSTANCE_ID,
+      base_url: "http://172.19.8.28:8000",
+    });
+  });
 });

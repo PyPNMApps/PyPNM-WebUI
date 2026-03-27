@@ -13,6 +13,21 @@ function normalizeHostChoice(host) {
   return String(host ?? "").trim();
 }
 
+function normalizeBaseUrl(value) {
+  if (typeof value !== "string" || value.trim() === "") {
+    return "";
+  }
+  try {
+    const parsed = new URL(value.trim());
+    const protocol = parsed.protocol.toLowerCase();
+    const host = parsed.hostname.toLowerCase();
+    const port = parsed.port || (protocol === "https:" ? "443" : protocol === "http:" ? "80" : "");
+    return `${protocol}//${host}:${port}`;
+  } catch {
+    return value.trim().toLowerCase();
+  }
+}
+
 export function buildLocalPyPnmInstance(apiHost) {
   const normalizedHost = normalizeHostChoice(apiHost);
   if (normalizedHost === "") {
@@ -74,7 +89,15 @@ export function applyLocalPyPnmAgentConfig(templateConfig, localConfig, apiHost)
       ).instances[0]
     : generatedLocalInstance;
 
-  nextLocalConfig.instances = [nextLocalInstance, ...preservedInstances];
+  const nextLocalInstanceBaseUrl = normalizeBaseUrl(nextLocalInstance?.base_url);
+  const dedupedPreservedInstances = preservedInstances.filter((instance) => {
+    if (nextLocalInstanceBaseUrl === "") {
+      return true;
+    }
+    return normalizeBaseUrl(instance?.base_url) !== nextLocalInstanceBaseUrl;
+  });
+
+  nextLocalConfig.instances = [nextLocalInstance, ...dedupedPreservedInstances];
   nextLocalConfig.defaults = {
     ...(nextLocalConfig.defaults ?? {}),
     selected_instance: LOCAL_PYPNM_INSTANCE_ID,

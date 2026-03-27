@@ -10,6 +10,7 @@ RECONFIGURE_LOCAL_AGENT=0
 BACKEND_VENV_PATH=".venv"
 RUNTIME_TEMPLATE_PATH="public/config/pypnm-instances.yaml"
 RUNTIME_LOCAL_PATH="public/config/pypnm-instances.local.yaml"
+PYPNM_DEFAULT_PORT="8000"
 
 log() {
   printf '[install][pypnm-docsis] %s\n' "$1"
@@ -49,7 +50,7 @@ prompt_existing_state_choice() {
   fi
   if [ "${has_existing_local_config}" = "1" ]; then
     if [ -n "${existing_host}" ]; then
-      printf '  - existing Local PyPNM Agent host: %s\n' "${existing_host}" >&2
+      printf '  - existing Local PyPNM Agent endpoint: %s:%s\n' "${existing_host}" "${PYPNM_DEFAULT_PORT}" >&2
     else
       printf '  - existing local runtime config file: %s\n' "${RUNTIME_LOCAL_PATH}" >&2
     fi
