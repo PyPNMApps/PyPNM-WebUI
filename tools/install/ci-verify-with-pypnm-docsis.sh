@@ -3,6 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PYPNM_PATH=""
+STACK_PID=""
 
 log() {
   printf '[ci][with-pypnm-docsis] %s\n' "$1"
@@ -91,11 +92,20 @@ main() {
   [ -n "${PYPNM_PATH}" ] || fail "--pypnm-path is required."
   [ -f "${PYPNM_PATH}/pyproject.toml" ] || fail "Invalid PyPNM path: ${PYPNM_PATH}"
 
+  local detected_python_bin=""
+  if command -v python >/dev/null 2>&1; then
+    detected_python_bin="python"
+  elif command -v python3 >/dev/null 2>&1; then
+    detected_python_bin="python3"
+  else
+    fail "Python executable not found (expected python or python3)."
+  fi
+
   cd "${ROOT_DIR}"
   rm -rf .venv .pypnm-venv node_modules public/config/pypnm-instances.local.yaml
 
   log "Running combined install"
-  PYTHON_BIN=python ./install.sh \
+  PYTHON_BIN="${detected_python_bin}" ./install.sh \
     --with-pypnm-docsis \
     --pypnm-docsis-path "${PYPNM_PATH}" \
     --local-api-host 127.0.0.1
@@ -107,12 +117,12 @@ main() {
 
   log "Starting combined local stack"
   ./tools/install/start-local-stack.sh --api-host 127.0.0.1 > /tmp/pypnm-webui-stack.log 2>&1 &
-  local stack_pid=$!
+  STACK_PID="$!"
 
   cleanup() {
-    if kill -0 "${stack_pid}" >/dev/null 2>&1; then
-      kill "${stack_pid}" >/dev/null 2>&1 || true
-      wait "${stack_pid}" 2>/dev/null || true
+    if [ -n "${STACK_PID}" ] && kill -0 "${STACK_PID}" >/dev/null 2>&1; then
+      kill "${STACK_PID}" >/dev/null 2>&1 || true
+      wait "${STACK_PID}" 2>/dev/null || true
     fi
   }
 
