@@ -202,7 +202,9 @@ for (let index = 0; index < decision.choices.length; index += 1) {
 EOF
 )"
 
+  printf '\n' >&2
   log "Select the local PyPNM API host for WebUI runtime config:" >&2
+  printf '\n' >&2
   while IFS='|' read -r index host label detail; do
     [ -n "${index}" ] || continue
     printf '  %s) %s - %s\n' "${index}" "${label}" "${detail}" >&2
@@ -212,6 +214,7 @@ EOF
 
   local default_selection="1"
   local selection=""
+  printf '\n' >&2
   read -r -p "Selection [${default_selection}]: " selection || true
   selection="${selection:-${default_selection}}"
 

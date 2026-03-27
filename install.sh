@@ -26,6 +26,17 @@ fail() {
   exit 1
 }
 
+print_banner() {
+  printf '\n'
+  printf '[install] ========================================\n'
+  printf '[install] PyPNM-WebUI installer\n'
+  printf '[install] repo: %s\n' "${ROOT_DIR}"
+  printf '[install] options: development=%s with_pypnm_docsis=%s update_webui=%s\n' \
+    "${DEVELOPMENT_MODE}" "${WITH_PYPNM_DOCSIS}" "${UPDATE_WEBUI}"
+  printf '[install] ========================================\n'
+  printf '\n'
+}
+
 ensure_base_prerequisites() {
   ensure_command git "git is required but not found. Install git and re-run."
   ensure_command curl "curl is required but not found. Install curl and re-run."
@@ -287,6 +298,7 @@ run_with_pypnm_docsis_helper() {
 
 main() {
   parse_args "$@"
+  print_banner
   ensure_base_prerequisites
 
   cd "$ROOT_DIR"
