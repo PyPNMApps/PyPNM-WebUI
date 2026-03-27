@@ -45,6 +45,7 @@ nav:
       - Using The UI:
           - UI Overview: user/using-the-ui.md
           - Navigation And Agent Selection: user/ui-navigation.md
+          - UI Preview Gallery: user/ui-previews.md
           - Single Capture: user/single-capture.md
           - Operations And Spectrum Analyzer: user/operations-and-spectrum.md
           - Advanced Analysis: user/advanced-workflows.md

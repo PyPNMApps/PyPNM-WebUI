@@ -290,6 +290,12 @@ ensure_python_development_tooling() {
   run_isolated_venv_python -m pip install -r requirements-docs.txt >/dev/null
 }
 
+ensure_docs_preview_browser() {
+  ensure_command npx "npx is required for docs UI preview tooling. Install Node/npm and re-run."
+  log "Ensuring Playwright Chromium is installed for docs UI previews"
+  npx playwright install chromium >/dev/null
+}
+
 ensure_cli_shim() {
   local user_bin_dir="$HOME/.local/bin"
   local shim_path="${user_bin_dir}/pypnm-webui"
@@ -437,6 +443,7 @@ main() {
     ensure_command "${PYTHON_BIN}" "${PYTHON_BIN} is required for --development. Install Python 3 and re-run."
     ensure_python_venv_support
     ensure_python_development_tooling
+    ensure_docs_preview_browser
   fi
 
   if [ "${WITH_PYPNM_DOCSIS}" -eq 1 ]; then

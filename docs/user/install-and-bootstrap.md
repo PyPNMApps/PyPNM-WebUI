@@ -97,6 +97,7 @@ When `--development` is used, it also:
 
 - creates `.venv` if missing
 - installs Python tooling for release and docs workflows into `.venv`
+- installs Playwright Chromium used by `npm run docs:capture-ui-previews`
 
 When `--with-pypnm-docsis` is used, it also:
 

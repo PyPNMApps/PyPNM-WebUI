@@ -8,7 +8,8 @@
 5. Run production build validation with `npm run build`.
 6. Build docs with `npm run docs:build`.
 7. Serve docs locally with `npm run docs:serve`.
-8. List or stop local WebUI dev processes with `pypnm-webui kill-pypnm-webui`.
+8. Capture UI preview screenshots for docs with `npm run docs:capture-ui-previews`.
+9. List or stop local WebUI dev processes with `pypnm-webui kill-pypnm-webui`.
 
 ## Git Workflow Helpers
 - `./tools/git/git-save.sh --commit-msg "..."` runs checks, bumps the `BUILD` notation, stages, and commits.
