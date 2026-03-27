@@ -20,6 +20,26 @@ fail() {
   exit 1
 }
 
+trim_value() {
+  local value="${1:-}"
+  printf '%s' "${value}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
+}
+
+validate_local_host() {
+  local host
+  host="$(trim_value "${1:-}")"
+  if [ -z "${host}" ]; then
+    fail "Resolved local API host is empty."
+  fi
+  if [[ "${host}" == *$'\n'* || "${host}" == *$'\r'* || "${host}" == *" "* ]]; then
+    fail "Resolved local API host contains invalid whitespace: ${host}"
+  fi
+  if ! [[ "${host}" =~ ^([0-9]{1,3}(\.[0-9]{1,3}){3}|localhost|[A-Za-z0-9.-]+)$ ]]; then
+    fail "Resolved local API host is invalid: ${host}"
+  fi
+  printf '%s' "${host}"
+}
+
 print_help() {
   cat <<'EOF'
 Usage:
@@ -185,10 +205,13 @@ EOF
 )"
 
   if [ "${needs_prompt}" != "1" ]; then
-    DECISION_JSON="${decision_json}" node --input-type=module <<EOF
+    local resolved_host
+    resolved_host="$(DECISION_JSON="${decision_json}" node --input-type=module <<EOF
 const decision = JSON.parse(process.env.DECISION_JSON ?? "{}");
 process.stdout.write(decision.host);
 EOF
+)"
+    validate_local_host "${resolved_host}"
     return
   fi
 
@@ -217,6 +240,7 @@ EOF
   printf '\n' >&2
   read -r -p "Selection [${default_selection}]: " selection || true
   selection="${selection:-${default_selection}}"
+  selection="$(trim_value "${selection}")"
 
   local selected_host=""
   while IFS='|' read -r index host label detail; do
@@ -228,6 +252,7 @@ EOF
 ${choice_lines}
 EOF
 
+  selected_host="$(validate_local_host "${selected_host}")"
   if [ -z "${selected_host}" ]; then
     fail "Invalid local API host selection: ${selection}"
   fi
