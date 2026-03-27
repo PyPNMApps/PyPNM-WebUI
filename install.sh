@@ -27,13 +27,17 @@ fail() {
 }
 
 print_banner() {
+  local banner_path="${ROOT_DIR}/tools/banner.txt"
   printf '\n'
-  printf '[install] ========================================\n'
-  printf '[install] PyPNM-WebUI installer\n'
+  if [ -f "${banner_path}" ]; then
+    cat "${banner_path}"
+  else
+    printf '[install] PyPNM-WebUI installer\n'
+  fi
+  printf '\n'
   printf '[install] repo: %s\n' "${ROOT_DIR}"
   printf '[install] options: development=%s with_pypnm_docsis=%s update_webui=%s\n' \
     "${DEVELOPMENT_MODE}" "${WITH_PYPNM_DOCSIS}" "${UPDATE_WEBUI}"
-  printf '[install] ========================================\n'
   printf '\n'
 }
 
