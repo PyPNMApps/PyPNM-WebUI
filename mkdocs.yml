@@ -53,6 +53,7 @@ nav:
   - Development:
       - Daily Workflow:
           - Workflow: development/workflow.md
+          - CI Workflows: development/ci-workflows.md
           - Git Helpers: development/git-helpers.md
           - Logging: development/logging.md
           - Field Hints: development/field-hints.md

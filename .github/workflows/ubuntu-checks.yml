@@ -16,8 +16,14 @@ permissions:
 
 jobs:
   checks:
-    name: Ubuntu · Node 22
-    runs-on: ubuntu-latest
+    name: Ubuntu ${{ matrix.os }} · Node 22
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-22.04
+          - ubuntu-24.04
 
     steps:
       - name: Checkout
