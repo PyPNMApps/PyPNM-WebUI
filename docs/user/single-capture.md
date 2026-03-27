@@ -28,3 +28,19 @@ Each `Single Capture` page includes:
 - browser autocomplete enabled for `MAC Address`, `IP Address`, and
   `SNMP RW Community`
 - `SNMP RW Community` masked by default with an eye toggle inside the field
+
+## Chart Range Selection And Zoom
+
+Where line-chart visuals are available, selection-based chart controls are
+available in the chart header:
+
+- drag a region to select the frequency range
+- select `Zoom` to focus on that region
+- select `Reset Zoom` to return to the full range
+
+Current single-capture views with range-zoom controls:
+
+- `Spectrum Analyzer` (Friendly, Full-Band, OFDM, SCQAM)
+- `RxMER`
+- `Channel Estimation`
+- `OFDMA PreEqualization`
