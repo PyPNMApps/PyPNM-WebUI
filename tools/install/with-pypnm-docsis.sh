@@ -197,15 +197,15 @@ EOF
 const decision = JSON.parse(process.env.DECISION_JSON ?? "{}");
 for (let index = 0; index < decision.choices.length; index += 1) {
   const choice = decision.choices[index];
-  process.stdout.write(\`\${index + 1}|\\\${choice.host}|\\\${choice.label}|\\\${choice.detail}\\n\`);
+  process.stdout.write(String(index + 1) + "|" + choice.host + "|" + choice.label + "|" + choice.detail + "\\n");
 }
 EOF
 )"
 
-  log "Select the local PyPNM API host for WebUI runtime config:"
+  log "Select the local PyPNM API host for WebUI runtime config:" >&2
   while IFS='|' read -r index host label detail; do
     [ -n "${index}" ] || continue
-    printf '  %s) %s - %s\n' "${index}" "${label}" "${detail}"
+    printf '  %s) %s - %s\n' "${index}" "${label}" "${detail}" >&2
   done <<EOF
 ${choice_lines}
 EOF
