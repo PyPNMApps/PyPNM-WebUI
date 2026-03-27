@@ -68,7 +68,13 @@ Install Python development tooling (docs/release helpers) into `.venv`:
 pypnm-webui serve
 ```
 
-Start the same-machine backend + frontend stack:
+Start same-machine backend + frontend from the normal serve flow:
+
+```bash
+pypnm-webui serve --start-local-pypnm-docsis
+```
+
+Same-machine backend + frontend is also available with:
 
 ```bash
 pypnm-webui start-local-stack

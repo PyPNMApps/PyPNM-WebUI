@@ -137,7 +137,7 @@ Or set the host directly:
 ./install.sh --with-pypnm-docsis --local-api-host 127.0.0.1
 ```
 
-## `pypnm-webui start-local-stack` fails because `pypnm` is missing
+## same-machine startup fails because `pypnm` is missing
 
 Verify the backend virtual environment:
 

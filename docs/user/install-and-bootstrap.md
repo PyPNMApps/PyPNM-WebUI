@@ -158,7 +158,7 @@ If `local-pypnm-agent` is selected, `pypnm-webui serve` performs a startup
 reachability check against that backend and warns when `pypnm-docsis` is not
 running.
 
-Start the same-machine backend + frontend stack with:
+Same-machine backend + frontend is also available with:
 
 ```bash
 pypnm-webui start-local-stack
@@ -167,7 +167,7 @@ pypnm-webui start-local-stack
 Start only the backend FastAPI service with:
 
 ```bash
-pypnm-docsis serve --host 127.0.0.1 --port 8000
+pypnm-docsis serve --host <selected-local-api-host> --port <selected-local-api-port>
 ```
 
 If you need to inspect or stop local WebUI dev servers:

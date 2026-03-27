@@ -181,13 +181,13 @@ This workflow adds or updates:
 After install:
 
 ```bash
-pypnm-webui start-local-stack
+pypnm-webui serve --start-local-pypnm-docsis
 ```
 
-Alternative from normal serve path:
+Same-machine backend + frontend is also available with:
 
 ```bash
-pypnm-webui serve --start-local-pypnm-docsis
+pypnm-webui start-local-stack
 ```
 
 Behavior:
@@ -199,7 +199,7 @@ Behavior:
 Start only the backend service:
 
 ```bash
-pypnm-docsis serve --host 127.0.0.1 --port 8000
+pypnm-docsis serve --host <selected-local-api-host> --port <selected-local-api-port>
 ```
 
 ## Verify the setup
