@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 
 import { ExportActions } from "@/components/common/ExportActions";
 import { SeriesVisibilityChips } from "@/components/common/SeriesVisibilityChips";
@@ -20,6 +20,7 @@ interface LineAnalysisChartProps {
   selection?: SpectrumSelectionRange | null;
   onSelectionChange?: (selection: SpectrumSelectionRange | null) => void;
   exportBaseName?: string;
+  selectionActions?: ReactNode;
 }
 
 function axisLabels(minValue: number, maxValue: number, count: number): number[] {
@@ -69,6 +70,7 @@ export function LineAnalysisChart({
   selection = null,
   onSelectionChange,
   exportBaseName,
+  selectionActions,
 }: LineAnalysisChartProps) {
   const width = 1100;
   const height = 320;
@@ -147,6 +149,7 @@ export function LineAnalysisChart({
           <div className="chart-meta">{subtitle}</div>
         </div>
         <div className="chart-header-actions">
+          {selectionActions}
           {canMuteSeries ? (
             <SeriesVisibilityChips
               series={series}
