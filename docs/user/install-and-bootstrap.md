@@ -148,6 +148,12 @@ Start the UI with:
 pypnm-webui serve
 ```
 
+Start UI and auto-start local backend for selected `local-pypnm-agent`:
+
+```bash
+pypnm-webui serve --start-local-pypnm-docsis
+```
+
 If `local-pypnm-agent` is selected, `pypnm-webui serve` performs a startup
 reachability check against that backend and warns when `pypnm-docsis` is not
 running.

@@ -21,6 +21,7 @@ const VALID_LOG_LEVELS = new Set(["silent", "error", "warn", "info"]);
 const RESERVED_LOCAL_AGENT_ID = "local-pypnm-agent";
 const RESERVED_LOCAL_AGENT_TAG = "combined-install";
 const LOCAL_AGENT_PRECHECK_TIMEOUT_MS = 3000;
+const LOCAL_AGENT_STARTUP_TIMEOUT_MS = 6000;
 
 function repoRootFromModule(metaUrl) {
   const cliDir = path.dirname(fileURLToPath(metaUrl));
@@ -85,6 +86,8 @@ function printServeHelp() {
       `  --port <port>        Port to bind (default: ${DEFAULT_PORT})`,
       "  --open               Open the browser on startup.",
       "  --strict-port        Exit if the port is already in use.",
+      "  --start-local-pypnm-docsis",
+      "                       Start local pypnm-docsis for selected local-pypnm-agent.",
       `  --log-level <level>  Vite log level: ${Array.from(VALID_LOG_LEVELS).join(", ")} (default: ${DEFAULT_LOG_LEVEL})`,
       "  --mode <mode>        Vite mode override.",
       "  --base <path>        Public base path override.",
@@ -161,12 +164,13 @@ function failUsage(message) {
   return EXIT_CODE_USAGE;
 }
 
-function parseServeArgs(args) {
+export function parseServeArgs(args) {
   const options = {
     host: DEFAULT_HOST,
     port: DEFAULT_PORT,
     open: false,
     strictPort: false,
+    startLocalPyPnmDocsis: false,
     logLevel: DEFAULT_LOG_LEVEL,
     mode: "",
     base: "",
@@ -187,6 +191,11 @@ function parseServeArgs(args) {
 
     if (arg === "--strict-port") {
       options.strictPort = true;
+      continue;
+    }
+
+    if (arg === "--start-local-pypnm-docsis") {
+      options.startLocalPyPnmDocsis = true;
       continue;
     }
 
@@ -258,7 +267,7 @@ function isReservedLocalAgentInstance(instance) {
   return Array.isArray(instance.tags) && instance.tags.includes(RESERVED_LOCAL_AGENT_TAG);
 }
 
-async function preflightLocalAgent(repoRoot) {
+function ensureRuntimeConfig(repoRoot) {
   const runtimeConfigResult = ensureLocalRuntimeConfig(
     configPathFromRepoRoot(repoRoot),
     templateConfigPathFromRepoRoot(repoRoot),
@@ -269,23 +278,27 @@ async function preflightLocalAgent(repoRoot) {
     );
   }
 
-  const config = runtimeConfigResult.config;
+  return runtimeConfigResult.config;
+}
+
+function selectedLocalAgentFromConfig(config) {
   const selectedInstanceId = config?.defaults?.selected_instance ?? "";
   const instances = Array.isArray(config?.instances) ? config.instances : [];
   const localAgent = instances.find((instance) => isReservedLocalAgentInstance(instance));
 
-  if (!localAgent || selectedInstanceId !== RESERVED_LOCAL_AGENT_ID) {
-    return;
-  }
+  return localAgent && selectedInstanceId === RESERVED_LOCAL_AGENT_ID ? localAgent : null;
+}
 
+function healthUrlFromConfig(config, localAgent) {
   const baseUrl = String(localAgent.base_url ?? "").trim();
   if (baseUrl === "") {
-    process.stderr.write(
-      "WARN: local-pypnm-agent is selected but has no base_url. Re-run ./install.sh --with-pypnm-docsis --reconfigure-local-agent\n",
-    );
-    return;
+    return "";
   }
   const healthPath = String(config?.defaults?.health_path ?? "/health").trim() || "/health";
+  return new URL(healthPath, baseUrl).toString();
+}
+
+function precheckTimeoutMsFromConfig(config) {
   const timeoutMs = Math.max(
     1000,
     Math.min(
@@ -293,17 +306,10 @@ async function preflightLocalAgent(repoRoot) {
       LOCAL_AGENT_PRECHECK_TIMEOUT_MS,
     ),
   );
+  return timeoutMs;
+}
 
-  let healthUrl = "";
-  try {
-    healthUrl = new URL(healthPath, baseUrl).toString();
-  } catch {
-    process.stderr.write(
-      `WARN: local-pypnm-agent base_url is invalid: ${baseUrl}\n`,
-    );
-    return;
-  }
-
+async function checkHealthUrl(healthUrl, timeoutMs) {
   const controller = new AbortController();
   const timeoutHandle = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -314,25 +320,137 @@ async function preflightLocalAgent(repoRoot) {
         Accept: "application/json",
       },
     });
-    if (!response.ok) {
-      process.stderr.write(
-        `WARN: local-pypnm-agent health check failed (${response.status}) at ${healthUrl}\n`,
-      );
-      process.stderr.write("WARN: Start backend with pypnm-webui start-local-stack\n");
-    }
+    clearTimeout(timeoutHandle);
+    return response.ok;
   } catch {
+    clearTimeout(timeoutHandle);
+    return false;
+  }
+}
+
+async function preflightLocalAgent(config) {
+  const localAgent = selectedLocalAgentFromConfig(config);
+  if (!localAgent) {
+    return;
+  }
+  const baseUrl = String(localAgent.base_url ?? "").trim();
+  if (baseUrl === "") {
+    process.stderr.write(
+      "WARN: local-pypnm-agent is selected but has no base_url. Re-run ./install.sh --with-pypnm-docsis --reconfigure-local-agent\n",
+    );
+    return;
+  }
+  let healthUrl = "";
+  try {
+    healthUrl = healthUrlFromConfig(config, localAgent);
+  } catch {
+    process.stderr.write(`WARN: local-pypnm-agent base_url is invalid: ${baseUrl}\n`);
+    return;
+  }
+  const ok = await checkHealthUrl(healthUrl, precheckTimeoutMsFromConfig(config));
+  if (!ok) {
     process.stderr.write(
       `WARN: local-pypnm-agent is selected but pypnm-docsis is not reachable at ${healthUrl}\n`,
     );
     process.stderr.write("WARN: Start backend with pypnm-webui start-local-stack\n");
-  } finally {
-    clearTimeout(timeoutHandle);
   }
+}
+
+function resolveBackendCliPath(repoRoot) {
+  const primary = path.join(repoRoot, ".venv", "bin", "pypnm");
+  if (fs.existsSync(primary)) {
+    return primary;
+  }
+  const fallback = path.join(repoRoot, ".pypnm-venv", "bin", "pypnm");
+  if (fs.existsSync(fallback)) {
+    return fallback;
+  }
+  return "";
+}
+
+function parseHostPortFromBaseUrl(baseUrl) {
+  const parsed = new URL(baseUrl);
+  const port = parsed.port !== "" ? Number.parseInt(parsed.port, 10) : (parsed.protocol === "https:" ? 443 : 80);
+  return {
+    host: parsed.hostname,
+    port,
+  };
+}
+
+async function maybeStartLocalPyPnmDocsis(repoRoot, config, enabled) {
+  if (!enabled) {
+    return { process: null };
+  }
+  const localAgent = selectedLocalAgentFromConfig(config);
+  if (!localAgent) {
+    process.stderr.write(
+      "WARN: --start-local-pypnm-docsis ignored because selected instance is not local-pypnm-agent\n",
+    );
+    return { process: null };
+  }
+  const baseUrl = String(localAgent.base_url ?? "").trim();
+  if (baseUrl === "") {
+    process.stderr.write(
+      "WARN: --start-local-pypnm-docsis ignored because local-pypnm-agent has no base_url\n",
+    );
+    return { process: null };
+  }
+
+  const backendCli = resolveBackendCliPath(repoRoot);
+  if (backendCli === "") {
+    process.stderr.write(
+      "WARN: backend CLI not found in .venv or .pypnm-venv; run ./install.sh --with-pypnm-docsis\n",
+    );
+    return { process: null };
+  }
+
+  let endpoint;
+  let healthUrl;
+  try {
+    endpoint = parseHostPortFromBaseUrl(baseUrl);
+    healthUrl = healthUrlFromConfig(config, localAgent);
+  } catch {
+    process.stderr.write(`WARN: invalid local-pypnm-agent base_url: ${baseUrl}\n`);
+    return { process: null };
+  }
+
+  process.stdout.write(
+    `INFO: Starting local pypnm-docsis on ${endpoint.host}:${endpoint.port}\n`,
+  );
+  const backendProcess = spawn(
+    backendCli,
+    ["serve", "--host", endpoint.host, "--port", String(endpoint.port)],
+    {
+      cwd: repoRoot,
+      stdio: "inherit",
+      env: process.env,
+    },
+  );
+
+  const ok = await checkHealthUrl(healthUrl, LOCAL_AGENT_STARTUP_TIMEOUT_MS);
+  if (!ok) {
+    process.stderr.write(
+      `WARN: pypnm-docsis did not become healthy within ${LOCAL_AGENT_STARTUP_TIMEOUT_MS} ms at ${healthUrl}\n`,
+    );
+  }
+
+  return { process: backendProcess };
 }
 
 async function runServe(options, metaUrl) {
   const repoRoot = repoRootFromModule(metaUrl);
-  await preflightLocalAgent(repoRoot);
+  const config = ensureRuntimeConfig(repoRoot);
+  const backendResult = await maybeStartLocalPyPnmDocsis(repoRoot, config, options.startLocalPyPnmDocsis);
+  if (!options.startLocalPyPnmDocsis) {
+    await preflightLocalAgent(config);
+  }
+
+  const cleanupBackend = () => {
+    if (backendResult.process && !backendResult.process.killed) {
+      backendResult.process.kill("SIGTERM");
+    }
+  };
+
   const viteBin = path.join(repoRoot, "node_modules", "vite", "bin", "vite.js");
   const viteArgs = buildViteServeArgs(options);
   const child = spawn(process.execPath, [viteBin, ...viteArgs], {
@@ -342,6 +460,7 @@ async function runServe(options, metaUrl) {
   });
 
   child.on("exit", (code, signal) => {
+    cleanupBackend();
     if (signal) {
       process.kill(process.pid, signal);
       return;
@@ -350,6 +469,7 @@ async function runServe(options, metaUrl) {
   });
 
   child.on("error", (error) => {
+    cleanupBackend();
     process.stderr.write(`ERROR: Failed to start Vite: ${error.message}\n`);
     process.exit(1);
   });

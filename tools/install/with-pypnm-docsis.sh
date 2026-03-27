@@ -476,7 +476,7 @@ main() {
 
   log "Combined local install complete"
   log "Local PyPNM API URL: http://${selected_host}:${selected_port}"
-  log "Run backend directly with: pypnm-docsis serve --host 127.0.0.1 --port ${selected_port}"
+  log "Run backend directly with: pypnm-docsis serve --host ${selected_host} --port ${selected_port}"
   log "Start both services with: pypnm-webui start-local-stack"
 }
 

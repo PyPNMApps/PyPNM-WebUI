@@ -184,6 +184,12 @@ After install:
 pypnm-webui start-local-stack
 ```
 
+Alternative from normal serve path:
+
+```bash
+pypnm-webui serve --start-local-pypnm-docsis
+```
+
 Behavior:
 
 - starts `pypnm-docsis` from `.venv`
