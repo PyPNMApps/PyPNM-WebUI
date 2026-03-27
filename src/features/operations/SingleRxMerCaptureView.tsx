@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { DeviceInfoTable } from "@/components/common/DeviceInfoTable";
+import { RxMerSelectionInsightsModal, type RxMerSelectionModalState } from "@/components/common/RxMerSelectionInsightsModal";
 import { SeriesVisibilityChips } from "@/components/common/SeriesVisibilityChips";
 import { SpectrumSelectionActions } from "@/components/common/SpectrumSelectionActions";
 import { LineAnalysisChart } from "@/features/analysis/components/LineAnalysisChart";
-import { HistogramBarChart } from "@/features/operations/HistogramBarChart";
 import { ModulationCountsChart } from "@/features/operations/ModulationCountsChart";
 import type { ChartSeries } from "@/features/analysis/types";
 import { formatEpochSecondsUtc } from "@/lib/formatters/dateTime";
@@ -13,7 +13,6 @@ import {
   buildRxMerSelectionInsights,
   collectSelectedRxMerValues,
   collectSelectedRxMerValuesFromSeries,
-  type RxMerSelectionInsights,
 } from "@/lib/rxMerSelectionInsights";
 import { normalizeSpectrumSelection, type SpectrumSelectionRange } from "@/lib/spectrumPower";
 import { average, summarize } from "@/lib/stats";
@@ -38,13 +37,6 @@ function findFallbackCaptureTime(analysis: SingleRxMerAnalysisEntry[]): number |
 }
 
 const palette = ["#79a9ff", "#58d0a7", "#ff7a6b", "#f1c75b"] as const;
-
-interface RxMerSelectionModalState {
-  channelId: string;
-  selectionStartMhz: number;
-  selectionEndMhz: number;
-  insights: RxMerSelectionInsights;
-}
 
 export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCaptureResponse }) {
   const analysis = response.data?.analysis ?? [];
@@ -248,77 +240,11 @@ export function SingleRxMerCaptureView({ response }: { response: SingleRxMerCapt
         })}
       </div>
 
-      {selectionInsightsModal ? (
-        <div
-          className="selection-insights-modal-overlay"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Selected RxMER Region Insights"
-          onClick={(event) => {
-            if (event.target === event.currentTarget) {
-              setSelectionInsightsModal(null);
-            }
-          }}
-        >
-          <div className="selection-insights-modal-card">
-            <div className="selection-insights-modal-header">
-              <h3 className="selection-insights-modal-title">Selected RxMER Region Insights</h3>
-              <button
-                type="button"
-                className="analysis-chip-button"
-                onClick={() => setSelectionInsightsModal(null)}
-              >
-                Close
-              </button>
-            </div>
-            <div className="status-chip-row">
-              <span className="analysis-chip"><b>Channel</b> {selectionInsightsModal.channelId}</span>
-              <span className="analysis-chip">
-                <b>Range</b> {selectionInsightsModal.selectionStartMhz.toFixed(3)} - {selectionInsightsModal.selectionEndMhz.toFixed(3)} MHz
-              </span>
-              <span className="analysis-chip"><b>Points</b> {selectionInsightsModal.insights.pointCount}</span>
-            </div>
-            <div className="selection-insights-metrics-grid">
-              <div className="analysis-small-metric">
-                <div className="analysis-small-k">Avg MER</div>
-                <div className="analysis-small-v">{selectionInsightsModal.insights.avgMerDb.toFixed(2)} dB</div>
-              </div>
-              <div className="analysis-small-metric">
-                <div className="analysis-small-k">Estimated Bitload</div>
-                <div className="analysis-small-v">{selectionInsightsModal.insights.estimatedBitloadBitsPerSymbol.toFixed(2)} bits/sym</div>
-              </div>
-              <div className="analysis-small-metric">
-                <div className="analysis-small-k">
-                  <span>Error-Free QAM</span>
-                  <span
-                    className="field-hint"
-                    title="QAM modulation level expected to run without FEC codeword correction in the selected region."
-                    aria-label="QAM modulation level expected to run without FEC codeword correction in the selected region."
-                  >
-                    ?
-                  </span>
-                </div>
-                <div className="analysis-small-v">{selectionInsightsModal.insights.safeQamLabel}</div>
-              </div>
-              <div className="analysis-small-metric">
-                <div className="analysis-small-k">Min / Max MER</div>
-                <div className="analysis-small-v">
-                  {selectionInsightsModal.insights.minMerDb.toFixed(2)} / {selectionInsightsModal.insights.maxMerDb.toFixed(2)} dB
-                </div>
-              </div>
-            </div>
-            <HistogramBarChart
-              title="MER Distribution (Selected Region)"
-              values={selectionInsightsModal.insights.distributionBins.map((bin) => bin.count)}
-              xAxisLabel="RxMER (dB)"
-              yAxisLabel="Carrier Count"
-              xTickLabels={selectionInsightsModal.insights.distributionBins.map((bin) => ((bin.startMer + bin.endMer) / 2).toFixed(1))}
-              showAllXTickLabels
-              exportBaseName={`single-rxmer-selection-distribution-channel-${selectionInsightsModal.channelId}`}
-            />
-          </div>
-        </div>
-      ) : null}
+      <RxMerSelectionInsightsModal
+        data={selectionInsightsModal}
+        exportBaseName={selectionInsightsModal ? `single-rxmer-selection-distribution-channel-${selectionInsightsModal.channelId}` : "single-rxmer-selection-distribution"}
+        onClose={() => setSelectionInsightsModal(null)}
+      />
     </div>
   );
 }
