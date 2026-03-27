@@ -167,10 +167,7 @@ function normalizeInstance(instance, defaults) {
   return {
     id: typeof instance?.id === "string" && instance.id.trim() !== "" ? instance.id.trim() : "default",
     label: typeof instance?.label === "string" && instance.label.trim() !== "" ? instance.label.trim() : "Default",
-    base_url:
-      typeof instance?.base_url === "string" && instance.base_url.trim() !== ""
-        ? instance.base_url.trim()
-        : "http://127.0.0.1:8080",
+    base_url: normalizeBaseUrl(instance?.base_url, "http://127.0.0.1:8080"),
     enabled: instance?.enabled ?? true,
     tags: Array.isArray(instance?.tags) ? instance.tags.filter((item) => typeof item === "string") : [],
     capabilities: Array.isArray(instance?.capabilities)
@@ -199,6 +196,72 @@ function normalizeInstance(instance, defaults) {
       },
     },
   };
+}
+
+function normalizeUrlCandidate(value) {
+  const raw = typeof value === "string" ? value.trim() : "";
+  if (raw === "") {
+    return "";
+  }
+  if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(raw)) {
+    return raw;
+  }
+  return `http://${raw}`;
+}
+
+export function tryNormalizeBaseUrl(value) {
+  const candidate = normalizeUrlCandidate(value);
+  if (candidate === "") {
+    return {
+      ok: false,
+      value: "",
+      error: "Base URL is required.",
+    };
+  }
+
+  let parsed;
+  try {
+    parsed = new URL(candidate);
+  } catch {
+    return {
+      ok: false,
+      value: "",
+      error: "Base URL must be a valid URL (for example http://127.0.0.1:8000).",
+    };
+  }
+
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    return {
+      ok: false,
+      value: "",
+      error: "Base URL must use http or https.",
+    };
+  }
+
+  if (!parsed.hostname) {
+    return {
+      ok: false,
+      value: "",
+      error: "Base URL must include a hostname.",
+    };
+  }
+
+  parsed.pathname = "";
+  parsed.search = "";
+  parsed.hash = "";
+
+  return {
+    ok: true,
+    value: parsed.toString().replace(/\/$/, ""),
+  };
+}
+
+export function normalizeBaseUrl(value, fallback = "http://127.0.0.1:8080") {
+  const normalized = tryNormalizeBaseUrl(value);
+  if (normalized.ok) {
+    return normalized.value;
+  }
+  return fallback;
 }
 
 export function normalizeConfig(raw) {
@@ -348,6 +411,17 @@ async function promptCsv(rl, label, currentValues) {
     .filter((item) => item !== "");
 }
 
+async function promptBaseUrl(rl, current) {
+  while (true) {
+    const answer = await promptLine(rl, "Base URL", current);
+    const normalized = tryNormalizeBaseUrl(answer);
+    if (normalized.ok) {
+      return normalized.value;
+    }
+    process.stdout.write(`${normalized.error}\n`);
+  }
+}
+
 export async function promptSelectedInstance(rl, instances, currentInstanceId) {
   process.stdout.write("\nAvailable selected_instance values:\n");
   instances.forEach((instance, index) => {
@@ -393,7 +467,7 @@ async function addAgent(rl, config) {
   process.stdout.write("\nAdd PyPNM Agent\n===============\n");
   const label = await promptLine(rl, "Agent label", "");
   const id = await promptLine(rl, "Agent id", slugifyId(label));
-  const baseUrl = await promptLine(rl, "Base URL", "http://127.0.0.1:8080");
+  const baseUrl = await promptBaseUrl(rl, "http://127.0.0.1:8080");
   const enabled = await promptBoolean(rl, "Enabled", true);
   const tags = await promptCsv(rl, "Tags (comma-separated)", []);
   const capabilities = await promptCsv(rl, "Capabilities (comma-separated)", ["health", "analysis"]);
@@ -490,7 +564,7 @@ async function editAgent(rl, config) {
     }
     instance.id = nextId;
   }
-  instance.base_url = await promptLine(rl, "Base URL", instance.base_url);
+  instance.base_url = await promptBaseUrl(rl, instance.base_url);
   instance.enabled = await promptBoolean(rl, "Enabled", instance.enabled);
   instance.tags = await promptCsv(rl, "Tags (comma-separated)", instance.tags);
   instance.capabilities = await promptCsv(rl, "Capabilities (comma-separated)", instance.capabilities);

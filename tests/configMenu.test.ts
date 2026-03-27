@@ -8,10 +8,12 @@ import {
   ensureLocalRuntimeConfig,
   hasReservedLocalAgent,
   isReservedLocalAgentInstance,
+  normalizeBaseUrl,
   normalizeConfig,
   normalizeChannelIds,
   promptSelectedInstance,
   saveConfig,
+  tryNormalizeBaseUrl,
 } from "../tools/config-menu/config_menu.js";
 
 describe("config_menu normalization", () => {
@@ -128,6 +130,37 @@ describe("config_menu normalization", () => {
 
     expect(prompts).toEqual(["Selected instance [1]: "]);
     expect(selected).toBe("denver-rack-1");
+  });
+
+  it("normalizes base_url values that omit protocol", () => {
+    const config = normalizeConfig({
+      defaults: { selected_instance: "lab-local" },
+      instances: [{ id: "lab-local", label: "Lab Local", base_url: "172.19.8.28:8000" }],
+    });
+
+    expect(config.instances[0]?.base_url).toBe("http://172.19.8.28:8000");
+  });
+
+  it("falls back for invalid base_url values", () => {
+    const config = normalizeConfig({
+      defaults: { selected_instance: "lab-local" },
+      instances: [{ id: "lab-local", label: "Lab Local", base_url: "not a url $$" }],
+    });
+
+    expect(config.instances[0]?.base_url).toBe("http://127.0.0.1:8080");
+  });
+
+  it("validates and normalizes base URLs", () => {
+    expect(tryNormalizeBaseUrl("172.19.8.28:8000")).toEqual({
+      ok: true,
+      value: "http://172.19.8.28:8000",
+    });
+    expect(tryNormalizeBaseUrl("ftp://172.19.8.28:21")).toEqual({
+      ok: false,
+      value: "",
+      error: "Base URL must use http or https.",
+    });
+    expect(normalizeBaseUrl("")).toBe("http://127.0.0.1:8080");
   });
 
   it("creates a backup before overwriting an existing config", () => {

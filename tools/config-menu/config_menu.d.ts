@@ -1,4 +1,13 @@
 export function normalizeChannelIds(value: unknown): number[];
+export function tryNormalizeBaseUrl(value: unknown): {
+  ok: true;
+  value: string;
+} | {
+  ok: false;
+  value: string;
+  error: string;
+};
+export function normalizeBaseUrl(value: unknown, fallback?: string): string;
 export function isReservedLocalAgentInstance(instance: unknown): boolean;
 export function hasReservedLocalAgent(config: unknown): boolean;
 
