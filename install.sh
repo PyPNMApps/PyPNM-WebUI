@@ -163,8 +163,11 @@ prepare_nvm() {
     if [ "${had_nounset}" -eq 1 ]; then
       set -u
     fi
-    if [ "${nvm_source_status}" -ne 0 ]; then
+    if ! command -v nvm >/dev/null 2>&1; then
       fail "Failed to initialize nvm from ${NVM_DIR}/nvm.sh"
+    fi
+    if [ "${nvm_source_status}" -ne 0 ]; then
+      log "nvm init returned non-zero (${nvm_source_status}) but nvm is available; continuing"
     fi
   else
     fail "nvm init script not found at $NVM_DIR/nvm.sh"
