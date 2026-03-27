@@ -54,11 +54,12 @@ export function ModulationCountsChart({ title, counts, exportBaseName }: Modulat
   }
 
   const width = 1100;
-  const height = 300;
+  const height = 340;
   const left = 44;
   const top = 16;
+  const bottom = 72;
   const usableWidth = width - 64;
-  const usableHeight = height - 48;
+  const usableHeight = height - top - bottom;
   const maxValue = Math.max(...entries.map((entry) => entry.value), 1);
   const yMax = Math.ceil(maxValue / 100) * 100 || maxValue;
   const yTicks = 4;
@@ -107,8 +108,8 @@ export function ModulationCountsChart({ title, counts, exportBaseName }: Modulat
             </g>
           );
         })}
-        <line x1={left} y1={height - 32} x2={width - 20} y2={height - 32} stroke="rgba(255,255,255,0.20)" />
-        <line x1={left} y1={top} x2={left} y2={height - 32} stroke="rgba(255,255,255,0.20)" />
+        <line x1={left} y1={height - bottom} x2={width - 20} y2={height - bottom} stroke="rgba(255,255,255,0.20)" />
+        <line x1={left} y1={top} x2={left} y2={height - bottom} stroke="rgba(255,255,255,0.20)" />
 
         <path d={path} fill="none" stroke="#58d0a7" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
 
@@ -116,18 +117,19 @@ export function ModulationCountsChart({ title, counts, exportBaseName }: Modulat
           <g key={point.entry.key}>
             <circle cx={point.x} cy={point.y} r="2.2" fill="#58d0a7" />
             <text
-              x={point.x - 20}
-              y={height - 10}
+              x={point.x}
+              y={height - bottom + 26}
               fill="#9eb0c9"
               fontSize="10"
-              transform={`rotate(45 ${point.x - 20} ${height - 10})`}
+              textAnchor="end"
+              transform={`rotate(-35 ${point.x} ${height - bottom + 26})`}
             >
               {point.entry.label}
             </text>
           </g>
         ))}
 
-        <text x={width / 2 - 70} y={height - 2} fill="#9eb0c9" fontSize="11">
+        <text x={width / 2} y={height - 8} fill="#9eb0c9" fontSize="11" textAnchor="middle">
           Modulation (QAM / bit-sym)
         </text>
         <text x="10" y="12" fill="#9eb0c9" fontSize="11">
