@@ -32,6 +32,12 @@ Update to a specific tag:
 ./install.sh --update-webui v0.1.6.0
 ```
 
+Reset local install artifacts before reinstall:
+
+```bash
+./uninstall.sh --confirm-uninstall
+```
+
 ## Platform support
 
 Validated on:
@@ -175,4 +181,24 @@ If you need to inspect or stop local WebUI dev servers:
 ```bash
 pypnm-webui kill-pypnm-webui --list
 pypnm-webui kill-pypnm-webui --kill
+```
+
+## Uninstall
+
+Remove local install artifacts:
+
+```bash
+./uninstall.sh
+```
+
+Non-interactive uninstall:
+
+```bash
+./uninstall.sh --confirm-uninstall
+```
+
+Optional extras:
+
+```bash
+./uninstall.sh --confirm-uninstall --remove-env --remove-data
 ```

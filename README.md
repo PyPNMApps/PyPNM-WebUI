@@ -62,6 +62,12 @@ Install Python development tooling (docs/release helpers) into `.venv`:
 ./install.sh --development
 ```
 
+Reset local install artifacts for a clean reinstall:
+
+```bash
+./uninstall.sh --confirm-uninstall
+```
+
 ## Run locally
 
 ```bash
