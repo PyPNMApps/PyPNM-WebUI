@@ -228,3 +228,6 @@ release-reports/logs/
 
 # Local browser/dev logging
 logs/
+
+# PyPNM - ignore local data directory containing user credentials, local state, and settings
+.data/
