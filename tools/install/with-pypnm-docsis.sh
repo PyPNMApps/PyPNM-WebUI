@@ -170,6 +170,19 @@ run_backend_python() {
   env -u PYTHONPATH -u PYTHONHOME "${ROOT_DIR}/${BACKEND_VENV_PATH}/bin/python" -I "$@"
 }
 
+ensure_python_venv_prereqs() {
+  if "${PYTHON_BIN}" -m venv --help >/dev/null 2>&1; then
+    if env -u PYTHONPATH -u PYTHONHOME "${PYTHON_BIN}" -I - <<'EOF' >/dev/null 2>&1
+import ensurepip
+EOF
+    then
+      return
+    fi
+  fi
+
+  fail "Python venv support is required but unavailable for ${PYTHON_BIN}. Install Python venv support (Ubuntu: sudo apt-get install -y python3-venv python3-pip) and re-run."
+}
+
 ensure_backend_venv() {
   if [ ! -d "${ROOT_DIR}/${BACKEND_VENV_PATH}" ]; then
     log "Creating backend virtual environment (${BACKEND_VENV_PATH})"
@@ -462,6 +475,7 @@ main() {
   [ -n "${ROOT_DIR}" ] || fail "--root-dir is required."
   cd "${ROOT_DIR}"
   prompt_existing_state_choice
+  ensure_python_venv_prereqs
 
   ensure_backend_venv
   install_pypnm_docsis

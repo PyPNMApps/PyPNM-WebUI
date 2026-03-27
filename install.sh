@@ -49,10 +49,15 @@ ensure_base_prerequisites() {
 
 ensure_python_venv_support() {
   if "${PYTHON_BIN}" -m venv --help >/dev/null 2>&1; then
-    return
+    if env -u PYTHONPATH -u PYTHONHOME "${PYTHON_BIN}" -I - <<'EOF' >/dev/null 2>&1
+import ensurepip
+EOF
+    then
+      return
+    fi
   fi
 
-  fail "Python venv support is required but unavailable for ${PYTHON_BIN}. Install Python venv support and re-run."
+  fail "Python venv support is required but unavailable for ${PYTHON_BIN}. Install Python venv support (Ubuntu: sudo apt-get install -y python3-venv python3-pip) and re-run."
 }
 
 print_help() {
