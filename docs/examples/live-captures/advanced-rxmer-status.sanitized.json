@@ -13,10 +13,10 @@
     }
   },
   "operation": {
-    "operation_id": "aa49f2f58c1b4c23",
+    "operation_id": "e12fe75652b54d5a",
     "state": "completed",
-    "collected": 30,
-    "time_remaining": 1,
+    "collected": 32,
+    "time_remaining": 0,
     "message": null
   }
 }

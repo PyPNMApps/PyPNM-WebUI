@@ -28,9 +28,17 @@ const ROUTES = [
   { title: "Spectrum Analyzer · Full Band", path: "/spectrum-analyzer/full-band", slug: "spectrum-analyzer-full-band", section: "spectrum-analyzer" },
   { title: "Spectrum Analyzer · OFDM", path: "/spectrum-analyzer/ofdm", slug: "spectrum-analyzer-ofdm", section: "spectrum-analyzer" },
   { title: "Spectrum Analyzer · SCQAM", path: "/spectrum-analyzer/scqam", slug: "spectrum-analyzer-scqam", section: "spectrum-analyzer" },
-  { title: "Advanced · RxMER", path: "/advanced/rxmer", slug: "advanced-rxmer", section: "advanced" },
-  { title: "Advanced · Channel Estimation", path: "/advanced/channel-estimation", slug: "advanced-channel-estimation", section: "advanced" },
-  { title: "Advanced · OFDMA PreEq", path: "/advanced/ofdma-pre-eq", slug: "advanced-ofdma-pre-eq", section: "advanced" },
+  { title: "Advanced · RxMER · Min / Avg / Max", path: "/advanced/rxmer", slug: "advanced-rxmer-min-avg-max", section: "advanced", analysisType: "min-avg-max" },
+  { title: "Advanced · RxMER · Heat Map", path: "/advanced/rxmer", slug: "advanced-rxmer-rxmer-heat-map", section: "advanced", analysisType: "rxmer-heat-map" },
+  { title: "Advanced · RxMER · Echo Detection 1", path: "/advanced/rxmer", slug: "advanced-rxmer-echo-reflection-1", section: "advanced", analysisType: "echo-reflection-1" },
+  { title: "Advanced · RxMER · OFDM Profile Performance 1", path: "/advanced/rxmer", slug: "advanced-rxmer-ofdm-profile-performance-1", section: "advanced", analysisType: "ofdm-profile-performance-1" },
+  { title: "Advanced · Channel Estimation · Min / Avg / Max", path: "/advanced/channel-estimation", slug: "advanced-channel-estimation-min-avg-max", section: "advanced", analysisType: "min-avg-max" },
+  { title: "Advanced · Channel Estimation · Group Delay", path: "/advanced/channel-estimation", slug: "advanced-channel-estimation-group-delay", section: "advanced", analysisType: "group-delay" },
+  { title: "Advanced · Channel Estimation · LTE Detection Phase Slope", path: "/advanced/channel-estimation", slug: "advanced-channel-estimation-lte-detection-phase-slope", section: "advanced", analysisType: "lte-detection-phase-slope" },
+  { title: "Advanced · Channel Estimation · Echo Detection IFFT", path: "/advanced/channel-estimation", slug: "advanced-channel-estimation-echo-detection-ifft", section: "advanced", analysisType: "echo-detection-ifft" },
+  { title: "Advanced · OFDMA PreEq · Min / Avg / Max", path: "/advanced/ofdma-pre-eq", slug: "advanced-ofdma-pre-eq-min-avg-max", section: "advanced", analysisType: "min-avg-max" },
+  { title: "Advanced · OFDMA PreEq · Group Delay", path: "/advanced/ofdma-pre-eq", slug: "advanced-ofdma-pre-eq-group-delay", section: "advanced", analysisType: "group-delay" },
+  { title: "Advanced · OFDMA PreEq · Echo Detection IFFT", path: "/advanced/ofdma-pre-eq", slug: "advanced-ofdma-pre-eq-echo-detection-ifft", section: "advanced", analysisType: "echo-detection-ifft" },
   { title: "Operations · Base Capability", path: "/operations/if31-docsis-base-capability", slug: "operations-if31-docsis-base-capability", section: "operations" },
   { title: "Operations · OFDM Channel Stats", path: "/operations/ds-ofdm-channel-stats", slug: "operations-ds-ofdm-channel-stats", section: "operations" },
   { title: "Operations · OFDM Profile Stats", path: "/operations/ds-ofdm-profile-stats", slug: "operations-ds-ofdm-profile-stats", section: "operations" },
@@ -132,7 +140,20 @@ function renderSectionPage(title, captures) {
   return lines.join("\n");
 }
 
-function loadEndpointMockPayloads() {
+const ADVANCED_ANALYSIS_ENDPOINTS = {
+  rxmer: "/advance/multi/ds/rxMer/analysis",
+  channelEstimation: "/advance/multi/ds/channelEstimation/analysis",
+  ofdmaPreEq: "/advance/multi/us/ofdmaPreEqualization/analysis",
+};
+
+function parseAdvancedOperationId(outputs, statusIdPrefix) {
+  const match = outputs.find((output) => typeof output?.id === "string" && output.id.startsWith(statusIdPrefix));
+  const endpoint = typeof match?.endpoint === "string" ? match.endpoint : "";
+  const parsed = endpoint.match(/\/status\/([^/]+)$/);
+  return parsed?.[1] ?? "";
+}
+
+function loadCaptureMocks() {
   if (!existsSync(LIVE_CAPTURE_SUMMARY_PATH)) {
     fail(`Missing ${LIVE_CAPTURE_SUMMARY_PATH}. Run docs:capture-live-endpoint-examples first.`);
   }
@@ -140,13 +161,45 @@ function loadEndpointMockPayloads() {
   const summary = JSON.parse(readFileSync(LIVE_CAPTURE_SUMMARY_PATH, "utf-8"));
   const outputs = Array.isArray(summary?.outputs) ? summary.outputs : [];
   const endpointPayloads = new Map();
+  const advancedAnalysisPayloads = {
+    rxmer: new Map(),
+    channelEstimation: new Map(),
+    ofdmaPreEq: new Map(),
+  };
+
+  const addAdvancedAnalysisPayload = (workflow, outputIdPrefix, analysisType, output, resolvedOutputPath) => {
+    if (typeof output?.id !== "string" || output.id !== `${outputIdPrefix}${analysisType}`) {
+      return;
+    }
+    if (!resolvedOutputPath || !existsSync(resolvedOutputPath)) {
+      return;
+    }
+    if (advancedAnalysisPayloads[workflow].has(analysisType)) {
+      return;
+    }
+    advancedAnalysisPayloads[workflow].set(analysisType, JSON.parse(readFileSync(resolvedOutputPath, "utf-8")));
+  };
 
   for (const output of outputs) {
-    if (!output || typeof output.endpoint !== "string" || typeof output.output_path !== "string") {
-      continue;
-    }
+    const explicitOutputPath = typeof output?.output_path === "string" ? output.output_path : "";
+    const fallbackOutputPath = typeof output?.id === "string"
+      ? join(ROOT_DIR, "docs", "examples", "live-captures", `${output.id}.sanitized.json`)
+      : "";
+    const resolvedOutputPath = explicitOutputPath || (fallbackOutputPath && existsSync(fallbackOutputPath) ? fallbackOutputPath : "");
 
-    if (!existsSync(output.output_path)) {
+    addAdvancedAnalysisPayload("rxmer", "advanced-rxmer-analysis-", "rxmer-heat-map", output, resolvedOutputPath);
+    addAdvancedAnalysisPayload("rxmer", "advanced-rxmer-analysis-", "echo-reflection-1", output, resolvedOutputPath);
+    addAdvancedAnalysisPayload("rxmer", "advanced-rxmer-analysis-", "ofdm-profile-performance-1", output, resolvedOutputPath);
+    addAdvancedAnalysisPayload("rxmer", "advanced-rxmer-analysis-", "min-avg-max", output, resolvedOutputPath);
+    addAdvancedAnalysisPayload("channelEstimation", "advanced-channel-estimation-analysis-", "min-avg-max", output, resolvedOutputPath);
+    addAdvancedAnalysisPayload("channelEstimation", "advanced-channel-estimation-analysis-", "group-delay", output, resolvedOutputPath);
+    addAdvancedAnalysisPayload("channelEstimation", "advanced-channel-estimation-analysis-", "lte-detection-phase-slope", output, resolvedOutputPath);
+    addAdvancedAnalysisPayload("channelEstimation", "advanced-channel-estimation-analysis-", "echo-detection-ifft", output, resolvedOutputPath);
+    addAdvancedAnalysisPayload("ofdmaPreEq", "advanced-ofdma-pre-eq-analysis-", "min-avg-max", output, resolvedOutputPath);
+    addAdvancedAnalysisPayload("ofdmaPreEq", "advanced-ofdma-pre-eq-analysis-", "group-delay", output, resolvedOutputPath);
+    addAdvancedAnalysisPayload("ofdmaPreEq", "advanced-ofdma-pre-eq-analysis-", "echo-detection-ifft", output, resolvedOutputPath);
+
+    if (!output || typeof output.endpoint !== "string" || !resolvedOutputPath) {
       continue;
     }
 
@@ -154,22 +207,38 @@ function loadEndpointMockPayloads() {
       continue;
     }
 
-    endpointPayloads.set(output.endpoint, JSON.parse(readFileSync(output.output_path, "utf-8")));
+    endpointPayloads.set(output.endpoint, JSON.parse(readFileSync(resolvedOutputPath, "utf-8")));
   }
 
   if (!endpointPayloads.has("/system/sysDescr")) {
     fail("Missing /system/sysDescr payload in live capture summary.");
   }
 
-  return endpointPayloads;
+  return {
+    endpointPayloads,
+    advanced: {
+      rxmer: {
+        operationId: parseAdvancedOperationId(outputs, "advanced-rxmer-status"),
+        analysisPayloads: advancedAnalysisPayloads.rxmer,
+      },
+      channelEstimation: {
+        operationId: parseAdvancedOperationId(outputs, "advanced-channel-estimation-status"),
+        analysisPayloads: advancedAnalysisPayloads.channelEstimation,
+      },
+      ofdmaPreEq: {
+        operationId: parseAdvancedOperationId(outputs, "advanced-ofdma-pre-eq-status"),
+        analysisPayloads: advancedAnalysisPayloads.ofdmaPreEq,
+      },
+    },
+  };
 }
 
 function shouldRunCaptureBeforeScreenshot(route) {
-  return route.section === "operations" || route.section === "signal-capture" || route.section === "spectrum-analyzer";
+  return route.section === "operations" || route.section === "signal-capture" || route.section === "spectrum-analyzer" || route.section === "advanced";
 }
 
-async function runOperationCapture(page, route) {
-  if (!shouldRunCaptureBeforeScreenshot(route)) {
+async function runStandardCapture(page, route) {
+  if (route.section !== "operations" && route.section !== "signal-capture" && route.section !== "spectrum-analyzer") {
     return;
   }
 
@@ -183,11 +252,68 @@ async function runOperationCapture(page, route) {
   await page.waitForTimeout(500);
 }
 
+async function runAdvancedCapture(page, route, mocks) {
+  if (route.section !== "advanced") {
+    return;
+  }
+
+  const waitForAnalysisRender = async () => {
+    await page.getByRole("button", { name: "Run Analysis" }).waitFor({ state: "visible", timeout: 30_000 });
+    const downloadButtons = page.getByRole("button", { name: "Download JSON" });
+    await downloadButtons.first().waitFor({ state: "visible", timeout: 30_000 });
+    await page.waitForTimeout(900);
+  };
+
+  if (route.path === "/advanced/rxmer") {
+    const operationId = mocks.advanced.rxmer.operationId;
+    const analysisPayloads = mocks.advanced.rxmer.analysisPayloads;
+    const selectedAnalysisType = String(route.analysisType ?? "min-avg-max");
+    if (!operationId || !analysisPayloads.has(selectedAnalysisType)) {
+      log(`Skipping advanced capture on ${route.path}; missing mock operation id or analysis payload.`);
+      return;
+    }
+    await page.fill("#advancedRxmerOperationId", operationId);
+    await page.selectOption("#advancedRxmerAnalysisType", selectedAnalysisType);
+    await page.getByRole("button", { name: "Run Analysis" }).click();
+    await waitForAnalysisRender();
+    return;
+  }
+
+  if (route.path === "/advanced/channel-estimation") {
+    const operationId = mocks.advanced.channelEstimation.operationId;
+    const analysisPayloads = mocks.advanced.channelEstimation.analysisPayloads;
+    const selectedAnalysisType = String(route.analysisType ?? "min-avg-max");
+    if (!operationId || !analysisPayloads.has(selectedAnalysisType)) {
+      log(`Skipping advanced capture on ${route.path}; missing mock operation id or analysis payload.`);
+      return;
+    }
+    await page.fill("#advancedChanEstOperationId", operationId);
+    await page.selectOption("#advancedChanEstAnalysisType", selectedAnalysisType);
+    await page.getByRole("button", { name: "Run Analysis" }).click();
+    await waitForAnalysisRender();
+    return;
+  }
+
+  if (route.path === "/advanced/ofdma-pre-eq") {
+    const operationId = mocks.advanced.ofdmaPreEq.operationId;
+    const analysisPayloads = mocks.advanced.ofdmaPreEq.analysisPayloads;
+    const selectedAnalysisType = String(route.analysisType ?? "min-avg-max");
+    if (!operationId || !analysisPayloads.has(selectedAnalysisType)) {
+      log(`Skipping advanced capture on ${route.path}; missing mock operation id or analysis payload.`);
+      return;
+    }
+    await page.fill("#advancedOfdmaPreEqOperationId", operationId);
+    await page.selectOption("#advancedOfdmaPreEqAnalysisType", selectedAnalysisType);
+    await page.getByRole("button", { name: "Run Analysis" }).click();
+    await waitForAnalysisRender();
+  }
+}
+
 async function main() {
   mkdirSync(OUTPUT_DIR, { recursive: true });
   mkdirSync(DOC_PREVIEW_DIR, { recursive: true });
 
-  const endpointPayloads = loadEndpointMockPayloads();
+  const mocks = loadCaptureMocks();
   const preview = startPreviewServer();
   let browser;
   try {
@@ -208,7 +334,31 @@ async function main() {
       }
 
       const requestUrl = new URL(request.url());
-      const payload = endpointPayloads.get(requestUrl.pathname);
+      if (requestUrl.pathname === ADVANCED_ANALYSIS_ENDPOINTS.rxmer || requestUrl.pathname === ADVANCED_ANALYSIS_ENDPOINTS.channelEstimation || requestUrl.pathname === ADVANCED_ANALYSIS_ENDPOINTS.ofdmaPreEq) {
+        let analysisType = "";
+        try {
+          const requestBody = request.postDataJSON();
+          analysisType = String(requestBody?.analysis?.type ?? "");
+        } catch {
+          analysisType = "";
+        }
+        const analysisPayloadMap = requestUrl.pathname === ADVANCED_ANALYSIS_ENDPOINTS.rxmer
+          ? mocks.advanced.rxmer.analysisPayloads
+          : requestUrl.pathname === ADVANCED_ANALYSIS_ENDPOINTS.channelEstimation
+            ? mocks.advanced.channelEstimation.analysisPayloads
+            : mocks.advanced.ofdmaPreEq.analysisPayloads;
+        const payload = analysisPayloadMap.get(analysisType);
+        if (payload) {
+          await route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            body: JSON.stringify(payload),
+          });
+          return;
+        }
+      }
+
+      const payload = mocks.endpointPayloads.get(requestUrl.pathname);
       if (!payload) {
         await route.continue();
         return;
@@ -226,7 +376,10 @@ async function main() {
       const targetUrl = `${PREVIEW_BASE_URL}${route.path}`;
       log(`Capturing ${targetUrl}`);
       await page.goto(targetUrl, { waitUntil: "networkidle", timeout: 60_000 });
-      await runOperationCapture(page, route);
+      if (shouldRunCaptureBeforeScreenshot(route)) {
+        await runStandardCapture(page, route);
+        await runAdvancedCapture(page, route, mocks);
+      }
       await page.waitForTimeout(600);
       await page.evaluate(() => window.scrollTo(0, 0));
       const fileName = `${route.slug}.png`;
