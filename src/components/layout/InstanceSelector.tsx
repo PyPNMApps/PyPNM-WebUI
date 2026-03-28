@@ -1,5 +1,9 @@
 import { useInstanceConfig } from "@/app/useInstanceConfig";
 
+function toAgentDocsUrl(baseUrl: string): string {
+  return new URL("/docs", `${baseUrl.replace(/\/+$/, "")}/`).toString();
+}
+
 export function InstanceSelector() {
   const { error, instances, isLoading, selectedInstance, setSelectedInstanceId } = useInstanceConfig();
 
@@ -20,7 +24,13 @@ export function InstanceSelector() {
           </option>
         ))}
       </select>
-      {selectedInstance ? <div className="instance-selector-meta mono">{selectedInstance.baseUrl}</div> : null}
+      {selectedInstance ? (
+        <div className="instance-selector-meta mono">
+          <a href={toAgentDocsUrl(selectedInstance.baseUrl)} target="_blank" rel="noreferrer">
+            {selectedInstance.baseUrl}
+          </a>
+        </div>
+      ) : null}
       {error ? <div className="instance-selector-error">{error}</div> : null}
     </div>
   );

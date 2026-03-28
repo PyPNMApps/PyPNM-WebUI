@@ -137,6 +137,16 @@ a {
   word-break: break-all;
 }
 
+.instance-selector-meta a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.instance-selector-meta a:hover,
+.instance-selector-meta a:focus-visible {
+  text-decoration: underline;
+}
+
 .instance-selector-error {
   font-size: 0.78rem;
   color: var(--warn);
@@ -547,6 +557,16 @@ button.secondary,
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+.settings-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.settings-link:hover,
+.settings-link:focus-visible {
+  text-decoration: underline;
 }
 
 .settings-definition-card {

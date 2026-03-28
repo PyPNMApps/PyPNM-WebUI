@@ -3,6 +3,10 @@ import { PageHeader } from "@/components/common/PageHeader";
 import { Panel } from "@/components/common/Panel";
 import { env } from "@/lib/env";
 
+function toAgentDocsUrl(baseUrl: string): string {
+  return new URL("/docs", `${baseUrl.replace(/\/+$/, "")}/`).toString();
+}
+
 export function SettingsPage() {
   const { config, instances, selectedInstance } = useInstanceConfig();
 
@@ -28,7 +32,13 @@ export function SettingsPage() {
             </div>
             <div className="settings-definition-row">
               <span className="settings-definition-key">Base URL</span>
-              <span className="mono">{selectedInstance?.baseUrl ?? "n/a"}</span>
+              <span className="mono">
+                {selectedInstance?.baseUrl ? (
+                  <a className="settings-link" href={toAgentDocsUrl(selectedInstance.baseUrl)} target="_blank" rel="noreferrer">
+                    {selectedInstance.baseUrl}
+                  </a>
+                ) : "n/a"}
+              </span>
             </div>
             <div className="settings-definition-row">
               <span className="settings-definition-key">Polling</span>
