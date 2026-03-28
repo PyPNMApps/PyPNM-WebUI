@@ -38,7 +38,7 @@
           "docsIf3CmStatusUsT4Timeouts": 0,
           "docsIf3CmStatusUsRangingAborteds": 0,
           "docsIf3CmStatusUsModulationType": 2,
-          "docsIf3CmStatusUsEqData": "0x08011800fefffcff07000300fbfffcff04000300fafffcff0a000800dcfff0fffc07fdff0a006200f3ffedff06000800fcfffaff040002000200fbfffeff01000600ffff030000000000ffff0000000002000300fefffcff00000000fffffcff05000100",
+          "docsIf3CmStatusUsEqData": "0x080118000000020005000300f9fffcff08000500f8fffcff0e000600d8ffeefffc07fdff0e006200f1ffebff04000800fafffcff02000200000001000000010008000100010000000200fffffeff00000000fdff040000000200feff0100feff01000100",
           "docsIf3CmStatusUsT3Exceededs": 0,
           "docsIf3CmStatusUsIsMuted": false,
           "docsIf3CmStatusUsRangingStatus": "success"
@@ -68,7 +68,7 @@
           "docsIf3CmStatusUsT4Timeouts": 0,
           "docsIf3CmStatusUsRangingAborteds": 0,
           "docsIf3CmStatusUsModulationType": 2,
-          "docsIf3CmStatusUsEqData": "0x08011800fdfffeff01000100ffff0100fdff030006000100f6ff02001500fefffe0700000f00e6ff20000c00f4ff000002000000f9ffffff0400fbffffff0100080000000200ffff02000400feff03000100fdfffefffdfffcfffeff0200faff0300fdff",
+          "docsIf3CmStatusUsEqData": "0x08011800ffffffff0300000000000200fdff030005000300f6ff02001100fefffe0700001200e6ff22000900f6fffeff06000200fcff00000700fffffffffdff0d0003000100fdff0300fffffdff010000000100fdfffffffcfffcff0100faff0400faff",
           "docsIf3CmStatusUsT3Exceededs": 0,
           "docsIf3CmStatusUsIsMuted": false,
           "docsIf3CmStatusUsRangingStatus": "success"
@@ -98,7 +98,7 @@
           "docsIf3CmStatusUsT4Timeouts": 0,
           "docsIf3CmStatusUsRangingAborteds": 0,
           "docsIf3CmStatusUsModulationType": 2,
-          "docsIf3CmStatusUsEqData": "0x08011800feff0100010000000100fffffcff02000900feffedff03002b00f6fffe070000f6ffd6ff0b000e00f8ffffff07000100fdff020004000200fffffdff06000000feffffff0100ffff0100020001000000fdff0100060003000000feff03000700",
+          "docsIf3CmStatusUsEqData": "0x08011800feff03000100020001000100faff000007000000f1ff03001b00f4fffe0700000400d2ff03000a00fefffffffffffffffbff000002000200fdff030006000200feff0100fdff03000100feffffff0600ffff03000a0007000800000001000100",
           "docsIf3CmStatusUsT3Exceededs": 0,
           "docsIf3CmStatusUsIsMuted": false,
           "docsIf3CmStatusUsRangingStatus": "success"
@@ -123,12 +123,12 @@
           "docsIfUpChannelUpdate": false,
           "docsIfUpChannelStatus": 1,
           "docsIfUpChannelPreEqEnable": true,
-          "docsIf3CmStatusUsTxPower": 35.5,
+          "docsIf3CmStatusUsTxPower": 35,
           "docsIf3CmStatusUsT3Timeouts": 0,
           "docsIf3CmStatusUsT4Timeouts": 0,
           "docsIf3CmStatusUsRangingAborteds": 0,
           "docsIf3CmStatusUsModulationType": 2,
-          "docsIf3CmStatusUsEqData": "0x08011800fefffeff01000300ffff0300020001000100fdff01000300fafff6ffff070000f5fff8fff5ff02000300fbfffdffffff0300fcff0100ffffffffffff0500fcff0100fdff0100fefffeff0400fcfffaff000003000300ffff040003000000f7ff",
+          "docsIf3CmStatusUsEqData": "0x08011800fefffaff05000000000001000200fffffffffcff01000300f9fff4ffff070000fcfff8fff3ff02000700fffffeff05000100010002000500feffffff03000200fffffcff0000feff00000500fdfff7ff0100fafffeff01000900fffffdff0000",
           "docsIf3CmStatusUsT3Exceededs": 0,
           "docsIf3CmStatusUsIsMuted": false,
           "docsIf3CmStatusUsRangingStatus": "success"

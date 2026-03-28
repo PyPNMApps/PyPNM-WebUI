@@ -14,14 +14,6 @@
   },
   "logs": [
     {
-      "docsDevEvFirstTime": "2026-03-26T10:25:41",
-      "docsDevEvLastTime": "2026-03-26T10:25:41",
-      "docsDevEvCounts": 1,
-      "docsDevEvLevel": 3,
-      "docsDevEvId": 84000500,
-      "docsDevEvText": "SYNC Timing Synchronization failure - Loss of Sync;CM-MAC=38:ad:2b:3e:85:4c;CMTS-MAC=00:a2:89:d0:a4:e9;CM-QOS=1.1;CM-VER=4.0;"
-    },
-    {
       "docsDevEvFirstTime": "2026-03-27T10:19:42",
       "docsDevEvLastTime": "2026-03-27T10:19:42",
       "docsDevEvCounts": 1,
@@ -167,11 +159,19 @@
     },
     {
       "docsDevEvFirstTime": "2026-03-27T22:18:08",
-      "docsDevEvLastTime": "2026-03-27T23:10:35",
-      "docsDevEvCounts": 16,
+      "docsDevEvLastTime": "2026-03-27T23:18:21",
+      "docsDevEvCounts": 21,
       "docsDevEvLevel": 6,
       "docsDevEvId": 74010100,
       "docsDevEvText": "CM-STATUS message sent.  Event Type Code: 5; Chan ID: 7; DSID: N/A; MAC Addr: N/A; OFDM/OFDMA Profile ID: N/A.;CM-MAC=38:ad:2b:3e:85:4c;CMTS-MAC=00:a2:89:d0:a4:e9;CM-QOS=1.1;CM-VER=4.0;"
+    },
+    {
+      "docsDevEvFirstTime": "2026-03-27T23:23:48",
+      "docsDevEvLastTime": "2026-03-27T23:28:57",
+      "docsDevEvCounts": 2,
+      "docsDevEvLevel": 6,
+      "docsDevEvId": 67061601,
+      "docsDevEvText": "US profile assignment change.  US Chan ID: 7; Previous Profile: 6; New Profile: 5.;CM-MAC=38:ad:2b:3e:85:4c;CMTS-MAC=00:a2:89:d0:a4:e9;CM-QOS=1.1;CM-VER=4.0;"
     }
   ]
 }

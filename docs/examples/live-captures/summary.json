@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-28T05:10:12.220Z",
+  "generated_at": "2026-03-28T05:28:12.534Z",
   "base_url": "http://172.19.8.28:8000",
   "instance_id": "pypnm-agent-1",
   "outputs": [
@@ -167,7 +167,7 @@
     },
     {
       "id": "advanced-rxmer-status",
-      "endpoint": "/advance/multi/ds/rxMer/status/e12fe75652b54d5a",
+      "endpoint": "/advance/multi/ds/rxMer/status/f437d904664e4bbc",
       "status": "ok",
       "output_path": "/home/dev02/Projects/PyPNM-WebUI/docs/examples/live-captures/advanced-rxmer-status.sanitized.json"
     },
@@ -203,7 +203,7 @@
     },
     {
       "id": "advanced-channel-estimation-status",
-      "endpoint": "/advance/multi/ds/channelEstimation/status/9409409295244252",
+      "endpoint": "/advance/multi/ds/channelEstimation/status/372bd35203c54758",
       "status": "ok",
       "output_path": "/home/dev02/Projects/PyPNM-WebUI/docs/examples/live-captures/advanced-channel-estimation-status.sanitized.json"
     },
@@ -239,7 +239,7 @@
     },
     {
       "id": "advanced-ofdma-pre-eq-status",
-      "endpoint": "/advance/multi/us/ofdmaPreEqualization/status/aea4245a247c429a",
+      "endpoint": "/advance/multi/us/ofdmaPreEqualization/status/7ce6f8033d3b4338",
       "status": "ok",
       "output_path": "/home/dev02/Projects/PyPNM-WebUI/docs/examples/live-captures/advanced-ofdma-pre-eq-status.sanitized.json"
     },

@@ -30,7 +30,7 @@
           "file_type_version": 6,
           "major_version": 1,
           "minor_version": 0,
-          "capture_time": 1774674861
+          "capture_time": 1774675942
         },
         "mac_address": "00:00:00:3e:85:4c",
         "channel_id": 7,
@@ -9411,7 +9411,7 @@
           "file_type_version": 7,
           "major_version": 1,
           "minor_version": 0,
-          "capture_time": 1774674861
+          "capture_time": 1774675942
         },
         "mac_address": "00:00:00:3e:85:4c",
         "channel_id": 7,
@@ -18787,7 +18787,7 @@
           "file_type_version": 6,
           "major_version": 1,
           "minor_version": 0,
-          "capture_time": 1774674861
+          "capture_time": 1774675942
         },
         "channel_id": 7,
         "mac_address": "00:00:00:3e:85:4c",
@@ -23450,7 +23450,7 @@
           "file_type_version": 7,
           "major_version": 1,
           "minor_version": 0,
-          "capture_time": 1774674861
+          "capture_time": 1774675942
         },
         "channel_id": 7,
         "mac_address": "00:00:00:3e:85:4c",
@@ -28118,8 +28118,8 @@
           "docsPnmCmUsPreEqGrpDelayRippleRms": 13.289,
           "docsPnmCmUsPreEqPreEqCoAdjStatus": "success",
           "docsPnmCmUsPreEqMeasStatus": "sample_ready",
-          "docsPnmCmUsPreEqLastUpdateFileName": "us_pre_equalizer_coef_38ad2b3e854c_last_pre-eq_7_1774674861.bin",
-          "docsPnmCmUsPreEqFileName": "us_pre_equalizer_coef_38ad2b3e854c_7_1774674861.bin",
+          "docsPnmCmUsPreEqLastUpdateFileName": "us_pre_equalizer_coef_38ad2b3e854c_last_pre-eq_7_1774675942.bin",
+          "docsPnmCmUsPreEqFileName": "us_pre_equalizer_coef_38ad2b3e854c_7_1774675942.bin",
           "docsPnmCmUsPreEqAmpMean": -0.091,
           "docsPnmCmUsPreEqGrpDelaySlope": 0.631,
           "docsPnmCmUsPreEqGrpDelayMean": -0.553
