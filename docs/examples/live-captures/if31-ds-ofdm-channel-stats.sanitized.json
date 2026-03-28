@@ -29,9 +29,9 @@
         "docsIf31CmDsOfdmChanPlcFreq": 759000000,
         "docsIf31CmDsOfdmChanNumPilots": 32,
         "docsIf31CmDsOfdmChanTimeInterleaverDepth": 16,
-        "docsIf31CmDsOfdmChanPlcTotalCodewords": 145894939,
+        "docsIf31CmDsOfdmChanPlcTotalCodewords": 147801808,
         "docsIf31CmDsOfdmChanPlcUnreliableCodewords": 0,
-        "docsIf31CmDsOfdmChanNcpTotalFields": 1867441419,
+        "docsIf31CmDsOfdmChanNcpTotalFields": 1891849341,
         "docsIf31CmDsOfdmChanNcpFieldCrcFailures": 0
       }
     },
@@ -51,9 +51,9 @@
         "docsIf31CmDsOfdmChanPlcFreq": 648000000,
         "docsIf31CmDsOfdmChanNumPilots": 38,
         "docsIf31CmDsOfdmChanTimeInterleaverDepth": 16,
-        "docsIf31CmDsOfdmChanPlcTotalCodewords": 145894710,
+        "docsIf31CmDsOfdmChanPlcTotalCodewords": 147801579,
         "docsIf31CmDsOfdmChanPlcUnreliableCodewords": 0,
-        "docsIf31CmDsOfdmChanNcpTotalFields": 1867442452,
+        "docsIf31CmDsOfdmChanNcpTotalFields": 1891850371,
         "docsIf31CmDsOfdmChanNcpFieldCrcFailures": 0
       }
     }

@@ -1,0 +1,6 @@
+{
+  "status": "error",
+  "id": "advanced-rxmer-analysis-min-avg-max",
+  "endpoint": "/advance/multi/ds/rxMer/analysis",
+  "message": "HTTP 500 Internal Server Error: Internal Server Error"
+}

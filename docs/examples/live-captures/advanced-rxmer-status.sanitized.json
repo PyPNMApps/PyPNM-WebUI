@@ -1,5 +1,5 @@
 {
-  "status": 0,
+  "status": "success",
   "message": null,
   "device": {
     "mac_address": "00:00:00:3e:85:4c",
@@ -12,7 +12,11 @@
       "is_empty": false
     }
   },
-  "results": {
-    "uptime": "11:52:11.740000"
+  "operation": {
+    "operation_id": "aa49f2f58c1b4c23",
+    "state": "completed",
+    "collected": 30,
+    "time_remaining": 1,
+    "message": null
   }
 }

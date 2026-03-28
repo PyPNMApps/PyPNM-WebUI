@@ -51,6 +51,63 @@ This page links each UI form endpoint to its sanitized live-capture JSON output.
 | UpTime | `/system/upTime` | [up-time.sanitized.json](../examples/live-captures/up-time.sanitized.json) |
 | sysDescr | `/system/sysDescr` | [system-sysdescr.sanitized.json](../examples/live-captures/system-sysdescr.sanitized.json) |
 
+## Advanced Analysis React Forms
+
+These forms are used by the `Advanced` React workbenches.
+
+### Advanced RxMER
+
+| Form Action | Endpoint |
+| --- | --- |
+| Start Capture | `/advance/multi/ds/rxMer/start` |
+| Status | `/advance/multi/ds/rxMer/status/{operation_id}` |
+| Results ZIP | `/advance/multi/ds/rxMer/results/{operation_id}` |
+| Run Analysis | `/advance/multi/ds/rxMer/analysis` |
+
+| Captured Output | Sanitized JSON |
+| --- | --- |
+| Start response | [advanced-rxmer-start.sanitized.json](../examples/live-captures/advanced-rxmer-start.sanitized.json) |
+| Final status response | [advanced-rxmer-status.sanitized.json](../examples/live-captures/advanced-rxmer-status.sanitized.json) |
+| Analysis `min-avg-max` | [advanced-rxmer-analysis-min-avg-max.sanitized.json](../examples/live-captures/advanced-rxmer-analysis-min-avg-max.sanitized.json) |
+| Analysis `rxmer-heat-map` | [advanced-rxmer-analysis-rxmer-heat-map.sanitized.json](../examples/live-captures/advanced-rxmer-analysis-rxmer-heat-map.sanitized.json) |
+| Analysis `echo-reflection-1` | [advanced-rxmer-analysis-echo-reflection-1.sanitized.json](../examples/live-captures/advanced-rxmer-analysis-echo-reflection-1.sanitized.json) |
+| Analysis `ofdm-profile-performance-1` | [advanced-rxmer-analysis-ofdm-profile-performance-1.sanitized.json](../examples/live-captures/advanced-rxmer-analysis-ofdm-profile-performance-1.sanitized.json) |
+
+### Advanced Channel Estimation
+
+| Form Action | Endpoint |
+| --- | --- |
+| Start Capture | `/advance/multi/ds/channelEstimation/start` |
+| Status | `/advance/multi/ds/channelEstimation/status/{operation_id}` |
+| Results ZIP | `/advance/multi/ds/channelEstimation/results/{operation_id}` |
+| Run Analysis | `/advance/multi/ds/channelEstimation/analysis` |
+
+| Captured Output | Sanitized JSON |
+| --- | --- |
+| Start response | [advanced-channel-estimation-start.sanitized.json](../examples/live-captures/advanced-channel-estimation-start.sanitized.json) |
+| Final status response | [advanced-channel-estimation-status.sanitized.json](../examples/live-captures/advanced-channel-estimation-status.sanitized.json) |
+| Analysis `min-avg-max` | [advanced-channel-estimation-analysis-min-avg-max.sanitized.json](../examples/live-captures/advanced-channel-estimation-analysis-min-avg-max.sanitized.json) |
+| Analysis `group-delay` | [advanced-channel-estimation-analysis-group-delay.sanitized.json](../examples/live-captures/advanced-channel-estimation-analysis-group-delay.sanitized.json) |
+| Analysis `lte-detection-phase-slope` | [advanced-channel-estimation-analysis-lte-detection-phase-slope.sanitized.json](../examples/live-captures/advanced-channel-estimation-analysis-lte-detection-phase-slope.sanitized.json) |
+| Analysis `echo-detection-ifft` | [advanced-channel-estimation-analysis-echo-detection-ifft.sanitized.json](../examples/live-captures/advanced-channel-estimation-analysis-echo-detection-ifft.sanitized.json) |
+
+### Advanced OFDMA PreEq
+
+| Form Action | Endpoint |
+| --- | --- |
+| Start Capture | `/advance/multi/us/ofdmaPreEqualization/start` |
+| Status | `/advance/multi/us/ofdmaPreEqualization/status/{operation_id}` |
+| Results ZIP | `/advance/multi/us/ofdmaPreEqualization/results/{operation_id}` |
+| Run Analysis | `/advance/multi/us/ofdmaPreEqualization/analysis` |
+
+| Captured Output | Sanitized JSON |
+| --- | --- |
+| Start response | [advanced-ofdma-pre-eq-start.sanitized.json](../examples/live-captures/advanced-ofdma-pre-eq-start.sanitized.json) |
+| Final status response | [advanced-ofdma-pre-eq-status.sanitized.json](../examples/live-captures/advanced-ofdma-pre-eq-status.sanitized.json) |
+| Analysis `min-avg-max` | [advanced-ofdma-pre-eq-analysis-min-avg-max.sanitized.json](../examples/live-captures/advanced-ofdma-pre-eq-analysis-min-avg-max.sanitized.json) |
+| Analysis `group-delay` | [advanced-ofdma-pre-eq-analysis-group-delay.sanitized.json](../examples/live-captures/advanced-ofdma-pre-eq-analysis-group-delay.sanitized.json) |
+| Analysis `echo-detection-ifft` | [advanced-ofdma-pre-eq-analysis-echo-detection-ifft.sanitized.json](../examples/live-captures/advanced-ofdma-pre-eq-analysis-echo-detection-ifft.sanitized.json) |
+
 ## Capture Index
 
 - Full run summary: [summary.json](../examples/live-captures/summary.json)

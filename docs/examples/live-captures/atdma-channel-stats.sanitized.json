@@ -38,7 +38,7 @@
           "docsIf3CmStatusUsT4Timeouts": 0,
           "docsIf3CmStatusUsRangingAborteds": 0,
           "docsIf3CmStatusUsModulationType": 2,
-          "docsIf3CmStatusUsEqData": "0x08011800feff020009000100fbff000006000300fafffcff0a000800dcfff0fffc07fdff0e006400f1ffebff06000900fcfff5ffffff030002000200feff01000400ffff0200030004000400feff020006000300040002000400feff0100feffffffffff",
+          "docsIf3CmStatusUsEqData": "0x08011800fcfffeff05000300fdfffeff06000300f4fff8ff0c000800deffeefffc07fdff0e006000f1ffebff0a000d00fcfff9ff030003000000feff0000ffff0400f9ff0000ffff060002000200feff0400030000000500fefffeffffff030003000100",
           "docsIf3CmStatusUsT3Exceededs": 0,
           "docsIf3CmStatusUsIsMuted": false,
           "docsIf3CmStatusUsRangingStatus": "success"
@@ -68,7 +68,7 @@
           "docsIf3CmStatusUsT4Timeouts": 0,
           "docsIf3CmStatusUsRangingAborteds": 0,
           "docsIf3CmStatusUsModulationType": 2,
-          "docsIf3CmStatusUsEqData": "0x08011800000002000100feffffff0100fffffeff04000100f3ff02001400fefffe0700000c00e5ff21000a00f3fffdff00000300f9fffcff0500feff01000100090001000200020003000700feff03000200fdfffffffeff0100fcff0200f6ff08000000",
+          "docsIf3CmStatusUsEqData": "0x08011800feff00000300000001000100fbff020007000100f3ff010015000000fe0700001100e5ff24000d00f7fffdff05000100fbfffeff08000000ffffffff0b00010002000000fdff0400000003000200faff0100fefffbff00000600faff0500fdff",
           "docsIf3CmStatusUsT3Exceededs": 0,
           "docsIf3CmStatusUsIsMuted": false,
           "docsIf3CmStatusUsRangingStatus": "success"
@@ -98,7 +98,7 @@
           "docsIf3CmStatusUsT4Timeouts": 0,
           "docsIf3CmStatusUsRangingAborteds": 0,
           "docsIf3CmStatusUsModulationType": 2,
-          "docsIf3CmStatusUsEqData": "0x08011800fdff0100feff02000100fdfff8ff020007000000f0ff05001c00f4fffe0700000100d0ff05000c00fcffffff00000300ffff000004000100fdff000007000000fefffcff020002000500fdff0000040002000200ffff02000000030002000000",
+          "docsIf3CmStatusUsEqData": "0x08011800ffffffff0200000001000100faff02000900fcffecff05002a00f6fffe070000f7ffd2ff0d000c00faffffff0600fdfffffffeff06000100fdfffeff03000200feff0000020000000300050000000400feff0000050007000400ffff00000200",
           "docsIf3CmStatusUsT3Exceededs": 0,
           "docsIf3CmStatusUsIsMuted": false,
           "docsIf3CmStatusUsRangingStatus": "success"
@@ -128,7 +128,7 @@
           "docsIf3CmStatusUsT4Timeouts": 0,
           "docsIf3CmStatusUsRangingAborteds": 0,
           "docsIf3CmStatusUsModulationType": 2,
-          "docsIf3CmStatusUsEqData": "0x08011800fffffdff0200fffffdff010003000500fefffeff00000400f7fff7ffff070000fffffcfff1ff02000600fffffffffbffffff07000200ffffffff010005000100fbff01000300ffff040005000500fcff0800fdff000008000200fffffcff0300",
+          "docsIf3CmStatusUsEqData": "0x08011800ffffffff0200fdfffbff010001000300fcfffeff06000600f3fff7ffff070000fbfff8ffedff040006000000fdff06000300000000000100010003000700fffff9ffffff0300fffffcff03000100fcff0500fbff0600ffff0600030001000100",
           "docsIf3CmStatusUsT3Exceededs": 0,
           "docsIf3CmStatusUsIsMuted": false,
           "docsIf3CmStatusUsRangingStatus": "success"

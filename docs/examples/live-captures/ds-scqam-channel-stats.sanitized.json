@@ -22,12 +22,12 @@
         "docsIfDownChannelWidth": 6000000,
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
-        "docsIfDownChannelPower": 4.8,
-        "docsIfSigQUnerroreds": 1922976968,
+        "docsIfDownChannelPower": 4.9,
+        "docsIfSigQUnerroreds": 1955679355,
         "docsIfSigQCorrecteds": 43,
         "docsIfSigQUncorrectables": 657,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 1923271624,
+        "docsIfSigQExtUnerroreds": 1955682815,
         "docsIfSigQExtCorrecteds": 43,
         "docsIfSigQExtUncorrectables": 657,
         "docsIf3SignalQualityExtRxMER": 44.6
@@ -43,11 +43,11 @@
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
         "docsIfDownChannelPower": 3.2,
-        "docsIfSigQUnerroreds": 416743987,
+        "docsIfSigQUnerroreds": 429564287,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 417038655,
+        "docsIfSigQExtUnerroreds": 429567747,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
         "docsIf3SignalQualityExtRxMER": 44.6
@@ -63,11 +63,11 @@
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
         "docsIfDownChannelPower": 3.1,
-        "docsIfSigQUnerroreds": 415167913,
+        "docsIfSigQUnerroreds": 427670595,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 415250817,
+        "docsIfSigQExtUnerroreds": 427674055,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
         "docsIf3SignalQualityExtRxMER": 44.6
@@ -82,12 +82,12 @@
         "docsIfDownChannelWidth": 6000000,
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
-        "docsIfDownChannelPower": 3.1,
-        "docsIfSigQUnerroreds": 414646053,
+        "docsIfDownChannelPower": 3.2,
+        "docsIfSigQUnerroreds": 427148746,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 414728957,
+        "docsIfSigQExtUnerroreds": 427152206,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
         "docsIf3SignalQualityExtRxMER": 43.3
@@ -102,12 +102,12 @@
         "docsIfDownChannelWidth": 6000000,
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
-        "docsIfDownChannelPower": 2.6,
-        "docsIfSigQUnerroreds": 414611911,
+        "docsIfDownChannelPower": 2.5,
+        "docsIfSigQUnerroreds": 425725659,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 414694815,
+        "docsIfSigQExtUnerroreds": 425729115,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
         "docsIf3SignalQualityExtRxMER": 43.3
@@ -122,15 +122,15 @@
         "docsIfDownChannelWidth": 6000000,
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
-        "docsIfDownChannelPower": 3.2,
-        "docsIfSigQUnerroreds": 411340926,
+        "docsIfDownChannelPower": 3,
+        "docsIfSigQUnerroreds": 422454669,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 411423830,
+        "docsIfSigQExtUnerroreds": 422634117,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
-        "docsIf3SignalQualityExtRxMER": 44.6
+        "docsIf3SignalQualityExtRxMER": 43.3
       }
     },
     {
@@ -142,12 +142,12 @@
         "docsIfDownChannelWidth": 6000000,
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
-        "docsIfDownChannelPower": 3.6,
-        "docsIfSigQUnerroreds": 412546891,
+        "docsIfDownChannelPower": 3.3,
+        "docsIfSigQUnerroreds": 424193456,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 412629799,
+        "docsIfSigQExtUnerroreds": 424372904,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
         "docsIf3SignalQualityExtRxMER": 43.3
@@ -163,11 +163,11 @@
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
         "docsIfDownChannelPower": 3.8,
-        "docsIfSigQUnerroreds": 412903960,
+        "docsIfSigQUnerroreds": 424679720,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413072996,
+        "docsIfSigQExtUnerroreds": 424859168,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
         "docsIf3SignalQualityExtRxMER": 44.6
@@ -183,11 +183,11 @@
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
         "docsIfDownChannelPower": 4,
-        "docsIfSigQUnerroreds": 413336191,
+        "docsIfSigQUnerroreds": 425111998,
         "docsIfSigQCorrecteds": 6,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413505235,
+        "docsIfSigQExtUnerroreds": 425291446,
         "docsIfSigQExtCorrecteds": 6,
         "docsIfSigQExtUncorrectables": 0,
         "docsIf3SignalQualityExtRxMER": 43.3
@@ -202,15 +202,15 @@
         "docsIfDownChannelWidth": 6000000,
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
-        "docsIfDownChannelPower": 3.9,
-        "docsIfSigQUnerroreds": 413374693,
+        "docsIfDownChannelPower": 4,
+        "docsIfSigQUnerroreds": 425198344,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413543741,
+        "docsIfSigQExtUnerroreds": 425377792,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
-        "docsIf3SignalQualityExtRxMER": 44.6
+        "docsIf3SignalQualityExtRxMER": 43.3
       }
     },
     {
@@ -223,11 +223,11 @@
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
         "docsIfDownChannelPower": 3.7,
-        "docsIfSigQUnerroreds": 413363935,
+        "docsIfSigQUnerroreds": 425157168,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413532983,
+        "docsIfSigQExtUnerroreds": 425339542,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
         "docsIf3SignalQualityExtRxMER": 43.3
@@ -242,12 +242,12 @@
         "docsIfDownChannelWidth": 6000000,
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
-        "docsIfDownChannelPower": 4,
-        "docsIfSigQUnerroreds": 413414548,
+        "docsIfDownChannelPower": 4.1,
+        "docsIfSigQUnerroreds": 425236348,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413583592,
+        "docsIfSigQExtUnerroreds": 425421648,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
         "docsIf3SignalQualityExtRxMER": 43.3
@@ -262,15 +262,15 @@
         "docsIfDownChannelWidth": 6000000,
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
-        "docsIfDownChannelPower": 4,
-        "docsIfSigQUnerroreds": 413361291,
+        "docsIfDownChannelPower": 4.1,
+        "docsIfSigQUnerroreds": 425212934,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413550231,
+        "docsIfSigQExtUnerroreds": 425398234,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
-        "docsIf3SignalQualityExtRxMER": 43.3
+        "docsIf3SignalQualityExtRxMER": 44.6
       }
     },
     {
@@ -282,15 +282,15 @@
         "docsIfDownChannelWidth": 6000000,
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
-        "docsIfDownChannelPower": 4.1,
-        "docsIfSigQUnerroreds": 413409310,
+        "docsIfDownChannelPower": 4.2,
+        "docsIfSigQUnerroreds": 425260946,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413598250,
+        "docsIfSigQExtUnerroreds": 425446246,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
-        "docsIf3SignalQualityExtRxMER": 44.6
+        "docsIf3SignalQualityExtRxMER": 43.3
       }
     },
     {
@@ -303,14 +303,14 @@
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
         "docsIfDownChannelPower": 4,
-        "docsIfSigQUnerroreds": 413322045,
+        "docsIfSigQUnerroreds": 425193017,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413510985,
+        "docsIfSigQExtUnerroreds": 425378325,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
-        "docsIf3SignalQualityExtRxMER": 43.3
+        "docsIf3SignalQualityExtRxMER": 44.6
       }
     },
     {
@@ -323,14 +323,14 @@
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
         "docsIfDownChannelPower": 3.7,
-        "docsIfSigQUnerroreds": 413226023,
+        "docsIfSigQUnerroreds": 425126339,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413414963,
+        "docsIfSigQExtUnerroreds": 425309914,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
-        "docsIf3SignalQualityExtRxMER": 44.6
+        "docsIf3SignalQualityExtRxMER": 43.3
       }
     },
     {
@@ -343,11 +343,11 @@
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
         "docsIfDownChannelPower": 3.3,
-        "docsIfSigQUnerroreds": 413300600,
+        "docsIfSigQUnerroreds": 425210176,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413489540,
+        "docsIfSigQExtUnerroreds": 425388552,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
         "docsIf3SignalQualityExtRxMER": 43.3
@@ -362,15 +362,15 @@
         "docsIfDownChannelWidth": 6000000,
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
-        "docsIfDownChannelPower": 3.2,
-        "docsIfSigQUnerroreds": 413334674,
+        "docsIfDownChannelPower": 3.1,
+        "docsIfSigQUnerroreds": 425220262,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413507622,
+        "docsIfSigQExtUnerroreds": 425398638,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
-        "docsIf3SignalQualityExtRxMER": 43.3
+        "docsIf3SignalQualityExtRxMER": 44.6
       }
     },
     {
@@ -382,15 +382,15 @@
         "docsIfDownChannelWidth": 6000000,
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
-        "docsIfDownChannelPower": 3.2,
-        "docsIfSigQUnerroreds": 413355503,
+        "docsIfDownChannelPower": 3.1,
+        "docsIfSigQUnerroreds": 425241099,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413528451,
+        "docsIfSigQExtUnerroreds": 425419479,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
-        "docsIf3SignalQualityExtRxMER": 44.6
+        "docsIf3SignalQualityExtRxMER": 43.3
       }
     },
     {
@@ -403,11 +403,11 @@
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
         "docsIfDownChannelPower": 3.4,
-        "docsIfSigQUnerroreds": 413408207,
+        "docsIfSigQUnerroreds": 425277618,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413581159,
+        "docsIfSigQExtUnerroreds": 425455994,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
         "docsIf3SignalQualityExtRxMER": 44.6
@@ -422,15 +422,15 @@
         "docsIfDownChannelWidth": 6000000,
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
-        "docsIfDownChannelPower": 3.6,
-        "docsIfSigQUnerroreds": 413429352,
+        "docsIfDownChannelPower": 3.5,
+        "docsIfSigQUnerroreds": 425309007,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413602304,
+        "docsIfSigQExtUnerroreds": 425487383,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
-        "docsIf3SignalQualityExtRxMER": 43.3
+        "docsIf3SignalQualityExtRxMER": 44.6
       }
     },
     {
@@ -442,12 +442,12 @@
         "docsIfDownChannelWidth": 6000000,
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
-        "docsIfDownChannelPower": 3.7,
-        "docsIfSigQUnerroreds": 413360596,
+        "docsIfDownChannelPower": 3.8,
+        "docsIfSigQUnerroreds": 425185341,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413533548,
+        "docsIfSigQExtUnerroreds": 425366689,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
         "docsIf3SignalQualityExtRxMER": 44.6
@@ -463,14 +463,14 @@
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
         "docsIfDownChannelPower": 4.1,
-        "docsIfSigQUnerroreds": 413361148,
+        "docsIfSigQUnerroreds": 425197795,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413541243,
+        "docsIfSigQExtUnerroreds": 425379135,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
-        "docsIf3SignalQualityExtRxMER": 44.6
+        "docsIf3SignalQualityExtRxMER": 43.3
       }
     },
     {
@@ -483,11 +483,11 @@
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
         "docsIfDownChannelPower": 3.9,
-        "docsIfSigQUnerroreds": 413443537,
+        "docsIfSigQUnerroreds": 425282563,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413626013,
+        "docsIfSigQExtUnerroreds": 425463903,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
         "docsIf3SignalQualityExtRxMER": 43.3
@@ -503,11 +503,11 @@
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
         "docsIfDownChannelPower": 4.5,
-        "docsIfSigQUnerroreds": 413517305,
+        "docsIfSigQUnerroreds": 425366958,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413699781,
+        "docsIfSigQExtUnerroreds": 425548298,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
         "docsIf3SignalQualityExtRxMER": 43.3
@@ -523,14 +523,14 @@
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
         "docsIfDownChannelPower": 5,
-        "docsIfSigQUnerroreds": 413515461,
+        "docsIfSigQUnerroreds": 425340463,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413697941,
+        "docsIfSigQExtUnerroreds": 425521803,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
-        "docsIf3SignalQualityExtRxMER": 43.3
+        "docsIf3SignalQualityExtRxMER": 44.6
       }
     },
     {
@@ -542,15 +542,15 @@
         "docsIfDownChannelWidth": 6000000,
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
-        "docsIfDownChannelPower": 4.6,
-        "docsIfSigQUnerroreds": 413299056,
-        "docsIfSigQCorrecteds": 15787,
-        "docsIfSigQUncorrectables": 189841,
+        "docsIfDownChannelPower": 4.5,
+        "docsIfSigQUnerroreds": 425148152,
+        "docsIfSigQCorrecteds": 16136,
+        "docsIfSigQUncorrectables": 194934,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413481536,
-        "docsIfSigQExtCorrecteds": 15787,
-        "docsIfSigQExtUncorrectables": 189841,
-        "docsIf3SignalQualityExtRxMER": 43.3
+        "docsIfSigQExtUnerroreds": 425329908,
+        "docsIfSigQExtCorrecteds": 16136,
+        "docsIfSigQExtUncorrectables": 194934,
+        "docsIf3SignalQualityExtRxMER": 44.6
       }
     },
     {
@@ -562,15 +562,15 @@
         "docsIfDownChannelWidth": 6000000,
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
-        "docsIfDownChannelPower": 4.8,
-        "docsIfSigQUnerroreds": 413444413,
+        "docsIfDownChannelPower": 4.7,
+        "docsIfSigQUnerroreds": 425298581,
         "docsIfSigQCorrecteds": 1,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413626289,
+        "docsIfSigQExtUnerroreds": 425480337,
         "docsIfSigQExtCorrecteds": 1,
         "docsIfSigQExtUncorrectables": 0,
-        "docsIf3SignalQualityExtRxMER": 44.6
+        "docsIf3SignalQualityExtRxMER": 43.3
       }
     },
     {
@@ -583,14 +583,14 @@
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
         "docsIfDownChannelPower": 4.6,
-        "docsIfSigQUnerroreds": 413335820,
+        "docsIfSigQUnerroreds": 425189945,
         "docsIfSigQCorrecteds": 1,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413517696,
+        "docsIfSigQExtUnerroreds": 425371697,
         "docsIfSigQExtCorrecteds": 1,
         "docsIfSigQExtUncorrectables": 0,
-        "docsIf3SignalQualityExtRxMER": 44.6
+        "docsIf3SignalQualityExtRxMER": 43.3
       }
     },
     {
@@ -603,14 +603,14 @@
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
         "docsIfDownChannelPower": 4.6,
-        "docsIfSigQUnerroreds": 413318767,
+        "docsIfSigQUnerroreds": 425166364,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413500639,
+        "docsIfSigQExtUnerroreds": 425348124,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
-        "docsIf3SignalQualityExtRxMER": 44.6
+        "docsIf3SignalQualityExtRxMER": 43.3
       }
     },
     {
@@ -623,14 +623,14 @@
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
         "docsIfDownChannelPower": 4.7,
-        "docsIfSigQUnerroreds": 413282326,
+        "docsIfSigQUnerroreds": 425157358,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413464202,
+        "docsIfSigQExtUnerroreds": 425339114,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
-        "docsIf3SignalQualityExtRxMER": 44.6
+        "docsIf3SignalQualityExtRxMER": 43.3
       }
     },
     {
@@ -643,11 +643,11 @@
         "docsIfDownChannelModulation": "qam256",
         "docsIfDownChannelInterleave": "taps32Increment4",
         "docsIfDownChannelPower": 4.6,
-        "docsIfSigQUnerroreds": 413316826,
+        "docsIfSigQUnerroreds": 425214440,
         "docsIfSigQCorrecteds": 0,
         "docsIfSigQUncorrectables": 0,
         "docsIfSigQMicroreflections": 3,
-        "docsIfSigQExtUnerroreds": 413498702,
+        "docsIfSigQExtUnerroreds": 425409252,
         "docsIfSigQExtCorrecteds": 0,
         "docsIfSigQExtUncorrectables": 0,
         "docsIf3SignalQualityExtRxMER": 44.6

@@ -1,5 +1,5 @@
 {
-  "status": 0,
+  "status": "running",
   "message": null,
   "device": {
     "mac_address": "00:00:00:3e:85:4c",
@@ -12,7 +12,6 @@
       "is_empty": false
     }
   },
-  "results": {
-    "uptime": "11:52:11.740000"
-  }
+  "group_id": "15ff04d0f38d4842",
+  "operation_id": "de46fef0356646f3"
 }

@@ -44,6 +44,33 @@ const ENDPOINTS = [
   { id: "system-sysdescr", endpointPath: "/system/sysDescr", payloadType: "device" },
 ];
 
+const ADVANCED_WORKFLOWS = [
+  {
+    id: "advanced-rxmer",
+    startPath: "/advance/multi/ds/rxMer/start",
+    statusPath: "/advance/multi/ds/rxMer/status/{operation_id}",
+    analysisPath: "/advance/multi/ds/rxMer/analysis",
+    measureMode: 1,
+    analysisTypes: ["min-avg-max", "rxmer-heat-map", "echo-reflection-1", "ofdm-profile-performance-1"],
+  },
+  {
+    id: "advanced-channel-estimation",
+    startPath: "/advance/multi/ds/channelEstimation/start",
+    statusPath: "/advance/multi/ds/channelEstimation/status/{operation_id}",
+    analysisPath: "/advance/multi/ds/channelEstimation/analysis",
+    measureMode: 0,
+    analysisTypes: ["min-avg-max", "group-delay", "lte-detection-phase-slope", "echo-detection-ifft"],
+  },
+  {
+    id: "advanced-ofdma-pre-eq",
+    startPath: "/advance/multi/us/ofdmaPreEqualization/start",
+    statusPath: "/advance/multi/us/ofdmaPreEqualization/status/{operation_id}",
+    analysisPath: "/advance/multi/us/ofdmaPreEqualization/analysis",
+    measureMode: 0,
+    analysisTypes: ["min-avg-max", "group-delay", "echo-detection-ifft"],
+  },
+];
+
 function readRuntimeConfig() {
   try {
     return parse(readFileSync(LOCAL_CONFIG_PATH, "utf-8"));
@@ -266,20 +293,68 @@ function log(message) {
   process.stdout.write(`[live-capture] ${message}\n`);
 }
 
-async function callEndpoint(baseUrl, endpointPath, payload) {
+async function callEndpoint(baseUrl, endpointPath, payload, method = "POST") {
   const response = await fetch(`${baseUrl}${endpointPath}`, {
-    method: "POST",
+    method,
     signal: AbortSignal.timeout(90000),
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(payload),
+    body: method === "GET" ? undefined : JSON.stringify(payload),
   });
   const text = await response.text();
   if (!response.ok) {
     throw new Error(`HTTP ${response.status} ${response.statusText}: ${text.slice(0, 300)}`);
   }
   return JSON.parse(text);
+}
+
+function buildAdvancedStartPayload(defaults, measureMode) {
+  return {
+    cable_modem: {
+      mac_address: defaults.macAddress,
+      ip_address: defaults.ipAddress,
+      pnm_parameters: {
+        tftp: { ipv4: defaults.tftpIpv4, ipv6: defaults.tftpIpv6 },
+        capture: { channel_ids: [] },
+      },
+      snmp: { snmpV2C: { community: defaults.community } },
+    },
+    capture: {
+      parameters: {
+        measurement_duration: 30,
+        sample_interval: 1,
+      },
+    },
+    measure: { mode: measureMode },
+  };
+}
+
+function statusState(statusResponse) {
+  return String(statusResponse?.operation?.state ?? "").toLowerCase();
+}
+
+function isRunningState(state) {
+  return state === "running" || state === "starting" || state === "pending" || state === "queued";
+}
+
+async function waitForAdvancedCompletion(baseUrl, workflow, operationId) {
+  const statusEndpoint = workflow.statusPath.replace("{operation_id}", operationId);
+  const maxPolls = 80;
+  const pollDelayMs = 3000;
+  let lastStatus = null;
+
+  for (let index = 0; index < maxPolls; index += 1) {
+    const status = await callEndpoint(baseUrl, statusEndpoint, {}, "GET");
+    lastStatus = status;
+    const state = statusState(status);
+    if (!isRunningState(state)) {
+      return status;
+    }
+    await new Promise((resolveDelay) => setTimeout(resolveDelay, pollDelayMs));
+  }
+
+  return lastStatus;
 }
 
 async function main() {
@@ -327,13 +402,118 @@ async function main() {
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
+      writeFileSync(
+        outputPath,
+        `${JSON.stringify({ status: "error", endpoint: target.endpointPath, message }, null, 2)}\n`,
+        "utf-8",
+      );
       summary.outputs.push({
         id: target.id,
         endpoint: target.endpointPath,
         status: "error",
+        output_path: outputPath,
         error: message,
       });
       log(`Failed ${target.endpointPath}: ${message}`);
+    }
+  }
+
+  for (const workflow of ADVANCED_WORKFLOWS) {
+    try {
+      log(`Starting ${workflow.id}`);
+      const startPayload = buildAdvancedStartPayload(defaults, workflow.measureMode);
+      const startResponse = await callEndpoint(instance.base_url, workflow.startPath, startPayload);
+      const operationId = String(startResponse?.operation_id ?? "").trim();
+      if (!operationId) {
+        throw new Error(`${workflow.id} start response missing operation_id`);
+      }
+
+      const startOutputPath = join(OUTPUT_DIR, `${workflow.id}-start.sanitized.json`);
+      writeFileSync(
+        startOutputPath,
+        `${JSON.stringify(sanitizeCapturePayload(startResponse, { macOuiMask: args.macOuiMask }), null, 2)}\n`,
+        "utf-8",
+      );
+      summary.outputs.push({
+        id: `${workflow.id}-start`,
+        endpoint: workflow.startPath,
+        status: "ok",
+        output_path: startOutputPath,
+      });
+
+      log(`Polling ${workflow.id} status (${operationId})`);
+      const finalStatus = await waitForAdvancedCompletion(instance.base_url, workflow, operationId);
+      const statusOutputPath = join(OUTPUT_DIR, `${workflow.id}-status.sanitized.json`);
+      writeFileSync(
+        statusOutputPath,
+        `${JSON.stringify(sanitizeCapturePayload(finalStatus, { macOuiMask: args.macOuiMask }), null, 2)}\n`,
+        "utf-8",
+      );
+      summary.outputs.push({
+        id: `${workflow.id}-status`,
+        endpoint: workflow.statusPath.replace("{operation_id}", operationId),
+        status: "ok",
+        output_path: statusOutputPath,
+      });
+
+      for (const analysisType of workflow.analysisTypes) {
+        const analysisPayload = {
+          operation_id: operationId,
+          analysis: {
+            type: analysisType,
+            output: { type: "json" },
+            plot: { ui: { theme: "dark" } },
+          },
+        };
+        log(`Running ${workflow.id} analysis ${analysisType}`);
+        try {
+          const analysisResponse = await callEndpoint(instance.base_url, workflow.analysisPath, analysisPayload);
+          const outputPath = join(OUTPUT_DIR, `${workflow.id}-analysis-${analysisType}.sanitized.json`);
+          writeFileSync(
+            outputPath,
+            `${JSON.stringify(sanitizeCapturePayload(analysisResponse, { macOuiMask: args.macOuiMask }), null, 2)}\n`,
+            "utf-8",
+          );
+          summary.outputs.push({
+            id: `${workflow.id}-analysis-${analysisType}`,
+            endpoint: workflow.analysisPath,
+            status: "ok",
+            output_path: outputPath,
+          });
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          const outputPath = join(OUTPUT_DIR, `${workflow.id}-analysis-${analysisType}.sanitized.json`);
+          writeFileSync(
+            outputPath,
+            `${JSON.stringify({ status: "error", workflow: workflow.id, analysis_type: analysisType, endpoint: workflow.analysisPath, message }, null, 2)}\n`,
+            "utf-8",
+          );
+          summary.outputs.push({
+            id: `${workflow.id}-analysis-${analysisType}`,
+            endpoint: workflow.analysisPath,
+            status: "error",
+            output_path: outputPath,
+            error: message,
+          });
+          log(`Failed ${workflow.id} analysis ${analysisType}: ${message}`);
+        }
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      const outputPath = join(OUTPUT_DIR, `${workflow.id}.sanitized.json`);
+      writeFileSync(
+        outputPath,
+        `${JSON.stringify({ status: "error", workflow: workflow.id, endpoint: workflow.startPath, message }, null, 2)}\n`,
+        "utf-8",
+      );
+      summary.outputs.push({
+        id: workflow.id,
+        endpoint: workflow.startPath,
+        status: "error",
+        output_path: outputPath,
+        error: message,
+      });
+      log(`Failed workflow ${workflow.id}: ${message}`);
     }
   }
 
