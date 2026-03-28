@@ -95,6 +95,15 @@ pypnm-webui config-menu --help
 pypnm-webui kill-pypnm-webui --help
 ```
 
+## UI gallery
+
+- [MkDocs UI Preview Gallery](docs/user/ui-previews/index.md)
+- [MkDocs Operations Gallery](docs/user/ui-previews/operations.md)
+
+| Signal Capture | Operations | Advanced |
+| --- | --- | --- |
+| [![Signal Capture RxMER](docs/images/ui-previews/single-capture-rxmer.png)](docs/user/ui-previews/signal-capture.md) | [![Operations OFDM Channel Stats](docs/images/ui-previews/operations-ds-ofdm-channel-stats.png)](docs/user/ui-previews/operations.md) | [![Advanced RxMER Heat Map](docs/images/ui-previews/advanced-rxmer-rxmer-heat-map.png)](docs/user/ui-previews/advanced.md) |
+
 ## User docs
 
 - [Documentation Index](docs/index.md)
@@ -111,15 +120,6 @@ pypnm-webui kill-pypnm-webui --help
 - [Files, Health, Settings, And About](docs/user/supporting-pages.md)
 - [Troubleshooting](docs/user/troubleshooting.md)
 - [Release Workflow](docs/user/release-workflow.md)
-
-## UI gallery
-
-- [MkDocs UI Preview Gallery](docs/user/ui-previews/index.md)
-- [MkDocs Operations Gallery](docs/user/ui-previews/operations.md)
-
-| Signal Capture | Operations | Advanced |
-| --- | --- | --- |
-| [![Signal Capture RxMER](docs/images/ui-previews/single-capture-rxmer.png)](docs/user/ui-previews/signal-capture.md) | [![Operations OFDM Channel Stats](docs/images/ui-previews/operations-ds-ofdm-channel-stats.png)](docs/user/ui-previews/operations.md) | [![Advanced RxMER Heat Map](docs/images/ui-previews/advanced-rxmer-rxmer-heat-map.png)](docs/user/ui-previews/advanced.md) |
 
 ## Development docs
 
