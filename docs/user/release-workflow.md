@@ -80,7 +80,10 @@ Release workflow also regenerates docs UI preview screenshots with:
 
 Use `--skip-docs-previews` to bypass that step when needed.
 
-Release workflow also generates sanitized live endpoint examples with:
+By default, release uses existing sanitized JSON examples to render preview
+graphs and does not run live endpoint capture.
+
+Optional live endpoint capture during release:
 
 - `npm run docs:capture-live-endpoint-examples`
 
@@ -91,7 +94,7 @@ This capture includes:
 - operations endpoints
 - advanced workbench start/status and per-analysis endpoints
 
-Use `--skip-live-endpoint-examples` to bypass that step when needed.
+Use `--with-live-endpoint-examples` to enable that step when needed.
 For manual runs, the helper supports:
 
 - `npm run docs:capture-live-endpoint-examples -- --mask-mac-oui 00:00:00`

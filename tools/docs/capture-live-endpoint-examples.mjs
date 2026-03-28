@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { parse } from "yaml";
@@ -293,6 +293,11 @@ function log(message) {
   process.stdout.write(`[live-capture] ${message}\n`);
 }
 
+function asRepoRelativePath(absolutePath) {
+  const next = relative(ROOT_DIR, absolutePath).replaceAll("\\", "/");
+  return next || absolutePath;
+}
+
 async function callEndpoint(baseUrl, endpointPath, payload, method = "POST") {
   const response = await fetch(`${baseUrl}${endpointPath}`, {
     method,
@@ -398,7 +403,7 @@ async function main() {
         id: target.id,
         endpoint: target.endpointPath,
         status: "ok",
-        output_path: outputPath,
+        output_path: asRepoRelativePath(outputPath),
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -411,7 +416,7 @@ async function main() {
         id: target.id,
         endpoint: target.endpointPath,
         status: "error",
-        output_path: outputPath,
+        output_path: asRepoRelativePath(outputPath),
         error: message,
       });
       log(`Failed ${target.endpointPath}: ${message}`);
@@ -438,7 +443,7 @@ async function main() {
         id: `${workflow.id}-start`,
         endpoint: workflow.startPath,
         status: "ok",
-        output_path: startOutputPath,
+        output_path: asRepoRelativePath(startOutputPath),
       });
 
       log(`Polling ${workflow.id} status (${operationId})`);
@@ -453,7 +458,7 @@ async function main() {
         id: `${workflow.id}-status`,
         endpoint: workflow.statusPath.replace("{operation_id}", operationId),
         status: "ok",
-        output_path: statusOutputPath,
+        output_path: asRepoRelativePath(statusOutputPath),
       });
 
       for (const analysisType of workflow.analysisTypes) {
@@ -478,7 +483,7 @@ async function main() {
             id: `${workflow.id}-analysis-${analysisType}`,
             endpoint: workflow.analysisPath,
             status: "ok",
-            output_path: outputPath,
+            output_path: asRepoRelativePath(outputPath),
           });
         } catch (error) {
           const message = error instanceof Error ? error.message : String(error);
@@ -492,7 +497,7 @@ async function main() {
             id: `${workflow.id}-analysis-${analysisType}`,
             endpoint: workflow.analysisPath,
             status: "error",
-            output_path: outputPath,
+            output_path: asRepoRelativePath(outputPath),
             error: message,
           });
           log(`Failed ${workflow.id} analysis ${analysisType}: ${message}`);
@@ -510,7 +515,7 @@ async function main() {
         id: workflow.id,
         endpoint: workflow.startPath,
         status: "error",
-        output_path: outputPath,
+        output_path: asRepoRelativePath(outputPath),
         error: message,
       });
       log(`Failed workflow ${workflow.id}: ${message}`);

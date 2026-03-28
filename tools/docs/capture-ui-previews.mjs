@@ -145,6 +145,31 @@ const ADVANCED_ANALYSIS_ENDPOINTS = {
   channelEstimation: "/advance/multi/ds/channelEstimation/analysis",
   ofdmaPreEq: "/advance/multi/us/ofdmaPreEqualization/analysis",
 };
+const FALLBACK_SYSDESCR_PAYLOAD = {
+  status: 0,
+  message: null,
+  device: {
+    mac_address: "00:00:00:00:00:00",
+    system_description: {
+      HW_REV: "n/a",
+      VENDOR: "n/a",
+      BOOTR: "n/a",
+      SW_REV: "n/a",
+      MODEL: "n/a",
+      is_empty: false,
+    },
+  },
+  results: {
+    sysDescr: {
+      hw_rev: "n/a",
+      vendor: "n/a",
+      boot_rev: "n/a",
+      sw_rev: "n/a",
+      model: "n/a",
+      _is_empty: false,
+    },
+  },
+};
 
 function parseAdvancedOperationId(outputs, statusIdPrefix) {
   const match = outputs.find((output) => typeof output?.id === "string" && output.id.startsWith(statusIdPrefix));
@@ -181,7 +206,9 @@ function loadCaptureMocks() {
   };
 
   for (const output of outputs) {
-    const explicitOutputPath = typeof output?.output_path === "string" ? output.output_path : "";
+    const explicitOutputPath = typeof output?.output_path === "string"
+      ? (output.output_path.startsWith("/") ? output.output_path : join(ROOT_DIR, output.output_path))
+      : "";
     const fallbackOutputPath = typeof output?.id === "string"
       ? join(ROOT_DIR, "docs", "examples", "live-captures", `${output.id}.sanitized.json`)
       : "";
@@ -208,10 +235,6 @@ function loadCaptureMocks() {
     }
 
     endpointPayloads.set(output.endpoint, JSON.parse(readFileSync(resolvedOutputPath, "utf-8")));
-  }
-
-  if (!endpointPayloads.has("/system/sysDescr")) {
-    fail("Missing /system/sysDescr payload in live capture summary.");
   }
 
   return {
@@ -359,6 +382,14 @@ async function main() {
       }
 
       const payload = mocks.endpointPayloads.get(requestUrl.pathname);
+      if (!payload && requestUrl.pathname === "/system/sysDescr") {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(FALLBACK_SYSDESCR_PAYLOAD),
+        });
+        return;
+      }
       if (!payload) {
         await route.continue();
         return;

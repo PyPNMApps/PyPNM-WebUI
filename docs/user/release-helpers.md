@@ -90,15 +90,15 @@ Default behavior:
   to a clean template with no tracked instance entries
 - running `release.py` also writes a sanitized runtime-config artifact under
   `release-reports/runtime-config/`
-- running `release.py` captures sanitized live endpoint examples under
-  `docs/examples/live-captures/`
-- running `release.py` includes advanced workbench analysis captures by analysis type
+- running `release.py` regenerates docs previews from existing sanitized JSON
+  examples (no live endpoint capture by default)
 
 For the full release sequence and branch rules, use [Release Workflow](release-workflow.md).
 
 ### Optional Release Flags
 
-- `--skip-live-endpoint-examples` skips live endpoint example generation
+- `--with-live-endpoint-examples` enables live endpoint example generation
+- `--skip-live-endpoint-examples` explicit skip alias (default behavior)
 - `--skip-docs-previews` skips UI screenshot regeneration
 
 ### Live Endpoint Capture Helper

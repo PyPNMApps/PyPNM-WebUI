@@ -184,9 +184,14 @@ def build_parser() -> argparse.ArgumentParser:
         help="Skip npm run docs:capture-ui-previews",
     )
     parser.add_argument(
+        "--with-live-endpoint-examples",
+        action="store_true",
+        help="Include npm run docs:capture-live-endpoint-examples in release flow (default: off)",
+    )
+    parser.add_argument(
         "--skip-live-endpoint-examples",
         action="store_true",
-        help="Skip npm run docs:capture-live-endpoint-examples",
+        help="Alias for not running live endpoint examples (default behavior)",
     )
     parser.add_argument(
         "--skip-sanitize-runtime-config",
@@ -202,6 +207,9 @@ def main() -> None:
     args = build_parser().parse_args()
     _print_banner()
     _init_release_logging()
+
+    if args.with_live_endpoint_examples and args.skip_live_endpoint_examples:
+        raise RuntimeError("Cannot use --with-live-endpoint-examples and --skip-live-endpoint-examples together.")
 
     if not args.allow_dirty:
         try:
@@ -231,7 +239,7 @@ def main() -> None:
     _run_step(
         "npm-live-endpoint-examples",
         _npm_cmd("docs:capture-live-endpoint-examples"),
-        enabled=not args.skip_live_endpoint_examples,
+        enabled=args.with_live_endpoint_examples and not args.skip_live_endpoint_examples,
     )
     _run_step(
         "npm-docs-previews",
