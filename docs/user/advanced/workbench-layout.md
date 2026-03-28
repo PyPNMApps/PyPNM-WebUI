@@ -2,6 +2,8 @@
 
 Each advanced workbench includes:
 
+![Advanced Workbench Layout](../../images/ui-previews/advanced-rxmer.png)
+
 - `Capture Inputs`
   - start a multi-capture operation
   - `Start Capture` remains disabled until the modem reports `Online`

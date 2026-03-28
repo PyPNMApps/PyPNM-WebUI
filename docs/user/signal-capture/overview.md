@@ -3,6 +3,10 @@
 The `Signal Capture` area groups one-shot capture workflows and Spectrum
 Analyzer views.
 
+## Visual
+
+![Signal Capture RxMER View](../../images/ui-previews/single-capture-rxmer.png)
+
 Use this section for:
 
 - one-time capture execution

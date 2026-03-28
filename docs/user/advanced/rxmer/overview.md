@@ -1,5 +1,7 @@
 # Advanced RxMER
 
+![Advanced RxMER](../../../images/ui-previews/advanced-rxmer.png)
+
 Analysis types:
 
 - [Min / Avg / Max](min-avg-max.md)

@@ -3,6 +3,10 @@
 `Signal Capture -> OFDMA PreEqualization` renders one-shot upstream OFDMA
 pre-equalization analysis.
 
+## Visual
+
+![Signal Capture OFDMA PreEqualization](../../images/ui-previews/single-capture-us-ofdma-pre-equalization.png)
+
 ## Includes
 
 - combined pre-eq magnitude response

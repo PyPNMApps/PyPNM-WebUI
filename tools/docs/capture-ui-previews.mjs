@@ -16,13 +16,34 @@ const OUTPUT_DIR = join(ROOT_DIR, "docs", "images", "ui-previews");
 const DOC_PREVIEW_DIR = join(ROOT_DIR, "docs", "user", "ui-previews");
 
 const ROUTES = [
-  { title: "Single Capture · RxMER", path: "/single-capture/rxmer", slug: "single-capture-rxmer", section: "single-capture" },
-  { title: "Single Capture · Channel Estimation", path: "/single-capture/channel-est-coeff", slug: "single-capture-channel-estimation", section: "single-capture" },
-  { title: "Single Capture · OFDMA PreEqualization", path: "/single-capture/us-ofdma-pre-equalization", slug: "single-capture-us-ofdma-pre-equalization", section: "single-capture" },
-  { title: "Single Capture · Spectrum Analyzer", path: "/single-capture/spectrum-friendly", slug: "single-capture-spectrum-friendly", section: "single-capture" },
+  { title: "Signal Capture · RxMER", path: "/single-capture/rxmer", slug: "single-capture-rxmer", section: "signal-capture" },
+  { title: "Signal Capture · Channel Estimation", path: "/single-capture/channel-est-coeff", slug: "single-capture-channel-estimation", section: "signal-capture" },
+  { title: "Signal Capture · Histogram", path: "/single-capture/histogram", slug: "single-capture-histogram", section: "signal-capture" },
+  { title: "Signal Capture · FEC Summary", path: "/single-capture/fec-summary", slug: "single-capture-fec-summary", section: "signal-capture" },
+  { title: "Signal Capture · Constellation Display", path: "/single-capture/constellation-display", slug: "single-capture-constellation-display", section: "signal-capture" },
+  { title: "Signal Capture · Modulation Profile", path: "/single-capture/modulation-profile", slug: "single-capture-modulation-profile", section: "signal-capture" },
+  { title: "Signal Capture · OFDMA PreEqualization", path: "/single-capture/us-ofdma-pre-equalization", slug: "single-capture-us-ofdma-pre-equalization", section: "signal-capture" },
+  { title: "Spectrum Analyzer · Friendly", path: "/spectrum-analyzer/friendly", slug: "spectrum-analyzer-friendly", section: "spectrum-analyzer" },
+  { title: "Spectrum Analyzer · Full Band", path: "/spectrum-analyzer/full-band", slug: "spectrum-analyzer-full-band", section: "spectrum-analyzer" },
+  { title: "Spectrum Analyzer · OFDM", path: "/spectrum-analyzer/ofdm", slug: "spectrum-analyzer-ofdm", section: "spectrum-analyzer" },
+  { title: "Spectrum Analyzer · SCQAM", path: "/spectrum-analyzer/scqam", slug: "spectrum-analyzer-scqam", section: "spectrum-analyzer" },
   { title: "Advanced · RxMER", path: "/advanced/rxmer", slug: "advanced-rxmer", section: "advanced" },
   { title: "Advanced · Channel Estimation", path: "/advanced/channel-estimation", slug: "advanced-channel-estimation", section: "advanced" },
   { title: "Advanced · OFDMA PreEq", path: "/advanced/ofdma-pre-eq", slug: "advanced-ofdma-pre-eq", section: "advanced" },
+  { title: "Operations · Base Capability", path: "/operations/if31-docsis-base-capability", slug: "operations-if31-docsis-base-capability", section: "operations" },
+  { title: "Operations · OFDM Channel Stats", path: "/operations/ds-ofdm-channel-stats", slug: "operations-ds-ofdm-channel-stats", section: "operations" },
+  { title: "Operations · OFDM Profile Stats", path: "/operations/ds-ofdm-profile-stats", slug: "operations-ds-ofdm-profile-stats", section: "operations" },
+  { title: "Operations · System Diplexer", path: "/operations/if31-system-diplexer", slug: "operations-if31-system-diplexer", section: "operations" },
+  { title: "Operations · OFDMA Channel Stats", path: "/operations/us-ofdma-channel-stats", slug: "operations-us-ofdma-channel-stats", section: "operations" },
+  { title: "Operations · Diplexer Band Edge Capability", path: "/operations/fdd-diplexer-band-edge-capability", slug: "operations-fdd-diplexer-band-edge-capability", section: "operations" },
+  { title: "Operations · FDD System Diplexer Configuration", path: "/operations/fdd-system-diplexer-configuration", slug: "operations-fdd-system-diplexer-configuration", section: "operations" },
+  { title: "Operations · SCQAM Codeword Error Rate", path: "/operations/ds-scqam-codeword-error-rate", slug: "operations-ds-scqam-codeword-error-rate", section: "operations" },
+  { title: "Operations · SCQAM Channel Stats", path: "/operations/ds-scqam-channel-stats", slug: "operations-ds-scqam-channel-stats", section: "operations" },
+  { title: "Operations · ATDMA PreEqualization", path: "/operations/atdma-pre-equalization", slug: "operations-atdma-pre-equalization", section: "operations" },
+  { title: "Operations · ATDMA Channel Stats", path: "/operations/atdma-channel-stats", slug: "operations-atdma-channel-stats", section: "operations" },
+  { title: "Operations · Event Log", path: "/operations/event-log", slug: "operations-event-log", section: "operations" },
+  { title: "Operations · Interface Stats", path: "/operations/interface-stats", slug: "operations-interface-stats", section: "operations" },
+  { title: "Operations · UpTime", path: "/operations/up-time", slug: "operations-up-time", section: "operations" },
   { title: "Files", path: "/files", slug: "files", section: "platform" },
   { title: "Health", path: "/health", slug: "health", section: "platform" },
   { title: "Settings", path: "/settings", slug: "settings", section: "platform" },
@@ -81,8 +102,10 @@ function renderOverviewPage() {
     "",
     "## Sections",
     "",
-    "- [Single Capture](single-capture.md)",
+    "- [Signal Capture](signal-capture.md)",
+    "- [Spectrum Analyzer](spectrum-analyzer.md)",
     "- [Advanced](advanced.md)",
+    "- [Operations](operations.md)",
     "- [Platform](platform.md)",
     "",
   ].join("\n");
@@ -139,18 +162,24 @@ async function main() {
     }
 
     const overviewPath = join(DOC_PREVIEW_DIR, "index.md");
-    const singleCapturePath = join(DOC_PREVIEW_DIR, "single-capture.md");
+    const signalCapturePath = join(DOC_PREVIEW_DIR, "signal-capture.md");
+    const spectrumAnalyzerPath = join(DOC_PREVIEW_DIR, "spectrum-analyzer.md");
     const advancedPath = join(DOC_PREVIEW_DIR, "advanced.md");
+    const operationsPath = join(DOC_PREVIEW_DIR, "operations.md");
     const platformPath = join(DOC_PREVIEW_DIR, "platform.md");
 
     writeFileSync(overviewPath, renderOverviewPage(), "utf-8");
-    writeFileSync(singleCapturePath, renderSectionPage("Single Capture UI Previews", captures.filter((item) => item.section === "single-capture")), "utf-8");
+    writeFileSync(signalCapturePath, renderSectionPage("Signal Capture UI Previews", captures.filter((item) => item.section === "signal-capture")), "utf-8");
+    writeFileSync(spectrumAnalyzerPath, renderSectionPage("Spectrum Analyzer UI Previews", captures.filter((item) => item.section === "spectrum-analyzer")), "utf-8");
     writeFileSync(advancedPath, renderSectionPage("Advanced UI Previews", captures.filter((item) => item.section === "advanced")), "utf-8");
+    writeFileSync(operationsPath, renderSectionPage("Operations UI Previews", captures.filter((item) => item.section === "operations")), "utf-8");
     writeFileSync(platformPath, renderSectionPage("Platform UI Previews", captures.filter((item) => item.section === "platform")), "utf-8");
 
     log(`Wrote ${overviewPath}`);
-    log(`Wrote ${singleCapturePath}`);
+    log(`Wrote ${signalCapturePath}`);
+    log(`Wrote ${spectrumAnalyzerPath}`);
     log(`Wrote ${advancedPath}`);
+    log(`Wrote ${operationsPath}`);
     log(`Wrote ${platformPath}`);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

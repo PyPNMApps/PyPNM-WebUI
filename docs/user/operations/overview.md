@@ -3,6 +3,10 @@
 The `Operations` entry opens the endpoint navigation menu for non-single-capture
 operation areas.
 
+## Visual
+
+![Operations Interface Stats](../../images/ui-previews/operations-interface-stats.png)
+
 ## Current groups
 
 - [Device](device.md)

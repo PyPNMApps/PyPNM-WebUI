@@ -1,5 +1,7 @@
 # Advanced Channel Estimation
 
+![Advanced Channel Estimation](../../../images/ui-previews/advanced-channel-estimation.png)
+
 Analysis types:
 
 - [Min / Avg / Max](min-avg-max.md)

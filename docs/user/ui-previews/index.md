@@ -10,6 +10,8 @@ To regenerate:
 
 ## Sections
 
-- [Single Capture](single-capture.md)
+- [Signal Capture](signal-capture.md)
+- [Spectrum Analyzer](spectrum-analyzer.md)
 - [Advanced](advanced.md)
+- [Operations](operations.md)
 - [Platform](platform.md)

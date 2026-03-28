@@ -3,6 +3,10 @@
 `Signal Capture -> RxMER` renders downstream OFDM RxMER data for one-shot
 capture requests.
 
+## Visual
+
+![Signal Capture RxMER](../../images/ui-previews/single-capture-rxmer.png)
+
 ## Includes
 
 - all-channel overlay chart

@@ -2,6 +2,8 @@
 
 Signal capture pages use shared request-panel behavior:
 
+![Signal Capture Shared Panel Behavior](../../images/ui-previews/single-capture-rxmer.png)
+
 - request form
 - `Capture Inputs` online/offline chip driven by `/system/sysDescr`
 - immediate status check on page load, then a 3 second debounce after MAC, IP,
