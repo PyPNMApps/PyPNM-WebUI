@@ -133,7 +133,7 @@ function renderSectionPage(title, captures) {
     lines.push("");
     lines.push(`Route: \`${capture.path}\``);
     lines.push("");
-    lines.push(`![${capture.title}](../../images/ui-previews/${capture.fileName})`);
+    lines.push(`[![${capture.title}](../../images/ui-previews/${capture.fileName})](../../images/ui-previews/${capture.fileName})`);
     lines.push("");
   });
 
