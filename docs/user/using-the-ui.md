@@ -5,9 +5,9 @@ Use this section as the operator-facing entrypoint for the WebUI.
 ## UI Sections
 
 - [Navigation And Agent Selection](ui-navigation.md)
-- [Single Capture](single-capture.md)
-- [Operations And Spectrum Analyzer](operations-and-spectrum.md)
-- [Advanced Analysis](advanced-workflows.md)
+- [Signal Capture](signal-capture/overview.md)
+- [Operations](operations/overview.md)
+- [Advanced Analysis](advanced/overview.md)
 - [Files, Health, Settings, And About](supporting-pages.md)
 - [Input Validation](input-validation.md)
 
@@ -16,9 +16,9 @@ Use this section as the operator-facing entrypoint for the WebUI.
 1. Open [Files, Health, Settings, And About](supporting-pages.md) and verify the active agent on `Health`.
 2. Use [Navigation And Agent Selection](ui-navigation.md) to switch to the correct `PyPNM Agent`.
 3. Run either:
-   - [Single Capture](single-capture.md)
-   - [Operations And Spectrum Analyzer](operations-and-spectrum.md)
-   - [Advanced Analysis](advanced-workflows.md)
+   - [Signal Capture](signal-capture/overview.md)
+   - [Operations](operations/overview.md)
+   - [Advanced Analysis](advanced/overview.md)
 4. Confirm the `Capture Inputs` panel reports the modem as `Online` before running a capture.
 
 ## Runtime Config Changes

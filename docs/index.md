@@ -17,9 +17,9 @@ For running the UI and using the main surfaces:
 
 - [UI Overview](user/using-the-ui.md)
 - [Navigation And Agent Selection](user/ui-navigation.md)
-- [Single Capture](user/single-capture.md)
-- [Operations And Spectrum Analyzer](user/operations-and-spectrum.md)
-- [Advanced Analysis](user/advanced-workflows.md)
+- [Signal Capture](user/signal-capture/overview.md)
+- [Operations](user/operations/overview.md)
+- [Advanced Analysis](user/advanced/overview.md)
 - [Files, Health, Settings, And About](user/supporting-pages.md)
 - [Input Validation](user/input-validation.md)
 - [Troubleshooting](user/troubleshooting.md)
