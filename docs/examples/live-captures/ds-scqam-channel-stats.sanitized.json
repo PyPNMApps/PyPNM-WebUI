@@ -1,0 +1,657 @@
+{
+  "status": 0,
+  "message": "Successfully retrieved downstream SC-QAM channel stats",
+  "device": {
+    "mac_address": "00:00:00:3e:85:4c",
+    "system_description": {
+      "HW_REV": "1.0",
+      "VENDOR": "LANCity",
+      "BOOTR": "NONE",
+      "SW_REV": "1.0.0",
+      "MODEL": "LCPET-3",
+      "is_empty": false
+    }
+  },
+  "results": [
+    {
+      "index": 3,
+      "channel_id": 1,
+      "entry": {
+        "docsIfDownChannelId": 1,
+        "docsIfDownChannelFrequency": 429000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 4.8,
+        "docsIfSigQUnerroreds": 1867565547,
+        "docsIfSigQCorrecteds": 43,
+        "docsIfSigQUncorrectables": 657,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 1867927647,
+        "docsIfSigQExtCorrecteds": 43,
+        "docsIfSigQExtUncorrectables": 657,
+        "docsIf3SignalQualityExtRxMER": 44.6
+      }
+    },
+    {
+      "index": 50,
+      "channel_id": 32,
+      "entry": {
+        "docsIfDownChannelId": 32,
+        "docsIfDownChannelFrequency": 615000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 3.2,
+        "docsIfSigQUnerroreds": 394112824,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 394474920,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 43.3
+      }
+    },
+    {
+      "index": 51,
+      "channel_id": 31,
+      "entry": {
+        "docsIfDownChannelId": 31,
+        "docsIfDownChannelFrequency": 609000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 3.3,
+        "docsIfSigQUnerroreds": 392589680,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 392951780,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 44.6
+      }
+    },
+    {
+      "index": 52,
+      "channel_id": 30,
+      "entry": {
+        "docsIfDownChannelId": 30,
+        "docsIfDownChannelFrequency": 603000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 3,
+        "docsIfSigQUnerroreds": 392213532,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 392575632,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 43.3
+      }
+    },
+    {
+      "index": 53,
+      "channel_id": 29,
+      "entry": {
+        "docsIfDownChannelId": 29,
+        "docsIfDownChannelFrequency": 597000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 2.6,
+        "docsIfSigQUnerroreds": 392159417,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 392521517,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 43.3
+      }
+    },
+    {
+      "index": 54,
+      "channel_id": 28,
+      "entry": {
+        "docsIfDownChannelId": 28,
+        "docsIfDownChannelFrequency": 591000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 3.3,
+        "docsIfSigQUnerroreds": 389304623,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 389488251,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 43.3
+      }
+    },
+    {
+      "index": 55,
+      "channel_id": 27,
+      "entry": {
+        "docsIfDownChannelId": 27,
+        "docsIfDownChannelFrequency": 585000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 3.5,
+        "docsIfSigQUnerroreds": 390277094,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 390460722,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 43.3
+      }
+    },
+    {
+      "index": 56,
+      "channel_id": 26,
+      "entry": {
+        "docsIfDownChannelId": 26,
+        "docsIfDownChannelFrequency": 579000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 3.7,
+        "docsIfSigQUnerroreds": 390612614,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 390796242,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 44.6
+      }
+    },
+    {
+      "index": 57,
+      "channel_id": 25,
+      "entry": {
+        "docsIfDownChannelId": 25,
+        "docsIfDownChannelFrequency": 573000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 3.9,
+        "docsIfSigQUnerroreds": 390933846,
+        "docsIfSigQCorrecteds": 6,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391117474,
+        "docsIfSigQExtCorrecteds": 6,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 44.6
+      }
+    },
+    {
+      "index": 58,
+      "channel_id": 24,
+      "entry": {
+        "docsIfDownChannelId": 24,
+        "docsIfDownChannelFrequency": 567000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 4,
+        "docsIfSigQUnerroreds": 390946675,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391130303,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 43.3
+      }
+    },
+    {
+      "index": 59,
+      "channel_id": 23,
+      "entry": {
+        "docsIfDownChannelId": 23,
+        "docsIfDownChannelFrequency": 561000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 3.8,
+        "docsIfSigQUnerroreds": 390934106,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391120726,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 43.3
+      }
+    },
+    {
+      "index": 60,
+      "channel_id": 22,
+      "entry": {
+        "docsIfDownChannelId": 22,
+        "docsIfDownChannelFrequency": 555000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 4.1,
+        "docsIfSigQUnerroreds": 391000678,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391187298,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 43.3
+      }
+    },
+    {
+      "index": 61,
+      "channel_id": 21,
+      "entry": {
+        "docsIfDownChannelId": 21,
+        "docsIfDownChannelFrequency": 549000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 3.9,
+        "docsIfSigQUnerroreds": 390943562,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391130182,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 44.6
+      }
+    },
+    {
+      "index": 62,
+      "channel_id": 20,
+      "entry": {
+        "docsIfDownChannelId": 20,
+        "docsIfDownChannelFrequency": 543000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 4.1,
+        "docsIfSigQUnerroreds": 390962056,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391148680,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 44.6
+      }
+    },
+    {
+      "index": 63,
+      "channel_id": 19,
+      "entry": {
+        "docsIfDownChannelId": 19,
+        "docsIfDownChannelFrequency": 537000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 3.9,
+        "docsIfSigQUnerroreds": 390881696,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391068312,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 44.6
+      }
+    },
+    {
+      "index": 64,
+      "channel_id": 18,
+      "entry": {
+        "docsIfDownChannelId": 18,
+        "docsIfDownChannelFrequency": 531000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 3.7,
+        "docsIfSigQUnerroreds": 390808493,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 390976877,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 44.6
+      }
+    },
+    {
+      "index": 65,
+      "channel_id": 17,
+      "entry": {
+        "docsIfDownChannelId": 17,
+        "docsIfDownChannelFrequency": 525000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 3.4,
+        "docsIfSigQUnerroreds": 390828882,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 390997266,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 43.3
+      }
+    },
+    {
+      "index": 66,
+      "channel_id": 16,
+      "entry": {
+        "docsIfDownChannelId": 16,
+        "docsIfDownChannelFrequency": 519000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 3.1,
+        "docsIfSigQUnerroreds": 390862431,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391030815,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 44.6
+      }
+    },
+    {
+      "index": 67,
+      "channel_id": 15,
+      "entry": {
+        "docsIfDownChannelId": 15,
+        "docsIfDownChannelFrequency": 513000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 3,
+        "docsIfSigQUnerroreds": 390881332,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391049720,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 43.3
+      }
+    },
+    {
+      "index": 68,
+      "channel_id": 14,
+      "entry": {
+        "docsIfDownChannelId": 14,
+        "docsIfDownChannelFrequency": 507000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 3.5,
+        "docsIfSigQUnerroreds": 390934028,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391102416,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 44.6
+      }
+    },
+    {
+      "index": 69,
+      "channel_id": 13,
+      "entry": {
+        "docsIfDownChannelId": 13,
+        "docsIfDownChannelFrequency": 501000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 3.5,
+        "docsIfSigQUnerroreds": 390910216,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391108576,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 43.3
+      }
+    },
+    {
+      "index": 70,
+      "channel_id": 12,
+      "entry": {
+        "docsIfDownChannelId": 12,
+        "docsIfDownChannelFrequency": 495000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 3.8,
+        "docsIfSigQUnerroreds": 390872723,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391071079,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 44.6
+      }
+    },
+    {
+      "index": 71,
+      "channel_id": 11,
+      "entry": {
+        "docsIfDownChannelId": 11,
+        "docsIfDownChannelFrequency": 489000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 4.1,
+        "docsIfSigQUnerroreds": 390873266,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391071622,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 44.6
+      }
+    },
+    {
+      "index": 72,
+      "channel_id": 10,
+      "entry": {
+        "docsIfDownChannelId": 10,
+        "docsIfDownChannelFrequency": 483000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 4,
+        "docsIfSigQUnerroreds": 390893454,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391091814,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 44.6
+      }
+    },
+    {
+      "index": 73,
+      "channel_id": 9,
+      "entry": {
+        "docsIfDownChannelId": 9,
+        "docsIfDownChannelFrequency": 477000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 4.4,
+        "docsIfSigQUnerroreds": 390967230,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391165590,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 43.3
+      }
+    },
+    {
+      "index": 74,
+      "channel_id": 8,
+      "entry": {
+        "docsIfDownChannelId": 8,
+        "docsIfDownChannelFrequency": 471000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 5,
+        "docsIfSigQUnerroreds": 390994236,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391175532,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 43.3
+      }
+    },
+    {
+      "index": 75,
+      "channel_id": 7,
+      "entry": {
+        "docsIfDownChannelId": 7,
+        "docsIfDownChannelFrequency": 465000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 4.7,
+        "docsIfSigQUnerroreds": 390798796,
+        "docsIfSigQCorrecteds": 15608,
+        "docsIfSigQUncorrectables": 188486,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 390980092,
+        "docsIfSigQExtCorrecteds": 15608,
+        "docsIfSigQExtUncorrectables": 188486,
+        "docsIf3SignalQualityExtRxMER": 43.3
+      }
+    },
+    {
+      "index": 76,
+      "channel_id": 6,
+      "entry": {
+        "docsIfDownChannelId": 6,
+        "docsIfDownChannelFrequency": 459000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 4.7,
+        "docsIfSigQUnerroreds": 390982130,
+        "docsIfSigQCorrecteds": 1,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391163426,
+        "docsIfSigQExtCorrecteds": 1,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 44.6
+      }
+    },
+    {
+      "index": 77,
+      "channel_id": 5,
+      "entry": {
+        "docsIfDownChannelId": 5,
+        "docsIfDownChannelFrequency": 453000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 4.6,
+        "docsIfSigQUnerroreds": 390930931,
+        "docsIfSigQCorrecteds": 1,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391112227,
+        "docsIfSigQExtCorrecteds": 1,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 43.3
+      }
+    },
+    {
+      "index": 78,
+      "channel_id": 4,
+      "entry": {
+        "docsIfDownChannelId": 4,
+        "docsIfDownChannelFrequency": 447000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 4.5,
+        "docsIfSigQUnerroreds": 390918355,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391099651,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 44.6
+      }
+    },
+    {
+      "index": 79,
+      "channel_id": 3,
+      "entry": {
+        "docsIfDownChannelId": 3,
+        "docsIfDownChannelFrequency": 441000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 4.7,
+        "docsIfSigQUnerroreds": 390897214,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391060626,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 44.6
+      }
+    },
+    {
+      "index": 112,
+      "channel_id": 2,
+      "entry": {
+        "docsIfDownChannelId": 2,
+        "docsIfDownChannelFrequency": 435000000,
+        "docsIfDownChannelWidth": 6000000,
+        "docsIfDownChannelModulation": "qam256",
+        "docsIfDownChannelInterleave": "taps32Increment4",
+        "docsIfDownChannelPower": 4.6,
+        "docsIfSigQUnerroreds": 390914107,
+        "docsIfSigQCorrecteds": 0,
+        "docsIfSigQUncorrectables": 0,
+        "docsIfSigQMicroreflections": 3,
+        "docsIfSigQExtUnerroreds": 391077519,
+        "docsIfSigQExtCorrecteds": 0,
+        "docsIfSigQExtUncorrectables": 0,
+        "docsIf3SignalQualityExtRxMER": 43.3
+      }
+    }
+  ]
+}

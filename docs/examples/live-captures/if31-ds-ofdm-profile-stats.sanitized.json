@@ -1,0 +1,169 @@
+{
+  "status": 0,
+  "message": null,
+  "device": {
+    "mac_address": "00:00:00:3e:85:4c",
+    "system_description": {
+      "HW_REV": "1.0",
+      "VENDOR": "LANCity",
+      "BOOTR": "NONE",
+      "SW_REV": "1.0.0",
+      "MODEL": "LCPET-3",
+      "is_empty": false
+    }
+  },
+  "results": [
+    {
+      "index": 48,
+      "channel_id": 160,
+      "profiles": {
+        "0": {
+          "docsIf31CmDsOfdmProfileStatsConfigChangeCt": 2,
+          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 1614377723,
+          "docsIf31CmDsOfdmProfileStatsCorrectedCodewords": 2378492,
+          "docsIf31CmDsOfdmProfileStatsUncorrectableCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsInOctets": 30177917,
+          "docsIf31CmDsOfdmProfileStatsInUnicastOctets": 2208250,
+          "docsIf31CmDsOfdmProfileStatsInMulticastOctets": 24904165,
+          "docsIf31CmDsOfdmProfileStatsInFrames": 510917,
+          "docsIf31CmDsOfdmProfileStatsInUnicastFrames": 20999,
+          "docsIf31CmDsOfdmProfileStatsInMulticastFrames": 489918,
+          "docsIf31CmDsOfdmProfileStatsInFrameCrcFailures": 0,
+          "docsIf31CmDsOfdmProfileStatsCtrDiscontinuityTime": 0
+        },
+        "1": {
+          "docsIf31CmDsOfdmProfileStatsConfigChangeCt": 2,
+          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsCorrectedCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsUncorrectableCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsInOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInUnicastOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInMulticastOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInUnicastFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInMulticastFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInFrameCrcFailures": 0,
+          "docsIf31CmDsOfdmProfileStatsCtrDiscontinuityTime": 0
+        },
+        "2": {
+          "docsIf31CmDsOfdmProfileStatsConfigChangeCt": 2,
+          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsCorrectedCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsUncorrectableCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsInOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInUnicastOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInMulticastOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInUnicastFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInMulticastFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInFrameCrcFailures": 0,
+          "docsIf31CmDsOfdmProfileStatsCtrDiscontinuityTime": 0
+        },
+        "3": {
+          "docsIf31CmDsOfdmProfileStatsConfigChangeCt": 2,
+          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 7991,
+          "docsIf31CmDsOfdmProfileStatsCorrectedCodewords": 47,
+          "docsIf31CmDsOfdmProfileStatsUncorrectableCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsInOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInUnicastOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInMulticastOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInUnicastFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInMulticastFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInFrameCrcFailures": 0,
+          "docsIf31CmDsOfdmProfileStatsCtrDiscontinuityTime": 0
+        },
+        "255": {
+          "docsIf31CmDsOfdmProfileStatsConfigChangeCt": 2,
+          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 141761869,
+          "docsIf31CmDsOfdmProfileStatsCorrectedCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsUncorrectableCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsInOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInUnicastOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInMulticastOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInUnicastFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInMulticastFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInFrameCrcFailures": 0,
+          "docsIf31CmDsOfdmProfileStatsCtrDiscontinuityTime": 0
+        }
+      }
+    },
+    {
+      "index": 49,
+      "channel_id": 159,
+      "profiles": {
+        "0": {
+          "docsIf31CmDsOfdmProfileStatsConfigChangeCt": 2,
+          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 2034508668,
+          "docsIf31CmDsOfdmProfileStatsCorrectedCodewords": 2079013,
+          "docsIf31CmDsOfdmProfileStatsUncorrectableCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsInOctets": 31146814,
+          "docsIf31CmDsOfdmProfileStatsInUnicastOctets": 2196834,
+          "docsIf31CmDsOfdmProfileStatsInMulticastOctets": 25884952,
+          "docsIf31CmDsOfdmProfileStatsInFrames": 510838,
+          "docsIf31CmDsOfdmProfileStatsInUnicastFrames": 20902,
+          "docsIf31CmDsOfdmProfileStatsInMulticastFrames": 489936,
+          "docsIf31CmDsOfdmProfileStatsInFrameCrcFailures": 0,
+          "docsIf31CmDsOfdmProfileStatsCtrDiscontinuityTime": 0
+        },
+        "1": {
+          "docsIf31CmDsOfdmProfileStatsConfigChangeCt": 2,
+          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsCorrectedCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsUncorrectableCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsInOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInUnicastOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInMulticastOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInUnicastFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInMulticastFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInFrameCrcFailures": 0,
+          "docsIf31CmDsOfdmProfileStatsCtrDiscontinuityTime": 0
+        },
+        "2": {
+          "docsIf31CmDsOfdmProfileStatsConfigChangeCt": 2,
+          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsCorrectedCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsUncorrectableCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsInOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInUnicastOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInMulticastOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInUnicastFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInMulticastFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInFrameCrcFailures": 0,
+          "docsIf31CmDsOfdmProfileStatsCtrDiscontinuityTime": 0
+        },
+        "3": {
+          "docsIf31CmDsOfdmProfileStatsConfigChangeCt": 2,
+          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 7426,
+          "docsIf31CmDsOfdmProfileStatsCorrectedCodewords": 11,
+          "docsIf31CmDsOfdmProfileStatsUncorrectableCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsInOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInUnicastOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInMulticastOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInUnicastFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInMulticastFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInFrameCrcFailures": 0,
+          "docsIf31CmDsOfdmProfileStatsCtrDiscontinuityTime": 0
+        },
+        "255": {
+          "docsIf31CmDsOfdmProfileStatsConfigChangeCt": 2,
+          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 141765111,
+          "docsIf31CmDsOfdmProfileStatsCorrectedCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsUncorrectableCodewords": 0,
+          "docsIf31CmDsOfdmProfileStatsInOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInUnicastOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInMulticastOctets": 0,
+          "docsIf31CmDsOfdmProfileStatsInFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInUnicastFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInMulticastFrames": 0,
+          "docsIf31CmDsOfdmProfileStatsInFrameCrcFailures": 0,
+          "docsIf31CmDsOfdmProfileStatsCtrDiscontinuityTime": 0
+        }
+      }
+    }
+  ]
+}

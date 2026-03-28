@@ -13,6 +13,7 @@
     "dev": "vite",
     "serve": "node ./tools/cli/pypnm-webui.js serve",
     "build": "tsc -b && vite build",
+    "docs:capture-live-endpoint-examples": "node ./tools/docs/capture-live-endpoint-examples.mjs",
     "docs:capture-ui-previews": "node ./tools/docs/capture-ui-previews.mjs",
     "docs:build": ".venv/bin/python -m mkdocs build --strict",
     "docs:serve": ".venv/bin/python -m mkdocs serve",
