@@ -56,7 +56,12 @@ integration validation, security analysis, and docs publishing.
 - installs Node 22 and runs `npm ci`
 - runs frontend `npm run build`
 - installs Playwright Chromium
-- runs `npm run docs:capture-ui-previews` to generate UI preview screenshots
+- runs `npm run docs:capture-ui-previews` to generate UI preview screenshots and
+  refresh:
+  - `docs/user/ui-previews/index.md`
+  - `docs/user/ui-previews/single-capture.md`
+  - `docs/user/ui-previews/advanced.md`
+  - `docs/user/ui-previews/platform.md`
 - enforces `mkdocs build --strict`
 - deploys to GitHub Pages
 

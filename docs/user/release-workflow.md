@@ -74,6 +74,12 @@ Default release flow (checks + commit + tag + push):
 
 When `--next` is omitted, `release.py` performs an implicit `maintenance` bump before validation, commit, tag, and push.
 
+Release workflow also regenerates docs UI preview screenshots with:
+
+- `npm run docs:capture-ui-previews`
+
+Use `--skip-docs-previews` to bypass that step when needed.
+
 As part of the release flow, `release.py` also sanitizes:
 
 - `public/config/pypnm-instances.yaml`
