@@ -80,6 +80,22 @@ Release workflow also regenerates docs UI preview screenshots with:
 
 Use `--skip-docs-previews` to bypass that step when needed.
 
+Release workflow also generates sanitized live endpoint examples with:
+
+- `npm run docs:capture-live-endpoint-examples`
+
+This capture includes:
+
+- single capture form endpoints
+- spectrum analyzer endpoints (SNMP-only retrieval mode)
+- operations endpoints
+- advanced workbench start/status and per-analysis endpoints
+
+Use `--skip-live-endpoint-examples` to bypass that step when needed.
+For manual runs, the helper supports:
+
+- `npm run docs:capture-live-endpoint-examples -- --mask-mac-oui 00:00:00`
+
 As part of the release flow, `release.py` also sanitizes:
 
 - `public/config/pypnm-instances.yaml`
@@ -134,3 +150,5 @@ Skip tag creation:
 - Failure logs are stored under `release-reports/logs/`.
 - The sanitized runtime-config release artifact is stored under
   `release-reports/runtime-config/`.
+- Live endpoint example outputs are stored under
+  `docs/examples/live-captures/`.

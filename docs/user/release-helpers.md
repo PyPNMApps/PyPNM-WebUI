@@ -90,5 +90,25 @@ Default behavior:
   to a clean template with no tracked instance entries
 - running `release.py` also writes a sanitized runtime-config artifact under
   `release-reports/runtime-config/`
+- running `release.py` captures sanitized live endpoint examples under
+  `docs/examples/live-captures/`
+- running `release.py` includes advanced workbench analysis captures by analysis type
 
 For the full release sequence and branch rules, use [Release Workflow](release-workflow.md).
+
+### Optional Release Flags
+
+- `--skip-live-endpoint-examples` skips live endpoint example generation
+- `--skip-docs-previews` skips UI screenshot regeneration
+
+### Live Endpoint Capture Helper
+
+Run manually:
+
+```bash
+npm run docs:capture-live-endpoint-examples -- --mask-mac-oui 00:00:00
+```
+
+Notes:
+- MAC addresses are sanitized with a configurable OUI prefix
+- system description fields are sanitized for documentation-safe artifacts
