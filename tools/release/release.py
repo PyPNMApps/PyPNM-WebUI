@@ -184,6 +184,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Skip npm run docs:capture-ui-previews",
     )
     parser.add_argument(
+        "--skip-live-endpoint-examples",
+        action="store_true",
+        help="Skip npm run docs:capture-live-endpoint-examples",
+    )
+    parser.add_argument(
         "--skip-sanitize-runtime-config",
         action="store_true",
         help="Skip sanitizing public/config/pypnm-instances.yaml and generating the release runtime-config artifact",
@@ -223,6 +228,11 @@ def main() -> None:
     _run_step("npm-lint", _npm_cmd("lint"), enabled=not args.skip_lint)
     _run_step("npm-test", _npm_cmd("test"), enabled=not args.skip_test)
     _run_step("npm-build", _npm_cmd("build"), enabled=not args.skip_build)
+    _run_step(
+        "npm-live-endpoint-examples",
+        _npm_cmd("docs:capture-live-endpoint-examples"),
+        enabled=not args.skip_live_endpoint_examples,
+    )
     _run_step(
         "npm-docs-previews",
         _npm_cmd("docs:capture-ui-previews"),

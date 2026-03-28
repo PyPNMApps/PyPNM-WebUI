@@ -45,6 +45,7 @@ nav:
       - Using The UI:
           - UI Overview: user/using-the-ui.md
           - Navigation And Agent Selection: user/ui-navigation.md
+          - Live Endpoint Form Examples: user/live-endpoint-examples.md
           - Signal Capture:
               - Overview: user/signal-capture/overview.md
               - Shared Behavior: user/signal-capture/shared-behavior.md

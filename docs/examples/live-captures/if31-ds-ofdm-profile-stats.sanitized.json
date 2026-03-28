@@ -19,15 +19,15 @@
       "profiles": {
         "0": {
           "docsIf31CmDsOfdmProfileStatsConfigChangeCt": 2,
-          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 1614377723,
+          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 1661484852,
           "docsIf31CmDsOfdmProfileStatsCorrectedCodewords": 2378492,
           "docsIf31CmDsOfdmProfileStatsUncorrectableCodewords": 0,
-          "docsIf31CmDsOfdmProfileStatsInOctets": 30177917,
-          "docsIf31CmDsOfdmProfileStatsInUnicastOctets": 2208250,
-          "docsIf31CmDsOfdmProfileStatsInMulticastOctets": 24904165,
-          "docsIf31CmDsOfdmProfileStatsInFrames": 510917,
-          "docsIf31CmDsOfdmProfileStatsInUnicastFrames": 20999,
-          "docsIf31CmDsOfdmProfileStatsInMulticastFrames": 489918,
+          "docsIf31CmDsOfdmProfileStatsInOctets": 31705371,
+          "docsIf31CmDsOfdmProfileStatsInUnicastOctets": 2884336,
+          "docsIf31CmDsOfdmProfileStatsInMulticastOctets": 25631285,
+          "docsIf31CmDsOfdmProfileStatsInFrames": 531625,
+          "docsIf31CmDsOfdmProfileStatsInUnicastFrames": 27403,
+          "docsIf31CmDsOfdmProfileStatsInMulticastFrames": 504222,
           "docsIf31CmDsOfdmProfileStatsInFrameCrcFailures": 0,
           "docsIf31CmDsOfdmProfileStatsCtrDiscontinuityTime": 0
         },
@@ -61,7 +61,7 @@
         },
         "3": {
           "docsIf31CmDsOfdmProfileStatsConfigChangeCt": 2,
-          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 7991,
+          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 8211,
           "docsIf31CmDsOfdmProfileStatsCorrectedCodewords": 47,
           "docsIf31CmDsOfdmProfileStatsUncorrectableCodewords": 0,
           "docsIf31CmDsOfdmProfileStatsInOctets": 0,
@@ -75,7 +75,7 @@
         },
         "255": {
           "docsIf31CmDsOfdmProfileStatsConfigChangeCt": 2,
-          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 141761869,
+          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 145901884,
           "docsIf31CmDsOfdmProfileStatsCorrectedCodewords": 0,
           "docsIf31CmDsOfdmProfileStatsUncorrectableCodewords": 0,
           "docsIf31CmDsOfdmProfileStatsInOctets": 0,
@@ -95,15 +95,15 @@
       "profiles": {
         "0": {
           "docsIf31CmDsOfdmProfileStatsConfigChangeCt": 2,
-          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 2034508668,
+          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 2093873629,
           "docsIf31CmDsOfdmProfileStatsCorrectedCodewords": 2079013,
           "docsIf31CmDsOfdmProfileStatsUncorrectableCodewords": 0,
-          "docsIf31CmDsOfdmProfileStatsInOctets": 31146814,
-          "docsIf31CmDsOfdmProfileStatsInUnicastOctets": 2196834,
-          "docsIf31CmDsOfdmProfileStatsInMulticastOctets": 25884952,
-          "docsIf31CmDsOfdmProfileStatsInFrames": 510838,
-          "docsIf31CmDsOfdmProfileStatsInUnicastFrames": 20902,
-          "docsIf31CmDsOfdmProfileStatsInMulticastFrames": 489936,
+          "docsIf31CmDsOfdmProfileStatsInOctets": 32703672,
+          "docsIf31CmDsOfdmProfileStatsInUnicastOctets": 2873632,
+          "docsIf31CmDsOfdmProfileStatsInMulticastOctets": 26640680,
+          "docsIf31CmDsOfdmProfileStatsInFrames": 531560,
+          "docsIf31CmDsOfdmProfileStatsInUnicastFrames": 27320,
+          "docsIf31CmDsOfdmProfileStatsInMulticastFrames": 504240,
           "docsIf31CmDsOfdmProfileStatsInFrameCrcFailures": 0,
           "docsIf31CmDsOfdmProfileStatsCtrDiscontinuityTime": 0
         },
@@ -137,7 +137,7 @@
         },
         "3": {
           "docsIf31CmDsOfdmProfileStatsConfigChangeCt": 2,
-          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 7426,
+          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 7632,
           "docsIf31CmDsOfdmProfileStatsCorrectedCodewords": 11,
           "docsIf31CmDsOfdmProfileStatsUncorrectableCodewords": 0,
           "docsIf31CmDsOfdmProfileStatsInOctets": 0,
@@ -151,7 +151,7 @@
         },
         "255": {
           "docsIf31CmDsOfdmProfileStatsConfigChangeCt": 2,
-          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 141765111,
+          "docsIf31CmDsOfdmProfileStatsTotalCodewords": 145905128,
           "docsIf31CmDsOfdmProfileStatsCorrectedCodewords": 0,
           "docsIf31CmDsOfdmProfileStatsUncorrectableCodewords": 0,
           "docsIf31CmDsOfdmProfileStatsInOctets": 0,
