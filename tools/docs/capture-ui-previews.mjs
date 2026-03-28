@@ -165,7 +165,7 @@ function loadEndpointMockPayloads() {
 }
 
 function shouldRunCaptureBeforeScreenshot(route) {
-  return route.section === "operations";
+  return route.section === "operations" || route.section === "signal-capture" || route.section === "spectrum-analyzer";
 }
 
 async function runOperationCapture(page, route) {
