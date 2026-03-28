@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
@@ -14,6 +14,7 @@ const PREVIEW_HOST = process.env.UI_PREVIEW_HOST ?? "127.0.0.1";
 const PREVIEW_BASE_URL = `http://${PREVIEW_HOST}:${PREVIEW_PORT}`;
 const OUTPUT_DIR = join(ROOT_DIR, "docs", "images", "ui-previews");
 const DOC_PREVIEW_DIR = join(ROOT_DIR, "docs", "user", "ui-previews");
+const LIVE_CAPTURE_SUMMARY_PATH = join(ROOT_DIR, "docs", "examples", "live-captures", "summary.json");
 
 const ROUTES = [
   { title: "Signal Capture · RxMER", path: "/single-capture/rxmer", slug: "single-capture-rxmer", section: "signal-capture" },
@@ -131,10 +132,62 @@ function renderSectionPage(title, captures) {
   return lines.join("\n");
 }
 
+function loadEndpointMockPayloads() {
+  if (!existsSync(LIVE_CAPTURE_SUMMARY_PATH)) {
+    fail(`Missing ${LIVE_CAPTURE_SUMMARY_PATH}. Run docs:capture-live-endpoint-examples first.`);
+  }
+
+  const summary = JSON.parse(readFileSync(LIVE_CAPTURE_SUMMARY_PATH, "utf-8"));
+  const outputs = Array.isArray(summary?.outputs) ? summary.outputs : [];
+  const endpointPayloads = new Map();
+
+  for (const output of outputs) {
+    if (!output || typeof output.endpoint !== "string" || typeof output.output_path !== "string") {
+      continue;
+    }
+
+    if (!existsSync(output.output_path)) {
+      continue;
+    }
+
+    if (endpointPayloads.has(output.endpoint)) {
+      continue;
+    }
+
+    endpointPayloads.set(output.endpoint, JSON.parse(readFileSync(output.output_path, "utf-8")));
+  }
+
+  if (!endpointPayloads.has("/system/sysDescr")) {
+    fail("Missing /system/sysDescr payload in live capture summary.");
+  }
+
+  return endpointPayloads;
+}
+
+function shouldRunCaptureBeforeScreenshot(route) {
+  return route.section === "operations";
+}
+
+async function runOperationCapture(page, route) {
+  if (!shouldRunCaptureBeforeScreenshot(route)) {
+    return;
+  }
+
+  const submitButton = page.getByRole("button", { name: /^(Get Capture|Run )/ }).first();
+  await submitButton.waitFor({ state: "visible", timeout: 30_000 });
+  await submitButton.click();
+  await page.getByText("No capture results yet. Run the operation to populate this panel.").waitFor({
+    state: "hidden",
+    timeout: 30_000,
+  });
+  await page.waitForTimeout(500);
+}
+
 async function main() {
   mkdirSync(OUTPUT_DIR, { recursive: true });
   mkdirSync(DOC_PREVIEW_DIR, { recursive: true });
 
+  const endpointPayloads = loadEndpointMockPayloads();
   const preview = startPreviewServer();
   let browser;
   try {
@@ -147,17 +200,38 @@ async function main() {
       deviceScaleFactor: 1,
     });
     const page = await context.newPage();
+    await page.route("**/*", async (route) => {
+      const request = route.request();
+      if (request.method() !== "POST") {
+        await route.continue();
+        return;
+      }
+
+      const requestUrl = new URL(request.url());
+      const payload = endpointPayloads.get(requestUrl.pathname);
+      if (!payload) {
+        await route.continue();
+        return;
+      }
+
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(payload),
+      });
+    });
 
     const captures = [];
     for (const route of ROUTES) {
       const targetUrl = `${PREVIEW_BASE_URL}${route.path}`;
       log(`Capturing ${targetUrl}`);
       await page.goto(targetUrl, { waitUntil: "networkidle", timeout: 60_000 });
+      await runOperationCapture(page, route);
       await page.waitForTimeout(600);
       await page.evaluate(() => window.scrollTo(0, 0));
       const fileName = `${route.slug}.png`;
       const filePath = join(OUTPUT_DIR, fileName);
-      await page.screenshot({ path: filePath, fullPage: false });
+      await page.screenshot({ path: filePath, fullPage: true });
       captures.push({ ...route, fileName });
     }
 
