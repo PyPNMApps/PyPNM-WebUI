@@ -18,6 +18,21 @@
 - `src/types`: request/response/domain types
 - `src/lib`: shared helpers/utilities
 
+## PW-PCW Alignment Contract
+- PW keeps reusable workflow code under `src/pw/*` so PCW can inherit changes
+  with minimal path remapping and predictable ownership.
+- Path conventions are intentionally mirrored with PCW:
+  - pages in `src/pw/pages`
+  - features in `src/pw/features`
+  - PW endpoint services in `src/pw/services`
+- Shared infra remains outside PW-specific code:
+  - transport/config/runtime infra in `src/services`
+  - shared pure helpers in `src/lib`
+  - shared API contracts in `src/types`
+- New PW workflow code should not be added to legacy flat locations such as
+  `src/pages` or `src/features`; keep all new workflow implementation inside
+  `src/pw/*` to preserve PCW inheritance symmetry.
+
 ## Design Rules
 - Do not reimplement backend logic in UI.
 - Keep endpoint integrations isolated in service modules.
