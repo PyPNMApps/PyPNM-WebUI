@@ -37,11 +37,16 @@
 ## Architecture Constraints (Required)
 
 - Keep a clean split between:
-  - `features/` (workflow modules)
+  - `pw/features/` (PW workflow modules)
+  - `pw/pages/` (PW route pages)
+  - `pw/services/` (PW endpoint services)
   - `components/` (reusable UI)
-  - `services/` (API integrations)
+  - `services/` (shared infrastructure APIs)
   - `types/` (contracts)
   - `lib/` (pure utilities)
+- For PW code, do not introduce new imports from legacy flat aliases such as
+  `@/pages/*`, `@/features/*`, or moved PW service aliases under `@/services/*`.
+  Use `@/pw/pages/*`, `@/pw/features/*`, and `@/pw/services/*` instead.
 - Keep presentational components free of API side effects when practical.
 - Put endpoint-specific logic inside feature modules, not global app shell.
 - Keep shared visual primitives generic: device context tables, epoch-to-UTC formatting, frequency-range formatting, and numeric summary helpers belong in common modules, not in endpoint-specific components.
