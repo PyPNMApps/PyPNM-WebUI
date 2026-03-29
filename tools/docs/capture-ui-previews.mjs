@@ -3,15 +3,16 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
+import net from "node:net";
 
 import { chromium } from "playwright";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT_DIR = resolve(__dirname, "..", "..");
-const PREVIEW_PORT = Number(process.env.UI_PREVIEW_PORT ?? "4173");
+const PREVIEW_PORT_BASE = Number(process.env.UI_PREVIEW_PORT ?? "4173");
 const PREVIEW_HOST = process.env.UI_PREVIEW_HOST ?? "127.0.0.1";
-const PREVIEW_BASE_URL = `http://${PREVIEW_HOST}:${PREVIEW_PORT}`;
+let ACTIVE_PREVIEW_PORT = PREVIEW_PORT_BASE;
 const OUTPUT_DIR = join(ROOT_DIR, "docs", "images", "ui-previews");
 const DOC_PREVIEW_DIR = join(ROOT_DIR, "docs", "user", "ui-previews");
 const LIVE_CAPTURE_SUMMARY_PATH = join(ROOT_DIR, "docs", "examples", "live-captures", "summary.json");
@@ -68,6 +69,33 @@ function fail(message) {
   process.exit(1);
 }
 
+function previewBaseUrl() {
+  return `http://${PREVIEW_HOST}:${ACTIVE_PREVIEW_PORT}`;
+}
+
+async function isPortAvailable(port, host) {
+  return new Promise((resolvePort) => {
+    const server = net.createServer();
+    server.once("error", () => {
+      resolvePort(false);
+    });
+    server.once("listening", () => {
+      server.close(() => resolvePort(true));
+    });
+    server.listen(port, host);
+  });
+}
+
+async function findAvailablePreviewPort(basePort, host, maxAttempts = 40) {
+  for (let offset = 0; offset < maxAttempts; offset += 1) {
+    const candidate = basePort + offset;
+    if (await isPortAvailable(candidate, host)) {
+      return candidate;
+    }
+  }
+  throw new Error(`Could not find an available preview port near ${basePort}.`);
+}
+
 async function waitForServerReady(url, timeoutMs = 30_000) {
   const start = Date.now();
   while (Date.now() - start < timeoutMs) {
@@ -84,10 +112,14 @@ async function waitForServerReady(url, timeoutMs = 30_000) {
   throw new Error(`Timed out waiting for ${url}`);
 }
 
-function startPreviewServer() {
+async function startPreviewServer() {
+  ACTIVE_PREVIEW_PORT = await findAvailablePreviewPort(PREVIEW_PORT_BASE, PREVIEW_HOST);
+  if (ACTIVE_PREVIEW_PORT !== PREVIEW_PORT_BASE) {
+    log(`Port ${PREVIEW_PORT_BASE} is busy; using ${ACTIVE_PREVIEW_PORT} for preview server.`);
+  }
   const preview = spawn(
     "npm",
-    ["run", "preview", "--", "--host", PREVIEW_HOST, "--port", String(PREVIEW_PORT), "--strictPort"],
+    ["run", "preview", "--", "--host", PREVIEW_HOST, "--port", String(ACTIVE_PREVIEW_PORT), "--strictPort"],
     {
       cwd: ROOT_DIR,
       env: process.env,
@@ -103,7 +135,7 @@ function renderOverviewPage() {
     "",
     "Auto-generated screenshots for key WebUI routes.",
     "",
-    `Base URL captured: \`${PREVIEW_BASE_URL}\``,
+    `Base URL captured: \`${previewBaseUrl()}\``,
     "",
     "To regenerate:",
     "",
@@ -124,7 +156,7 @@ function renderSectionPage(title, captures) {
   const lines = [
     `# ${title}`,
     "",
-    `Base URL captured: \`${PREVIEW_BASE_URL}\``,
+    `Base URL captured: \`${previewBaseUrl()}\``,
     "",
   ];
 
@@ -337,11 +369,11 @@ async function main() {
   mkdirSync(DOC_PREVIEW_DIR, { recursive: true });
 
   const mocks = loadCaptureMocks();
-  const preview = startPreviewServer();
+  const preview = await startPreviewServer();
   let browser;
   try {
-    log(`Waiting for preview server at ${PREVIEW_BASE_URL}`);
-    await waitForServerReady(`${PREVIEW_BASE_URL}/`);
+    log(`Waiting for preview server at ${previewBaseUrl()}`);
+    await waitForServerReady(`${previewBaseUrl()}/`);
 
     browser = await chromium.launch({ headless: true });
     const context = await browser.newContext({
@@ -404,7 +436,7 @@ async function main() {
 
     const captures = [];
     for (const route of ROUTES) {
-      const targetUrl = `${PREVIEW_BASE_URL}${route.path}`;
+      const targetUrl = `${previewBaseUrl()}${route.path}`;
       log(`Capturing ${targetUrl}`);
       await page.goto(targetUrl, { waitUntil: "networkidle", timeout: 60_000 });
       if (shouldRunCaptureBeforeScreenshot(route)) {
