@@ -6,7 +6,7 @@ import {
   getPnmFileMacArchiveDownloadUrl,
   getPnmFileOperationArchiveDownloadUrl,
   getPnmFileTransactionDownloadUrl,
-} from "@/services/pnmFilesService";
+} from "@/pw/services/pnmFilesService";
 
 describe("pnmFilesService", () => {
   it("builds a stable transaction download URL", () => {

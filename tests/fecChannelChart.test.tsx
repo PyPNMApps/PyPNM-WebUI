@@ -3,7 +3,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { FecChannelChart } from "@/features/operations/FecChannelChart";
+import { FecChannelChart } from "@/pw/features/operations/FecChannelChart";
 
 const profiles = [
   {

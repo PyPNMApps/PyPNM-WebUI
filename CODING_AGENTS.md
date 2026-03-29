@@ -16,6 +16,24 @@
 - Centralize reusable request-form hover text in a shared hint registry instead of hardcoding inline helper copy in individual forms.
 - Keep diffs minimal and focused; avoid formatting churn.
 
+## Common Coding Practices (Required)
+
+- `Shared-First`: treat reusable form behavior as common-code first. Shared
+  labels, hover hints, masking, and spacing belong in shared modules/styles,
+  not endpoint-local one-offs.
+- `Form Layout`: keep common capture request fields (`SNMP`, `TFTP IPv4`,
+  `TFTP IPv6`) in one shared horizontal row layout. Keep mode-specific capture
+  settings in separate shared row layouts.
+- `Hint Placement`: use a shared field-label-with-hint pattern for hover tips
+  so help icons and label spacing render consistently across forms.
+- `Spacing Discipline`: use shared CSS utility classes for field alignment and
+  spacing; avoid inline or per-page spacing tweaks that drift over time.
+- `Common Before Specific`: when behavior appears in more than one endpoint
+  workflow, extract to common-code first and only keep endpoint-local behavior
+  when technically required.
+- `Document Reuse`: when adding a reusable UI/coding pattern, update this CA
+  in the same change set so future work follows the same standard.
+
 ## Typing And API Contracts (Required)
 
 - Use strict TypeScript typing.
@@ -37,11 +55,16 @@
 ## Architecture Constraints (Required)
 
 - Keep a clean split between:
-  - `features/` (workflow modules)
+  - `pw/features/` (PW workflow modules)
+  - `pw/pages/` (PW route pages)
+  - `pw/services/` (PW endpoint services)
   - `components/` (reusable UI)
-  - `services/` (API integrations)
+  - `services/` (shared infrastructure APIs)
   - `types/` (contracts)
   - `lib/` (pure utilities)
+- For PW code, do not introduce new imports from legacy flat aliases such as
+  `@/pages/*`, `@/features/*`, or moved PW service aliases under `@/services/*`.
+  Use `@/pw/pages/*`, `@/pw/features/*`, and `@/pw/services/*` instead.
 - Keep presentational components free of API side effects when practical.
 - Put endpoint-specific logic inside feature modules, not global app shell.
 - Keep shared visual primitives generic: device context tables, epoch-to-UTC formatting, frequency-range formatting, and numeric summary helpers belong in common modules, not in endpoint-specific components.
@@ -66,11 +89,19 @@
 - For any user-visible fetch or mutation that collects backend data, render a shared thinking/loading indicator with an icon rather than plain loading text.
 - Every operation workflow must provide a visible JSON download path so the
   current payload can be inspected outside the UI.
+- In request forms, treat sub-cards as foldable sections by default so users
+  can progressively disclose inputs instead of scanning one expanded block.
+- Keep pages and forms lean by default: avoid stacking too many expanded
+  cards, chips, or helper elements at once when the same outcome can be shown
+  with fewer visible controls.
 - When presenting dense grouped result sets, prefer collapsible cards or
   sections per group and default them to collapsed unless the workflow has a
   clear reason to expand them on first render.
 - Multi-series line graphs must provide shared mute/show controls for
   individual series instead of forcing all lines to remain visible.
+- For range-selection charts that expose `Zoom` and `Reset Zoom`, place those
+  controls in the right-side chart header action area next to export actions
+  (`PNG`/`CSV`) instead of placing them as a separate control row below.
 - Generic raw-response JSON download actions belong in the `Capture Inputs`
   card as shared request-panel controls, not as floating mid-page actions.
 - Shared request-panel JSON controls must remain visually muted and disabled
@@ -90,6 +121,9 @@
   filename-safe and stable across export types.
 - Disabled buttons and other disabled action controls must appear visually
   grayed out.
+- Chip rows must include consistent vertical breathing room. Keep at least
+  ~10px separation above and below status/summary chip rows so cards do not
+  appear visually crowded in either theme.
 - Hovering disabled action controls must not imply clickability; keep the
   cursor non-pointer for disabled states.
 - Capture-input fields should preserve stable browser autocomplete behavior on
