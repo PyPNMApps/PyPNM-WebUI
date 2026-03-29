@@ -2,7 +2,7 @@ import { useTheme } from "@/app/useTheme";
 import { NavLink } from "react-router-dom";
 
 import { InstanceSelector } from "@/components/layout/InstanceSelector";
-import { OperationsMenu } from "@/features/operations/components/OperationsMenu";
+import { OperationsMenu } from "@/pw/features/operations/components/OperationsMenu";
 
 const links = [
   ["/files", "Files"],

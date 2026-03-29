@@ -10,9 +10,11 @@
 - `src/app`: app bootstrap and providers
 - `src/routes`: route definitions
 - `src/layouts`: shell and page layout
-- `src/features`: endpoint/workflow modules
+- `src/pw/pages`: PW route pages
+- `src/pw/features`: PW endpoint/workflow modules
 - `src/components`: reusable UI components
-- `src/services`: API client and endpoint services
+- `src/pw/services`: PW endpoint services
+- `src/services`: shared infrastructure services
 - `src/types`: request/response/domain types
 - `src/lib`: shared helpers/utilities
 
@@ -25,16 +27,16 @@
   multiple RxMER/analysis views can reuse one implementation.
 
 ## Analysis Viewer Baseline
-- `src/features/analysis/types.ts` holds typed analysis contracts for the current fixture-backed view.
-- `src/features/analysis/analysisViewModel.ts` contains pure display-oriented derivations for summaries and chart series.
-- `src/features/analysis/components/` contains reusable technical UI blocks:
+- `src/pw/features/analysis/types.ts` holds typed analysis contracts for the current fixture-backed view.
+- `src/pw/features/analysis/analysisViewModel.ts` contains pure display-oriented derivations for summaries and chart series.
+- `src/pw/features/analysis/components/` contains reusable technical UI blocks:
   - `DeviceInfoTable`
   - `LineAnalysisChart`
   - `ChannelAnalysisCard`
 - `src/components/common/ExportActions.tsx` and `src/lib/export/` provide the
   shared export framework so advanced and single-capture views reuse the same
   PNG/CSV logic instead of implementing endpoint-local download code.
-- `src/pages/AnalysisViewerPage.tsx` composes those pieces into the current RxMER echo analysis route.
+- `src/pw/pages/AnalysisViewerPage.tsx` composes those pieces into the current RxMER echo analysis route.
 - Current state: fixture-backed UI proving the analysis composition model without duplicating backend logic.
 
 ## Instance Target Selection
@@ -54,9 +56,9 @@
 ## Operations Catalog Direction
 - The WebUI uses a compact operations menu modeled after the Postman
   collection structure rather than a flat endpoint table.
-- `src/features/operations/operationsNavigation.ts` is the editable registry
+- `src/pw/features/operations/operationsNavigation.ts` is the editable registry
   for top-level operations menu entries.
-- `src/pages/EndpointExplorerPage.tsx` is the current operations page for
+- `src/pw/pages/EndpointExplorerPage.tsx` is the current operations page for
   endpoint-bound request forms and visuals.
 
 ## Advanced Workflow Direction
@@ -176,12 +178,12 @@ Initial RxMER analysis types to support:
 
 Recommended module layout:
 
-- `src/features/advanced/`
+- `src/pw/features/advanced/`
   - advanced workflow state and hooks
   - operation-specific request forms
   - status and results panels
   - analysis selectors and views
-- `src/services/advanced/`
+- `src/pw/services/advanced/`
   - start/status/results/stop/analysis API calls
 - `src/types/advanced/`
   - advanced request/response contracts

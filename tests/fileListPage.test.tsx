@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { InstanceConfigContext } from "@/app/InstanceConfigContext";
 import type { InstanceConfigContextValue } from "@/app/InstanceConfigProvider";
-import { FileListPage } from "@/pages/FileListPage";
+import { FileListPage } from "@/pw/pages/FileListPage";
 
 const pnmFilesServiceMocks = vi.hoisted(() => ({
   getPnmFileAnalysis: vi.fn(),
@@ -20,7 +20,7 @@ const pnmFilesServiceMocks = vi.hoisted(() => ({
   uploadPnmFile: vi.fn(),
 }));
 
-vi.mock("@/services/pnmFilesService", () => ({
+vi.mock("@/pw/services/pnmFilesService", () => ({
   getPnmFileAnalysis: pnmFilesServiceMocks.getPnmFileAnalysis,
   getPnmFileFilenameDownloadUrl: pnmFilesServiceMocks.getPnmFileFilenameDownloadUrl,
   getPnmFileHexdump: pnmFilesServiceMocks.getPnmFileHexdump,

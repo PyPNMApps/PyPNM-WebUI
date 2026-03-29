@@ -4,37 +4,37 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { AppLayout } from "@/layouts/AppLayout";
 
 const AboutPage = lazy(() =>
-  import("@/pages/AboutPage").then((module) => ({ default: module.AboutPage })),
+  import("@/pw/pages/AboutPage").then((module) => ({ default: module.AboutPage })),
 );
 const AdvancedPage = lazy(() =>
-  import("@/pages/AdvancedPage").then((module) => ({ default: module.AdvancedPage })),
+  import("@/pw/pages/AdvancedPage").then((module) => ({ default: module.AdvancedPage })),
 );
 const AnalysisViewerPage = lazy(() =>
-  import("@/pages/AnalysisViewerPage").then((module) => ({ default: module.AnalysisViewerPage })),
+  import("@/pw/pages/AnalysisViewerPage").then((module) => ({ default: module.AnalysisViewerPage })),
 );
 const EndpointExplorerPage = lazy(() =>
-  import("@/pages/EndpointExplorerPage").then((module) => ({ default: module.EndpointExplorerPage })),
+  import("@/pw/pages/EndpointExplorerPage").then((module) => ({ default: module.EndpointExplorerPage })),
 );
 const FileListPage = lazy(() =>
-  import("@/pages/FileListPage").then((module) => ({ default: module.FileListPage })),
+  import("@/pw/pages/FileListPage").then((module) => ({ default: module.FileListPage })),
 );
 const FileAnalysisPage = lazy(() =>
-  import("@/pages/FileAnalysisPage").then((module) => ({ default: module.FileAnalysisPage })),
+  import("@/pw/pages/FileAnalysisPage").then((module) => ({ default: module.FileAnalysisPage })),
 );
 const FileHexdumpPage = lazy(() =>
-  import("@/pages/FileHexdumpPage").then((module) => ({ default: module.FileHexdumpPage })),
+  import("@/pw/pages/FileHexdumpPage").then((module) => ({ default: module.FileHexdumpPage })),
 );
 const HealthPage = lazy(() =>
-  import("@/pages/HealthPage").then((module) => ({ default: module.HealthPage })),
+  import("@/pw/pages/HealthPage").then((module) => ({ default: module.HealthPage })),
 );
 const MeasurementRequestPage = lazy(() =>
-  import("@/pages/MeasurementRequestPage").then((module) => ({ default: module.MeasurementRequestPage })),
+  import("@/pw/pages/MeasurementRequestPage").then((module) => ({ default: module.MeasurementRequestPage })),
 );
 const ResultsPage = lazy(() =>
-  import("@/pages/ResultsPage").then((module) => ({ default: module.ResultsPage })),
+  import("@/pw/pages/ResultsPage").then((module) => ({ default: module.ResultsPage })),
 );
 const SettingsPage = lazy(() =>
-  import("@/pages/SettingsPage").then((module) => ({ default: module.SettingsPage })),
+  import("@/pw/pages/SettingsPage").then((module) => ({ default: module.SettingsPage })),
 );
 
 function RouteLoadingFallback() {
