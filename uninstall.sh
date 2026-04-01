@@ -2,29 +2,48 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HELPER_PATH="${ROOT_DIR}/tools/install/uninstall.sh"
+PCW_DIR_DEFAULT="$(cd "${ROOT_DIR}/.." && pwd)/PyPNM-CMTS-WebUI"
+PCW_DIR="${PCW_DIR_DEFAULT}"
+PASS_THROUGH_ARGS=()
 
-print_help() {
+usage() {
   cat <<'EOF'
+PyPNM-WebUI Wrapper Uninstall
+
+Delegates uninstall to unified PyPNM-CMTS-WebUI.
+
 Usage:
   ./uninstall.sh [options]
 
 Options:
-  --confirm-uninstall Run without interactive confirmation prompt.
-  --remove-env        Remove .env in addition to runtime/local artifacts.
-  --remove-data       Remove .data capture directory.
-  -h, --help          Show this help.
+  --pcw-dir <path>     Unified repo path (default: ../PyPNM-CMTS-WebUI)
+  --help, -h           Show this help.
+
+All other flags are forwarded to unified repo uninstall.sh.
 EOF
 }
 
-if [ ! -x "${HELPER_PATH}" ]; then
-  printf '[uninstall][error] Missing or non-executable helper: %s\n' "${HELPER_PATH}" >&2
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --pcw-dir)
+      shift
+      PCW_DIR="${1:-}"
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      PASS_THROUGH_ARGS+=("$1")
+      ;;
+  esac
+  shift
+done
+
+if [[ ! -x "${PCW_DIR}/uninstall.sh" ]]; then
+  echo "[uninstall][error] Unified uninstall script not found: ${PCW_DIR}/uninstall.sh" >&2
+  echo "[uninstall][hint] Install unified repo first with ./install.sh" >&2
   exit 1
 fi
 
-if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
-  print_help
-  exit 0
-fi
-
-exec "${HELPER_PATH}" --root-dir "${ROOT_DIR}" "$@"
+exec "${PCW_DIR}/uninstall.sh" "${PASS_THROUGH_ARGS[@]}"

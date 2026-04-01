@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCRIPT_NAME="$(basename "$0")"
-SCRIPT_VERSION="v1.0.0"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+
+COMMIT_MSG="Update"
+DO_PUSH=0
+SKIP_CHECKS=0
 
 usage() {
-  cat <<'USAGE'
+  cat <<'EOF'
 Stage and commit the current Git repository.
 
 Usage:
@@ -14,89 +18,34 @@ Usage:
 Options:
   --commit-msg  Commit message prefix (default: "Update").
   --push        Push the current branch after commit.
-  --skip-checks Skip lint/test/build quality gates.
+  --skip-checks Skip wrapper quality checks.
   -h, --help    Show this help.
   -v, --version Show script version.
-USAGE
+EOF
 }
 
-read_current_version() {
-  python3 ./tools/support/bump_version.py --current | sed -n 's/^Current version: //p'
+version() {
+  echo "git-save.sh 1.0.0"
 }
-
-bump_build_version() {
-  local previous_version
-  local next_version
-
-  previous_version="$(read_current_version)"
-  echo "Bumping build version..."
-  python3 ./tools/support/bump_version.py --next build
-  next_version="$(read_current_version)"
-
-  if [[ "${previous_version}" == "${next_version}" ]]; then
-    echo "Build version unchanged."
-    return
-  fi
-
-  echo "Build version updated locally: ${previous_version} -> ${next_version}"
-}
-
-run_check() {
-  local label="$1"
-  shift
-  echo "[check] ${label}..."
-  if "$@"; then
-    echo "[pass]  ${label}"
-  else
-    echo "[fail]  ${label}" >&2
-    exit 1
-  fi
-}
-
-run_quality_gates() {
-  if [ ! -s "$HOME/.nvm/nvm.sh" ]; then
-    echo "ERROR: nvm not found at $HOME/.nvm/nvm.sh. Run ./install.sh first." >&2
-    exit 1
-  fi
-  if ! bash -lc 'source ~/.nvm/nvm.sh && nvm use 22 >/dev/null && npm -v >/dev/null'; then
-    echo "ERROR: npm is not available under Node 22. Run ./install.sh first." >&2
-    exit 1
-  fi
-
-  run_check "npm run lint" bash -lc 'source ~/.nvm/nvm.sh && nvm use 22 >/dev/null && npm run lint'
-  run_check "npm run test" bash -lc 'source ~/.nvm/nvm.sh && nvm use 22 >/dev/null && npm run test'
-  run_check "npm run build" bash -lc 'source ~/.nvm/nvm.sh && nvm use 22 >/dev/null && npm run build'
-}
-
-commit_msg="Update"
-do_push="false"
-skip_checks="false"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --commit-msg)
       shift
-      if [[ "${1:-}" == "" ]]; then
-        echo "ERROR: --commit-msg requires a value." >&2
-        exit 1
-      fi
-      commit_msg="$1"
-      shift
+      COMMIT_MSG="${1:-}"
       ;;
     --push)
-      do_push="true"
-      shift
+      DO_PUSH=1
       ;;
     --skip-checks)
-      skip_checks="true"
-      shift
+      SKIP_CHECKS=1
       ;;
     -h|--help)
       usage
       exit 0
       ;;
     -v|--version)
-      echo "${SCRIPT_NAME} ${SCRIPT_VERSION}"
+      version
       exit 0
       ;;
     *)
@@ -105,64 +54,52 @@ while [[ $# -gt 0 ]]; do
       exit 1
       ;;
   esac
+  shift
 done
 
+cd "${REPO_ROOT}"
+
 if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  echo "ERROR: This script must be run inside a Git repository." >&2
+  echo "[fail] Not inside a git repository." >&2
   exit 1
 fi
 
-repo_root="$(git rev-parse --show-toplevel)"
-cd "${repo_root}"
-
-current_branch="$(git rev-parse --abbrev-ref HEAD)"
-pending_changes="$(git status --short)"
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
 echo "========================================"
 echo "Git Save"
-echo "Branch: ${current_branch}"
+echo "Branch: ${BRANCH}"
 echo "Changes:"
-if [[ -z "${pending_changes}" ]]; then
-  echo "  (none)"
-else
-  printf '%s\n' "${pending_changes}"
-fi
+git status --short
 echo "========================================"
 
+if [[ "${SKIP_CHECKS}" -ne 1 ]]; then
+  echo "Running quality checks..."
+
+  echo "[check] Shell syntax..."
+  bash -n install.sh uninstall.sh tools/install/delegate-to-pcw.sh tools/git/git-save.sh
+  echo "[pass]  Shell syntax"
+
+  echo "[check] mkdocs build --strict..."
+  if command -v mkdocs >/dev/null 2>&1; then
+    mkdocs build --strict >/dev/null
+  else
+    python3 -m pip install -q -r requirements-docs.txt
+    mkdocs build --strict >/dev/null
+  fi
+  echo "[pass]  mkdocs build --strict"
+fi
+
 if git diff --quiet && git diff --cached --quiet; then
-  echo "No changes to commit."
+  echo "[pass] No changes to commit."
   exit 0
 fi
 
-if [[ "${skip_checks}" != "true" ]]; then
-  echo "Running quality checks..."
-  run_quality_gates
-else
-  echo "Skipping quality checks (--skip-checks)."
-fi
-
-bump_build_version
-
-echo "Staging changes..."
 git add -A
+git commit -m "${COMMIT_MSG}"
+echo "[pass] Commit created."
 
-timestamp="$(date +'%Y-%m-%d %H:%M:%S')"
-final_msg="${commit_msg} - ${timestamp}"
-
-echo "Creating commit..."
-git commit -m "${final_msg}"
-
-if [[ "${do_push}" == "true" ]]; then
-  remote_name="$(git config branch."${current_branch}".remote || true)"
-  push_remote="${remote_name:-origin}"
-  echo "Pushing to ${push_remote} (${current_branch})..."
-  if [[ -z "${remote_name}" ]]; then
-    git push -u "${push_remote}" "${current_branch}"
-  else
-    git push "${push_remote}" "${current_branch}"
-  fi
-else
-  echo "Push skipped. Use --push to push."
+if [[ "${DO_PUSH}" -eq 1 ]]; then
+  git push
+  echo "[pass] Changes pushed."
 fi
-
-echo "Done."

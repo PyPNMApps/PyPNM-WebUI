@@ -23,27 +23,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set Up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
       - name: Set Up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
-      - name: Install Frontend Dependencies
-        run: npm ci
-
-      - name: Build Frontend
-        run: npm run build
-
-      - name: Install Playwright Chromium
-        run: npx playwright install chromium
-
-      - name: Capture UI Preview Screenshots
-        run: npm run docs:capture-ui-previews
 
       - name: Install Docs Dependencies
         run: |

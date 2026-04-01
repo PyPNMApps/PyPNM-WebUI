@@ -1,4 +1,4 @@
-name: Ubuntu Checks
+name: Ubuntu Wrapper Checks
 
 on:
   workflow_dispatch:
@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   checks:
-    name: Ubuntu ${{ matrix.os }} · Node 22
+    name: Ubuntu ${{ matrix.os }} wrapper validation
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -29,20 +29,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set Up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: "npm"
+      - name: Shellcheck Wrapper Scripts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+          shellcheck install.sh uninstall.sh tools/install/delegate-to-pcw.sh
 
-      - name: Install Dependencies
-        run: npm ci
+      - name: Wrapper Dry-Run (PW Profile)
+        env:
+          PYPNM_WEBUI_WRAPPER_TEST: "1"
+        run: |
+          ./install.sh --with-pypnm-webui --pcw-dir /tmp/PyPNM-CMTS-WebUI
 
-      - name: Run Lint
-        run: npm run lint
+      - name: Wrapper Dry-Run (PCW Profile)
+        env:
+          PYPNM_WEBUI_WRAPPER_TEST: "1"
+        run: |
+          ./install.sh --with-pypnm-cmts-webui --pcw-dir /tmp/PyPNM-CMTS-WebUI
 
-      - name: Run Tests
-        run: npm run test
-
-      - name: Run Build
-        run: npm run build
+      - name: Uninstall Help Smoke Test
+        run: |
+          ./uninstall.sh --help
