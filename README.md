@@ -51,6 +51,12 @@ PW-local release checks:
 python3 ./tools/release/release.py
 ```
 
+PW-local release pushes the current branch by default. Skip push with:
+
+```bash
+python3 ./tools/release/release.py --no-push
+```
+
 Delegate to unified release tool only when needed:
 
 ```bash

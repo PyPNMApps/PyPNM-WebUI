@@ -28,11 +28,16 @@ def parse_args(argv: list[str]) -> tuple[argparse.Namespace, list[str]]:
         default="",
         help="Optional git ref to checkout before unified delegation.",
     )
+    parser.add_argument(
+        "--no-push",
+        action="store_true",
+        help="Skip git push in PW-local release mode.",
+    )
     args, passthrough = parser.parse_known_args(argv)
     return args, passthrough
 
 
-def run_local_pw_release(repo_root: Path, passthrough: list[str]) -> int:
+def run_local_pw_release(repo_root: Path, passthrough: list[str], *, no_push: bool) -> int:
     if passthrough:
         print(
             f"[release][error] Unsupported PW-local args: {' '.join(passthrough)}",
@@ -47,6 +52,19 @@ def run_local_pw_release(repo_root: Path, passthrough: list[str]) -> int:
     print(f"[release] Running PW-local release checks in {repo_root}")
     subprocess.run(["bash", "-n", "install.sh", "uninstall.sh", "tools/install/delegate-to-pcw.sh"], cwd=repo_root, check=True)
     subprocess.run(["mkdocs", "build", "--strict"], cwd=repo_root, check=True)
+    if no_push:
+        print("[release] --no-push set; skipping git push.")
+    else:
+        branch = (
+            subprocess.check_output(
+                ["git", "-C", str(repo_root), "rev-parse", "--abbrev-ref", "HEAD"],
+                text=True,
+            )
+            .strip()
+        )
+        print(f"[release] Pushing {branch} to remote...")
+        subprocess.run(["git", "-C", str(repo_root), "push"], check=True)
+        print(f"[release] Push complete for {branch}.")
     print("[release] PW-local checks complete.")
     return 0
 
@@ -86,7 +104,7 @@ def main(argv: list[str]) -> int:
         pcw_dir = (repo_root / args.pcw_dir).resolve()
         return run_unified_delegate(repo_root, pcw_dir, args.pcw_ref, passthrough)
 
-    return run_local_pw_release(repo_root, passthrough)
+    return run_local_pw_release(repo_root, passthrough, no_push=args.no_push)
 
 
 if __name__ == "__main__":
