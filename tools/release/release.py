@@ -10,52 +10,83 @@ from pathlib import Path
 
 def parse_args(argv: list[str]) -> tuple[argparse.Namespace, list[str]]:
     parser = argparse.ArgumentParser(
-        description="PyPNM-WebUI wrapper release entrypoint. Delegates to unified repo release tool.",
+        description="PyPNM-WebUI release helper. Defaults to PW-local checks.",
         add_help=True,
+    )
+    parser.add_argument(
+        "--delegate-unified",
+        action="store_true",
+        help="Delegate release execution to unified PyPNM-CMTS-WebUI release.py.",
     )
     parser.add_argument(
         "--pcw-dir",
         default="../PyPNM-CMTS-WebUI",
-        help="Path to unified PyPNM-CMTS-WebUI checkout (default: ../PyPNM-CMTS-WebUI).",
+        help="Unified repo path used only with --delegate-unified.",
     )
     parser.add_argument(
         "--pcw-ref",
         default="",
-        help="Optional git ref to checkout in unified repo before release delegation.",
+        help="Optional git ref to checkout before unified delegation.",
     )
     args, passthrough = parser.parse_known_args(argv)
     return args, passthrough
 
 
-def main(argv: list[str]) -> int:
-    args, passthrough = parse_args(argv)
-
-    script_dir = Path(__file__).resolve().parent
-    repo_root = script_dir.parent.parent
-    pcw_dir = (repo_root / args.pcw_dir).resolve()
-    delegate = pcw_dir / "tools" / "release" / "release.py"
-
-    if not delegate.exists():
+def run_local_pw_release(repo_root: Path, passthrough: list[str]) -> int:
+    if passthrough:
         print(
-            f"[release][error] Unified release script not found: {delegate}",
+            f"[release][error] Unsupported PW-local args: {' '.join(passthrough)}",
             file=sys.stderr,
         )
+        print(
+            "[release][hint] Use --delegate-unified to pass through args to unified release.py.",
+            file=sys.stderr,
+        )
+        return 1
+
+    print(f"[release] Running PW-local release checks in {repo_root}")
+    subprocess.run(["bash", "-n", "install.sh", "uninstall.sh", "tools/install/delegate-to-pcw.sh"], cwd=repo_root, check=True)
+    subprocess.run(["mkdocs", "build", "--strict"], cwd=repo_root, check=True)
+    print("[release] PW-local checks complete.")
+    return 0
+
+
+def run_unified_delegate(
+    repo_root: Path,
+    pcw_dir: Path,
+    pcw_ref: str,
+    passthrough: list[str],
+) -> int:
+    delegate = pcw_dir / "tools" / "release" / "release.py"
+    if not delegate.exists():
+        print(f"[release][error] Unified release script not found: {delegate}", file=sys.stderr)
         print(
             "[release][hint] Run ./install.sh first or pass --pcw-dir to a valid unified checkout.",
             file=sys.stderr,
         )
         return 1
 
-    if args.pcw_ref:
+    if pcw_ref:
         subprocess.run(["git", "-C", str(pcw_dir), "fetch", "--tags", "origin"], check=True)
-        subprocess.run(["git", "-C", str(pcw_dir), "checkout", args.pcw_ref], check=True)
+        subprocess.run(["git", "-C", str(pcw_dir), "checkout", pcw_ref], check=True)
 
     cmd = [sys.executable, str(delegate), *passthrough]
     env = os.environ.copy()
     env.setdefault("PYPNM_WRAPPER_CALLER_REPO", str(repo_root))
-
     print(f"[release] Delegating to unified release tool: {' '.join(cmd)}")
     return subprocess.call(cmd, cwd=str(pcw_dir), env=env)
+
+
+def main(argv: list[str]) -> int:
+    args, passthrough = parse_args(argv)
+    script_dir = Path(__file__).resolve().parent
+    repo_root = script_dir.parent.parent
+
+    if args.delegate_unified:
+        pcw_dir = (repo_root / args.pcw_dir).resolve()
+        return run_unified_delegate(repo_root, pcw_dir, args.pcw_ref, passthrough)
+
+    return run_local_pw_release(repo_root, passthrough)
 
 
 if __name__ == "__main__":

@@ -45,8 +45,14 @@ Delegates to unified repo uninstall:
 
 ## Release Helper
 
-Release can still be started from this repo and is delegated to unified:
+PW-local release checks:
 
 ```bash
 python3 ./tools/release/release.py
+```
+
+Delegate to unified release tool only when needed:
+
+```bash
+python3 ./tools/release/release.py --delegate-unified --pcw-dir ../PyPNM-CMTS-WebUI
 ```
