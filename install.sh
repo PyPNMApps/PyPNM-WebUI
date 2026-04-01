@@ -3,6 +3,14 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HELPER="${ROOT_DIR}/tools/install/delegate-to-pcw.sh"
+BANNER_FILE="${ROOT_DIR}/tools/banner.txt"
+
+print_banner() {
+  if [[ -f "${BANNER_FILE}" ]]; then
+    cat "${BANNER_FILE}"
+    echo
+  fi
+}
 
 usage() {
   cat <<'EOF'
@@ -45,4 +53,5 @@ if [[ ! -x "${HELPER}" ]]; then
   exit 1
 fi
 
+print_banner
 exec "${HELPER}" --root-dir "${ROOT_DIR}" "$@"
